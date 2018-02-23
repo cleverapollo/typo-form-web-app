@@ -35,12 +35,12 @@ export default new Router({
     },
     {
       path: '/meetups/edit/:id',
-      name: 'Meetup',
+      name: 'EditMeetup',
       component: EditMeetup
     },
     {
       path: '/meetups/show/:id',
-      name: 'Meetup',
+      name: 'ShowMeetup',
       props: true,
       component: ShowMeetup
     },

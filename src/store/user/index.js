@@ -1,9 +1,8 @@
-import axios from 'axios'
-
 const API_URL = 'http://localhost:8000/api/'
 const SIGNUP_URL = `${API_URL}register`
 const SIGNIN_URL = `${API_URL}login`
 const SIGNOUT_URL = `${API_URL}logout`
+const USERINFO_URL = `${API_URL}userinfo`
 
 export default {
   state: {
@@ -18,16 +17,23 @@ export default {
     signUserUp ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      axios.post(SIGNUP_URL, payload)
+      window.axios.post(SIGNUP_URL, payload)
         .then(
-          user => {
-            commit('setLoading', false)
-            const newUser = {
-              id: user.uid,
-              registeredMeetups: []
-            }
-            commit('setUser', newUser)
-          }
+          window.axios.post(SIGNIN_URL, payload)
+            .then(
+              response => {
+                commit('setLoading', false)
+                commit('setUser', response['data']['user'])
+                localStorage.setItem('token', response['data']['user'])
+              }
+            )
+            .catch(
+              error => {
+                commit('setLoading', false)
+                commit('setError', error)
+                console.log(error)
+              }
+            )
         )
         .catch(
           error => {
@@ -40,15 +46,12 @@ export default {
     signUserIn ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      axios.post(SIGNIN_URL, payload)
+      window.axios.post(SIGNIN_URL, payload)
         .then(
-          user => {
+          response => {
             commit('setLoading', false)
-            const newUser = {
-              id: user.uid,
-              registeredMeetups: []
-            }
-            commit('setUser', newUser)
+            commit('setUser', response['data']['user'])
+            localStorage.setItem('token', response['data']['user']['api_token'])
           }
         )
         .catch(
@@ -60,40 +63,28 @@ export default {
         )
     },
     autoSignIn ({commit}, payload) {
-      commit('setUser', {
-        id: payload.uid,
-        registeredMeetups: []
-      })
-    },
-    fetchUserData ({commit, getters}) {
-      /*
       commit('setLoading', true)
-      firebase.database().ref('/users/' + getters.user.id + '/registrations/').once('value')
-        .then(data => {
-          const dataPairs = data.val()
-          let registeredMeetups = []
-          let swappedPairs = {}
-          for (let key in dataPairs) {
-            registeredMeetups.push(dataPairs[key])
-            swappedPairs[dataPairs[key]] = key
+      commit('clearError')
+      window.axios.get(USERINFO_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setUser', response['data']['user'])
+            localStorage.setItem('token', response['data']['user']['api_token'])
           }
-          const updatedUser = {
-            id: getters.user.id,
-            registeredMeetups: registeredMeetups,
-            fbKeys: swappedPairs
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            commit('setError', error)
+            console.log(error)
           }
-          commit('setLoading', false)
-          commit('setUser', updatedUser)
-        })
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
-        */
+        )
     },
     logout ({commit}) {
-      axios.post(SIGNOUT_URL)
+      window.axios.post(SIGNOUT_URL)
       commit('setUser', null)
+      localStorage.removeItem('token')
     }
   },
   getters: {

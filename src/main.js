@@ -19,5 +19,12 @@ new Vue({
   router,
   store,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  beforeCreate () {
+    window.axios = require('axios')
+    if (localStorage.getItem('token')) {
+      window.axios.defaults.headers.common['api_token'] = localStorage.getItem('token')
+      this.$store.dispatch('autoSignIn', localStorage.getItem('token'))
+    }
+  }
 })
