@@ -7,6 +7,7 @@ import Vuetify from 'vuetify'
 import { store } from './store'
 import AlertCmp from './components/Shared/Alert.vue'
 import 'vuetify/dist/vuetify.min.css'
+window.axios = require('axios')
 
 Vue.use(Vuetify)
 Vue.config.productionTip = false
@@ -21,7 +22,6 @@ new Vue({
   components: { App },
   template: '<App/>',
   beforeCreate () {
-    window.axios = require('axios')
     if (localStorage.getItem('token')) {
       window.axios.defaults.headers.common['api_token'] = localStorage.getItem('token')
       this.$store.dispatch('autoSignIn', localStorage.getItem('token'))

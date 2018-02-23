@@ -10,6 +10,10 @@ export default {
   },
   mutations: {
     setUser (state, payload) {
+      if (payload) {
+        localStorage.setItem('token', payload['api_token'])
+        window.axios.defaults.headers.common['api_token'] = localStorage.getItem('token')
+      }
       state.user = payload
     }
   },
@@ -24,7 +28,6 @@ export default {
               response => {
                 commit('setLoading', false)
                 commit('setUser', response['data']['user'])
-                localStorage.setItem('token', response['data']['user'])
               }
             )
             .catch(
@@ -51,7 +54,6 @@ export default {
           response => {
             commit('setLoading', false)
             commit('setUser', response['data']['user'])
-            localStorage.setItem('token', response['data']['user']['api_token'])
           }
         )
         .catch(
@@ -70,7 +72,6 @@ export default {
           response => {
             commit('setLoading', false)
             commit('setUser', response['data']['user'])
-            localStorage.setItem('token', response['data']['user']['api_token'])
           }
         )
         .catch(
