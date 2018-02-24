@@ -3,6 +3,15 @@
     <v-navigation-drawer v-model="sideNav" fixed app>
       <v-list>
         <v-list-tile
+          :to="'/profile'">
+          <v-list-tile-action>
+            <v-icon>person</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            My Account
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile
           v-for="item in menuItems"
           :key="item.title"
           :to="item.link">
@@ -17,11 +26,11 @@
           <v-list-tile-action>
             <v-icon>exit_to_app</v-icon>
           </v-list-tile-action>
-          <v-list-tile-content>Logout</v-list-tile-content>
+          <v-list-tile-content>Sign out</v-list-tile-content>
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar dark class="primary" app>
+    <v-toolbar dark class="primary" dense app>
       <v-toolbar-side-icon
         @click.stop="sideNav = !sideNav"
         class="hidden-sm-and-up "></v-toolbar-side-icon>
@@ -38,13 +47,23 @@
           <v-icon left dark>{{ item.icon }}</v-icon>
           {{ item.title }}
         </v-btn>
-        <v-btn
-          v-if="userIsAuthenticated"
-          flat
-          @click="onLogout">
-          <v-icon left dark>exit_to_app</v-icon>
-          Logout
-        </v-btn>
+        <v-menu offset-y left v-if="userIsAuthenticated">
+          <v-btn dark flat icon slot="activator">
+            <v-icon>person</v-icon>
+          </v-btn>
+          <v-list>
+            <v-list-tile
+              :to="'/profile'">
+              <v-list-tile-content>
+                Edit Account
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile
+              @click="onLogout">
+              <v-list-tile-content>Sign out</v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
@@ -71,8 +90,7 @@ export default {
       if (this.userIsAuthenticated) {
         menuItems = [
           {icon: 'supervisor_account', title: 'View Meetups', link: '/meetups'},
-          {icon: 'room', title: 'Organize Meetup', link: '/meetup/new'},
-          {icon: 'person', title: 'Profile', link: '/profile'}
+          {icon: 'room', title: 'Organize Meetup', link: '/meetup/new'}
         ]
       }
       return menuItems
