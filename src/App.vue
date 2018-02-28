@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="sideNav" fixed app>
+    <v-navigation-drawer v-model="sideNav" fixed app temporary>
       <v-list>
         <v-list-tile
           :to="'/profile'">
@@ -32,10 +32,9 @@
     </v-navigation-drawer>
     <v-toolbar dark class="primary" dense app>
       <v-toolbar-side-icon
-        @click.stop="sideNav = !sideNav"
-        class="hidden-sm-and-up "></v-toolbar-side-icon>
+        @click.stop="sideNav = !sideNav"></v-toolbar-side-icon>
       <v-toolbar-title>
-        <router-link to="/" tag="span" style="cursor: pointer">DevMeetup</router-link>
+        <router-link to="/" tag="span" style="cursor: pointer">{{ title }}</router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-xs-only">
@@ -78,7 +77,8 @@
 export default {
   data () {
     return {
-      sideNav: false
+      sideNav: false,
+      title: 'Informed 365'
     }
   },
   computed: {

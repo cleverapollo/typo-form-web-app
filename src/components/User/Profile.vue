@@ -114,6 +114,17 @@
       onDismissed () {
         this.$store.dispatch('clearError')
       }
+    },
+    created: function () {
+      const value = this.user
+      if (value !== null && value !== undefined) {
+        this.id = value.id
+        this.firstname = value.first_name
+        this.lastname = value.last_name
+        this.email = value.email
+        this.password = value.password
+        this.confirmPassword = value.password
+      }
     }
   }
 </script>
