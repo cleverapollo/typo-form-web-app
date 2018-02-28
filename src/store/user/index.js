@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/api/'
+const API_URL = process.env.API_URL
 const SIGNUP_URL = `${API_URL}register`
 const SIGNIN_URL = `${API_URL}login`
 const SIGNOUT_URL = `${API_URL}logout`
