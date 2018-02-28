@@ -24,7 +24,7 @@ export default {
       commit('clearError')
       window.axios.post(SIGNUP_URL, payload)
         .then(
-          window.axios.post(SIGNIN_URL, payload)
+          response => window.axios.post(SIGNIN_URL, payload)
             .then(
               response => {
                 commit('setLoading', false)
@@ -78,7 +78,6 @@ export default {
         .catch(
           error => {
             commit('setLoading', false)
-            commit('setError', error)
             console.log(error)
           }
         )
