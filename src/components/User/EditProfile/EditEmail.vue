@@ -26,7 +26,7 @@
                 required></v-text-field>
               <v-text-field
                 name="email"
-                label="Mail"
+                label="Email"
                 id="editemail"
                 v-model="email"
                 type="email"
