@@ -2,8 +2,10 @@ const API_URL = process.env.API_URL
 const SIGNUP_URL = `${API_URL}register`
 const SIGNIN_URL = `${API_URL}login`
 const SIGNOUT_URL = `${API_URL}logout`
-const USERINFO_URL = `${API_URL}user-info`
-const USERUPDATE_URL = `${API_URL}users`
+const USER_INFO_URL = `${API_URL}user-info`
+const USER_URL = `${API_URL}users`
+const EMAIL_UPDATE_URL = `${API_URL}users/update-email`
+const PASSWORD_UPDATE_URL = `${API_URL}users/update-password`
 
 export default {
   state: {
@@ -68,7 +70,7 @@ export default {
     autoSignIn ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      window.axios.get(USERINFO_URL)
+      window.axios.get(USER_INFO_URL)
         .then(
           response => {
             commit('setLoading', false)
@@ -96,22 +98,67 @@ export default {
       if (payload.last_name) {
         updateObj.last_name = payload.last_name
       }
+      window.axios.put(USER_URL + '/' + payload.id, updateObj)
+        .then(() => {
+          commit('setLoading', false)
+          payload.api_token = localStorage.getItem('token')
+          commit('setUser', payload)
+          commit('clearError')
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+          commit('setError', error)
+        })
+    },
+    updateEmail ({commit}, payload) {
+      commit('setLoading', true)
+      const updateObj = {}
       if (payload.email) {
         updateObj.email = payload.email
       }
       if (payload.password) {
         updateObj.password = payload.password
       }
-      window.axios.put(USERUPDATE_URL + '/' + payload.id, updateObj)
+      window.axios.put(EMAIL_UPDATE_URL, updateObj)
         .then(() => {
           commit('setLoading', false)
           payload.api_token = localStorage.getItem('token')
           commit('setUser', payload)
+          commit('clearError')
         })
         .catch(error => {
           console.log(error)
           commit('setLoading', false)
+          commit('setError', error)
         })
+    },
+    updatePassword ({commit}, payload) {
+      commit('setLoading', true)
+      const updateObj = {}
+      if (payload.newPassword) {
+        updateObj.newPassword = payload.newPassword
+      }
+      if (payload.password) {
+        updateObj.password = payload.password
+      }
+      window.axios.put(PASSWORD_UPDATE_URL, updateObj)
+        .then(() => {
+          commit('setLoading', false)
+          payload.api_token = localStorage.getItem('token')
+          commit('setUser', payload)
+          commit('clearError')
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+          commit('setError', error)
+        })
+    },
+    destroyUser ({commit}, payload) {
+      window.axios.delete(USER_URL + '/' + payload.id)
+      commit('setUser', null)
+      localStorage.removeItem('token')
     }
   },
   getters: {

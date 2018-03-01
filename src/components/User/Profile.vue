@@ -1,10 +1,66 @@
 <template>
   <v-container>
     <v-layout row>
-      <v-flex xs12 sm9 offset-sm3>
+      <v-flex xs12 sm3 d-flex>
         <v-card>
           <v-card-text>
             <v-container>
+              <v-layout row>
+                <v-flex xs12 text-xs-center>
+                  <v-avatar
+                    :size="'80px'"
+                    class="primary">
+                    <v-icon
+                      :color="'white'"
+                      x-large>
+                      account_circle
+                    </v-icon>
+                  </v-avatar>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12 text-xs-center>
+                  <v-btn flat small color="primary">Change picture</v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12 text-xs-center>
+                  <v-btn large block>Delete Picture</v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12 text-xs-center>
+                  <template v-if="userIsAuthenticated">
+                    <app-edit-email></app-edit-email>
+                  </template>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12 text-xs-center>
+                  <template v-if="userIsAuthenticated">
+                    <app-edit-password></app-edit-password>
+                  </template>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12 text-xs-center>
+                  <v-btn large block
+                    color="error"
+                    @click="onDestroyUser"
+                  >
+                    Deactive Account
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 sm9 d-flex>
+        <v-card>
+          <v-card-text>
+            <v-container>
+              <h1 class="mb-4">Edit account</h1>
               <form @submit.prevent="onUpdateUser">
                 <v-layout row>
                   <v-flex xs12>
@@ -36,12 +92,12 @@
                       id="email"
                       v-model="email"
                       type="email"
-                      required></v-text-field>
+                      disabled></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs12>
-                    <v-btn type="submit" :disabled="loading" :loading="loading">
+                  <v-flex xs12 text-xs-right>
+                    <v-btn type="submit" :disabled="loading" :loading="loading" class="primary">
                       Save
                       <span slot="loader" class="custom-loader">
                         <v-icon light>cached</v-icon>
@@ -55,11 +111,6 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-layout row v-if="error">
-      <v-flex xs12>
-        <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
-      </v-flex>
-    </v-layout>
   </v-container>
 </template>
 
@@ -67,18 +118,13 @@
   export default {
     data () {
       return {
-        id: '',
         firstname: '',
         lastname: '',
         email: '',
-        password: '',
-        confirmPassword: ''
+        editProfile: false
       }
     },
     computed: {
-      comparePasswords () {
-        return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
-      },
       user () {
         return this.$store.getters.user
       },
@@ -87,17 +133,27 @@
       },
       loading () {
         return this.$store.getters.loading
+      },
+      userIsAuthenticated () {
+        return this.user !== null && this.user !== undefined
       }
     },
     watch: {
       user (value) {
         if (value !== null && value !== undefined) {
-          this.id = value.id
           this.firstname = value.first_name
           this.lastname = value.last_name
           this.email = value.email
-          this.password = value.password
-          this.confirmPassword = value.password
+        } else {
+          this.$router.push('/')
+        }
+      },
+      loading (value) {
+        if (!value && !this.error && this.editProfile) {
+          this.$router.push('/')
+        }
+        if (!value) {
+          this.editProfile = false
         }
       }
     },
@@ -105,14 +161,22 @@
       onUpdateUser () {
         if (this.firstname.trim() === '' ||
           this.lastname.trim() === '' ||
-          this.email.trim() === '' ||
-          this.password === '') {
+          this.email.trim() === '') {
           return
         }
-        this.$store.dispatch('updateUser', {id: this.id, first_name: this.firstname, last_name: this.lastname, email: this.email, password: this.password})
+        this.editProfile = true
+        this.$store.dispatch('updateUser', {id: this.user.id, first_name: this.firstname, last_name: this.lastname})
       },
-      onDismissed () {
-        this.$store.dispatch('clearError')
+      onDestroyUser () {
+        this.$store.dispatch('destroyUser', {id: this.user.id})
+      }
+    },
+    created: function () {
+      const user = this.user
+      if (user !== null && user !== undefined) {
+        this.firstname = user.first_name
+        this.lastname = user.last_name
+        this.email = user.email
       }
     }
   }

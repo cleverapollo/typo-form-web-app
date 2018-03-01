@@ -85,6 +85,9 @@
       onDismissed () {
         this.$store.dispatch('clearError')
       }
+    },
+    created: function () {
+      this.onDismissed()
     }
   }
 </script>
