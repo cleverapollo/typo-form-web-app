@@ -99,10 +99,10 @@ export default {
         updateObj.last_name = payload.last_name
       }
       window.axios.put(USER_URL + '/' + payload.id, updateObj)
-        .then(() => {
+        .then(response => {
           commit('setLoading', false)
           payload.api_token = localStorage.getItem('token')
-          commit('setUser', payload)
+          commit('setUser', response['data']['user'])
           commit('clearError')
         })
         .catch(error => {
@@ -121,10 +121,10 @@ export default {
         updateObj.password = payload.password
       }
       window.axios.put(EMAIL_UPDATE_URL, updateObj)
-        .then(() => {
+        .then(response => {
           commit('setLoading', false)
           payload.api_token = localStorage.getItem('token')
-          commit('setUser', payload)
+          commit('setUser', response['data']['user'])
           commit('clearError')
         })
         .catch(error => {
@@ -143,10 +143,8 @@ export default {
         updateObj.password = payload.password
       }
       window.axios.put(PASSWORD_UPDATE_URL, updateObj)
-        .then(() => {
+        .then(response => {
           commit('setLoading', false)
-          payload.api_token = localStorage.getItem('token')
-          commit('setUser', payload)
           commit('clearError')
         })
         .catch(error => {
