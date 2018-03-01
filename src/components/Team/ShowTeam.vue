@@ -13,15 +13,15 @@
       <v-flex xs12>
         <v-card>
           <v-card-title>
-            <h6 class="primary--text">{{ meetup.title }}</h6>
-            <template v-if="userIsCreator">
+            <h1 class="primary--text">{{ team.title }}</h1>
+            <template>
               <v-spacer></v-spacer>
-              <v-btn flat small color="primary" :to="'/meetups/edit/' + meetup.id">Edit</v-btn>
-              <app-edit-meetup-details-dialog :meetup="meetup"></app-edit-meetup-details-dialog>
+              <app-edit-team :team="team"></app-edit-team>
+              <v-btn class="error" @click=onDeleteTeam>Delete</v-btn>
             </template>
           </v-card-title>
           <v-card-text>
-            <div>{{ meetup.description }}</div>
+            <div>{{ team.description }}</div>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -33,20 +33,22 @@
   export default {
     props: ['id'],
     computed: {
-      meetup () {
-        return this.$store.getters.loadedMeetup(this.id)
+      team () {
+        return this.$store.getters.loadedTeam(this.id)
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
-      userIsCreator () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.$store.getters.user.id === this.meetup.creatorId
-      },
       loading () {
         return this.$store.getters.loading
+      }
+    },
+    methods: {
+      onDeleteTeam () {
+        this.$store.dispatch('deleteTeam', {
+          id: this.id
+        })
+        this.$router.push('/teams')
       }
     }
   }

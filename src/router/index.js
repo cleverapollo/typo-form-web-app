@@ -2,10 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 
-import Meetups from '@/components/Meetup/Meetups'
-import CreateMeetup from '@/components/Meetup/CreateMeetup'
-import EditMeetup from '@/components/Meetup/EditMeetup'
-import ShowMeetup from '@/components/Meetup/ShowMeetup'
+import Teams from '@/components/Team/Teams'
+import CreateTeam from '@/components/Team/CreateTeam'
+import ShowTeam from '@/components/Team/ShowTeam'
 
 import Profile from '@/components/User/Profile'
 import Signup from '@/components/User/Signup'
@@ -21,25 +20,20 @@ export default new Router({
       component: Home
     },
     {
-      path: '/meetups',
-      name: 'Meetups',
-      component: Meetups
+      path: '/teams',
+      name: 'Teams',
+      component: Teams
     },
     {
-      path: '/meetup/new',
-      name: 'CreateMeetup',
-      component: CreateMeetup
+      path: '/teams/new',
+      name: 'CreateTeam',
+      component: CreateTeam
     },
     {
-      path: '/meetups/edit/:id',
-      name: 'EditMeetup',
-      component: EditMeetup
-    },
-    {
-      path: '/meetups/show/:id',
-      name: 'ShowMeetup',
-      props: true,
-      component: ShowMeetup
+      path: '/teams/show/:id',
+      name: 'ShowTeam',
+      component: ShowTeam,
+      props: true
     },
     {
       path: '/profile',

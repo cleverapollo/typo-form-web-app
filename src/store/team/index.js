@@ -1,39 +1,34 @@
 export default {
   state: {
-    loadedMeetups: [
-      {
-        id: 'afajfjadfaadfa323',
-        title: 'Meetup in New York',
-        description: 'New York, New York!'
-      },
-      {
-        id: 'aadsfhbkhlk1241',
-        title: 'Meetup in Paris',
-        description: 'It\'s Paris!'
-      }
+    loadedTeams: [
     ]
   },
   mutations: {
-    setLoadedMeetups (state, payload) {
-      state.loadedMeetups = payload
+    setLoadedTeams (state, payload) {
+      state.loadedTeams = payload
     },
-    createMeetup (state, payload) {
-      state.loadedMeetups.push(payload)
+    createTeam (state, payload) {
+      state.loadedTeams.push(payload)
     },
-    updateMeetup (state, payload) {
-      const meetup = state.loadedMeetups.find(meetup => {
-        return meetup.id === payload.id
+    updateTeam (state, payload) {
+      const team = state.loadedTeams.find(team => {
+        return team.id === payload.id
       })
       if (payload.title) {
-        meetup.title = payload.title
+        team.title = payload.title
       }
       if (payload.description) {
-        meetup.description = payload.description
+        team.description = payload.description
       }
+    },
+    deleteTeam (state, payload) {
+      state.loadedTeams = state.loadedTeams.filter(e => {
+        return e.id != payload.id
+      })
     }
   },
   actions: {
-    loadMeetups ({commit}) {
+    loadTeams ({commit}) {
       commit('setLoading', true)
       // firebase.database().ref('meetups').once('value')
       //   .then((data) => {
@@ -58,11 +53,10 @@ export default {
       //   )
       commit('setLoading', false)
     },
-    createMeetup ({commit, getters}, payload) {
-      const meetup = {
+    createTeam ({commit, getters}, payload) {
+      const team = {
         title: payload.title,
-        description: payload.description,
-        creatorId: getters.user.id
+        description: payload.description
       }
       // firebase.database().ref('meetups').push(meetup)
       //   .then((data) => {
@@ -74,12 +68,13 @@ export default {
       //   .catch((error) => {
       //     console.log(error)
       //   })
-      commit('createMeetup', Object.assign({
-        meetup,
-        id: Math.random()
-      }))
+      commit('createTeam', {
+        title: payload.title,
+        description: payload.description,
+        id: 5
+      })
     },
-    updateMeetupData ({commit}, payload) {
+    updateTeam ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
       if (payload.title) {
@@ -98,22 +93,33 @@ export default {
       //     commit('setLoading', false)
       //   })
       commit('setLoading', false)
-      commit('updateMeetup', payload)
+      commit('updateTeam', payload)
+    },
+    deleteTeam ({commit}, payload) {
+      commit('setLoading', true)
+      // firebase.database().ref('meetups').child(payload.id).delete()
+      //   .then(() => {
+      //     commit('setLoading', false)
+      //     commit('deleteTeam', payload)
+      //   })
+      //   .catch(error => {
+      //     console.log(error)
+      //     commit('setLoading', false)
+      //   })
+      commit('setLoading', false)
+      commit('deleteTeam', payload)
     }
   },
   getters: {
-    loadedMeetups (state) {
-      return state.loadedMeetups.sort((meetupA, meetupB) => {
-        return meetupA.date > meetupB.date
+    loadedTeams (state) {
+      return state.loadedTeams.sort((teamA, teamB) => {
+        return teamA.id > teamB.id
       })
     },
-    featuredMeetups (state, getters) {
-      return getters.loadedMeetups.slice(0, 5)
-    },
-    loadedMeetup (state) {
-      return (meetupId) => {
-        return state.loadedMeetups.find((meetup) => {
-          return meetup.id === meetupId
+    loadedTeam (state) {
+      return (teamid) => {
+        return state.loadedTeams.find((team) => {
+          return team.id == teamid
         })
       }
     }

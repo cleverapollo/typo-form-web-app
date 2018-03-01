@@ -1,13 +1,11 @@
 <template>
-  <v-dialog width="350px" persistent v-model="editDialog">
-    <v-btn fab accent slot="activator">
-      <v-icon>edit</v-icon>
-    </v-btn>
+  <v-dialog width="350px" persistent v-model="editTeam">
+    <v-btn class="primary" slot="activator">Edit</v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
-            <v-card-title>Edit Meetup</v-card-title>
+            <v-card-title>Edit Team</v-card-title>
           </v-flex>
         </v-layout>
         <v-divider></v-divider>
@@ -36,9 +34,23 @@
             <v-card-actions>
               <v-btn
                 flat
-                class="blue--text darken-1"
-                @click="editDialog = false">Close</v-btn>
-              <v-btn flat class="blue--text darken-1" @click="onSaveChanges">Save</v-btn>
+                class="secondary"
+                @click="editTeam = false"
+              >
+                Close
+              </v-btn>
+              <v-btn 
+                flat 
+                class="primary" 
+                @click="onSaveChanges"
+                :disabled="loading"
+                :loading="loading"
+              >
+                Save
+                <span slot="loader" class="custom-loader">
+                  <v-icon light>cached</v-icon>
+                </span>
+              </v-btn>
             </v-card-actions>
           </v-flex>
         </v-layout>
@@ -49,14 +61,13 @@
 
 <script>
   export default {
-    props: ['id'],
+    props: ['team'],
     data () {
-      const meetup = this.$store.getters.loadedMeetup(this.id)
       return {
-        id: meetup.id,
-        editDialog: false,
-        editedTitle: meetup.title,
-        editedDescription: meetup.description
+        id: this.team.id,
+        editTeam: false,
+        editedTitle: this.team.title,
+        editedDescription: this.team.description
       }
     },
     methods: {
@@ -64,12 +75,20 @@
         if (this.editedTitle.trim() === '' || this.editedDescription.trim() === '') {
           return
         }
-        this.editDialog = false
-        this.$store.dispatch('updateMeetupData', {
+        this.editTeam = false
+        this.$store.dispatch('updateTeam', {
           id: this.id,
           title: this.editedTitle,
           description: this.editedDescription
         })
+      }
+    },
+    computed: {
+      error () {
+        return this.$store.getters.error
+      },
+      loading () {
+        return this.$store.getters.loading
       }
     }
   }

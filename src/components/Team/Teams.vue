@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-layout row wrap v-for="meetup in meetups" :key="meetup.id" class="mb-2">
+    <v-layout row wrap v-for="team in teams" :key="team.id" class="mb-2">
       <v-flex xs12 sm10 md8 offset-sm1 offset-md2>
         <v-card class="info">
           <v-container fluid>
@@ -8,13 +8,13 @@
               <v-flex xs7 sm8 md9>
                 <v-card-title primary-title>
                   <div>
-                    <h5 class="white--text mb-0">{{ meetup.title }}</h5>
+                    <h5 class="white--text mb-0">{{ team.title }}</h5>
                   </div>
                 </v-card-title>
                 <v-card-actions>
-                  <v-btn flat :to="'/meetups/show/' + meetup.id">
+                  <v-btn flat @click=onLoadTeam(team.id)>
                     <v-icon left light>arrow_forward</v-icon>
-                    View Meetup
+                    View Team
                   </v-btn>
                 </v-card-actions>
               </v-flex>
@@ -23,14 +23,27 @@
         </v-card>
       </v-flex>
     </v-layout>
+    <v-layout row wrap>
+      <v-flex xs12 sm10 md8 offset-sm1 offset-md2 text-xs-right>
+        <v-btn large router to="/teams/new" class="primary">Create New Team</v-btn>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
 <script>
   export default {
     computed: {
-      meetups () {
-        return this.$store.getters.loadedMeetups
+      teams () {
+        return this.$store.getters.loadedTeams
+      },
+      loading () {
+        return this.$store.getters.loading
+      }
+    },
+    methods: {
+      onLoadTeam (id) {
+        this.$router.push('/teams/show/' + id)
       }
     }
   }
