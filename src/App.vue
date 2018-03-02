@@ -3,6 +3,7 @@
     <v-navigation-drawer v-model="sideNav" fixed app temporary>
       <v-list>
         <v-list-tile
+          v-if="userIsAuthenticated"
           :to="'/profile'">
           <v-list-tile-action>
             <v-icon>person</v-icon>
