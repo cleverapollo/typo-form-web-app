@@ -35,7 +35,12 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-btn type="submit" :disabled="loading" :loading="loading">
+                    <v-btn
+                      block
+                      info
+                      type="submit"
+                      :disabled="loading"
+                      :loading="loading">
                       Sign in
                        <span slot="loader" class="custom-loader">
                         <v-icon light>cached</v-icon>
@@ -43,10 +48,21 @@
                     </v-btn>
                   </v-flex>
                 </v-layout>
+                <v-layout row>
+                  <v-flex xs12 text-xs-center class="mt-4">
+                    <router-link to="/signin" tag="a" class="green--text">Forget your password?</router-link>
+                  </v-flex>
+                </v-layout>
               </form>
             </v-container>
           </v-card-text>
         </v-card>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs12 text-xs-center class="mt-4">
+        <span class="grey--text">Don't have an account?</span>
+        <router-link to="/signin" tag="a" class="green--text">Sign up</router-link>
       </v-flex>
     </v-layout>
   </v-container>

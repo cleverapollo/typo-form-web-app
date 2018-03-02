@@ -34,10 +34,19 @@
         <v-btn
           flat
           v-for="item in toolbarIteams"
+          v-if="userIsAuthenticated"
           :key="item.title"
           :to="item.link"
           class="iconButton mr-2">
           <v-icon medium class="roundedIcon">{{ item.icon }}</v-icon>
+        </v-btn>
+        <v-btn
+          flat
+          v-else
+          :key="item.title"
+          :to="item.link">
+          <v-icon left dark>{{ item.icon }}</v-icon>
+          {{ item.title }}
         </v-btn>
         <v-menu offset-y left v-if="userIsAuthenticated">
           <v-btn
