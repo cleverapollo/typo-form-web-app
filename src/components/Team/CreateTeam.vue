@@ -1,43 +1,45 @@
 <template>
   <v-container>
     <v-layout row>
-      <v-flex xs12 sm6 offset-sm3>
-        <h4>Create a new Team</h4>
-      </v-flex>
-    </v-layout>
-    <v-layout row>
       <v-flex xs12>
-        <form @submit.prevent="onCreateTeam">
-          <v-layout row>
-            <v-flex xs12 sm6 offset-sm3>
-              <v-text-field
-                name="title"
-                label="Title"
-                id="title"
-                v-model="title"
-                required></v-text-field>
-            </v-flex>
-          </v-layout>
-          <v-layout row>
-            <v-flex xs12 sm6 offset-sm3>
-              <v-text-field
-                name="description"
-                label="Description"
-                id="description"
-                multi-line
-                v-model="description"
-                required></v-text-field>
-            </v-flex>
-          </v-layout>
-          <v-layout row>
-            <v-flex xs12 sm6 offset-sm3>
-              <v-btn
-                class="primary"
-                :disabled="!formIsValid"
-                type="submit">Create Team</v-btn>
-            </v-flex>
-          </v-layout>
-        </form>
+        <v-card>
+          <v-card-text>
+            <v-container>
+              <h1 class="mb-4">Create Team</h1>
+              <form @submit.prevent="onCreateTeam">
+                <v-layout row>
+                  <v-flex xs12>
+                    <v-text-field
+                      name="title"
+                      label="Title"
+                      id="title"
+                      v-model="title"
+                      required></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs12>
+                    <v-text-field
+                      name="description"
+                      label="Description"
+                      id="description"
+                      multi-line
+                      v-model="description"
+                      required></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs12>
+                    <v-btn
+                      class="primary"
+                      :disabled="!formIsValid"
+                      type="submit">Create Team</v-btn>
+                  </v-flex>
+                </v-layout>
+              </form>
+            </v-container>
+          </v-card-text>
+        </v-card>
       </v-flex>
     </v-layout>
   </v-container>

@@ -10,7 +10,9 @@
         </v-layout>
         <v-layout row wrap>
           <v-flex xs12>
-            <v-card-title>Change Password</v-card-title>
+            <v-card-title>
+              <h2>Change Password</h2>
+            </v-card-title>
           </v-flex>
         </v-layout>
         <v-divider></v-divider>

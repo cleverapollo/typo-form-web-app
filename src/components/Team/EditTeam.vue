@@ -5,7 +5,9 @@
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
-            <v-card-title>Edit Team</v-card-title>
+            <v-card-title>
+              <h2>Edit Team</h2>
+            </v-card-title>
           </v-flex>
         </v-layout>
         <v-divider></v-divider>

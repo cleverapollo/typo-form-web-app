@@ -6,7 +6,7 @@
           v-if="userIsAuthenticated"
           :to="'/profile'">
           <v-list-tile-action>
-            <v-icon>person</v-icon>
+            <v-icon>account_circle</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             My Account
@@ -50,7 +50,7 @@
         </v-btn>
         <v-menu offset-y left v-if="userIsAuthenticated">
           <v-btn dark flat icon slot="activator">
-            <v-icon>person</v-icon>
+            <v-icon>account_circle</v-icon>
           </v-btn>
           <v-list>
             <v-list-tile
@@ -91,7 +91,7 @@ export default {
       ]
       if (this.userIsAuthenticated) {
         menuItems = [
-          {icon: 'room', title: 'Teams', link: '/teams'}
+          {icon: 'group', title: 'Teams', link: '/teams'}
         ]
       }
       return menuItems
