@@ -24,9 +24,8 @@
                 name="description"
                 label="Description"
                 id="description"
-                multi-line
-                v-model="editedDescription"
-                required></v-text-field>
+                v-model="editedDescription">
+              </v-text-field>
             </v-card-text>
           </v-flex>
         </v-layout>
@@ -74,7 +73,7 @@
     },
     methods: {
       onSaveChanges () {
-        if (this.editedTitle.trim() === '' || this.editedDescription.trim() === '') {
+        if (this.editedTitle.trim() === '') {
           return
         }
         this.editTeam = false

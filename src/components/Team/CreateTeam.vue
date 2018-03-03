@@ -23,9 +23,8 @@
                       name="description"
                       label="Description"
                       id="description"
-                      multi-line
                       v-model="description"
-                      required></v-text-field>
+                    ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -55,8 +54,7 @@
     },
     computed: {
       formIsValid () {
-        return this.title !== '' &&
-          this.description !== ''
+        return this.title !== ''
       }
     },
     methods: {

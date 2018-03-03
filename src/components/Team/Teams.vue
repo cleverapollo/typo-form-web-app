@@ -11,6 +11,9 @@
                     <h5 class="white--text mb-0">{{ team.title }}</h5>
                   </div>
                 </v-card-title>
+                <v-card-text>
+                  <div>{{ team.description }}</div>
+                </v-card-text>
                 <v-card-actions>
                   <v-btn flat @click=onLoadTeam(team.id)>
                     <v-icon left light>arrow_forward</v-icon>
