@@ -1,12 +1,12 @@
 <template>
   <v-container>
-    <v-layout row>
-      <v-flex xs12 sm3 d-flex>
+    <v-layout wrap>
+      <v-flex xs12 sm6 md4 d-flex>
         <v-card>
           <v-card-text>
             <v-container>
               <v-layout row>
-                <v-flex xs12 text-xs-center>
+                <v-flex text-xs-center>
                   <v-avatar
                     :size="'80px'"
                     class="primary">
@@ -19,31 +19,31 @@
                 </v-flex>
               </v-layout>
               <v-layout row>
-                <v-flex xs12 text-xs-center>
+                <v-flex text-xs-center>
                   <v-btn flat small color="primary">Change picture</v-btn>
                 </v-flex>
               </v-layout>
               <v-layout row>
-                <v-flex xs12 text-xs-center>
+                <v-flex text-xs-center>
                   <v-btn large block>Delete Picture</v-btn>
                 </v-flex>
               </v-layout>
               <v-layout row>
-                <v-flex xs12 text-xs-center>
+                <v-flex text-xs-center>
                   <template v-if="userIsAuthenticated">
                     <app-edit-email></app-edit-email>
                   </template>
                 </v-flex>
               </v-layout>
               <v-layout row>
-                <v-flex xs12 text-xs-center>
+                <v-flex text-xs-center>
                   <template v-if="userIsAuthenticated">
                     <app-edit-password></app-edit-password>
                   </template>
                 </v-flex>
               </v-layout>
               <v-layout row>
-                <v-flex xs12 text-xs-center>
+                <v-flex text-xs-center>
                   <v-btn large block
                     color="error"
                     @click="onDestroyUser"
@@ -56,14 +56,14 @@
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex xs12 sm9 d-flex>
+      <v-flex xs12 sm6 md8 d-flex>
         <v-card>
           <v-card-text>
             <v-container>
               <h1 class="mb-4">Edit account</h1>
               <form @submit.prevent="onUpdateUser">
                 <v-layout row>
-                  <v-flex xs12>
+                  <v-flex>
                     <v-text-field
                       name="firstname"
                       label="Firstname"
@@ -74,7 +74,7 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs12>
+                  <v-flex>
                     <v-text-field
                       name="lastname"
                       label="Lastname"
@@ -85,7 +85,7 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs12>
+                  <v-flex>
                     <v-text-field
                       name="email"
                       label="Email"
@@ -96,7 +96,7 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs12 text-xs-right>
+                  <v-flex text-xs-right>
                     <v-btn type="submit" :disabled="loading" :loading="loading" class="primary">
                       Save
                       <span slot="loader" class="custom-loader">
@@ -144,8 +144,6 @@
           this.firstname = value.first_name
           this.lastname = value.last_name
           this.email = value.email
-        } else {
-          this.$router.push('/')
         }
       },
       loading (value) {
