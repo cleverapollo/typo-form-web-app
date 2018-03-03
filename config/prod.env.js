@@ -1,5 +1,6 @@
 'use strict'
+require('dotenv').config()
 module.exports = {
   NODE_ENV: '"production"',
-  API_URL: '"http://localhost:8000/api/"'
+  API_URL: JSON.stringify(process.env.API_URL)
 }
