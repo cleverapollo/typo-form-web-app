@@ -1,7 +1,9 @@
+const API_URL = process.env.API_URL
+const TEAM_URL = `${API_URL}teams`
+
 export default {
   state: {
-    loadedTeams: [
-    ]
+    loadedTeams: []
   },
   mutations: {
     setLoadedTeams (state, payload) {
@@ -14,8 +16,8 @@ export default {
       const team = state.loadedTeams.find(team => {
         return team.id === payload.id
       })
-      if (payload.title) {
-        team.title = payload.title
+      if (payload.name) {
+        team.name = payload.name
       }
       if (payload.description) {
         team.description = payload.description
@@ -23,91 +25,76 @@ export default {
     },
     deleteTeam (state, payload) {
       state.loadedTeams = state.loadedTeams.filter(e => {
-        return e.id != payload.id
+        return e.id !== payload.id
       })
     }
   },
   actions: {
     loadTeams ({commit}) {
       commit('setLoading', true)
-      // firebase.database().ref('meetups').once('value')
-      //   .then((data) => {
-      //     const meetups = []
-      //     const obj = data.val()
-      //     for (let key in obj) {
-      //       meetups.push({
-      //         id: key,
-      //         title: obj[key].title,
-      //         description: obj[key].description,
-      //         creatorId: obj[key].creatorId
-      //       })
-      //     }
-      //     commit('setLoadedMeetups', meetups)
-      //     commit('setLoading', false)
-      //   })
-      //   .catch(
-      //     (error) => {
-      //       console.log(error)
-      //       commit('setLoading', false)
-      //     }
-      //   )
-      commit('setLoading', false)
+      window.axios.get(TEAM_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setLoadedTeams', response['data']['result'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
     },
     createTeam ({commit, getters}, payload) {
       const team = {
-        title: payload.title,
+        name: payload.name,
         description: payload.description
       }
-      // firebase.database().ref('meetups').push(meetup)
-      //   .then((data) => {
-      //     commit('createMeetup', {
-      //       ...meetup,
-      //       id: data.key
-      //     })
-      //   })
-      //   .catch((error) => {
-      //     console.log(error)
-      //   })
-      commit('createTeam', {
-        title: payload.title,
-        description: payload.description,
-        id: 5
-      })
+      window.axios.post(TEAM_URL, team)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('createTeam', response['data']['result'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
     },
     updateTeam ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
-      if (payload.title) {
-        updateObj.title = payload.title
+      if (payload.name) {
+        updateObj.name = payload.name
       }
       if (payload.description) {
         updateObj.description = payload.description
       }
-      // firebase.database().ref('meetups').child(payload.id).update(updateObj)
-      //   .then(() => {
-      //     commit('setLoading', false)
-      //     commit('updateMeetup', payload)
-      //   })
-      //   .catch(error => {
-      //     console.log(error)
-      //     commit('setLoading', false)
-      //   })
-      commit('setLoading', false)
-      commit('updateTeam', payload)
+      window.axios.put(TEAM_URL + '/' + payload.id, updateObj)
+        .then(response => {
+          commit('setLoading', false)
+          commit('updateTeam', response['data']['result'])
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
     },
     deleteTeam ({commit}, payload) {
       commit('setLoading', true)
-      // firebase.database().ref('meetups').child(payload.id).delete()
-      //   .then(() => {
-      //     commit('setLoading', false)
-      //     commit('deleteTeam', payload)
-      //   })
-      //   .catch(error => {
-      //     console.log(error)
-      //     commit('setLoading', false)
-      //   })
-      commit('setLoading', false)
-      commit('deleteTeam', payload)
+      window.axios.delete(TEAM_URL + '/' + payload.id)
+        .then(() => {
+          commit('setLoading', false)
+          commit('deleteTeam', payload)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
     }
   },
   getters: {
@@ -119,7 +106,7 @@ export default {
     loadedTeam (state) {
       return (teamid) => {
         return state.loadedTeams.find((team) => {
-          return team.id == teamid
+          return team.id === teamid
         })
       }
     }

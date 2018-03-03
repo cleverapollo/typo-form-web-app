@@ -31,7 +31,8 @@ new Vue({
   beforeCreate () {
     if (localStorage.getItem('token')) {
       window.axios.defaults.headers.common['api_token'] = localStorage.getItem('token')
-      this.$store.dispatch('autoSignIn', localStorage.getItem('token'))
+      this.$store.dispatch('autoSignIn')
+      this.$store.dispatch('loadTeams')
     }
   }
 })

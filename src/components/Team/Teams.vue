@@ -8,7 +8,7 @@
               <v-flex xs7 sm8 md9>
                 <v-card-title primary-title>
                   <div>
-                    <h5 class="white--text mb-0">{{ team.title }}</h5>
+                    <h5 class="white--text mb-0">{{ team.name }}</h5>
                   </div>
                 </v-card-title>
                 <v-card-text>

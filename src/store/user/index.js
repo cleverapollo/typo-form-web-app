@@ -67,7 +67,7 @@ export default {
           }
         )
     },
-    autoSignIn ({commit}, payload) {
+    autoSignIn ({commit}) {
       commit('setLoading', true)
       commit('clearError')
       window.axios.get(USER_INFO_URL)

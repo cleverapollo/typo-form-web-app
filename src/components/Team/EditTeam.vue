@@ -15,10 +15,10 @@
           <v-flex xs12>
             <v-card-text>
               <v-text-field
-                name="title"
-                label="Title"
-                id="title"
-                v-model="editedTitle"
+                name="name"
+                label="Name"
+                id="name"
+                v-model="editedName"
                 required></v-text-field>
               <v-text-field
                 name="description"
@@ -36,7 +36,7 @@
               <v-btn
                 flat
                 class="secondary"
-                @click="editTeam = false"
+                @click="onCancel"
               >
                 Close
               </v-btn>
@@ -67,21 +67,26 @@
       return {
         id: this.team.id,
         editTeam: false,
-        editedTitle: this.team.title,
+        editedName: this.team.name,
         editedDescription: this.team.description
       }
     },
     methods: {
       onSaveChanges () {
-        if (this.editedTitle.trim() === '') {
+        if (this.editedName.trim() === '') {
           return
         }
         this.editTeam = false
         this.$store.dispatch('updateTeam', {
           id: this.id,
-          title: this.editedTitle,
+          name: this.editedName,
           description: this.editedDescription
         })
+      },
+      onCancel () {
+        this.editedName = this.team.name
+        this.editedDescription = this.team.description
+        this.editTeam = false
       }
     },
     computed: {

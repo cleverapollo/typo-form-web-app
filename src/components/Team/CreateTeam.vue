@@ -10,10 +10,10 @@
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
-                      name="title"
-                      label="Title"
-                      id="title"
-                      v-model="title"
+                      name="name"
+                      label="Name"
+                      id="name"
+                      v-model="name"
                       required></v-text-field>
                   </v-flex>
                 </v-layout>
@@ -48,13 +48,13 @@
   export default {
     data () {
       return {
-        title: '',
+        name: '',
         description: ''
       }
     },
     computed: {
       formIsValid () {
-        return this.title !== ''
+        return this.name !== ''
       }
     },
     methods: {
@@ -63,7 +63,7 @@
           return
         }
         const teamData = {
-          title: this.title,
+          name: this.name,
           description: this.description
         }
         this.$store.dispatch('createTeam', teamData)
