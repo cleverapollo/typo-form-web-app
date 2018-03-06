@@ -64,6 +64,12 @@
               </v-list-tile-content>
             </v-list-tile>
             <v-list-tile
+              :to="'/applications'">
+              <v-list-tile-content>
+                Applications
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile
               :to="'/profile'">
               <v-list-tile-content>
                 Edit Account
@@ -102,7 +108,8 @@ export default {
       if (this.userIsAuthenticated) {
         menuItems = [
           {icon: 'account_circle', title: 'My account', link: '/profile'},
-          {icon: 'group', title: 'Teams', link: '/teams'}
+          {icon: 'group', title: 'Teams', link: '/teams'},
+          {icon: 'group', title: 'Applications', link: '/applications'}
         ]
       }
       return menuItems

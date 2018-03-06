@@ -10,6 +10,10 @@ import Profile from '@/components/User/Profile'
 import Signup from '@/components/User/Signup'
 import Signin from '@/components/User/Signin'
 
+import Applications from '@/components/Application/Applications'
+import CreateApplication from '@/components/Application/CreateApplication'
+import ShowApplication from '@/components/Application/ShowApplication'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -33,6 +37,22 @@ const router = new Router({
       path: '/teams/show/:id',
       name: 'ShowTeam',
       component: ShowTeam,
+      props: true
+    },
+    {
+      path: '/applications',
+      name: 'Applications',
+      component: Applications
+    },
+    {
+      path: '/applications/new',
+      name: 'CreateApplication',
+      component: CreateApplication
+    },
+    {
+      path: '/applications/show/:id',
+      name: 'ShowApplication',
+      component: ShowApplication,
       props: true
     },
     {
