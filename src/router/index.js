@@ -9,6 +9,7 @@ import ShowTeam from '@/components/Team/ShowTeam'
 import Profile from '@/components/User/Profile'
 import Signup from '@/components/User/Signup'
 import Signin from '@/components/User/Signin'
+import ResetPassword from '@/components/User/ResetPassword'
 
 import Applications from '@/components/Application/Applications'
 import CreateApplication from '@/components/Application/CreateApplication'
@@ -69,6 +70,11 @@ const router = new Router({
       path: '/signin',
       name: 'Signin',
       component: Signin
+    },
+    {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      component: ResetPassword
     }
   ],
   mode: 'history'
