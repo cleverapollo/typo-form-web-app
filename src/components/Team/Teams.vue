@@ -11,7 +11,7 @@
         >
           <template slot="items" slot-scope="props">
             <td @click=onLoadTeam(props.item.id)>{{ props.item.name }}</td>
-            <td @click=onLoadTeam(props.item.id)>Description</td>
+            <td @click=onLoadTeam(props.item.id)>{{ props.item.description }}</td>
           </template>
         </v-data-table>
       </v-flex>

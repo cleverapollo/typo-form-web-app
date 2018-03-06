@@ -70,7 +70,7 @@
                   <v-flex xs12>
                     <v-btn
                       block
-                      success
+                      class="success"
                       type="submit"
                       :disabled="loading"
                       :loading="loading">
