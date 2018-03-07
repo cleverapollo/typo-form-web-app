@@ -13,16 +13,13 @@
       <v-flex xs12>
         <v-card>
           <v-card-title>
-            <h1 class="primary--text">{{ team.name }}</h1>
+            <h1 class="primary--text">{{ form.name }}</h1>
             <template v-if="userIsCreator">
               <v-spacer></v-spacer>
-              <app-edit-team :team="team" :application_id="application_id"></app-edit-team>
-              <v-btn class="error" @click=onDeleteTeam>Delete</v-btn>
+              <app-edit-form :form="form" :application_id="application_id"></app-edit-form>
+              <v-btn class="error" @click=onDeleteForm>Delete</v-btn>
             </template>
           </v-card-title>
-          <v-card-text>
-            <div>{{ team.description }}</div>
-          </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
@@ -33,8 +30,8 @@
   export default {
     props: ['application_id', 'id'],
     computed: {
-      team () {
-        return this.$store.getters.loadedTeam(parseInt(this.application_id), parseInt(this.id))
+      form () {
+        return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -44,19 +41,19 @@
           return false
         }
         return true
-        // return this.$store.getters.user.id === this.team.creatorId
+        // return this.$store.getters.user.id === this.form.creatorId
       },
       loading () {
         return this.$store.getters.loading
       }
     },
     methods: {
-      onDeleteTeam () {
-        this.$store.dispatch('deleteTeam', {
+      onDeleteForm () {
+        this.$store.dispatch('deleteForm', {
           application_id: parseInt(this.application_id),
           id: this.form.id
         })
-        this.$router.push('/applications/' + this.application_id + '/teams')
+        this.$router.push('/applications/' + this.application_id + '/forms')
       }
     }
   }

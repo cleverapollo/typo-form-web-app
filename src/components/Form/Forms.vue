@@ -2,16 +2,15 @@
   <v-container>
     <v-layout row wrap class="mb-2">
       <v-flex xs12>
-        <v-btn router to="/teams/new" class="primary">New Team</v-btn>
+        <v-btn router to="/forms/new" class="primary">New Form</v-btn>
         <v-data-table
           :headers="headers"
-          :items="teams"
+          :items="forms"
           hide-actions
           class="elevation-1"
         >
           <template slot="items" slot-scope="props">
-            <td @click=onLoadTeam(props.item.id)>{{ props.item.name }}</td>
-            <td @click=onLoadTeam(props.item.id)>{{ props.item.description }}</td>
+            <td @click=onLoadForm(props.item.id)>{{ props.item.name }}</td>
           </template>
         </v-data-table>
       </v-flex>
@@ -26,22 +25,21 @@
     data () {
       return {
         headers: [
-          { text: 'Name', value: 'name', sortable: false, align: 'left' },
-          { text: 'Description', value: 'description', sortable: false, align: 'left' }
+          { text: 'Name', value: 'name', sortable: false, align: 'left' }
         ]
       }
     },
     computed: {
-      teams () {
-        return this.$store.getters.loadedTeams(parseInt(this.application_id))
+      forms () {
+        return this.$store.getters.loadedForms(parseInt(this.application_id))
       },
       loading () {
         return this.$store.getters.loading
       }
     },
     methods: {
-      onLoadTeam (id) {
-        this.$router.push('/applications/' + this.application_id + '/teams/show/' + id)
+      onLoadForm (id) {
+        this.$router.push('/applications/' + this.application_id + '/forms/show/' + id)
       }
     }
   }

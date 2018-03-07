@@ -58,12 +58,6 @@
           </v-btn>
           <v-list>
             <v-list-tile
-              :to="'/teams'">
-              <v-list-tile-content>
-                Teams
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile
               :to="'/applications'">
               <v-list-tile-content>
                 Applications

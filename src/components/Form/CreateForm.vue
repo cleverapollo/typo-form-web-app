@@ -5,8 +5,8 @@
         <v-card>
           <v-card-text>
             <v-container>
-              <h1 class="mb-4">Create Team</h1>
-              <form @submit.prevent="onCreateTeam">
+              <h1 class="mb-4">Create Form</h1>
+              <form @submit.prevent="onCreateForm">
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
@@ -19,20 +19,10 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field
-                      name="description"
-                      label="Description"
-                      id="description"
-                      v-model="description"
-                    ></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs12>
                     <v-btn
                       class="primary"
                       :disabled="!formIsValid"
-                      type="submit">Create Team</v-btn>
+                      type="submit">Create Form</v-btn>
                   </v-flex>
                 </v-layout>
               </form>
@@ -49,8 +39,7 @@
     props: ['application_id'],
     data () {
       return {
-        name: '',
-        description: ''
+        name: ''
       }
     },
     computed: {
@@ -59,16 +48,15 @@
       }
     },
     methods: {
-      onCreateTeam () {
+      onCreateForm () {
         if (!this.formIsValid) {
           return
         }
-        const teamData = {
-          name: this.name,
-          description: this.description
+        const formData = {
+          name: this.name
         }
-        this.$store.dispatch('createTeam', parseInt(this.application_id), teamData)
-        this.$router.push('/applications/' + this.application_id + '/teams')
+        this.$store.dispatch('createForm', parseInt(this.application_id), formData)
+        this.$router.push('/applications/' + this.application_id + '/forms')
       }
     }
   }

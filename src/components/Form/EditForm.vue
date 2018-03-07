@@ -1,12 +1,12 @@
 <template>
-  <v-dialog width="350px" persistent v-model="editTeam">
+  <v-dialog width="350px" persistent v-model="editForm">
     <v-btn class="primary" slot="activator">Edit</v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-title>
-              <h2>Edit Team</h2>
+              <h2>Edit Form</h2>
             </v-card-title>
           </v-flex>
         </v-layout>
@@ -20,12 +20,6 @@
                 id="name"
                 v-model="editedName"
                 required></v-text-field>
-              <v-text-field
-                name="description"
-                label="Description"
-                id="description"
-                v-model="editedDescription">
-              </v-text-field>
             </v-card-text>
           </v-flex>
         </v-layout>
@@ -62,13 +56,12 @@
 
 <script>
   export default {
-    props: ['team', 'application_id'],
+    props: ['form', 'application_id'],
     data () {
       return {
-        id: this.team.id,
-        editTeam: false,
-        editedName: this.team.name,
-        editedDescription: this.team.description
+        id: this.form.id,
+        editForm: false,
+        editedName: this.form.name
       }
     },
     methods: {
@@ -76,19 +69,17 @@
         if (this.editedName.trim() === '') {
           return
         }
-        this.editTeam = false
-        this.$store.dispatch('updateTeam',
+        this.editForm = false
+        this.$store.dispatch('updateForm',
           parseInt(this.application_id),
           {
             id: this.id,
-            name: this.editedName,
-            description: this.editedDescription
+            name: this.editedName
           })
       },
       onCancel () {
-        this.editedName = this.team.name
-        this.editedDescription = this.team.description
-        this.editTeam = false
+        this.editedName = this.form.name
+        this.editForm = false
       }
     },
     computed: {

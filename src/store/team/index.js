@@ -1,5 +1,6 @@
 const API_URL = process.env.API_URL
-const TEAM_URL = `${API_URL}teams`
+const APPLICATION_URL = `${API_URL}applications/`
+const TEAM_URL = `teams/`
 
 export default {
   state: {
@@ -14,7 +15,7 @@ export default {
     },
     updateTeam (state, payload) {
       const team = state.loadedTeams.find(team => {
-        return team.id === payload.id
+        return team.applicationid === payload.applicationid && team.id === payload.id
       })
       if (payload.name) {
         team.name = payload.name
@@ -25,14 +26,14 @@ export default {
     },
     deleteTeam (state, payload) {
       state.loadedTeams = state.loadedTeams.filter(e => {
-        return e.id !== payload.id
+        return e.id !== payload.id || e.applicationid !== payload.applicationid
       })
     }
   },
   actions: {
-    loadTeams ({commit}) {
+    loadTeams ({commit}, applicationid) {
       commit('setLoading', true)
-      window.axios.get(TEAM_URL)
+      window.axios.get(APPLICATION_URL + applicationid + TEAM_URL)
         .then(
           response => {
             commit('setLoading', false)
@@ -46,12 +47,12 @@ export default {
           }
         )
     },
-    createTeam ({commit, getters}, payload) {
+    createTeam ({commit, getters}, applicationid, payload) {
       const team = {
         name: payload.name,
         description: payload.description
       }
-      window.axios.post(TEAM_URL, team)
+      window.axios.post(APPLICATION_URL + applicationid + TEAM_URL, team)
         .then(
           response => {
             commit('setLoading', false)
@@ -65,7 +66,7 @@ export default {
           }
         )
     },
-    updateTeam ({commit}, payload) {
+    updateTeam ({commit}, applicationid, payload) {
       commit('setLoading', true)
       const updateObj = {}
       if (payload.name) {
@@ -74,7 +75,7 @@ export default {
       if (payload.description) {
         updateObj.description = payload.description
       }
-      window.axios.put(TEAM_URL + '/' + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + applicationid + TEAM_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
           commit('updateTeam', response['data']['result'])
@@ -84,9 +85,9 @@ export default {
           commit('setLoading', false)
         })
     },
-    deleteTeam ({commit}, payload) {
+    deleteTeam ({commit}, applicationid, payload) {
       commit('setLoading', true)
-      window.axios.delete(TEAM_URL + '/' + payload.id)
+      window.axios.delete(APPLICATION_URL + applicationid + TEAM_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteTeam', payload)
@@ -99,14 +100,19 @@ export default {
   },
   getters: {
     loadedTeams (state) {
-      return state.loadedTeams.sort((teamA, teamB) => {
-        return teamA.id > teamB.id
-      })
+      return (applicationid) => {
+        return state.loadedTeams.find((team) => {
+          return team.applicationid === applicationid
+        })
+        .sort((teamA, teamB) => {
+          return teamA.id > teamB.id
+        })
+      }
     },
     loadedTeam (state) {
-      return (teamid) => {
+      return (applicationid, teamid) => {
         return state.loadedTeams.find((team) => {
-          return team.id === teamid
+          return team.id === teamid && team.applicationid === applicationid
         })
       }
     }
