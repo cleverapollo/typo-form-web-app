@@ -20,6 +20,71 @@
               <v-btn class="error" @click=onDeleteApplication>Delete</v-btn>
             </template>
           </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-layout row>
+                <v-flex xs12>
+                  <h3 class="mt-4 mb-2">Application Users</h3>
+                  <v-data-table
+                    :headers="user_header"
+                    :items="application.users"
+                    hide-actions
+                    class="elevation-1"
+                  >
+                    <template slot="items" slot-scope="props">
+                      <td>{{ props.item.first_name }}</td>
+                      <td>{{ props.item.last_name }}</td>
+                      <td>{{ props.item.email }}</td>
+                    </template>
+                  </v-data-table>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12>
+                  <h3 class="mt-4 mb-2">Application Teams</h3>
+                  <v-data-table
+                    :headers="team_header"
+                    :items="application.teams"
+                    hide-actions
+                    class="elevation-1"
+                  >
+                    <template slot="items" slot-scope="props">
+                      <td>{{ props.item.name }}</td>
+                    </template>
+                  </v-data-table>
+                  <div>
+                    <v-tabs
+                      v-model="currentItem"
+                      color="transparent"
+                      slider-color="yellow"
+                      slot="extension"
+                    >
+                      <v-tab
+                        v-for="item in items"
+                        :key="item"
+                        :href="'#tab-' + item"
+                      >
+                        {{ item }}
+                      </v-tab>
+                    </v-tabs>
+                    <v-tabs-items v-model="currentItem">
+                      <v-tab-item
+                        v-for="item in items"
+                        :key="item"
+                        :id="'tab-' + item"
+                      >
+                        <v-card flat>
+                          <v-card-text>
+                            text
+                          </v-card-text>
+                        </v-card>
+                      </v-tab-item>
+                    </v-tabs-items>
+                  </div>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
@@ -29,6 +94,22 @@
 <script>
   export default {
     props: ['id'],
+    data () {
+      return {
+        currentItem: 'tab-Web',
+        items: [
+          'Web', 'Shopping'
+        ],
+        user_header: [
+          { text: 'First Name', value: 'first_name', sortable: false, align: 'left' },
+          { text: 'Last Name', value: 'last_name', sortable: false, align: 'left' },
+          { text: 'Email', value: 'email', sortable: false, align: 'left' }
+        ],
+        team_header: [
+          { text: 'Name', value: 'name', sortable: false, align: 'left' }
+        ]
+      }
+    },
     computed: {
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.id))

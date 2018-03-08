@@ -3,7 +3,26 @@ const APPLICATION_URL = `${API_URL}applications`
 
 export default {
   state: {
-    loadedApplications: []
+    loadedApplications: [
+      {
+        id: 1,
+        name: 'First Application',
+        users: [
+          {
+            id: 1,
+            first_name: 'First Name',
+            last_name: 'Last Name',
+            email: 'test@test.com'
+          }
+        ],
+        teams: [
+          {
+            id: 1,
+            name: 'Team'
+          }
+        ]
+      }
+    ]
   },
   mutations: {
     setLoadedApplications (state, payload) {
