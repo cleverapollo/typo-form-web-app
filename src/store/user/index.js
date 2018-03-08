@@ -2,10 +2,9 @@ const API_URL = process.env.API_URL
 const SIGNUP_URL = `${API_URL}register`
 const SIGNIN_URL = `${API_URL}login`
 const SIGNOUT_URL = `${API_URL}logout`
-const USER_INFO_URL = `${API_URL}user-info`
-const USER_URL = `${API_URL}users`
-const EMAIL_UPDATE_URL = `${API_URL}users/update-email`
-const PASSWORD_UPDATE_URL = `${API_URL}users/update-password`
+const USER_URL = `${API_URL}user`
+const EMAIL_UPDATE_URL = `${API_URL}user/update-email`
+const PASSWORD_UPDATE_URL = `${API_URL}user/update-password`
 
 export default {
   state: {
@@ -36,16 +35,16 @@ export default {
             .catch(
               error => {
                 commit('setLoading', false)
-                commit('setError', error)
-                console.log(error)
+                commit('setError', error.response.data)
+                console.log(error.response.data)
               }
             )
         )
         .catch(
           error => {
             commit('setLoading', false)
-            commit('setError', error)
-            console.log(error)
+            commit('setError', error.response.data)
+            console.log(error.response.data)
           }
         )
     },
@@ -62,25 +61,25 @@ export default {
         .catch(
           error => {
             commit('setLoading', false)
-            commit('setError', error)
-            console.log(error)
+            commit('setError', error.response.data)
+            console.log(error.response.data)
           }
         )
     },
     autoSignIn ({commit}) {
       commit('setLoading', true)
       commit('clearError')
-      window.axios.get(USER_INFO_URL)
+      window.axios.get(USER_URL)
         .then(
           response => {
             commit('setLoading', false)
-            commit('setUser', response['data']['user'])
+            commit('setUser', response['data'])
           }
         )
         .catch(
           error => {
             commit('setLoading', false)
-            console.log(error)
+            console.log(error.response.data)
           }
         )
     },
@@ -106,9 +105,9 @@ export default {
           commit('clearError')
         })
         .catch(error => {
-          console.log(error)
+          console.log(error.response.data)
           commit('setLoading', false)
-          commit('setError', error)
+          commit('setError', error.response.data)
         })
     },
     updateEmail ({commit}, payload) {
@@ -128,9 +127,9 @@ export default {
           commit('clearError')
         })
         .catch(error => {
-          console.log(error)
+          console.log(error.response.data)
           commit('setLoading', false)
-          commit('setError', error)
+          commit('setError', error.response.data)
         })
     },
     updatePassword ({commit}, payload) {
@@ -148,9 +147,9 @@ export default {
           commit('clearError')
         })
         .catch(error => {
-          console.log(error)
+          console.log(error.response.data)
           commit('setLoading', false)
-          commit('setError', error)
+          commit('setError', error.response.data)
         })
     },
     destroyUser ({commit}, payload) {

@@ -24,7 +24,15 @@ export default {
       return state.loading
     },
     error (state) {
-      return state.error
+      let errorMessage = state.error
+      if (errorMessage && !errorMessage.message) {
+        let errorString = []
+        for (let key in errorMessage) {
+          errorString.push(errorMessage[key])
+        }
+        errorMessage.message = errorString.join('<br>')
+      }
+      return errorMessage
     }
   }
 }

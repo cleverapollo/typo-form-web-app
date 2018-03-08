@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
-const APPLICATION_URL = `${API_URL}applications/`
-const TEAM_URL = `teams/`
+const APPLICATION_URL = `${API_URL}application/`
+const TEAM_URL = `team/`
 
 export default {
   state: {
