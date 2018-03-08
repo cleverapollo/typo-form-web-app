@@ -52,35 +52,6 @@
                       <td>{{ props.item.name }}</td>
                     </template>
                   </v-data-table>
-                  <div>
-                    <v-tabs
-                      v-model="currentItem"
-                      color="transparent"
-                      slider-color="yellow"
-                      slot="extension"
-                    >
-                      <v-tab
-                        v-for="item in items"
-                        :key="item"
-                        :href="'#tab-' + item"
-                      >
-                        {{ item }}
-                      </v-tab>
-                    </v-tabs>
-                    <v-tabs-items v-model="currentItem">
-                      <v-tab-item
-                        v-for="item in items"
-                        :key="item"
-                        :id="'tab-' + item"
-                      >
-                        <v-card flat>
-                          <v-card-text>
-                            text
-                          </v-card-text>
-                        </v-card>
-                      </v-tab-item>
-                    </v-tabs-items>
-                  </div>
                 </v-flex>
               </v-layout>
             </v-container>

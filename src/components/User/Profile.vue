@@ -8,11 +8,11 @@
               <v-layout row>
                 <v-flex text-xs-center>
                   <v-avatar
-                    :size="'80px'"
+                    size="80px"
                     class="primary">
                     <v-icon
                       :color="'white'"
-                      x-large>
+                      large>
                       account_circle
                     </v-icon>
                   </v-avatar>
@@ -24,27 +24,27 @@
                 </v-flex>
               </v-layout>
               <v-layout row>
-                <v-flex text-xs-center>
+                <v-flex text-xs-center class="overflow-flex">
                   <v-btn large block>Delete Picture</v-btn>
                 </v-flex>
               </v-layout>
               <v-layout row>
-                <v-flex text-xs-center>
+                <v-flex text-xs-center class="overflow-flex">
                   <template v-if="userIsAuthenticated">
                     <app-edit-email></app-edit-email>
                   </template>
                 </v-flex>
               </v-layout>
               <v-layout row>
-                <v-flex text-xs-center>
+                <v-flex text-xs-center class="overflow-flex">
                   <template v-if="userIsAuthenticated">
                     <app-edit-password></app-edit-password>
                   </template>
                 </v-flex>
               </v-layout>
               <v-layout row>
-                <v-flex text-xs-center>
-                  <v-btn large block
+                <v-flex text-xs-center class="overflow-flex">
+                  <v-btn block large
                     color="error"
                     @click="onDestroyUser"
                   >
@@ -63,7 +63,7 @@
               <h1 class="mb-4">Edit account</h1>
               <form @submit.prevent="onUpdateUser">
                 <v-layout row>
-                  <v-flex>
+                  <v-flex class="overflow-flex">
                     <v-text-field
                       name="firstname"
                       label="Firstname"
@@ -74,7 +74,7 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex>
+                  <v-flex class="overflow-flex">
                     <v-text-field
                       name="lastname"
                       label="Lastname"
@@ -85,7 +85,7 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex>
+                  <v-flex class="overflow-flex">
                     <v-text-field
                       name="email"
                       label="Email"
@@ -179,3 +179,9 @@
     }
   }
 </script>
+
+<style scoped>
+.overflow-flex {
+  min-width: 0;
+}
+</style>

@@ -1,68 +1,53 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="sideNav" fixed app temporary>
-      <v-list>
-        <v-list-tile
-          v-for="item in menuItems"
-          :key="item.title"
-          :to="item.link">
-          <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>{{ item.title }}</v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile
-          v-if="userIsAuthenticated"
-          @click="onLogout">
-          <v-list-tile-action>
-            <v-icon>exit_to_app</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>Sign out</v-list-tile-content>
-        </v-list-tile>
+    <v-navigation-drawer
+      fixed
+      :clipped="$vuetify.breakpoint.lgAndUp"
+      app
+      v-model="drawer"
+    >
+      <v-list dense>
+        <template v-for="item in menuItems">
+          <v-list-tile
+            :to="item.link"
+            :key="item.title">
+            <v-list-tile-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                {{ item.title }}
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </template>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar dark class="primary" dense app>
-      <v-toolbar-side-icon
-        @click.stop="sideNav = !sideNav"
-        class="hidden-sm-and-up"
-      ></v-toolbar-side-icon>
-      <v-toolbar-title>
+    <v-toolbar
+      color="primary"
+      dark
+      app
+      :clipped-left="$vuetify.breakpoint.lgAndUp"
+      fixed
+    >
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
         <router-link to="/" tag="span" style="cursor: pointer">{{ title }}</router-link>
-      </v-toolbar-title>
+      </v-toolbar-title>      
       <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-xs-only">
-        <v-btn
-          flat
-          v-for="item in toolbarIteams"
-          v-if="userIsAuthenticated"
-          :key="item.title"
-          :to="item.link"
-          class="iconButton mr-2">
-          <v-icon medium class="roundedIcon">{{ item.icon }}</v-icon>
+      <template v-if="userIsAuthenticated">
+        <v-btn icon>
+          <v-icon>notifications</v-icon>
         </v-btn>
-        <v-btn
-          flat
-          v-else
-          :key="item.title"
-          :to="item.link">
-          <v-icon left dark>{{ item.icon }}</v-icon>
-          {{ item.title }}
-        </v-btn>
-        <v-menu offset-y left v-if="userIsAuthenticated">
+        <v-menu offset-y left>
           <v-btn
-            flat
             icon
-            class="iconButton"
             slot="activator">
-            <v-icon x-large>account_circle</v-icon>
+            <v-avatar size="32px" tile>
+              <v-icon>account_circle</v-icon>
+            </v-avatar>
           </v-btn>
           <v-list>
-            <v-list-tile
-              :to="'/applications'">
-              <v-list-tile-content>
-                Applications
-              </v-list-tile-content>
-            </v-list-tile>
             <v-list-tile
               :to="'/profile'">
               <v-list-tile-content>
@@ -75,7 +60,7 @@
             </v-list-tile>
           </v-list>
         </v-menu>
-      </v-toolbar-items>
+      </template>
     </v-toolbar>
     <v-content>
       <v-container fluid>
@@ -89,6 +74,7 @@
 export default {
   data () {
     return {
+      drawer: null,
       sideNav: false,
       title: 'Informed 365'
     }
@@ -102,8 +88,7 @@ export default {
       if (this.userIsAuthenticated) {
         menuItems = [
           {icon: 'account_circle', title: 'My account', link: '/profile'},
-          {icon: 'group', title: 'Teams', link: '/teams'},
-          {icon: 'group', title: 'Applications', link: '/applications'}
+          {icon: 'apps', title: 'Applications', link: '/applications'}
         ]
       }
       return menuItems
@@ -135,19 +120,3 @@ export default {
   name: 'App'
 }
 </script>
-
-<style scoped>
-  .iconButton {
-    min-width: initial;
-    width: 48px;
-    height: 48px;
-  }
-  .roundedIcon {
-    border-radius: 5px;
-    background: hsla(0,0%,100%,.3);
-    width: 40px;
-    height: 40px;
-  }
-</style>
-
-

@@ -2,7 +2,7 @@
   <v-container>
     <v-layout row wrap class="mb-2">
       <v-flex xs12>
-        <v-btn router to="/applications/new" class="primary">New Application</v-btn>
+        <v-btn router to="/applications/new" class="primary" flat>New Application</v-btn>
         <v-data-table
           :headers="headers"
           :items="applications"
