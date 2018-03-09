@@ -10,15 +10,26 @@ export default {
         users: [
           {
             id: 1,
-            first_name: 'First Name',
-            last_name: 'Last Name',
-            email: 'test@test.com'
+            first_name: 'First Name1',
+            last_name: 'Last Name1',
+            email: 'test1@test.com',
+            stat: 'Accepted',
+            role: 'Admin'
+          },
+          {
+            id: 2,
+            first_name: 'First Name2',
+            last_name: 'Last Name2',
+            email: 'test2@test.com',
+            stat: 'Invitation',
+            role: 'User'
           }
         ],
         teams: [
           {
             id: 1,
-            name: 'Team'
+            name: 'Team',
+            description: 'Team description'
           }
         ]
       }
@@ -52,7 +63,7 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedApplications', response['data']['result'])
+            commit('setLoadedApplications', response['data']['applications'])
           }
         )
         .catch(
@@ -70,7 +81,7 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('createApplication', response['data']['result'])
+            commit('createApplication', response['data']['application'])
           }
         )
         .catch(
@@ -89,7 +100,7 @@ export default {
       window.axios.put(APPLICATION_URL + '/' + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
-          commit('updateApplication', response['data']['result'])
+          commit('updateApplication', response['data']['application'])
         })
         .catch(error => {
           console.log(error)
