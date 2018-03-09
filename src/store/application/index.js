@@ -1,39 +1,9 @@
 const API_URL = process.env.API_URL
-const APPLICATION_URL = `${API_URL}application`
+const APPLICATION_URL = `${API_URL}application/`
 
 export default {
   state: {
-    loadedApplications: [
-      {
-        id: 1,
-        name: 'First Application',
-        users: [
-          {
-            id: 1,
-            first_name: 'First Name1',
-            last_name: 'Last Name1',
-            email: 'test1@test.com',
-            stat: 'Accepted',
-            role: 'Admin'
-          },
-          {
-            id: 2,
-            first_name: 'First Name2',
-            last_name: 'Last Name2',
-            email: 'test2@test.com',
-            stat: 'Invitation',
-            role: 'User'
-          }
-        ],
-        teams: [
-          {
-            id: 1,
-            name: 'Team',
-            description: 'Team description'
-          }
-        ]
-      }
-    ]
+    loadedApplications: []
   },
   mutations: {
     setLoadedApplications (state, payload) {
@@ -75,7 +45,8 @@ export default {
     },
     createApplication ({commit, getters}, payload) {
       const application = {
-        name: payload.name
+        name: payload.name,
+        invitations: payload.invitations
       }
       window.axios.post(APPLICATION_URL, application)
         .then(

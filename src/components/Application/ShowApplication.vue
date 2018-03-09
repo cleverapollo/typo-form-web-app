@@ -67,10 +67,6 @@
     props: ['id'],
     data () {
       return {
-        currentItem: 'tab-Web',
-        items: [
-          'Web', 'Shopping'
-        ],
         user_header: [
           { text: 'First Name', value: 'first_name', sortable: false, align: 'left' },
           { text: 'Last Name', value: 'last_name', sortable: false, align: 'left' },
