@@ -34,7 +34,7 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedForms', response['data']['result'])
+            commit('setLoadedForms', response['data']['forms'])
           }
         )
         .catch(
@@ -52,7 +52,7 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('createForm', response['data']['result'])
+            commit('createForm', response['data']['form'])
           }
         )
         .catch(
@@ -71,7 +71,7 @@ export default {
       window.axios.put(APPLICATION_URL + applicationid + FORM_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
-          commit('updateForm', response['data']['result'])
+          commit('updateForm', response['data']['form'])
         })
         .catch(error => {
           console.log(error)

@@ -37,7 +37,7 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedTeams', response['data']['result'])
+            commit('setLoadedTeams', response['data']['teams'])
           }
         )
         .catch(
@@ -56,7 +56,7 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('createTeam', response['data']['result'])
+            commit('createTeam', response['data']['team'])
           }
         )
         .catch(
@@ -78,7 +78,7 @@ export default {
       window.axios.put(APPLICATION_URL + applicationid + TEAM_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
-          commit('updateTeam', response['data']['result'])
+          commit('updateTeam', response['data']['team'])
         })
         .catch(error => {
           console.log(error)
