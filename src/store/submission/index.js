@@ -1,43 +1,43 @@
 const API_URL = process.env.API_URL
-const FORM_URL = `${API_URL}section/`
-const SECTION_URL = 'section/'
+const FORM_URL = `${API_URL}submission/`
+const SUBMISSION_URL = 'submission/'
 
 export default {
   state: {
-    loadedSections: []
+    loadedSubmissions: []
   },
   mutations: {
-    setLoadedSections (state, payload) {
-      state.loadedSections = payload
+    setLoadedSubmissions (state, payload) {
+      state.loadedSubmissions = payload
     },
-    createSection (state, payload) {
-      state.loadedSections.push(payload)
+    createSubmission (state, payload) {
+      state.loadedSubmissions.push(payload)
     },
-    updateSection (state, payload) {
-      const section = state.loadedSections.find(section => {
-        return section.formid === payload.formid && section.id === payload.id
+    updateSubmission (state, payload) {
+      const submission = state.loadedSubmissions.find(submission => {
+        return submission.formid === payload.formid && submission.id === payload.id
       })
       if (payload.name) {
-        section.name = payload.name
+        submission.name = payload.name
       }
       if (payload.order) {
-        section.order = payload.order
+        submission.order = payload.order
       }
     },
-    deleteSection (state, payload) {
-      state.loadedSections = state.loadedSections.filter(e => {
+    deleteSubmission (state, payload) {
+      state.loadedSubmissions = state.loadedSubmissions.filter(e => {
         return e.id !== payload.id || e.formid !== payload.formid
       })
     }
   },
   actions: {
-    loadSections ({commit}, formid) {
+    loadSubmissions ({commit}, formid) {
       commit('setLoading', true)
-      window.axios.get(FORM_URL + formid + SECTION_URL)
+      window.axios.get(FORM_URL + formid + SUBMISSION_URL)
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedSections', response['data']['sections'])
+            commit('setLoadedSubmissions', response['data']['submissions'])
           }
         )
         .catch(
@@ -47,16 +47,16 @@ export default {
           }
         )
     },
-    createSection ({commit, getters}, formid, payload) {
-      const section = {
+    createSubmission ({commit, getters}, formid, payload) {
+      const submission = {
         name: payload.name,
         order: payload.order
       }
-      window.axios.post(FORM_URL + formid + SECTION_URL, section)
+      window.axios.post(FORM_URL + formid + SUBMISSION_URL, submission)
         .then(
           response => {
             commit('setLoading', false)
-            commit('createSection', response['data']['section'])
+            commit('createSubmission', response['data']['submission'])
           }
         )
         .catch(
@@ -66,7 +66,7 @@ export default {
           }
         )
     },
-    updateSection ({commit}, formid, payload) {
+    updateSubmission ({commit}, formid, payload) {
       commit('setLoading', true)
       const updateObj = {}
       if (payload.name) {
@@ -75,22 +75,22 @@ export default {
       if (payload.order) {
         updateObj.order = payload.order
       }
-      window.axios.put(FORM_URL + formid + SECTION_URL + payload.id, updateObj)
+      window.axios.put(FORM_URL + formid + SUBMISSION_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
-          commit('updateSection', response['data']['section'])
+          commit('updateSubmission', response['data']['submission'])
         })
         .catch(error => {
           console.log(error)
           commit('setLoading', false)
         })
     },
-    deleteSection ({commit}, formid, payload) {
+    deleteSubmission ({commit}, formid, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + formid + SECTION_URL + payload.id)
+      window.axios.delete(FORM_URL + formid + SUBMISSION_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
-          commit('deleteSection', payload)
+          commit('deleteSubmission', payload)
         })
         .catch(error => {
           console.log(error)
@@ -99,20 +99,20 @@ export default {
     }
   },
   getters: {
-    loadedSections (state) {
+    loadedSubmissions (state) {
       return (formid) => {
-        return state.loadedSections.find((section) => {
-          return section.formid === formid
+        return state.loadedSubmissions.find((submission) => {
+          return submission.formid === formid
         })
-        .sort((sectionA, sectionB) => {
-          return sectionA.id > sectionB.id
+        .sort((submissionA, submissionB) => {
+          return submissionA.id > submissionB.id
         })
       }
     },
-    loadedSection (state) {
-      return (formid, sectionid) => {
-        return state.loadedSections.find((section) => {
-          return section.id === sectionid && section.formid === formid
+    loadedSubmission (state) {
+      return (formid, submissionid) => {
+        return state.loadedSubmissions.find((submission) => {
+          return submission.id === submissionid && submission.formid === formid
         })
       }
     }
