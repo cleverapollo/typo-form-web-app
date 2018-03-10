@@ -9,6 +9,7 @@ import AlertCmp from './components/Shared/Alert.vue'
 import EditEmail from './components/Auth/EditProfile/EditEmail.vue'
 import EditPassword from './components/Auth/EditProfile/EditPassword.vue'
 import EditApplication from './components/Application/EditApplication.vue'
+import InviteApplication from './components/Application/InviteApplication.vue'
 import EditTeam from './components/Team/EditTeam.vue'
 import EditUser from './components/User/EditUser.vue'
 import EditForm from './components/Form/EditForm.vue'
@@ -23,6 +24,7 @@ Vue.component('app-alert', AlertCmp)
 Vue.component('app-edit-email', EditEmail)
 Vue.component('app-edit-password', EditPassword)
 Vue.component('app-edit-application', EditApplication)
+Vue.component('app-invite-application', InviteApplication)
 Vue.component('app-edit-team', EditTeam)
 Vue.component('app-edit-user', EditUser)
 Vue.component('app-edit-form', EditForm)

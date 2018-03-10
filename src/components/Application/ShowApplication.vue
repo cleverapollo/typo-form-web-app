@@ -25,6 +25,7 @@
             </v-list>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
+            <app-invite-application :application="application"></app-invite-application>
             <v-spacer></v-spacer>
             <app-edit-application :application="application"></app-edit-application>
             <v-btn class="error" @click=onDeleteApplication>Delete</v-btn>
@@ -44,14 +45,6 @@
           { title: 'User List', type: 'users' },
           { title: 'Team List', type: 'teams' },
           { title: 'Form List', type: 'forms' }
-        ],
-        user_header: [
-          { text: 'First Name', value: 'first_name', sortable: false, align: 'left' },
-          { text: 'Last Name', value: 'last_name', sortable: false, align: 'left' },
-          { text: 'Email', value: 'email', sortable: false, align: 'left' }
-        ],
-        team_header: [
-          { text: 'Name', value: 'name', sortable: false, align: 'left' }
         ]
       }
     },

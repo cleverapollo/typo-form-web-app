@@ -16,7 +16,6 @@
         </v-data-table>
       </v-flex>
     </v-layout>
-    
   </v-container>
 </template>
 
@@ -48,7 +47,7 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.application_id)
+      // this.$store.dispatch('loadTeams', this.application_id)
     }
   }
 </script>

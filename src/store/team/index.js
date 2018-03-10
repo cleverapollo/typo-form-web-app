@@ -4,7 +4,26 @@ const TEAM_URL = `/team/`
 
 export default {
   state: {
-    loadedTeams: []
+    loadedTeams: [
+      {
+        id: 1,
+        name: 'first',
+        description: 'desc',
+        pivot: {
+          user_id: 1,
+          team_id: 1
+        }
+      },
+      {
+        id: 2,
+        name: 'second',
+        description: 'desc',
+        pivot: {
+          user_id: 1,
+          team_id: 2
+        }
+      }
+    ]
   },
   mutations: {
     setLoadedTeams (state, payload) {
@@ -50,7 +69,8 @@ export default {
     createTeam ({commit, getters}, payload) {
       const team = {
         name: payload.name,
-        description: payload.description
+        description: payload.description,
+        invitations: payload.invitations
       }
       window.axios.post(APPLICATION_URL + payload.applicationid + TEAM_URL, team)
         .then(
@@ -66,7 +86,7 @@ export default {
           }
         )
     },
-    updateTeam ({commit}, applicationid, payload) {
+    updateTeam ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
       if (payload.name) {
@@ -75,7 +95,7 @@ export default {
       if (payload.description) {
         updateObj.description = payload.description
       }
-      window.axios.put(APPLICATION_URL + applicationid + TEAM_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
           commit('updateTeam', response['data']['team'])
@@ -85,9 +105,9 @@ export default {
           commit('setLoading', false)
         })
     },
-    deleteTeam ({commit}, applicationid, payload) {
+    deleteTeam ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + applicationid + TEAM_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteTeam', payload)

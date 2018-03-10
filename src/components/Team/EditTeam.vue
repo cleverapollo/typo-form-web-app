@@ -78,8 +78,8 @@
         }
         this.editTeam = false
         this.$store.dispatch('updateTeam',
-          parseInt(this.application_id),
           {
+            applicationid: this.application_id,
             id: this.id,
             name: this.editedName,
             description: this.editedDescription
@@ -98,9 +98,6 @@
       loading () {
         return this.$store.getters.loading
       }
-    },
-    created: function () {
-      this.$store.dispatch('loadTeams', this.application_id)
     }
   }
 </script>

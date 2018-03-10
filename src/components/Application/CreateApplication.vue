@@ -111,7 +111,6 @@
         const applicationData = {
           name: this.name,
           invitations: this.invitations.filter(function (item) {
-            console.log(item, item.email.trim() !== '')
             return item.email.trim() !== ''
           })
         }
