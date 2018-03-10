@@ -71,8 +71,8 @@
         }
         this.editForm = false
         this.$store.dispatch('updateForm',
-          parseInt(this.application_id),
           {
+            applicationid: this.application_id,
             id: this.id,
             name: this.editedName
           })
@@ -89,9 +89,6 @@
       loading () {
         return this.$store.getters.loading
       }
-    },
-    created: function () {
-      this.$store.dispatch('loadForms', this.application_id)
     }
   }
 </script>

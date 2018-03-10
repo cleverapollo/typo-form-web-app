@@ -80,6 +80,9 @@
       onList (type) {
         this.$router.push('/applications/' + this.id + '/' + type)
       }
+    },
+    created: function () {
+      this.$store.dispatch('loadApplications')
     }
   }
 </script>

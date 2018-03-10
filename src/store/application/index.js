@@ -82,7 +82,7 @@ export default {
       if (payload.name) {
         updateObj.name = payload.name
       }
-      window.axios.put(APPLICATION_URL + '/' + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
           commit('updateApplication', response['data']['application'])
@@ -94,7 +94,7 @@ export default {
     },
     deleteApplication ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + '/' + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteApplication', payload)

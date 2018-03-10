@@ -37,7 +37,7 @@
         // return this.$store.getters.loadedTeam(parseInt(this.id))
         let loadedTeam = this.$store.getters.loadedTeam(parseInt(this.id))
         if (loadedTeam) {
-          loadedTeam.pivot.role = 'Admin'
+          // loadedTeam.pivot.role = 'Admin'
         }
         return loadedTeam
       },
@@ -48,7 +48,8 @@
         if (!this.userIsAuthenticated) {
           return false
         }
-        return this.team.pivot.role === 'Admin'
+        return true
+        // return this.team.pivot.role === 'Admin'
       },
       loading () {
         return this.$store.getters.loading
@@ -64,7 +65,7 @@
       }
     },
     created: function () {
-      // this.$store.dispatch('loadTeams', this.application_id)
+      this.$store.dispatch('loadTeams', this.application_id)
     }
   }
 </script>

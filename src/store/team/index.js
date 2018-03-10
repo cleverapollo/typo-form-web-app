@@ -4,26 +4,7 @@ const TEAM_URL = `/team/`
 
 export default {
   state: {
-    loadedTeams: [
-      {
-        id: 1,
-        name: 'first',
-        description: 'desc',
-        pivot: {
-          user_id: 1,
-          team_id: 1
-        }
-      },
-      {
-        id: 2,
-        name: 'second',
-        description: 'desc',
-        pivot: {
-          user_id: 1,
-          team_id: 2
-        }
-      }
-    ]
+    loadedTeams: []
   },
   mutations: {
     setLoadedTeams (state, payload) {

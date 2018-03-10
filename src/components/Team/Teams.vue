@@ -47,7 +47,7 @@
       }
     },
     created: function () {
-      // this.$store.dispatch('loadTeams', this.application_id)
+      this.$store.dispatch('loadTeams', this.application_id)
     }
   }
 </script>

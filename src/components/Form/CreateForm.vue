@@ -53,9 +53,10 @@
           return
         }
         const formData = {
+          applicationid: this.application_id,
           name: this.name
         }
-        this.$store.dispatch('createForm', parseInt(this.application_id), formData)
+        this.$store.dispatch('createForm', formData)
         this.$router.push('/applications/' + this.application_id + '/forms')
       }
     }

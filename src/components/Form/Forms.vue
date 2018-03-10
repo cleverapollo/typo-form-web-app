@@ -2,7 +2,7 @@
   <v-container>
     <v-layout row wrap class="mb-2">
       <v-flex xs12>
-        <v-btn router to="/forms/new" class="primary">New Form</v-btn>
+        <v-btn router @click=onCreateForm() class="primary">New Form</v-btn>
         <v-data-table
           :headers="headers"
           :items="forms"
@@ -40,6 +40,9 @@
     methods: {
       onLoadForm (id) {
         this.$router.push('/applications/' + this.application_id + '/forms/show/' + id)
+      },
+      onCreateForm () {
+        this.$router.push('/applications/' + this.application_id + '/forms/new')
       }
     },
     created: function () {

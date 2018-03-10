@@ -44,11 +44,11 @@ export default {
           }
         )
     },
-    createForm ({commit, getters}, applicationid, payload) {
+    createForm ({commit, getters}, payload) {
       const form = {
         name: payload.name
       }
-      window.axios.post(APPLICATION_URL + applicationid + FORM_URL, form)
+      window.axios.post(APPLICATION_URL + payload.applicationid + FORM_URL, form)
         .then(
           response => {
             commit('setLoading', false)
@@ -62,13 +62,13 @@ export default {
           }
         )
     },
-    updateForm ({commit}, applicationid, payload) {
+    updateForm ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
       if (payload.name) {
         updateObj.name = payload.name
       }
-      window.axios.put(APPLICATION_URL + applicationid + FORM_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.applicationid + FORM_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
           commit('updateForm', response['data']['form'])
@@ -78,9 +78,9 @@ export default {
           commit('setLoading', false)
         })
     },
-    deleteForm ({commit}, applicationid, payload) {
+    deleteForm ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + applicationid + FORM_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.applicationid + FORM_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteForm', payload)
