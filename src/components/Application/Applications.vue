@@ -2,7 +2,7 @@
   <v-container>
     <v-layout row wrap class="mb-2">
       <v-flex xs12>
-        <v-btn router to="/applications/new" class="primary" flat>New Application</v-btn>
+        <v-btn router to="/applications/new" class="primary" flat v-if=userIsSuper>New Application</v-btn>
         <v-data-table
           :headers="headers"
           :items="applications"
@@ -15,7 +15,6 @@
         </v-data-table>
       </v-flex>
     </v-layout>
-    
   </v-container>
 </template>
 
@@ -34,6 +33,9 @@
       },
       loading () {
         return this.$store.getters.loading
+      },
+      userIsSuper () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined && this.$store.getters.user.role === 'Super'
       }
     },
     methods: {

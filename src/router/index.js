@@ -6,6 +6,7 @@ import Profile from '@/components/User/Profile'
 import Signup from '@/components/User/Signup'
 import Signin from '@/components/User/Signin'
 import ResetPassword from '@/components/User/ResetPassword'
+import AcceptInvitation from '@/components/Shared/AcceptInvitation'
 
 import Teams from '@/components/Team/Teams'
 import CreateTeam from '@/components/Team/CreateTeam'
@@ -42,6 +43,12 @@ const router = new Router({
       path: '/profile',
       name: 'Profile',
       component: Profile
+    },
+    {
+      path: '/invitation/:token',
+      name: 'AcceptInvitation',
+      component: AcceptInvitation,
+      props: true
     },
     {
       path: '/',
