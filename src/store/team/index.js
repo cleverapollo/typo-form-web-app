@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
-const TEAM_URL = `team/`
+const TEAM_URL = `/team/`
 
 export default {
   state: {
@@ -47,12 +47,12 @@ export default {
           }
         )
     },
-    createTeam ({commit, getters}, applicationid, payload) {
+    createTeam ({commit, getters}, payload) {
       const team = {
         name: payload.name,
         description: payload.description
       }
-      window.axios.post(APPLICATION_URL + applicationid + TEAM_URL, team)
+      window.axios.post(APPLICATION_URL + payload.applicationid + TEAM_URL, team)
         .then(
           response => {
             commit('setLoading', false)
@@ -100,19 +100,14 @@ export default {
   },
   getters: {
     loadedTeams (state) {
-      return (applicationid) => {
-        return state.loadedTeams.find((team) => {
-          return team.applicationid === applicationid
-        })
-        .sort((teamA, teamB) => {
-          return teamA.id > teamB.id
-        })
-      }
+      return state.loadedTeams.sort((teamA, teamB) => {
+        return teamA.id > teamB.id
+      })
     },
     loadedTeam (state) {
-      return (applicationid, teamid) => {
+      return (teamid) => {
         return state.loadedTeams.find((team) => {
-          return team.id === teamid && team.applicationid === applicationid
+          return team.id === teamid
         })
       }
     }

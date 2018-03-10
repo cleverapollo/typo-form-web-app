@@ -89,6 +89,9 @@
       loading () {
         return this.$store.getters.loading
       }
+    },
+    created: function () {
+      this.$store.dispatch('loadForms', this.application_id)
     }
   }
 </script>

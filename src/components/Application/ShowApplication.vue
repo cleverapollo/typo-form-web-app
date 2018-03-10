@@ -11,51 +11,24 @@
     </v-layout>
     <v-layout row wrap v-else>
       <v-flex xs12>
-        <v-card>
+        <v-card v-if="application">
           <v-card-title>
             <h1 class="primary--text">{{ application.name }}</h1>
-            <template v-if="userIsCreator">
-              <v-spacer></v-spacer>
-              <app-edit-application :application="application"></app-edit-application>
-              <v-btn class="error" @click=onDeleteApplication>Delete</v-btn>
-            </template>
           </v-card-title>
           <v-card-text>
-            <v-container>
-              <v-layout row>
-                <v-flex xs12>
-                  <h3 class="mt-4 mb-2">Application Users</h3>
-                  <v-data-table
-                    :headers="user_header"
-                    :items="application.users"
-                    hide-actions
-                    class="elevation-1"
-                  >
-                    <template slot="items" slot-scope="props">
-                      <td>{{ props.item.first_name }}</td>
-                      <td>{{ props.item.last_name }}</td>
-                      <td>{{ props.item.email }}</td>
-                    </template>
-                  </v-data-table>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <v-flex xs12>
-                  <h3 class="mt-4 mb-2">Application Teams</h3>
-                  <v-data-table
-                    :headers="team_header"
-                    :items="application.teams"
-                    hide-actions
-                    class="elevation-1"
-                  >
-                    <template slot="items" slot-scope="props">
-                      <td>{{ props.item.name }}</td>
-                    </template>
-                  </v-data-table>
-                </v-flex>
-              </v-layout>
-            </v-container>
+            <v-list>
+              <v-list-tile v-for="item in items" :key="item.title" @click="onList(item.type)">
+                <v-list-tile-content>
+                  <v-list-tile-title v-text="item.title"></v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
           </v-card-text>
+          <v-card-actions v-if="userIsAdmin">
+            <v-spacer></v-spacer>
+            <app-edit-application :application="application"></app-edit-application>
+            <v-btn class="error" @click=onDeleteApplication>Delete</v-btn>
+          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -67,6 +40,11 @@
     props: ['id'],
     data () {
       return {
+        items: [
+          { title: 'User List', type: 'users' },
+          { title: 'Team List', type: 'teams' },
+          { title: 'Form List', type: 'forms' }
+        ],
         user_header: [
           { text: 'First Name', value: 'first_name', sortable: false, align: 'left' },
           { text: 'Last Name', value: 'last_name', sortable: false, align: 'left' },
@@ -79,17 +57,21 @@
     },
     computed: {
       application () {
-        return this.$store.getters.loadedApplication(parseInt(this.id))
+        // return this.$store.getters.loadedApplication(parseInt(this.id))
+        let loadedApplication = this.$store.getters.loadedApplication(parseInt(this.id))
+        if (loadedApplication) {
+          loadedApplication.pivot.role = 'Admin'
+        }
+        return loadedApplication
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
-      userIsCreator () {
+      userIsAdmin () {
         if (!this.userIsAuthenticated) {
           return false
         }
-        return true
-        // return this.$store.getters.user.id === this.application.creatorId
+        return this.application.pivot.role === 'Admin'
       },
       loading () {
         return this.$store.getters.loading
@@ -101,6 +83,9 @@
           id: this.application.id
         })
         this.$router.push('/applications')
+      },
+      onList (type) {
+        this.$router.push('/applications/' + this.id + '/' + type)
       }
     }
   }

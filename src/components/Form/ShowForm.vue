@@ -55,6 +55,9 @@
         })
         this.$router.push('/applications/' + this.application_id + '/forms')
       }
+    },
+    created: function () {
+      this.$store.dispatch('loadForms', this.application_id)
     }
   }
 </script>

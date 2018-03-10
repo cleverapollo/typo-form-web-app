@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
-const FORM_URL = `${API_URL}submission/`
-const SUBMISSION_URL = 'submission/'
+const FORM_URL = `${API_URL}form/`
+const SUBMISSION_URL = '/submission/'
 
 export default {
   state: {

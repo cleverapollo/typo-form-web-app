@@ -42,6 +42,9 @@
       onLoadApplication (id) {
         this.$router.push('/applications/show/' + id)
       }
+    },
+    created: function () {
+      this.$store.dispatch('loadApplications')
     }
   }
 </script>

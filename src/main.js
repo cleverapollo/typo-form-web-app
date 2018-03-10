@@ -6,10 +6,11 @@ import router from './router'
 import Vuetify from 'vuetify'
 import { store } from './store'
 import AlertCmp from './components/Shared/Alert.vue'
-import EditEmail from './components/User/EditProfile/EditEmail.vue'
-import EditPassword from './components/User/EditProfile/EditPassword.vue'
+import EditEmail from './components/Auth/EditProfile/EditEmail.vue'
+import EditPassword from './components/Auth/EditProfile/EditPassword.vue'
 import EditApplication from './components/Application/EditApplication.vue'
 import EditTeam from './components/Team/EditTeam.vue'
+import EditUser from './components/User/EditUser.vue'
 import EditForm from './components/Form/EditForm.vue'
 
 import 'vuetify/dist/vuetify.min.css'
@@ -23,6 +24,7 @@ Vue.component('app-edit-email', EditEmail)
 Vue.component('app-edit-password', EditPassword)
 Vue.component('app-edit-application', EditApplication)
 Vue.component('app-edit-team', EditTeam)
+Vue.component('app-edit-user', EditUser)
 Vue.component('app-edit-form', EditForm)
 
 /* eslint-disable no-new */
@@ -36,7 +38,6 @@ new Vue({
     if (localStorage.getItem('token')) {
       window.axios.defaults.headers.common['api_token'] = localStorage.getItem('token')
       this.$store.dispatch('autoSignIn')
-      this.$store.dispatch('loadApplications')
     }
   }
 })

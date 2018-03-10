@@ -1,12 +1,12 @@
 <template>
-  <v-dialog width="350px" persistent v-model="editTeam">
+  <v-dialog width="350px" persistent v-model="editUser">
     <v-btn class="primary" slot="activator">Edit</v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-title>
-              <h2>Edit Team</h2>
+              <h2>Edit User</h2>
             </v-card-title>
           </v-flex>
         </v-layout>
@@ -62,13 +62,13 @@
 
 <script>
   export default {
-    props: ['team', 'application_id'],
+    props: ['user', 'application_id'],
     data () {
       return {
-        id: this.team.id,
-        editTeam: false,
-        editedName: this.team.name,
-        editedDescription: this.team.description
+        id: this.user.id,
+        editUser: false,
+        editedName: this.user.name,
+        editedDescription: this.user.description
       }
     },
     methods: {
@@ -76,8 +76,8 @@
         if (this.editedName.trim() === '') {
           return
         }
-        this.editTeam = false
-        this.$store.dispatch('updateTeam',
+        this.editUser = false
+        this.$store.dispatch('updateUser',
           parseInt(this.application_id),
           {
             id: this.id,
@@ -86,9 +86,9 @@
           })
       },
       onCancel () {
-        this.editedName = this.team.name
-        this.editedDescription = this.team.description
-        this.editTeam = false
+        this.editedName = this.user.name
+        this.editedDescription = this.user.description
+        this.editUser = false
       }
     },
     computed: {
@@ -100,7 +100,7 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.application_id)
+      this.$store.dispatch('loadUsers', this.application_id)
     }
   }
 </script>

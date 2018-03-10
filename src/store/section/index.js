@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
-const FORM_URL = `${API_URL}section/`
-const SECTION_URL = 'section/'
+const FORM_URL = `${API_URL}form/`
+const SECTION_URL = '/section/'
 
 export default {
   state: {

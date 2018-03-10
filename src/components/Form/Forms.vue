@@ -31,7 +31,7 @@
     },
     computed: {
       forms () {
-        return this.$store.getters.loadedForms(parseInt(this.application_id))
+        return this.$store.getters.loadedForms
       },
       loading () {
         return this.$store.getters.loading
@@ -41,6 +41,9 @@
       onLoadForm (id) {
         this.$router.push('/applications/' + this.application_id + '/forms/show/' + id)
       }
+    },
+    created: function () {
+      this.$store.dispatch('loadForms', this.application_id)
     }
   }
 </script>

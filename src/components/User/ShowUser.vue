@@ -13,15 +13,15 @@
       <v-flex xs12>
         <v-card>
           <v-card-title>
-            <h1 class="primary--text">{{ team.name }}</h1>
+            <h1 class="primary--text">{{ user.name }}</h1>
             <template v-if="userIsCreator">
               <v-spacer></v-spacer>
-              <app-edit-team :team="team" :application_id="application_id"></app-edit-team>
-              <v-btn class="error" @click=onDeleteTeam>Delete</v-btn>
+              <app-edit-user :user="user" :application_id="application_id"></app-edit-user>
+              <v-btn class="error" @click=onDeleteUser>Delete</v-btn>
             </template>
           </v-card-title>
           <v-card-text>
-            <div>{{ team.description }}</div>
+            <div>{{ user.description }}</div>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -33,8 +33,8 @@
   export default {
     props: ['application_id', 'id'],
     computed: {
-      team () {
-        return this.$store.getters.loadedTeam(parseInt(this.id))
+      user () {
+        return this.$store.getters.loadedUser(parseInt(this.id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -44,23 +44,23 @@
           return false
         }
         return true
-        // return this.$store.getters.user.id === this.team.creatorId
+        // return this.$store.getters.user.id === this.user.creatorId
       },
       loading () {
         return this.$store.getters.loading
       }
     },
     methods: {
-      onDeleteTeam () {
-        this.$store.dispatch('deleteTeam', {
+      onDeleteUser () {
+        this.$store.dispatch('deleteUser', {
           application_id: parseInt(this.application_id),
           id: this.form.id
         })
-        this.$router.push('/applications/' + this.application_id + '/teams')
+        this.$router.push('/applications/' + this.application_id + '/users')
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.application_id)
+      this.$store.dispatch('loadUsers', this.application_id)
     }
   }
 </script>

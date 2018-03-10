@@ -2,16 +2,16 @@
   <v-container>
     <v-layout row wrap class="mb-2">
       <v-flex xs12>
-        <v-btn router @click=onCreateTeam() class="primary">New Team</v-btn>
+        <v-btn router @click=onCreateUser() class="primary">New User</v-btn>
         <v-data-table
           :headers="headers"
-          :items="teams"
+          :items="users"
           hide-actions
           class="elevation-1"
         >
           <template slot="items" slot-scope="props">
-            <td @click=onLoadTeam(props.item.id)>{{ props.item.name }}</td>
-            <td @click=onLoadTeam(props.item.id)>{{ props.item.description }}</td>
+            <td @click=onLoadUser(props.item.id)>{{ props.item.name }}</td>
+            <td @click=onLoadUser(props.item.id)>{{ props.item.description }}</td>
           </template>
         </v-data-table>
       </v-flex>
@@ -32,23 +32,23 @@
       }
     },
     computed: {
-      teams () {
-        return this.$store.getters.loadedTeams
+      users () {
+        return this.$store.getters.loadedUsers
       },
       loading () {
         return this.$store.getters.loading
       }
     },
     methods: {
-      onLoadTeam (id) {
-        this.$router.push('/applications/' + this.application_id + '/teams/show/' + id)
+      onLoadUser (id) {
+        this.$router.push('/applications/' + this.application_id + '/users/show/' + id)
       },
-      onCreateTeam () {
-        this.$router.push('/applications/' + this.application_id + '/teams/new')
+      onCreateUser () {
+        this.$router.push('/applications/' + this.application_id + '/users/new')
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.application_id)
+      this.$store.dispatch('loadUsers', this.application_id)
     }
   }
 </script>

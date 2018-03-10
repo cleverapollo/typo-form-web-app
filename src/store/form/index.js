@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
-const FORM_URL = `form/`
+const FORM_URL = `/form/`
 
 export default {
   state: {
@@ -93,19 +93,14 @@ export default {
   },
   getters: {
     loadedForms (state) {
-      return (applicationid) => {
-        return state.loadedForms.find((form) => {
-          return form.applicationid === applicationid
-        })
-        .sort((formA, formB) => {
-          return formA.id > formB.id
-        })
-      }
+      return state.loadedForms.sort((formA, formB) => {
+        return formA.id > formB.id
+      })
     },
     loadedForm (state) {
-      return (applicationid, formid) => {
+      return (formid) => {
         return state.loadedForms.find((form) => {
-          return form.id === formid && form.applicationid === applicationid
+          return form.id === formid
         })
       }
     }

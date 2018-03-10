@@ -1,183 +1,115 @@
 const API_URL = process.env.API_URL
-const SIGNUP_URL = `${API_URL}register`
-const SIGNIN_URL = `${API_URL}login`
-const SIGNOUT_URL = `${API_URL}logout`
-const USER_URL = `${API_URL}user`
-const EMAIL_UPDATE_URL = `${API_URL}user/update-email`
-const PASSWORD_UPDATE_URL = `${API_URL}user/update-password`
-const INVITATION_URL = `${API_URL}invitation/`
+const APPLICATION_URL = `${API_URL}application/`
+const USER_URL = `/user/`
 
 export default {
   state: {
-    user: null
+    loadedUsers: []
   },
   mutations: {
-    setUser (state, payload) {
-      if (payload) {
-        localStorage.setItem('token', payload['api_token'])
-        window.axios.defaults.headers.common['api_token'] = localStorage.getItem('token')
+    setLoadedUsers (state, payload) {
+      state.loadedUsers = payload
+    },
+    createUser (state, payload) {
+      state.loadedUsers.push(payload)
+    },
+    updateUser (state, payload) {
+      const user = state.loadedUsers.find(user => {
+        return user.applicationid === payload.applicationid && user.id === payload.id
+      })
+      if (payload.name) {
+        user.name = payload.name
       }
-      state.user = payload
+      if (payload.description) {
+        user.description = payload.description
+      }
+    },
+    deleteUser (state, payload) {
+      state.loadedUsers = state.loadedUsers.filter(e => {
+        return e.id !== payload.id || e.applicationid !== payload.applicationid
+      })
     }
   },
   actions: {
-    signUserUp ({commit}, payload) {
+    loadUsers ({commit}, applicationid) {
       commit('setLoading', true)
-      commit('clearError')
-      window.axios.post(SIGNUP_URL, payload)
-        .then(
-          response => window.axios.post(SIGNIN_URL, payload)
-            .then(
-              response => {
-                commit('setLoading', false)
-                commit('setUser', response['data']['user'])
-              }
-            )
-            .catch(
-              error => {
-                commit('setLoading', false)
-                commit('setError', error.response.data)
-                console.log(error.response.data)
-              }
-            )
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            commit('setError', error.response.data)
-            console.log(error.response.data)
-          }
-        )
-    },
-    signUserIn ({commit}, payload) {
-      commit('setLoading', true)
-      commit('clearError')
-      window.axios.post(SIGNIN_URL, payload)
+      window.axios.get(APPLICATION_URL + applicationid + USER_URL)
         .then(
           response => {
             commit('setLoading', false)
-            commit('setUser', response['data']['user'])
+            commit('setLoadedUsers', response['data']['users'])
           }
         )
         .catch(
           error => {
             commit('setLoading', false)
-            commit('setError', error.response.data)
-            console.log(error.response.data)
+            console.log(error)
           }
         )
     },
-    autoSignIn ({commit}) {
-      commit('setLoading', true)
-      commit('clearError')
-      window.axios.get(USER_URL)
+    createUser ({commit, getters}, payload) {
+      const user = {
+        name: payload.name,
+        description: payload.description
+      }
+      window.axios.post(APPLICATION_URL + payload.applicationid + USER_URL, user)
         .then(
           response => {
             commit('setLoading', false)
-            commit('setUser', response['data'])
+            commit('createUser', response['data']['user'])
           }
         )
         .catch(
           error => {
             commit('setLoading', false)
-            console.log(error.response.data)
+            console.log(error)
           }
         )
     },
-    logout ({commit}) {
-      window.axios.post(SIGNOUT_URL)
-      commit('setUser', null)
-      localStorage.removeItem('token')
-    },
-    acceptInvitation ({commit}, payload) {
-      commit('setLoading', true)
-      window.axios.get(INVITATION_URL + payload.token)
-        .then(
-          response => {
-            commit('setLoading', false)
-            commit('setUser', response['data']['user'])
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            commit('setError', error.response)
-          }
-        )
-    },
-    updateUser ({commit}, payload) {
+    updateUser ({commit}, applicationid, payload) {
       commit('setLoading', true)
       const updateObj = {}
-      if (payload.first_name) {
-        updateObj.first_name = payload.first_name
+      if (payload.name) {
+        updateObj.name = payload.name
       }
-      if (payload.last_name) {
-        updateObj.last_name = payload.last_name
+      if (payload.description) {
+        updateObj.description = payload.description
       }
-      window.axios.put(USER_URL + '/' + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + applicationid + USER_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
-          payload.api_token = localStorage.getItem('token')
-          commit('setUser', response['data']['user'])
-          commit('clearError')
+          commit('updateUser', response['data']['user'])
         })
         .catch(error => {
-          console.log(error.response.data)
+          console.log(error)
           commit('setLoading', false)
-          commit('setError', error.response.data)
         })
     },
-    updateEmail ({commit}, payload) {
+    deleteUser ({commit}, applicationid, payload) {
       commit('setLoading', true)
-      const updateObj = {}
-      if (payload.email) {
-        updateObj.email = payload.email
-      }
-      if (payload.password) {
-        updateObj.password = payload.password
-      }
-      window.axios.put(EMAIL_UPDATE_URL, updateObj)
-        .then(response => {
+      window.axios.delete(APPLICATION_URL + applicationid + USER_URL + payload.id)
+        .then(() => {
           commit('setLoading', false)
-          payload.api_token = localStorage.getItem('token')
-          commit('setUser', response['data']['user'])
-          commit('clearError')
+          commit('deleteUser', payload)
         })
         .catch(error => {
-          console.log(error.response.data)
+          console.log(error)
           commit('setLoading', false)
-          commit('setError', error.response.data)
         })
-    },
-    updatePassword ({commit}, payload) {
-      commit('setLoading', true)
-      const updateObj = {}
-      if (payload.newPassword) {
-        updateObj.newPassword = payload.newPassword
-      }
-      if (payload.password) {
-        updateObj.password = payload.password
-      }
-      window.axios.put(PASSWORD_UPDATE_URL, updateObj)
-        .then(response => {
-          commit('setLoading', false)
-          commit('clearError')
-        })
-        .catch(error => {
-          console.log(error.response.data)
-          commit('setLoading', false)
-          commit('setError', error.response.data)
-        })
-    },
-    destroyUser ({commit}, payload) {
-      window.axios.delete(USER_URL + '/' + payload.id)
-      commit('setUser', null)
-      localStorage.removeItem('token')
     }
   },
   getters: {
-    user (state) {
-      return state.user
+    loadedUsers (state) {
+      return state.loadedUsers.sort((userA, userB) => {
+        return userA.id > userB.id
+      })
+    },
+    loadedUser (state) {
+      return (userid) => {
+        return state.loadedUsers.find((user) => {
+          return user.id === userid
+        })
+      }
     }
   }
 }

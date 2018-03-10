@@ -5,8 +5,8 @@
         <v-card>
           <v-card-text>
             <v-container>
-              <h1 class="mb-4">Create Team</h1>
-              <form @submit.prevent="onCreateTeam">
+              <h1 class="mb-4">Create User</h1>
+              <form @submit.prevent="onCreateUser">
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
@@ -32,7 +32,7 @@
                     <v-btn
                       class="primary"
                       :disabled="!formIsValid"
-                      type="submit">Create Team</v-btn>
+                      type="submit">Create User</v-btn>
                   </v-flex>
                 </v-layout>
               </form>
@@ -59,17 +59,17 @@
       }
     },
     methods: {
-      onCreateTeam () {
+      onCreateUser () {
         if (!this.formIsValid) {
           return
         }
-        const teamData = {
+        const userData = {
           applicationid: this.application_id,
           name: this.name,
           description: this.description
         }
-        this.$store.dispatch('createTeam', teamData)
-        this.$router.push('/applications/' + this.application_id + '/teams')
+        this.$store.dispatch('createUser', userData)
+        this.$router.push('/applications/' + this.application_id + '/users')
       }
     }
   }

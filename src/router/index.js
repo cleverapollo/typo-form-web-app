@@ -2,15 +2,19 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 
-import Profile from '@/components/User/Profile'
-import Signup from '@/components/User/Signup'
-import Signin from '@/components/User/Signin'
-import ResetPassword from '@/components/User/ResetPassword'
+import Profile from '@/components/Auth/Profile'
+import Signup from '@/components/Auth/Signup'
+import Signin from '@/components/Auth/Signin'
+import ResetPassword from '@/components/Auth/ResetPassword'
 import AcceptInvitation from '@/components/Shared/AcceptInvitation'
 
 import Teams from '@/components/Team/Teams'
 import CreateTeam from '@/components/Team/CreateTeam'
 import ShowTeam from '@/components/Team/ShowTeam'
+
+import Users from '@/components/User/Users'
+import CreateUser from '@/components/User/CreateUser'
+import ShowUser from '@/components/User/ShowUser'
 
 import Applications from '@/components/Application/Applications'
 import CreateApplication from '@/components/Application/CreateApplication'
@@ -87,6 +91,24 @@ const router = new Router({
       path: '/applications/:application_id/teams/show/:id',
       name: 'ShowTeam',
       component: ShowTeam,
+      props: true
+    },
+    {
+      path: '/applications/:application_id/users',
+      name: 'Users',
+      component: Users,
+      props: true
+    },
+    {
+      path: '/applications/:application_id/users/new',
+      name: 'CreateUser',
+      component: CreateUser,
+      props: true
+    },
+    {
+      path: '/applications/:application_id/users/show/:id',
+      name: 'ShowUser',
+      component: ShowUser,
       props: true
     },
     {
