@@ -3,6 +3,7 @@ const SIGNUP_URL = `${API_URL}register`
 const SIGNIN_URL = `${API_URL}login`
 const SIGNOUT_URL = `${API_URL}logout`
 const USER_URL = `${API_URL}user`
+const PASSWORD_RESET_URL = `${API_URL}password/reset/`
 const EMAIL_UPDATE_URL = `${API_URL}user/update-email`
 const PASSWORD_UPDATE_URL = `${API_URL}user/update-password`
 const INVITATION_URL = `${API_URL}invitation/`
@@ -159,6 +160,30 @@ export default {
         updateObj.password = payload.password
       }
       window.axios.put(PASSWORD_UPDATE_URL, updateObj)
+        .then(response => {
+          commit('setLoading', false)
+          commit('clearError')
+        })
+        .catch(error => {
+          console.log(error.response.data)
+          commit('setLoading', false)
+          commit('setError', error.response.data)
+        })
+    },
+    resetPassword ({commit}, payload) {
+      commit('setLoading', true)
+      let obj = {}
+      if (payload.password) {
+        obj.password = payload.password
+      }
+      if (payload.email) {
+        obj.email = payload.email
+      }
+      let token = ''
+      if (payload.token) {
+        token = payload.token
+      }
+      window.axios.post(PASSWORD_RESET_URL + token, obj)
         .then(response => {
           commit('setLoading', false)
           commit('clearError')

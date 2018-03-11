@@ -10,27 +10,38 @@
         <v-card>
           <v-card-text>
             <v-container>
-              <form @submit.prevent="onResetPassword">
+              <form @submit.prevent="onCreatePassword">
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
-                      name="email"
-                      label="Email"
-                      id="email"
-                      v-model="email"
-                      type="email"
+                      name="password"
+                      label="Password"
+                      id="password"
+                      v-model="password"
+                      type="password"
                       required></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs12>
+                    <v-text-field
+                      name="confirmPassword"
+                      label="Confirm Password"
+                      id="confirmPassword"
+                      v-model="confirmPassword"
+                      type="password"
+                      :rules="[comparePasswords]"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
                     <v-btn
                       block
-                      color="info"
+                      class="success"
                       type="submit"
                       :disabled="loading"
                       :loading="loading">
-                      Send instructions
+                      Create Password
                        <span slot="loader" class="custom-loader">
                         <v-icon light>cached</v-icon>
                        </span>
@@ -48,14 +59,16 @@
 
 <script>
   export default {
+    props: ['token'],
     data () {
       return {
-        email: ''
+        password: '',
+        confirmPassword: ''
       }
     },
     computed: {
-      user () {
-        return this.$store.getters.user
+      comparePasswords () {
+        return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
       },
       error () {
         return this.$store.getters.error
@@ -64,16 +77,9 @@
         return this.$store.getters.loading
       }
     },
-    watch: {
-      user (value) {
-        if (value !== null && value !== undefined) {
-          this.$router.push('/')
-        }
-      }
-    },
     methods: {
-      onResetPassword () {
-        this.$store.dispatch('resetPassword', {email: this.email})
+      onCreatePassword () {
+        this.$store.dispatch('resetPassword', {token: this.token, password: this.password})
       },
       onDismissed () {
         this.$store.dispatch('clearError')

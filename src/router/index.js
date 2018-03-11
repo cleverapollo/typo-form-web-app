@@ -5,6 +5,7 @@ import Home from '@/components/Home'
 import Profile from '@/components/Auth/Profile'
 import Signup from '@/components/Auth/Signup'
 import Signin from '@/components/Auth/Signin'
+import NewPassword from '@/components/Auth/NewPassword'
 import ResetPassword from '@/components/Auth/ResetPassword'
 import AcceptInvitation from '@/components/Shared/AcceptInvitation'
 
@@ -40,7 +41,14 @@ const router = new Router({
     {
       path: '/reset-password',
       name: 'ResetPassword',
-      component: ResetPassword
+      component: ResetPassword,
+      props: true
+    },
+    {
+      path: '/reset-password/:token',
+      name: 'NewPassword',
+      component: NewPassword,
+      props: true
     },
     {
       path: '/profile',
