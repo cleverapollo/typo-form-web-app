@@ -4,24 +4,26 @@ const USER_URL = `/user/`
 
 export default {
   state: {
-    loadedUsers: []
+    loadedUsers: [
+      {
+        id: 1,
+        email: 'email1@outlook.com',
+        first_name: 'First Name',
+        last_name: 'Last Name',
+        role: 'Admin'
+      }
+    ]
   },
   mutations: {
     setLoadedUsers (state, payload) {
       state.loadedUsers = payload
     },
-    createUser (state, payload) {
-      state.loadedUsers.push(payload)
-    },
     updateUser (state, payload) {
       const user = state.loadedUsers.find(user => {
         return user.applicationid === payload.applicationid && user.id === payload.id
       })
-      if (payload.name) {
-        user.name = payload.name
-      }
-      if (payload.description) {
-        user.description = payload.description
+      if (payload.role) {
+        user.role = payload.role
       }
     },
     deleteUser (state, payload) {
@@ -47,35 +49,13 @@ export default {
           }
         )
     },
-    createUser ({commit, getters}, payload) {
-      const user = {
-        name: payload.name,
-        description: payload.description
-      }
-      window.axios.post(APPLICATION_URL + payload.applicationid + USER_URL, user)
-        .then(
-          response => {
-            commit('setLoading', false)
-            commit('createUser', response['data']['user'])
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
-    },
-    updateUser ({commit}, applicationid, payload) {
+    updateUser ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
-      if (payload.name) {
-        updateObj.name = payload.name
+      if (payload.role) {
+        updateObj.role = payload.role
       }
-      if (payload.description) {
-        updateObj.description = payload.description
-      }
-      window.axios.put(APPLICATION_URL + applicationid + USER_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.applicationid + USER_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
           commit('updateUser', response['data']['user'])
@@ -85,9 +65,9 @@ export default {
           commit('setLoading', false)
         })
     },
-    deleteUser ({commit}, applicationid, payload) {
+    deleteUser ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + applicationid + USER_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.applicationid + USER_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteUser', payload)

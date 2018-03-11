@@ -11,18 +11,18 @@
     </v-layout>
     <v-layout row wrap v-else>
       <v-flex xs12>
-        <v-card>
+        <v-card v-if="user">
           <v-card-title>
-            <h1 class="primary--text">{{ user.name }}</h1>
-            <template v-if="userIsCreator">
-              <v-spacer></v-spacer>
-              <app-edit-user :user="user" :application_id="application_id"></app-edit-user>
-              <v-btn class="error" @click=onDeleteUser>Delete</v-btn>
-            </template>
+            <h1 class="primary--text">{{ user.email }}</h1>
           </v-card-title>
           <v-card-text>
-            <div>{{ user.description }}</div>
+            <h3>{{ user.first_name }} {{ user.last_name }} - {{ user.role }}</h3>
           </v-card-text>
+          <v-card-actions v-if="userIsCreator">
+            <v-spacer></v-spacer>
+            <app-edit-user :user="user" :application_id="application_id"></app-edit-user>
+            <v-btn class="error" @click=onDeleteUser>Delete</v-btn>
+          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -53,14 +53,14 @@
     methods: {
       onDeleteUser () {
         this.$store.dispatch('deleteUser', {
-          application_id: parseInt(this.application_id),
-          id: this.form.id
+          applicationid: this.application_id,
+          id: this.user.id
         })
         this.$router.push('/applications/' + this.application_id + '/users')
       }
     },
     created: function () {
-      this.$store.dispatch('loadUsers', this.application_id)
+      // this.$store.dispatch('loadUsers', this.application_id)
     }
   }
 </script>

@@ -13,7 +13,6 @@ import CreateTeam from '@/components/Team/CreateTeam'
 import ShowTeam from '@/components/Team/ShowTeam'
 
 import Users from '@/components/User/Users'
-import CreateUser from '@/components/User/CreateUser'
 import ShowUser from '@/components/User/ShowUser'
 
 import Applications from '@/components/Application/Applications'
@@ -97,12 +96,6 @@ const router = new Router({
       path: '/applications/:application_id/users',
       name: 'Users',
       component: Users,
-      props: true
-    },
-    {
-      path: '/applications/:application_id/users/new',
-      name: 'CreateUser',
-      component: CreateUser,
       props: true
     },
     {

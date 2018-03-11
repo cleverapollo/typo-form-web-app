@@ -2,7 +2,7 @@
   <v-container>
     <v-layout row wrap class="mb-2">
       <v-flex xs12>
-        <v-btn router @click=onCreateUser() class="primary">New User</v-btn>
+        <app-invite-application :application="application"></app-invite-application>
         <v-data-table
           :headers="headers"
           :items="users"
@@ -10,8 +10,10 @@
           class="elevation-1"
         >
           <template slot="items" slot-scope="props">
-            <td @click=onLoadUser(props.item.id)>{{ props.item.name }}</td>
-            <td @click=onLoadUser(props.item.id)>{{ props.item.description }}</td>
+            <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
+            <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
+            <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
+            <td @click=onLoadUser(props.item.id)>{{ props.item.role }}</td>
           </template>
         </v-data-table>
       </v-flex>
@@ -26,12 +28,17 @@
     data () {
       return {
         headers: [
-          { text: 'Name', value: 'name', sortable: false, align: 'left' },
-          { text: 'Description', value: 'description', sortable: false, align: 'left' }
+          { text: 'First Name', value: 'first_name', sortable: false, align: 'left' },
+          { text: 'Last Name', value: 'last_name', sortable: false, align: 'left' },
+          { text: 'Email', value: 'email', sortable: false, align: 'left' },
+          { text: 'Role', value: 'role', sortable: false, align: 'left' }
         ]
       }
     },
     computed: {
+      application () {
+        return this.$store.getters.loadedApplication(parseInt(this.id))
+      },
       users () {
         return this.$store.getters.loadedUsers
       },
@@ -42,13 +49,10 @@
     methods: {
       onLoadUser (id) {
         this.$router.push('/applications/' + this.application_id + '/users/show/' + id)
-      },
-      onCreateUser () {
-        this.$router.push('/applications/' + this.application_id + '/users/new')
       }
     },
     created: function () {
-      this.$store.dispatch('loadUsers', this.application_id)
+      // this.$store.dispatch('loadUsers', this.application_id)
     }
   }
 </script>

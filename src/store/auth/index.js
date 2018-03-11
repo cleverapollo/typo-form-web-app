@@ -105,7 +105,7 @@ export default {
           }
         )
     },
-    updateUser ({commit}, payload) {
+    updateAuth ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
       if (payload.first_name) {

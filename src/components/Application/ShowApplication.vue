@@ -17,7 +17,7 @@
           </v-card-title>
           <v-card-text>
             <v-list>
-              <v-list-tile v-for="item in items" :key="item.title" @click="onList(item.type)">
+              <v-list-tile v-for="item in items" :key="item.title" @click="onList(item.type)" v-if="showUsersToAdmin(item.type)">
                 <v-list-tile-content>
                   <v-list-tile-title v-text="item.title"></v-list-tile-title>
                 </v-list-tile-content>
@@ -25,7 +25,6 @@
             </v-list>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
-            <app-invite-application :application="application"></app-invite-application>
             <v-spacer></v-spacer>
             <app-edit-application :application="application"></app-edit-application>
             <v-btn class="error" @click=onDeleteApplication>Delete</v-btn>
@@ -79,6 +78,9 @@
       },
       onList (type) {
         this.$router.push('/applications/' + this.id + '/' + type)
+      },
+      showUsersToAdmin (type) {
+        return type !== 'users' || this.userIsAdmin
       }
     },
     created: function () {

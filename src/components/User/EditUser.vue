@@ -15,17 +15,18 @@
           <v-flex xs12>
             <v-card-text>
               <v-text-field
-                name="name"
-                label="Name"
-                id="name"
-                v-model="editedName"
-                required></v-text-field>
-              <v-text-field
-                name="description"
-                label="Description"
-                id="description"
-                v-model="editedDescription">
-              </v-text-field>
+                name="email"
+                label="Email"
+                id="email"
+                v-model="editedEmail"
+                type="email"
+                disabled></v-text-field>
+              <v-select
+                :items="['User', 'Admin']"
+                v-model="editedRole"
+                label="Role"
+                single-line
+              ></v-select>
             </v-card-text>
           </v-flex>
         </v-layout>
@@ -67,27 +68,26 @@
       return {
         id: this.user.id,
         editUser: false,
-        editedName: this.user.name,
-        editedDescription: this.user.description
+        editedEmail: this.user.email,
+        editedRole: this.user.role
       }
     },
     methods: {
       onSaveChanges () {
-        if (this.editedName.trim() === '') {
-          return
-        }
         this.editUser = false
-        this.$store.dispatch('updateUser',
-          parseInt(this.application_id),
-          {
-            id: this.id,
-            name: this.editedName,
-            description: this.editedDescription
-          })
+        if (this.editedRole.trim() !== this.user.role) {
+          this.$store.dispatch('updateUser',
+            {
+              applicationid: this.application_id,
+              id: this.id,
+              email: this.editedEmail,
+              role: this.editedRole
+            })
+        }
       },
       onCancel () {
-        this.editedName = this.user.name
-        this.editedDescription = this.user.description
+        this.editedEmail = this.user.email
+        this.editedRole = this.user.role
         this.editUser = false
       }
     },
@@ -98,9 +98,6 @@
       loading () {
         return this.$store.getters.loading
       }
-    },
-    created: function () {
-      this.$store.dispatch('loadUsers', this.application_id)
     }
   }
 </script>
