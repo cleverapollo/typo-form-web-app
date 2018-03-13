@@ -52,7 +52,7 @@
       }
     },
     created: function () {
-      // this.$store.dispatch('loadUsers', this.application_id)
+      this.$store.dispatch('loadUsers', this.application_id)
     }
   }
 </script>

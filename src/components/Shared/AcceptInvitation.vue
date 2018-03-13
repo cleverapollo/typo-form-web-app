@@ -10,7 +10,7 @@
 
 <script>
   export default {
-    props: ['token'],
+    props: ['type', 'token'],
     data () {
       return {
         messageString: 'Thank you for accepting the invitation'
@@ -30,7 +30,7 @@
     },
     created: function () {
       if (this.token.trim() !== '') {
-        this.$store.dispatch('acceptInvitation', {token: this.token})
+        this.$store.dispatch('acceptInvitation', {type: this.type, token: this.token})
       }
     }
   }

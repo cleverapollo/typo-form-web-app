@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
-const USER_URL = `/user/`
+const USER_URL = `/users/`
 
 export default {
   state: {

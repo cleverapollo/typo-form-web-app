@@ -1,3 +1,6 @@
+const API_URL = process.env.API_URL
+const INVITATION_URL = `${API_URL}invitation/`
+
 export default {
   state: {
     loading: false,
@@ -15,6 +18,22 @@ export default {
     }
   },
   actions: {
+    acceptInvitation ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.post(INVITATION_URL + payload.type + '/' + payload.token)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setUser', response['data']['user'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            commit('setError', error.response)
+          }
+        )
+    },
     clearError ({commit}) {
       commit('clearError')
     }

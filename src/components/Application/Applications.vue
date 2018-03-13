@@ -35,7 +35,7 @@
         return this.$store.getters.loading
       },
       userIsSuper () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined && this.$store.getters.user.role === 'Super'
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined && this.$store.getters.user.role === 'SuperAdmin'
       }
     },
     methods: {

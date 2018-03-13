@@ -6,7 +6,6 @@ const USER_URL = `${API_URL}user`
 const PASSWORD_RESET_URL = `${API_URL}password/reset/`
 const EMAIL_UPDATE_URL = `${API_URL}user/update-email`
 const PASSWORD_UPDATE_URL = `${API_URL}user/update-password`
-const INVITATION_URL = `${API_URL}invitation/`
 
 export default {
   state: {
@@ -14,10 +13,6 @@ export default {
   },
   mutations: {
     setUser (state, payload) {
-      if (payload) {
-        localStorage.setItem('token', payload['api_token'])
-        window.axios.defaults.headers.common['api_token'] = localStorage.getItem('token')
-      }
       state.user = payload
     }
   },
@@ -31,7 +26,10 @@ export default {
             .then(
               response => {
                 commit('setLoading', false)
-                commit('setUser', response['data']['user'])
+                const user = response['data']['user']
+                localStorage.setItem('token', user['api_token'])
+                window.axios.defaults.headers.common['api_token'] = user['api_token']
+                commit('setUser', user)
               }
             )
             .catch(
@@ -57,7 +55,10 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setUser', response['data']['user'])
+            const user = response['data']['user']
+            localStorage.setItem('token', user['api_token'])
+            window.axios.defaults.headers.common['api_token'] = user['api_token']
+            commit('setUser', user)
           }
         )
         .catch(
@@ -75,7 +76,7 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setUser', response['data'])
+            commit('setUser', response['data']['user'])
           }
         )
         .catch(
@@ -89,22 +90,6 @@ export default {
       window.axios.post(SIGNOUT_URL)
       commit('setUser', null)
       localStorage.removeItem('token')
-    },
-    acceptInvitation ({commit}, payload) {
-      commit('setLoading', true)
-      window.axios.get(INVITATION_URL + payload.token)
-        .then(
-          response => {
-            commit('setLoading', false)
-            commit('setUser', response['data']['user'])
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            commit('setError', error.response)
-          }
-        )
     },
     updateAuth ({commit}, payload) {
       commit('setLoading', true)

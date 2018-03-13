@@ -56,7 +56,7 @@ const router = new Router({
       component: Profile
     },
     {
-      path: '/invitation/:token',
+      path: '/invitation/:type/:token',
       name: 'AcceptInvitation',
       component: AcceptInvitation,
       props: true

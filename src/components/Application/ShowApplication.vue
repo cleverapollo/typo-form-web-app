@@ -49,12 +49,7 @@
     },
     computed: {
       application () {
-        // return this.$store.getters.loadedApplication(parseInt(this.id))
-        let loadedApplication = this.$store.getters.loadedApplication(parseInt(this.id))
-        if (loadedApplication) {
-          loadedApplication.pivot.role = 'Admin'
-        }
-        return loadedApplication
+        return this.$store.getters.loadedApplication(parseInt(this.id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -63,7 +58,8 @@
         if (!this.userIsAuthenticated) {
           return false
         }
-        return this.application.pivot.role === 'Admin'
+        // return this.application.pivot.role === 'Admin' || this.application.pivot.role === 'SuperAdmin'
+        return true
       },
       loading () {
         return this.$store.getters.loading
