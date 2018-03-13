@@ -11,6 +11,7 @@ import EditPassword from './components/Auth/EditProfile/EditPassword.vue'
 import EditApplication from './components/Application/EditApplication.vue'
 import InviteApplication from './components/Application/InviteApplication.vue'
 import EditTeam from './components/Team/EditTeam.vue'
+import InviteTeam from './components/Team/InviteTeam.vue'
 import EditUser from './components/User/EditUser.vue'
 import EditForm from './components/Form/EditForm.vue'
 
@@ -25,6 +26,7 @@ Vue.component('app-edit-email', EditEmail)
 Vue.component('app-edit-password', EditPassword)
 Vue.component('app-edit-application', EditApplication)
 Vue.component('app-invite-application', InviteApplication)
+Vue.component('app-invite-team', InviteTeam)
 Vue.component('app-edit-team', EditTeam)
 Vue.component('app-edit-user', EditUser)
 Vue.component('app-edit-form', EditForm)

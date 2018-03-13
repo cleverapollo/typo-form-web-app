@@ -67,6 +67,20 @@ export default {
           }
         )
     },
+    inviteTeam ({commit, getters}, payload) {
+      window.axios.post(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id + '/invite', payload.invitations)
+        .then(
+          response => {
+            commit('setLoading', false)
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
     updateTeam ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}

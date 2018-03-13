@@ -5,6 +5,7 @@ import application from './application'
 import team from './team'
 import form from './form'
 import user from './user'
+import teamuser from './teamuser'
 import auth from './auth'
 import shared from './shared'
 
@@ -17,6 +18,7 @@ export const store = new Vuex.Store({
     team: team,
     form: form,
     user: user,
+    teamuser: teamuser,
     shared: shared
   }
 })

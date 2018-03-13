@@ -33,18 +33,20 @@
   export default {
     props: ['application_id', 'id'],
     computed: {
+      application () {
+        return this.$store.getters.loadedApplication(parseInt(this.application_id))
+      },
       user () {
         return this.$store.getters.loadedUser(parseInt(this.id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
-      userIsCreator () {
+      userIsAdmin () {
         if (!this.userIsAuthenticated) {
           return false
         }
-        return true
-        // return this.$store.getters.user.id === this.user.creatorId
+        return this.application.pivot.role === 'Admin' || this.application.pivot.role === 'SuperAdmin'
       },
       loading () {
         return this.$store.getters.loading

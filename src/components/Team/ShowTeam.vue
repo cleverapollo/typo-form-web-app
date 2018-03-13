@@ -16,7 +16,21 @@
             <h1 class="primary--text">{{ team.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <div>{{ team.description }}</div>
+            <h3>{{ team.description }}</h3>
+            <app-invite-team :application_id="application_id" :team_id="id"></app-invite-team>
+            <v-data-table
+              :headers="headers"
+              :items="users"
+              hide-actions
+              class="elevation-1"
+            >
+              <template slot="items" slot-scope="props">
+                <td>{{ props.item.first_name }}</td>
+                <td>{{ props.item.last_name }}</td>
+                <td>{{ props.item.email }}</td>
+                <td>{{ props.item.pivot.role }}</td>
+              </template>
+            </v-data-table>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
@@ -32,14 +46,19 @@
 <script>
   export default {
     props: ['application_id', 'id'],
+    data () {
+      return {
+        headers: [
+          { text: 'First Name', value: 'first_name', sortable: false, align: 'left' },
+          { text: 'Last Name', value: 'last_name', sortable: false, align: 'left' },
+          { text: 'Email', value: 'email', sortable: false, align: 'left' },
+          { text: 'Role', value: 'role', sortable: false, align: 'left' }
+        ]
+      }
+    },
     computed: {
       team () {
-        // return this.$store.getters.loadedTeam(parseInt(this.id))
-        let loadedTeam = this.$store.getters.loadedTeam(parseInt(this.id))
-        if (loadedTeam) {
-          // loadedTeam.pivot.role = 'Admin'
-        }
-        return loadedTeam
+        return this.$store.getters.loadedTeam(parseInt(this.id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -48,11 +67,13 @@
         if (!this.userIsAuthenticated) {
           return false
         }
-        return true
-        // return this.team.pivot.role === 'Admin'
+        return this.team.pivot.role === 'Admin'
       },
       loading () {
         return this.$store.getters.loading
+      },
+      users () {
+        return this.$store.getters.loadedTeamUsers
       }
     },
     methods: {
@@ -66,6 +87,7 @@
     },
     created: function () {
       this.$store.dispatch('loadTeams', this.application_id)
+      this.$store.dispatch('loadTeamUsers', {applicationid: this.application_id, teamid: this.id})
     }
   }
 </script>
