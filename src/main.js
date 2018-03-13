@@ -14,6 +14,7 @@ import EditTeam from './components/Team/EditTeam.vue'
 import InviteTeam from './components/Team/InviteTeam.vue'
 import EditUser from './components/User/EditUser.vue'
 import EditForm from './components/Form/EditForm.vue'
+import EditTeamUser from './components/Team/EditTeamUser.vue'
 
 import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
@@ -30,6 +31,7 @@ Vue.component('app-invite-team', InviteTeam)
 Vue.component('app-edit-team', EditTeam)
 Vue.component('app-edit-user', EditUser)
 Vue.component('app-edit-form', EditForm)
+Vue.component('app-edit-teamuser', EditTeamUser)
 
 /* eslint-disable no-new */
 new Vue({

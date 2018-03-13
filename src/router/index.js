@@ -12,6 +12,7 @@ import AcceptInvitation from '@/components/Shared/AcceptInvitation'
 import Teams from '@/components/Team/Teams'
 import CreateTeam from '@/components/Team/CreateTeam'
 import ShowTeam from '@/components/Team/ShowTeam'
+import ShowTeamUser from '@/components/Team/ShowTeamUser'
 
 import Users from '@/components/User/Users'
 import ShowUser from '@/components/User/ShowUser'
@@ -98,6 +99,12 @@ const router = new Router({
       path: '/applications/:application_id/teams/show/:id',
       name: 'ShowTeam',
       component: ShowTeam,
+      props: true
+    },
+    {
+      path: '/applications/:application_id/teams/:team_id/users/:id',
+      name: 'ShowTeamUser',
+      component: ShowTeamUser,
       props: true
     },
     {

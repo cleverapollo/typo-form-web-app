@@ -25,10 +25,10 @@
               class="elevation-1"
             >
               <template slot="items" slot-scope="props">
-                <td>{{ props.item.first_name }}</td>
-                <td>{{ props.item.last_name }}</td>
-                <td>{{ props.item.email }}</td>
-                <td>{{ props.item.pivot.role }}</td>
+                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.first_name }}</td>
+                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.last_name }}</td>
+                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.email }}</td>
+                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.pivot.role }}</td>
               </template>
             </v-data-table>
           </v-card-text>
@@ -83,6 +83,9 @@
           id: this.team.id
         })
         this.$router.push('/applications/' + this.application_id + '/teams')
+      },
+      onLoadTeamUser (id) {
+        this.$router.push('/applications/' + this.application_id + '/teams/' + this.id + '/users/' + id)
       }
     },
     created: function () {
