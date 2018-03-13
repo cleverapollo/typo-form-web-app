@@ -69,13 +69,13 @@
         id: this.user.id,
         editUser: false,
         editedEmail: this.user.email,
-        editedRole: this.user.role
+        editedRole: this.user.pivot.role
       }
     },
     methods: {
       onSaveChanges () {
         this.editUser = false
-        if (this.editedRole.trim() !== this.user.role) {
+        if (this.editedRole.trim() !== this.user.pivot.role) {
           this.$store.dispatch('updateUser',
             {
               applicationid: this.application_id,
@@ -87,7 +87,7 @@
       },
       onCancel () {
         this.editedEmail = this.user.email
-        this.editedRole = this.user.role
+        this.editedRole = this.user.pivot.role
         this.editUser = false
       }
     },

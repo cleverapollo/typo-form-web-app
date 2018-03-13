@@ -82,7 +82,7 @@
 
 <script>
   export default {
-    props: ['application'],
+    props: ['application_id'],
     data () {
       return {
         inviteApplication: false,
@@ -107,12 +107,11 @@
         const invitations = this.invitations.filter(function (item) {
           return item.email.trim() !== ''
         })
-        console.log(invitations)
         if (!invitations.length) {
           return
         }
         this.inviteApplication = false
-        this.$store.dispatch('inviteApplication', invitations)
+        this.$store.dispatch('inviteApplication', {invitations: invitations, id: this.application_id})
       },
       onCancel () {
         this.invitations = [

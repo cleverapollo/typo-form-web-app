@@ -75,7 +75,6 @@ export default {
   data () {
     return {
       drawer: null,
-      sideNav: false,
       title: 'Informed 365'
     }
   },
@@ -89,20 +88,6 @@ export default {
         menuItems = [
           {icon: 'account_circle', title: 'My account', link: '/profile'},
           {icon: 'apps', title: 'Applications', link: '/applications'}
-        ]
-      }
-      return menuItems
-    },
-    toolbarIteams () {
-      let menuItems = [
-        {icon: 'face', title: 'Sign up', link: '/signup'},
-        {icon: 'lock_open', title: 'Sign in', link: '/signin'}
-      ]
-      if (this.userIsAuthenticated) {
-        menuItems = [
-          {icon: 'add', link: '/add'},
-          {icon: 'info_outline', link: '/info'},
-          {icon: 'notifications_none', link: '/notifications'}
         ]
       }
       return menuItems

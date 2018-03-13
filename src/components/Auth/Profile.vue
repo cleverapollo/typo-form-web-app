@@ -145,14 +145,6 @@
           this.lastname = value.last_name
           this.email = value.email
         }
-      },
-      loading (value) {
-        if (!value && !this.error && this.editProfile) {
-          this.$router.push('/')
-        }
-        if (!value) {
-          this.editProfile = false
-        }
       }
     },
     methods: {
@@ -163,10 +155,11 @@
           return
         }
         this.editProfile = true
-        this.$store.dispatch('updateAuth', {id: this.user.id, first_name: this.firstname, last_name: this.lastname})
+        this.$store.dispatch('updateAuth', {first_name: this.firstname, last_name: this.lastname})
       },
       onDestroyUser () {
-        this.$store.dispatch('destroyUser', {id: this.user.id})
+        this.$store.dispatch('destroyUser')
+        this.$router.push('/signin')
       }
     },
     created: function () {

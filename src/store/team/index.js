@@ -15,7 +15,7 @@ export default {
     },
     updateTeam (state, payload) {
       const team = state.loadedTeams.find(team => {
-        return team.applicationid === payload.applicationid && team.id === payload.id
+        return team.id === payload.id
       })
       if (payload.name) {
         team.name = payload.name
@@ -26,7 +26,7 @@ export default {
     },
     deleteTeam (state, payload) {
       state.loadedTeams = state.loadedTeams.filter(e => {
-        return e.id !== payload.id || e.applicationid !== payload.applicationid
+        return e.id !== payload.id
       })
     }
   },

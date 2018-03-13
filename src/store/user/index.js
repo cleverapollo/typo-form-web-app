@@ -4,15 +4,7 @@ const USER_URL = `/users/`
 
 export default {
   state: {
-    loadedUsers: [
-      {
-        id: 1,
-        email: 'email1@outlook.com',
-        first_name: 'First Name',
-        last_name: 'Last Name',
-        role: 'Admin'
-      }
-    ]
+    loadedUsers: []
   },
   mutations: {
     setLoadedUsers (state, payload) {
@@ -20,7 +12,7 @@ export default {
     },
     updateUser (state, payload) {
       const user = state.loadedUsers.find(user => {
-        return user.applicationid === payload.applicationid && user.id === payload.id
+        return user.id === payload.id
       })
       if (payload.role) {
         user.role = payload.role
@@ -28,7 +20,7 @@ export default {
     },
     deleteUser (state, payload) {
       state.loadedUsers = state.loadedUsers.filter(e => {
-        return e.id !== payload.id || e.applicationid !== payload.applicationid
+        return e.id !== payload.id
       })
     }
   },

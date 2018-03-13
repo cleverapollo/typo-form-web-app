@@ -2,7 +2,7 @@
   <v-container>
     <v-layout row wrap class="mb-2">
       <v-flex xs12>
-        <app-invite-application :application="application"></app-invite-application>
+        <app-invite-application :application_id="application_id"></app-invite-application>
         <v-data-table
           :headers="headers"
           :items="users"
@@ -13,7 +13,7 @@
             <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
             <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
             <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
-            <td @click=onLoadUser(props.item.id)>{{ props.item.role }}</td>
+            <td @click=onLoadUser(props.item.id)>{{ props.item.pivot.role }}</td>
           </template>
         </v-data-table>
       </v-flex>

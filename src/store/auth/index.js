@@ -2,7 +2,7 @@ const API_URL = process.env.API_URL
 const SIGNUP_URL = `${API_URL}register`
 const SIGNIN_URL = `${API_URL}login`
 const SIGNOUT_URL = `${API_URL}logout`
-const USER_URL = `${API_URL}user`
+const USER_URL = `${API_URL}user/`
 const PASSWORD_RESET_URL = `${API_URL}password/reset/`
 const EMAIL_UPDATE_URL = `${API_URL}user/update-email`
 const PASSWORD_UPDATE_URL = `${API_URL}user/update-password`
@@ -87,12 +87,14 @@ export default {
         )
     },
     logout ({commit}) {
+      commit('clearError')
       window.axios.post(SIGNOUT_URL)
       commit('setUser', null)
       localStorage.removeItem('token')
     },
     updateAuth ({commit}, payload) {
       commit('setLoading', true)
+      commit('clearError')
       const updateObj = {}
       if (payload.first_name) {
         updateObj.first_name = payload.first_name
@@ -100,10 +102,9 @@ export default {
       if (payload.last_name) {
         updateObj.last_name = payload.last_name
       }
-      window.axios.put(USER_URL + '/' + payload.id, updateObj)
+      window.axios.put(USER_URL, updateObj)
         .then(response => {
           commit('setLoading', false)
-          payload.api_token = localStorage.getItem('token')
           commit('setUser', response['data']['user'])
           commit('clearError')
         })
@@ -115,6 +116,7 @@ export default {
     },
     updateEmail ({commit}, payload) {
       commit('setLoading', true)
+      commit('clearError')
       const updateObj = {}
       if (payload.email) {
         updateObj.email = payload.email
@@ -125,7 +127,6 @@ export default {
       window.axios.put(EMAIL_UPDATE_URL, updateObj)
         .then(response => {
           commit('setLoading', false)
-          payload.api_token = localStorage.getItem('token')
           commit('setUser', response['data']['user'])
           commit('clearError')
         })
@@ -137,6 +138,7 @@ export default {
     },
     updatePassword ({commit}, payload) {
       commit('setLoading', true)
+      commit('clearError')
       const updateObj = {}
       if (payload.newPassword) {
         updateObj.newPassword = payload.newPassword
@@ -157,6 +159,7 @@ export default {
     },
     resetPassword ({commit}, payload) {
       commit('setLoading', true)
+      commit('clearError')
       let obj = {}
       if (payload.password) {
         obj.password = payload.password
@@ -179,8 +182,9 @@ export default {
           commit('setError', error.response.data)
         })
     },
-    destroyUser ({commit}, payload) {
-      window.axios.delete(USER_URL + '/' + payload.id)
+    destroyUser ({commit}) {
+      commit('clearError')
+      window.axios.delete(USER_URL)
       commit('setUser', null)
       localStorage.removeItem('token')
     }

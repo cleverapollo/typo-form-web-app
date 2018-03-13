@@ -15,7 +15,7 @@ export default {
     },
     updateForm (state, payload) {
       const form = state.loadedForms.find(form => {
-        return form.applicationid === payload.applicationid && form.id === payload.id
+        return form.id === payload.id
       })
       if (payload.name) {
         form.name = payload.name
@@ -23,7 +23,7 @@ export default {
     },
     deleteForm (state, payload) {
       state.loadedForms = state.loadedForms.filter(e => {
-        return e.id !== payload.id || e.applicationid !== payload.applicationid
+        return e.id !== payload.id
       })
     }
   },

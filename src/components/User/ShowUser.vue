@@ -16,7 +16,7 @@
             <h1 class="primary--text">{{ user.email }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{ user.first_name }} {{ user.last_name }} - {{ user.role }}</h3>
+            <h3>{{ user.first_name }} {{ user.last_name }} - {{ user.pivot.role }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsCreator">
             <v-spacer></v-spacer>
