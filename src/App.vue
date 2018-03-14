@@ -75,25 +75,29 @@ export default {
   data () {
     return {
       drawer: null,
-      title: 'Informed 365'
-    }
-  },
-  computed: {
-    menuItems () {
-      let menuItems = [
+      title: 'Informed 365',
+      menuItems: [
         {icon: 'face', title: 'Sign up', link: '/signup'},
         {icon: 'lock_open', title: 'Sign in', link: '/signin'}
       ]
-      if (this.userIsAuthenticated) {
-        menuItems = [
+    }
+  },
+  computed: {
+    user () {
+      return this.$store.getters.user
+    },
+    userIsAuthenticated () {
+      return this.user !== null && this.user !== undefined
+    }
+  },
+  watch: {
+    user (value) {
+      if (value !== null && value !== undefined) {
+        this.menuItems = [
           {icon: 'account_circle', title: 'My account', link: '/profile'},
           {icon: 'apps', title: 'Applications', link: '/applications'}
         ]
       }
-      return menuItems
-    },
-    userIsAuthenticated () {
-      return this.$store.getters.user !== null && this.$store.getters.user !== undefined
     }
   },
   methods: {

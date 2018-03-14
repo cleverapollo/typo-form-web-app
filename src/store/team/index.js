@@ -68,7 +68,10 @@ export default {
         )
     },
     inviteTeam ({commit, getters}, payload) {
-      window.axios.post(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id + '/invite', payload.invitations)
+      const team = {
+        invitations: payload.invitations
+      }
+      window.axios.post(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id + '/invite', team)
         .then(
           response => {
             commit('setLoading', false)

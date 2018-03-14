@@ -1,5 +1,6 @@
 const API_URL = process.env.API_URL
 const INVITATION_URL = `${API_URL}invitation/`
+const JOIN_URL = `${API_URL}join/`
 
 export default {
   state: {
@@ -21,6 +22,24 @@ export default {
     acceptInvitation ({commit}, payload) {
       commit('setLoading', true)
       window.axios.post(INVITATION_URL + payload.type + '/' + payload.token)
+        .then(
+          response => {
+            commit('setLoading', false)
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            commit('setError', error.response)
+          }
+        )
+    },
+    acceptJoin ({commit}, payload) {
+      commit('setLoading', true)
+      const user = {
+        email: payload.email
+      }
+      window.axios.post(JOIN_URL + payload.type + '/' + payload.token, user)
         .then(
           response => {
             commit('setLoading', false)

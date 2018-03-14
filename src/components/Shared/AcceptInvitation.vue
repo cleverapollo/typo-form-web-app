@@ -13,12 +13,15 @@
     props: ['type', 'token'],
     data () {
       return {
-        messageString: 'Thank you for accepting the invitation'
+        messageString: 'Please Sign in'
       }
     },
     computed: {
       error () {
         return this.$store.getters.error
+      },
+      user () {
+        return this.$store.getters.user
       }
     },
     watch: {
@@ -26,11 +29,12 @@
         if (value) {
           this.messageString = 'Sorry but the invitation is not correct'
         }
-      }
-    },
-    created: function () {
-      if (this.token.trim() !== '') {
-        this.$store.dispatch('acceptInvitation', {type: this.type, token: this.token})
+      },
+      user (value) {
+        if (this.token.trim() !== '' && value !== null && value !== undefined) {
+          this.$store.dispatch('acceptInvitation', {type: this.type, token: this.token})
+          this.messageString = 'Thanks for accepting the invitations'
+        }
       }
     }
   }
