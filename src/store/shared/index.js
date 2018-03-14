@@ -36,10 +36,7 @@ export default {
     },
     acceptJoin ({commit}, payload) {
       commit('setLoading', true)
-      const user = {
-        email: payload.email
-      }
-      window.axios.post(JOIN_URL + payload.type + '/' + payload.token, user)
+      window.axios.post(JOIN_URL + payload.type + '/' + payload.token)
         .then(
           response => {
             commit('setLoading', false)

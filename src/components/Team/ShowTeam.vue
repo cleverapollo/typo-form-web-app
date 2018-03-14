@@ -14,6 +14,8 @@
         <v-card v-if="team">
           <v-card-title>
             <h1 class="primary--text">{{ team.name }}</h1>
+            <v-spacer></v-spacer>
+            <h3>{{joinURL}}</h3>
           </v-card-title>
           <v-card-text>
             <h3>{{ team.description }}</h3>
@@ -74,6 +76,9 @@
       },
       users () {
         return this.$store.getters.loadedTeamUsers
+      },
+      joinURL () {
+        return window.origin + '/join/team/' + this.team.share_token
       }
     },
     methods: {

@@ -14,6 +14,8 @@
         <v-card v-if="application">
           <v-card-title>
             <h1 class="primary--text">{{ application.name }}</h1>
+            <v-spacer></v-spacer>
+            <h3>{{joinURL}}</h3>
           </v-card-title>
           <v-card-text>
             <v-list>
@@ -62,6 +64,9 @@
       },
       loading () {
         return this.$store.getters.loading
+      },
+      joinURL () {
+        return window.origin + '/join/application/' + this.application.share_token
       }
     },
     methods: {

@@ -8,6 +8,7 @@ import Signin from '@/components/Auth/Signin'
 import NewPassword from '@/components/Auth/NewPassword'
 import ResetPassword from '@/components/Auth/ResetPassword'
 import AcceptInvitation from '@/components/Shared/AcceptInvitation'
+import AcceptJoin from '@/components/Shared/AcceptJoin'
 
 import Teams from '@/components/Team/Teams'
 import CreateTeam from '@/components/Team/CreateTeam'
@@ -60,6 +61,12 @@ const router = new Router({
       path: '/invitation/:type/:token',
       name: 'AcceptInvitation',
       component: AcceptInvitation,
+      props: true
+    },
+    {
+      path: '/join/:type/:token',
+      name: 'AcceptJoin',
+      component: AcceptJoin,
       props: true
     },
     {
