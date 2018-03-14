@@ -16,9 +16,9 @@
             <h1 class="primary--text">{{ user.email }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{ user.first_name }} {{ user.last_name }} - {{ user.pivot.role }}</h3>
+            <h3>{{ user.first_name }} {{ user.last_name }} - {{ user.application_pivot.role }}</h3>
           </v-card-text>
-          <v-card-actions v-if="userIsCreator">
+          <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
             <app-edit-user :user="user" :application_id="application_id"></app-edit-user>
             <v-btn class="error" @click=onDeleteUser>Delete</v-btn>

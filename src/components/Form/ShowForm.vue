@@ -46,7 +46,7 @@
           return false
         }
         return true
-        // return this.team.pivot.role === 'Admin'
+        // return this.form.pivot.role === 'Admin'
       },
       loading () {
         return this.$store.getters.loading

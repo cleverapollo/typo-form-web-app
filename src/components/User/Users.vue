@@ -2,7 +2,7 @@
   <v-container>
     <v-layout row wrap class="mb-2">
       <v-flex xs12>
-        <app-invite-application :application_id="application_id"></app-invite-application>
+        <app-invite-application :application_id="application_id"  v-if="userIsAdmin"></app-invite-application>
         <v-data-table
           :headers="headers"
           :items="users"
@@ -13,7 +13,7 @@
             <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
             <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
             <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
-            <td @click=onLoadUser(props.item.id)>{{ props.item.pivot.role }}</td>
+            <td @click=onLoadUser(props.item.id)>{{ props.item.application_pivot.role }}</td>
           </template>
         </v-data-table>
       </v-flex>
@@ -37,13 +37,22 @@
     },
     computed: {
       application () {
-        return this.$store.getters.loadedApplication(parseInt(this.id))
+        return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
       users () {
         return this.$store.getters.loadedUsers
       },
       loading () {
         return this.$store.getters.loading
+      },
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      userIsAdmin () {
+        if (!this.userIsAuthenticated) {
+          return false
+        }
+        return this.application.pivot.role === 'Admin' || this.application.pivot.role === 'SuperAdmin'
       }
     },
     methods: {
@@ -52,6 +61,7 @@
       }
     },
     created: function () {
+      this.$store.dispatch('loadApplications')
       this.$store.dispatch('loadUsers', this.application_id)
     }
   }

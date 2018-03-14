@@ -19,7 +19,7 @@
           </v-card-title>
           <v-card-text>
             <h3>{{ team.description }}</h3>
-            <app-invite-team :application_id="application_id" :team_id="id"></app-invite-team>
+            <app-invite-team :application_id="application_id" :team_id="id" v-if="userIsAdmin"></app-invite-team>
             <v-data-table
               :headers="headers"
               :items="users"
@@ -30,7 +30,7 @@
                 <td @click=onLoadTeamUser(props.item.id)>{{ props.item.first_name }}</td>
                 <td @click=onLoadTeamUser(props.item.id)>{{ props.item.last_name }}</td>
                 <td @click=onLoadTeamUser(props.item.id)>{{ props.item.email }}</td>
-                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.pivot.role }}</td>
+                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.team_pivot.role }}</td>
               </template>
             </v-data-table>
           </v-card-text>

@@ -69,13 +69,13 @@
         id: this.user.id,
         editTeamUser: false,
         editedEmail: this.user.email,
-        editedRole: this.user.pivot.role
+        editedRole: this.user.team_pivot.role
       }
     },
     methods: {
       onSaveChanges () {
         this.editTeamUser = false
-        if (this.editedRole.trim() !== this.user.pivot.role) {
+        if (this.editedRole.trim() !== this.user.team_pivot.role) {
           this.$store.dispatch('updateTeamUser',
             {
               applicationid: this.application_id,
@@ -88,7 +88,7 @@
       },
       onCancel () {
         this.editedEmail = this.user.email
-        this.editedRole = this.user.pivot.role
+        this.editedRole = this.user.team_pivot.role
         this.editTeamUser = false
       }
     },
