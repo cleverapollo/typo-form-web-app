@@ -1,8 +1,20 @@
 <template>
   <v-container>
     <v-layout row wrap class="mb-2">
-      <v-flex xs12>
-        <v-btn router to="/applications/new" class="primary" flat v-if=userIsSuper>New Application</v-btn>
+      <v-flex xs12 style="position: relative">
+        <v-btn
+          absolute
+          bottom
+          right
+          dark
+          fab
+          router
+          to="/applications/new"
+          class="primary"
+          v-if=userIsSuper
+        >
+          <v-icon>add</v-icon>
+        </v-btn>
         <v-data-table
           :headers="headers"
           :items="applications"

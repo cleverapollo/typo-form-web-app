@@ -1,8 +1,19 @@
 <template>
   <v-container>
     <v-layout row wrap class="mb-2">
-      <v-flex xs12>
-        <v-btn router @click=onCreateTeam() class="primary">New Team</v-btn>
+      <v-flex xs12 style="position: relative">
+        <v-btn
+          absolute
+          bottom
+          right
+          dark
+          fab
+          router
+          @click=onCreateTeam()
+          class="primary"
+        >
+          <v-icon>add</v-icon>
+        </v-btn>
         <v-data-table
           :headers="headers"
           :items="teams"
