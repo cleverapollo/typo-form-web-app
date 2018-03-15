@@ -24,6 +24,16 @@ export default {
       state.loadedApplications = state.loadedApplications.filter(e => {
         return e.id !== payload.id
       })
+    },
+    setLoadedApplicationToken (state, payload) {
+      if (payload.shareToken) {
+        const index = state.loadedApplications.findIndex(application => {
+          return application.id === parseInt(payload.id)
+        })
+        let application = state.loadedApplications[index]
+        application.shareToken = payload.shareToken
+        state.loadedApplications.splice(index, 1, application)
+      }
     }
   },
   actions: {
@@ -34,6 +44,26 @@ export default {
           response => {
             commit('setLoading', false)
             commit('setLoadedApplications', response['data']['applications'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
+    loadApplicationToken ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.get(APPLICATION_URL + payload.id + '/invite')
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              id: payload.id,
+              shareToken: response['data']['shareToken']
+            }
+            commit('setLoadedApplicationToken', updateObj)
           }
         )
         .catch(

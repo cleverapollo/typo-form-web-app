@@ -28,6 +28,16 @@ export default {
       state.loadedTeams = state.loadedTeams.filter(e => {
         return e.id !== payload.id
       })
+    },
+    setLoadedTeamToken (state, payload) {
+      if (payload.shareToken) {
+        const index = state.loadedTeams.findIndex(team => {
+          return team.id === parseInt(payload.id)
+        })
+        let team = state.loadedTeams[index]
+        team.shareToken = payload.shareToken
+        state.loadedTeams.splice(index, 1, team)
+      }
     }
   },
   actions: {
@@ -38,6 +48,26 @@ export default {
           response => {
             commit('setLoading', false)
             commit('setLoadedTeams', response['data']['teams'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
+    loadTeamToken ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.get(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id + '/invite')
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              id: payload.id,
+              shareToken: response['data']['shareToken']
+            }
+            commit('setLoadedTeamToken', updateObj)
           }
         )
         .catch(

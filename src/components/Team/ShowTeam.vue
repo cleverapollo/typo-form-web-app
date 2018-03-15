@@ -14,10 +14,9 @@
         <v-card v-if="team">
           <v-card-title>
             <h1 class="primary--text">{{ team.name }}</h1>
-            <v-spacer></v-spacer>
-            <h3>{{joinURL}}</h3>
           </v-card-title>
           <v-card-text>
+            <h3>{{joinURL}}</h3>
             <h3>{{ team.description }}</h3>
             <app-invite-team :application_id="application_id" :team_id="id" v-if="userIsAdmin"></app-invite-team>
             <v-data-table
@@ -78,7 +77,14 @@
         return this.$store.getters.loadedTeamUsers
       },
       joinURL () {
-        return window.origin + '/join/team/' + this.team.share_token
+        return window.origin + '/join/team/' + this.team.shareToken
+      }
+    },
+    watch: {
+      team (value) {
+        if (value !== null && value !== undefined && value.shareToken === undefined) {
+          this.$store.dispatch('loadTeamToken', {applicationid: this.application_id, id: this.id})
+        }
       }
     },
     methods: {

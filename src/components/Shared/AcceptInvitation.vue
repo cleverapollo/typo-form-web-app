@@ -27,7 +27,8 @@
     watch: {
       error (value) {
         if (value) {
-          this.messageString = 'Sorry but the invitation is not correct'
+          console.log(value)
+          this.messageString = value.data.message
         }
       },
       user (value) {
