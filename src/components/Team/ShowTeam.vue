@@ -60,7 +60,7 @@
                     :items="invitedUsers"
                     hide-actions
                     class="elevation-1"
-                    v-if="invitedUsers.length > 0"
+                    no-data-text="No invites"
                   >
                     <template slot="items" slot-scope="props">
                       <td>{{ props.item.first_name }}</td>

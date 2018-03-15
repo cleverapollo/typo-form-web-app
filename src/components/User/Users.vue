@@ -44,7 +44,7 @@
                 :items="invitedUsers"
                 hide-actions
                 class="elevation-1"
-                v-if="invitedUsers.length > 0"
+                no-data-text="No invites"
               >
                 <template slot="items" slot-scope="props">
                   <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
