@@ -32,6 +32,20 @@
                 <td @click=onLoadTeamUser(props.item.id)>{{ props.item.team_pivot.role }}</td>
               </template>
             </v-data-table>
+            <v-data-table
+              :headers="headers"
+              :items="invitedUsers"
+              hide-actions
+              class="elevation-1"
+              v-if=invitedUsers.length > 0
+            >
+              <template slot="items" slot-scope="props">
+                <td>{{ props.item.first_name }}</td>
+                <td>{{ props.item.last_name }}</td>
+                <td>{{ props.item.email }}</td>
+                <td></td>
+              </template>
+            </v-data-table>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
@@ -65,7 +79,7 @@
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsAdmin () {
-        if (!this.userIsAuthenticated) {
+        if (!this.userIsAuthenticated || !this.team) {
           return false
         }
         return this.team.pivot.role === 'Admin'
@@ -75,6 +89,9 @@
       },
       users () {
         return this.$store.getters.loadedTeamUsers
+      },
+      invitedUsers () {
+        return this.$store.getters.invitedTeamUsers
       },
       joinURL () {
         return window.origin + '/join/team/' + this.team.shareToken

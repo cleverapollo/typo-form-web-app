@@ -4,11 +4,15 @@ const USER_URL = `/user/`
 
 export default {
   state: {
-    loadedUsers: []
+    loadedUsers: [],
+    invitedUsers: []
   },
   mutations: {
     setLoadedUsers (state, payload) {
       state.loadedUsers = payload
+    },
+    setInvitedUsers (state, payload) {
+      state.invitedUsers = payload
     },
     updateUser (state, payload) {
       const user = state.loadedUsers.find(user => {
@@ -31,7 +35,8 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedUsers', response['data']['users'])
+            commit('setLoadedUsers', response['data']['users']['current'])
+            commit('setInvitedUsers', response['data']['users']['unaccepted'])
           }
         )
         .catch(
@@ -73,6 +78,11 @@ export default {
   getters: {
     loadedUsers (state) {
       return state.loadedUsers.sort((userA, userB) => {
+        return userA.id > userB.id
+      })
+    },
+    invitedUsers (state) {
+      return state.invitedUsers.sort((userA, userB) => {
         return userA.id > userB.id
       })
     },

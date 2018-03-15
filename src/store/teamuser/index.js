@@ -5,11 +5,15 @@ const USER_URL = `/user/`
 
 export default {
   state: {
-    loadedTeamUsers: []
+    loadedTeamUsers: [],
+    invitedTeamUsers: []
   },
   mutations: {
     setLoadedTeamUsers (state, payload) {
       state.loadedTeamUsers = payload
+    },
+    setInvitedTeamUsers (state, payload) {
+      state.invitedTeamUsers = payload
     },
     updateTeamUser (state, payload) {
       const teamuser = state.loadedTeamUsers.find(teamuser => {
@@ -33,7 +37,8 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedTeamUsers', response['data']['users'])
+            commit('setLoadedTeamUsers', response['data']['users']['current'])
+            commit('setInvitedTeamUsers', response['data']['users']['unaccepted'])
           }
         )
         .catch(
@@ -75,6 +80,11 @@ export default {
   getters: {
     loadedTeamUsers (state) {
       return state.loadedTeamUsers.sort((teamuserA, teamuserB) => {
+        return teamuserA.id > teamuserB.id
+      })
+    },
+    invitedTeamUsers (state) {
+      return state.invitedTeamUsers.sort((teamuserA, teamuserB) => {
         return teamuserA.id > teamuserB.id
       })
     },

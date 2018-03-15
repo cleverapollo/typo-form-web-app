@@ -16,6 +16,20 @@
             <td @click=onLoadUser(props.item.id)>{{ props.item.application_pivot.role }}</td>
           </template>
         </v-data-table>
+        <v-data-table
+          :headers="headers"
+          :items="invitedUsers"
+          hide-actions
+          class="elevation-1"
+          v-if=invitedUsers.length > 0
+        >
+          <template slot="items" slot-scope="props">
+            <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
+            <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
+            <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
+            <td @click=onLoadUser(props.item.id)></td>
+          </template>
+        </v-data-table>
       </v-flex>
     </v-layout>
     
@@ -42,6 +56,9 @@
       users () {
         return this.$store.getters.loadedUsers
       },
+      invitedUsers () {
+        return this.$store.getters.invitedUsers
+      },
       loading () {
         return this.$store.getters.loading
       },
@@ -49,7 +66,7 @@
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsAdmin () {
-        if (!this.userIsAuthenticated) {
+        if (!this.userIsAuthenticated || !this.application) {
           return false
         }
         return this.application.pivot.role === 'Admin' || this.application.pivot.role === 'SuperAdmin'
