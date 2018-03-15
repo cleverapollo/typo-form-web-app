@@ -3,33 +3,58 @@
     <v-layout row wrap class="mb-2">
       <v-flex xs12>
         <app-invite-application :application_id="application_id"  v-if="userIsAdmin"></app-invite-application>
-        <v-data-table
-          :headers="headers"
-          :items="users"
-          hide-actions
-          class="elevation-1"
-        >
-          <template slot="items" slot-scope="props">
-            <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
-            <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
-            <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
-            <td @click=onLoadUser(props.item.id)>{{ props.item.application_pivot.role }}</td>
-          </template>
-        </v-data-table>
-        <v-data-table
-          :headers="headers"
-          :items="invitedUsers"
-          hide-actions
-          class="elevation-1"
-          v-if=invitedUsers.length > 0
-        >
-          <template slot="items" slot-scope="props">
-            <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
-            <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
-            <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
-            <td @click=onLoadUser(props.item.id)></td>
-          </template>
-        </v-data-table>
+        <v-tabs v-model="active">
+          <v-tabs-bar class="primary" dark>
+            <v-tabs-item
+              :href="'#member'"
+              ripple
+            >
+              Members
+            </v-tabs-item>
+            <v-tabs-item
+              :href="'#invite'"
+              ripple
+            >
+              Invites
+            </v-tabs-item>
+          </v-tabs-bar>
+          <v-tabs-items>
+            <v-tabs-content
+              :id="'member'"
+            >
+              <v-data-table
+                :headers="headers"
+                :items="users"
+                hide-actions
+                class="elevation-1"
+              >
+                <template slot="items" slot-scope="props">
+                  <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
+                  <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
+                  <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
+                  <td @click=onLoadUser(props.item.id)>{{ props.item.application_pivot.role }}</td>
+                </template>
+              </v-data-table>
+            </v-tabs-content>
+            <v-tabs-content
+              :id="'invite'"
+            >
+              <v-data-table
+                :headers="headers.slice(0, 3)"
+                :items="invitedUsers"
+                hide-actions
+                class="elevation-1"
+                v-if="invitedUsers.length > 0"
+              >
+                <template slot="items" slot-scope="props">
+                  <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
+                  <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
+                  <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
+                </template>
+              </v-data-table>
+            </v-tabs-content>
+          </v-tabs-items>
+        </v-tabs>
       </v-flex>
     </v-layout>
     
@@ -41,6 +66,7 @@
     props: ['application_id'],
     data () {
       return {
+        active: null,
         headers: [
           { text: 'First Name', value: 'first_name', sortable: false, align: 'left' },
           { text: 'Last Name', value: 'last_name', sortable: false, align: 'left' },
