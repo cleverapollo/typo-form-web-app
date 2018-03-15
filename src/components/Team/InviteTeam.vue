@@ -11,7 +11,7 @@
               <v-btn dark color="primary"
                 @click="onAddMember">
                 <v-icon dark>add</v-icon>
-                Add Email
+                Add
               </v-btn>
             </v-card-title>
           </v-flex>
