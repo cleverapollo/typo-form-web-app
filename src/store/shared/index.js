@@ -30,7 +30,7 @@ export default {
         .catch(
           error => {
             commit('setLoading', false)
-            commit('setError', error.response)
+            commit('setError', error.response.data)
           }
         )
     },
@@ -40,13 +40,12 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setUser', response['data']['user'])
           }
         )
         .catch(
           error => {
             commit('setLoading', false)
-            commit('setError', error.response)
+            commit('setError', error.response.data)
           }
         )
     },

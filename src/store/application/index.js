@@ -55,7 +55,7 @@ export default {
     },
     loadApplicationToken ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + payload.id + '/invite')
+      window.axios.get(APPLICATION_URL + payload.id + '/get-token')
         .then(
           response => {
             commit('setLoading', false)

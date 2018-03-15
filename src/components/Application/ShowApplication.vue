@@ -16,7 +16,7 @@
             <h1 class="primary--text">{{ application.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{joinURL}}</h3>
+            <h3 v-if=userIsAdmin>{{joinURL}}</h3>
             <v-list>
               <v-list-tile v-for="item in items" :key="item.title" @click="onList(item.type)" v-if="showUsersToAdmin(item.type)">
                 <v-list-tile-content>
@@ -70,7 +70,7 @@
     },
     watch: {
       application (value) {
-        if (value !== null && value !== undefined && value.shareToken === undefined) {
+        if (value !== null && value !== undefined && value.shareToken === undefined && this.userIsAdmin) {
           this.$store.dispatch('loadApplicationToken', {id: this.id})
         }
       }

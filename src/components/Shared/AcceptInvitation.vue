@@ -28,7 +28,7 @@
       error (value) {
         if (value) {
           console.log(value)
-          this.messageString = value.data.message
+          this.messageString = value.message
         }
       },
       user (value) {

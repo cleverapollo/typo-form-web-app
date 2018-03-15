@@ -16,7 +16,7 @@
             <h1 class="primary--text">{{ team.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{joinURL}}</h3>
+            <h3 v-if=userIsAdmin>{{joinURL}}</h3>
             <h3>{{ team.description }}</h3>
             <app-invite-team :application_id="application_id" :team_id="id" v-if="userIsAdmin"></app-invite-team>
             <v-data-table
@@ -82,7 +82,7 @@
     },
     watch: {
       team (value) {
-        if (value !== null && value !== undefined && value.shareToken === undefined) {
+        if (value !== null && value !== undefined && value.shareToken === undefined && this.userIsAdmin) {
           this.$store.dispatch('loadTeamToken', {applicationid: this.application_id, id: this.id})
         }
       }
