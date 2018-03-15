@@ -27,7 +27,6 @@
     watch: {
       error (value) {
         if (value) {
-          console.log(value)
           this.messageString = value.message
         }
       },

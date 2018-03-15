@@ -33,7 +33,7 @@
       user (value) {
         if (this.token.trim() !== '' && value !== null && value !== undefined) {
           this.$store.dispatch('acceptJoin', {type: this.type, token: this.token})
-          this.messageString = 'Thanks for accepting the invitations'
+          this.messageString = 'Thanks to join the ' + this.type
         }
       }
     }
