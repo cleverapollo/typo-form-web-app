@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
 const TEAM_URL = `/team/`
-const USER_URL = `/users/`
+const USER_URL = `/user/`
 
 export default {
   state: {
@@ -13,10 +13,11 @@ export default {
     },
     updateTeamUser (state, payload) {
       const teamuser = state.loadedTeamUsers.find(teamuser => {
-        return teamuser.id === payload.id
+        return teamuser.id === payload.user_id
       })
+      console.log(payload)
       if (payload.role) {
-        teamuser.role = payload.role
+        teamuser.team_pivot.role = payload.role
       }
     },
     deleteTeamUser (state, payload) {

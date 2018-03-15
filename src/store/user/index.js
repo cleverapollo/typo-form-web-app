@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
-const USER_URL = `/users/`
+const USER_URL = `/user/`
 
 export default {
   state: {
@@ -12,10 +12,10 @@ export default {
     },
     updateUser (state, payload) {
       const user = state.loadedUsers.find(user => {
-        return user.id === payload.id
+        return user.id === payload.user_id
       })
       if (payload.role) {
-        user.role = payload.role
+        user.application_pivot.role = payload.role
       }
     },
     deleteUser (state, payload) {
