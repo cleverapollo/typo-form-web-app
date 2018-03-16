@@ -15,7 +15,7 @@ export default {
     },
     updateSection (state, payload) {
       const section = state.loadedSections.find(section => {
-        return section.formid === payload.formid && section.id === payload.id
+        return section.id === payload.id
       })
       if (payload.name) {
         section.name = payload.name
@@ -26,7 +26,7 @@ export default {
     },
     deleteSection (state, payload) {
       state.loadedSections = state.loadedSections.filter(e => {
-        return e.id !== payload.id || e.formid !== payload.formid
+        return e.id !== payload.id
       })
     }
   },
@@ -47,12 +47,12 @@ export default {
           }
         )
     },
-    createSection ({commit, getters}, formid, payload) {
+    createSection ({commit, getters}, payload) {
       const section = {
         name: payload.name,
         order: payload.order
       }
-      window.axios.post(FORM_URL + formid + SECTION_URL, section)
+      window.axios.post(FORM_URL + payload.formid + SECTION_URL, section)
         .then(
           response => {
             commit('setLoading', false)
@@ -66,7 +66,7 @@ export default {
           }
         )
     },
-    updateSection ({commit}, formid, payload) {
+    updateSection ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
       if (payload.name) {
@@ -75,7 +75,7 @@ export default {
       if (payload.order) {
         updateObj.order = payload.order
       }
-      window.axios.put(FORM_URL + formid + SECTION_URL + payload.id, updateObj)
+      window.axios.put(FORM_URL + payload.formid + SECTION_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
           commit('updateSection', response['data']['section'])
@@ -85,9 +85,9 @@ export default {
           commit('setLoading', false)
         })
     },
-    deleteSection ({commit}, formid, payload) {
+    deleteSection ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + formid + SECTION_URL + payload.id)
+      window.axios.delete(FORM_URL + payload.formid + SECTION_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteSection', payload)
@@ -100,19 +100,14 @@ export default {
   },
   getters: {
     loadedSections (state) {
-      return (formid) => {
-        return state.loadedSections.find((section) => {
-          return section.formid === formid
-        })
-        .sort((sectionA, sectionB) => {
-          return sectionA.id > sectionB.id
-        })
-      }
+      return state.loadedSections.sort((sectionA, sectionB) => {
+        return sectionA.id > sectionB.id
+      })
     },
     loadedSection (state) {
-      return (formid, sectionid) => {
+      return (sectionid) => {
         return state.loadedSections.find((section) => {
-          return section.id === sectionid && section.formid === formid
+          return section.id === sectionid
         })
       }
     }

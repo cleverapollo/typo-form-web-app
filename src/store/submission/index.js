@@ -15,7 +15,7 @@ export default {
     },
     updateSubmission (state, payload) {
       const submission = state.loadedSubmissions.find(submission => {
-        return submission.formid === payload.formid && submission.id === payload.id
+        return submission.id === payload.id
       })
       if (payload.name) {
         submission.name = payload.name
@@ -26,7 +26,7 @@ export default {
     },
     deleteSubmission (state, payload) {
       state.loadedSubmissions = state.loadedSubmissions.filter(e => {
-        return e.id !== payload.id || e.formid !== payload.formid
+        return e.id !== payload.id
       })
     }
   },
@@ -47,12 +47,12 @@ export default {
           }
         )
     },
-    createSubmission ({commit, getters}, formid, payload) {
+    createSubmission ({commit, getters}, payload) {
       const submission = {
         name: payload.name,
         order: payload.order
       }
-      window.axios.post(FORM_URL + formid + SUBMISSION_URL, submission)
+      window.axios.post(FORM_URL + payload.formid + SUBMISSION_URL, submission)
         .then(
           response => {
             commit('setLoading', false)
@@ -66,7 +66,7 @@ export default {
           }
         )
     },
-    updateSubmission ({commit}, formid, payload) {
+    updateSubmission ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
       if (payload.name) {
@@ -75,7 +75,7 @@ export default {
       if (payload.order) {
         updateObj.order = payload.order
       }
-      window.axios.put(FORM_URL + formid + SUBMISSION_URL + payload.id, updateObj)
+      window.axios.put(FORM_URL + payload.formid + SUBMISSION_URL + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
           commit('updateSubmission', response['data']['submission'])
@@ -85,9 +85,9 @@ export default {
           commit('setLoading', false)
         })
     },
-    deleteSubmission ({commit}, formid, payload) {
+    deleteSubmission ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + formid + SUBMISSION_URL + payload.id)
+      window.axios.delete(FORM_URL + payload.formid + SUBMISSION_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteSubmission', payload)
@@ -100,19 +100,14 @@ export default {
   },
   getters: {
     loadedSubmissions (state) {
-      return (formid) => {
-        return state.loadedSubmissions.find((submission) => {
-          return submission.formid === formid
-        })
-        .sort((submissionA, submissionB) => {
-          return submissionA.id > submissionB.id
-        })
-      }
+      return state.loadedSubmissions.sort((submissionA, submissionB) => {
+        return submissionA.id > submissionB.id
+      })
     },
     loadedSubmission (state) {
-      return (formid, submissionid) => {
+      return (submissionid) => {
         return state.loadedSubmissions.find((submission) => {
-          return submission.id === submissionid && submission.formid === formid
+          return submission.id === submissionid
         })
       }
     }
