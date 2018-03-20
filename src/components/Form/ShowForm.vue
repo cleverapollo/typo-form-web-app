@@ -15,6 +15,25 @@
           <v-card-title>
             <h1 class="primary--text">{{ form.name }}</h1>
           </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-layout wrap>
+                <v-flex xs12 sm8 d-flex>
+                  <draggable v-model="list2" class="dragArea" :options="{group:'people'}">
+                    <div v-for="(element, index) in list2" :key="index">{{element.name}}</div>
+                  </draggable>
+                </v-flex>
+                <v-flex xs12 sm4>
+                  <div>
+                    <h2>Form element</h2>
+                    <draggable v-model="list" class="dragArea" :options="{group:{ name:'people',  pull:'clone', put:false }}">
+                      <div v-for="(element, index) in list" :key="index">{{element.name}}</div>
+                    </draggable>
+                  </div>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
             <app-edit-form :form="form" :application_id="application_id"></app-edit-form>
@@ -27,8 +46,28 @@
 </template>
 
 <script>
+  import draggable from 'vuedraggable'
   export default {
     props: ['application_id', 'id'],
+    components: {
+      draggable
+    },
+    data () {
+      return {
+        list: [
+          {
+            name: 'Section'
+          },
+          {
+            name: 'Group'
+          },
+          {
+            name: 'Question'
+          }
+        ],
+        list2: []
+      }
+    },
     computed: {
       form () {
         // return this.$store.getters.loadedForm(parseInt(this.id))
