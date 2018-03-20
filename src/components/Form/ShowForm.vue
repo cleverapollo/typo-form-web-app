@@ -18,18 +18,10 @@
           <v-card-text>
             <v-container>
               <v-layout wrap>
-                <v-flex xs12 sm8 d-flex>
-                  <draggable v-model="list2" class="dragArea" :options="{group:'people'}">
-                    <div v-for="(element, index) in list2" :key="index">{{element.name}}</div>
+                <v-flex xs12>
+                  <draggable v-model="sections" class="dragArea" :options="{group:'people'}">
+                    <div v-for="(element, index) in sections" :key="index">{{element.name}}</div>
                   </draggable>
-                </v-flex>
-                <v-flex xs12 sm4>
-                  <div>
-                    <h2>Form element</h2>
-                    <draggable v-model="list" class="dragArea" :options="{group:{ name:'people',  pull:'clone', put:false }}">
-                      <div v-for="(element, index) in list" :key="index">{{element.name}}</div>
-                    </draggable>
-                  </div>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -54,28 +46,12 @@
     },
     data () {
       return {
-        list: [
-          {
-            name: 'Section'
-          },
-          {
-            name: 'Group'
-          },
-          {
-            name: 'Question'
-          }
-        ],
-        list2: []
+        sections: []
       }
     },
     computed: {
-      form () {
-        // return this.$store.getters.loadedForm(parseInt(this.id))
-        let loadedForm = this.$store.getters.loadedForm(parseInt(this.id))
-        if (loadedForm) {
-          // loadedForm.pivot.role = 'Admin'
-        }
-        return loadedForm
+      application () {
+        return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -84,8 +60,15 @@
         if (!this.userIsAuthenticated) {
           return false
         }
-        return true
-        // return this.form.pivot.role === 'Admin'
+        return this.application.pivot.role === 'Admin' || this.application.pivot.role === 'SuperAdmin'
+      },
+      form () {
+        // return this.$store.getters.loadedForm(parseInt(this.id))
+        let loadedForm = this.$store.getters.loadedForm(parseInt(this.id))
+        if (loadedForm) {
+          // loadedForm.pivot.role = 'Admin'
+        }
+        return loadedForm
       },
       loading () {
         return this.$store.getters.loading
@@ -101,6 +84,7 @@
       }
     },
     created: function () {
+      this.$store.dispatch('loadApplications')
       this.$store.dispatch('loadForms', this.application_id)
     }
   }

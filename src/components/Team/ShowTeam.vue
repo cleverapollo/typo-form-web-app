@@ -10,15 +10,15 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap v-else>
-      <v-flex xs12>
+      <v-flex xs12 v-if="userIsAdmin">
         <v-card v-if="team">
           <v-card-title>
             <h1 class="primary--text">{{ team.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3 v-if=userIsAdmin>{{joinURL}}</h3>
+            <h3>{{joinURL}}</h3>
             <h3>{{ team.description }}</h3>
-            <app-invite-team :application_id="application_id" :team_id="id" v-if="userIsAdmin"></app-invite-team>
+            <app-invite-team :application_id="application_id" :team_id="id"></app-invite-team>
             <v-tabs v-model="active">
               <v-tabs-bar class="primary" dark>
                 <v-tabs-item
@@ -73,11 +73,34 @@
               </v-tabs-items>
             </v-tabs>
           </v-card-text>
-          <v-card-actions v-if="userIsAdmin">
+          <v-card-actions>
             <v-spacer></v-spacer>
             <app-edit-team :team="team" :application_id="application_id"></app-edit-team>
             <v-btn class="error" @click=onDeleteTeam>Delete</v-btn>
           </v-card-actions>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 v-else>
+        <v-card v-if="team">
+          <v-card-title>
+            <h1 class="primary--text">{{ team.name }}</h1>
+          </v-card-title>
+          <v-card-text>
+            <h3>{{ team.description }}</h3>
+            <v-data-table
+              :headers="headers"
+              :items="users"
+              hide-actions
+              class="elevation-1"
+            >
+              <template slot="items" slot-scope="props">
+                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.first_name }}</td>
+                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.last_name }}</td>
+                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.email }}</td>
+                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.team_pivot.role }}</td>
+              </template>
+            </v-data-table>
+          </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
