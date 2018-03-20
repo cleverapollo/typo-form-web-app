@@ -19,9 +19,7 @@
             <v-container>
               <v-layout wrap>
                 <v-flex xs12>
-                  <draggable v-model="sections" class="dragArea" :options="{group:'people'}">
-                    <div v-for="(element, index) in sections" :key="index">{{element.name}}</div>
-                  </draggable>
+                  <sections :sections='sections'></sections>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -38,15 +36,52 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import sections from '../Section/Sections.vue'
   export default {
     props: ['application_id', 'id'],
     components: {
-      draggable
+      sections
     },
     data () {
       return {
-        sections: []
+        sections: [
+          {
+            id: 1,
+            name: 'Section1',
+            description: 'Section 1 Description',
+            order: 1,
+            questions: [
+              {
+                id: 1,
+                name: 'Question 1',
+                order: 1
+              },
+              {
+                id: 2,
+                name: 'Question 2',
+                order: 2
+              }
+            ]
+          },
+          {
+            id: 2,
+            name: 'Section2',
+            description: 'Section 2 Description',
+            order: 2,
+            questions: [
+              {
+                id: 3,
+                name: 'Question 3',
+                order: 3
+              },
+              {
+                id: 4,
+                name: 'Question 4',
+                order: 4
+              }
+            ]
+          }
+        ]
       }
     },
     computed: {
