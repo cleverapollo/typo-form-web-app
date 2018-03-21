@@ -123,7 +123,7 @@
     },
     computed: {
       team () {
-        return this.$store.getters.loadedTeam(parseInt(this.id))
+        return this.$store.getters.loadedTeam(parseInt(this.application_id), parseInt(this.id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined

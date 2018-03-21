@@ -4,39 +4,41 @@ const TEAM_URL = `/team/`
 
 export default {
   state: {
-    loadedTeams: []
+    loadedTeams: {}
   },
   mutations: {
     setLoadedTeams (state, payload) {
-      state.loadedTeams = payload
+      let teams = Object.assign({}, state.loadedTeams)
+      teams[payload.applicationid] = payload.teams
+      state.loadedTeams = teams
     },
     createTeam (state, payload) {
-      state.loadedTeams.push(payload)
+      state.loadedTeams[payload.applicationid].push(payload.team)
     },
     updateTeam (state, payload) {
-      const team = state.loadedTeams.find(team => {
-        return team.id === payload.id
+      const team = state.loadedTeams[payload.applicationid].find(team => {
+        return team.id === payload.team.id
       })
-      if (payload.name) {
-        team.name = payload.name
+      if (payload.team.name) {
+        team.name = payload.team.name
       }
-      if (payload.description) {
-        team.description = payload.description
+      if (payload.team.description) {
+        team.description = payload.team.description
       }
     },
     deleteTeam (state, payload) {
-      state.loadedTeams = state.loadedTeams.filter(e => {
+      state.loadedTeams = state.loadedTeams[payload.applicationid].filter(e => {
         return e.id !== payload.id
       })
     },
     setLoadedTeamToken (state, payload) {
       if (payload.shareToken) {
-        const index = state.loadedTeams.findIndex(team => {
+        const index = state.loadedTeams[payload.applicationid].findIndex(team => {
           return team.id === parseInt(payload.id)
         })
-        let team = state.loadedTeams[index]
+        let team = state.loadedTeams[payload.applicationid][index]
         team.shareToken = payload.shareToken
-        state.loadedTeams.splice(index, 1, team)
+        state.loadedTeams[payload.applicationid].splice(index, 1, team)
       }
     }
   },
@@ -47,7 +49,11 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedTeams', response['data']['teams'])
+            const updateObj = {
+              applicationid: applicationid,
+              teams: response['data']['teams']
+            }
+            commit('setLoadedTeams', updateObj)
           }
         )
         .catch(
@@ -65,6 +71,7 @@ export default {
             commit('setLoading', false)
             const updateObj = {
               id: payload.id,
+              applicationid: payload.applicationid,
               shareToken: response['data']['shareToken']
             }
             commit('setLoadedTeamToken', updateObj)
@@ -87,7 +94,11 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('createTeam', response['data']['team'])
+            const createObj = {
+              applicationid: payload.applicationid,
+              team: response['data']['team']
+            }
+            commit('createTeam', createObj)
           }
         )
         .catch(
@@ -124,10 +135,16 @@ export default {
         updateObj.description = payload.description
       }
       window.axios.put(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id, updateObj)
-        .then(response => {
-          commit('setLoading', false)
-          commit('updateTeam', response['data']['team'])
-        })
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              applicationid: payload.applicationid,
+              team: response['data']['team']
+            }
+            commit('updateTeam', updateObj)
+          }
+        )
         .catch(error => {
           console.log(error)
           commit('setLoading', false)
@@ -148,13 +165,21 @@ export default {
   },
   getters: {
     loadedTeams (state) {
-      return state.loadedTeams.sort((teamA, teamB) => {
-        return teamA.id > teamB.id
-      })
+      return (applicationid) => {
+        if (!state.loadedTeams[applicationid]) {
+          return []
+        }
+        return state.loadedTeams[applicationid].sort((teamA, teamB) => {
+          return teamA.id > teamB.id
+        })
+      }
     },
     loadedTeam (state) {
-      return (teamid) => {
-        return state.loadedTeams.find((team) => {
+      return (applicationid, teamid) => {
+        if (!state.loadedTeams[applicationid]) {
+          return []
+        }
+        return state.loadedTeams[applicationid].find((team) => {
           return team.id === teamid
         })
       }

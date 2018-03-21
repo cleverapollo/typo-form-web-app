@@ -43,7 +43,7 @@
     },
     computed: {
       teams () {
-        return this.$store.getters.loadedTeams
+        return this.$store.getters.loadedTeams(parseInt(this.application_id))
       },
       loading () {
         return this.$store.getters.loading
