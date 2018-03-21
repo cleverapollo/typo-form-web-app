@@ -42,7 +42,7 @@
     },
     computed: {
       forms () {
-        return this.$store.getters.loadedForms
+        return this.$store.getters.loadedForms(parseInt(this.application_id))
       },
       loading () {
         return this.$store.getters.loading

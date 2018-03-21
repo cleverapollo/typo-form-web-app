@@ -53,7 +53,7 @@
         return this.application.pivot.role === 'Admin' || this.application.pivot.role === 'SuperAdmin'
       },
       form () {
-        return this.$store.getters.loadedForm(parseInt(this.id))
+        return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))
       },
       loading () {
         return this.$store.getters.loading

@@ -4,25 +4,28 @@ const FORM_URL = `/form/`
 
 export default {
   state: {
-    loadedForms: []
+    loadedForms: {}
   },
   mutations: {
     setLoadedForms (state, payload) {
       state.loadedForms = payload
+      let forms = Object.assign({}, state.loadedForms)
+      forms[payload.applicationid] = payload.forms
+      state.loadedForms = forms
     },
     createForm (state, payload) {
-      state.loadedForms.push(payload)
+      state.loadedForms[payload.applicationid].push(payload.form)
     },
     updateForm (state, payload) {
-      const form = state.loadedForms.find(form => {
-        return form.id === payload.id
+      const form = state.loadedForms[payload.applicationid].find(form => {
+        return form.id === payload.form.id
       })
-      if (payload.name) {
-        form.name = payload.name
+      if (payload.form.name) {
+        form.name = payload.form.name
       }
     },
     deleteForm (state, payload) {
-      state.loadedForms = state.loadedForms.filter(e => {
+      state.loadedForms = state.loadedForms[payload.applicationid].filter(e => {
         return e.id !== payload.id
       })
     }
@@ -34,7 +37,11 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedForms', response['data']['forms'])
+            const updateObj = {
+              applicationid: applicationid,
+              forms: response['data']['forms']
+            }
+            commit('setLoadedForms', updateObj)
           }
         )
         .catch(
@@ -52,7 +59,11 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('createForm', response['data']['form'])
+            const createObj = {
+              applicationid: payload.applicationid,
+              form: response['data']['form']
+            }
+            commit('createForm', createObj)
           }
         )
         .catch(
@@ -69,10 +80,16 @@ export default {
         updateObj.name = payload.name
       }
       window.axios.put(APPLICATION_URL + payload.applicationid + FORM_URL + payload.id, updateObj)
-        .then(response => {
-          commit('setLoading', false)
-          commit('updateForm', response['data']['form'])
-        })
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              applicationid: payload.applicationid,
+              form: response['data']['form']
+            }
+            commit('updateForm', updateObj)
+          }
+        )
         .catch(error => {
           console.log(error)
           commit('setLoading', false)
@@ -93,13 +110,21 @@ export default {
   },
   getters: {
     loadedForms (state) {
-      return state.loadedForms.sort((formA, formB) => {
-        return formA.id > formB.id
-      })
+      return (applicationid) => {
+        if (!state.loadedForms[applicationid]) {
+          return []
+        }
+        return state.loadedForms[applicationid].sort((formA, formB) => {
+          return formA.id > formB.id
+        })
+      }
     },
     loadedForm (state) {
-      return (formid) => {
-        return state.loadedForms.find((form) => {
+      return (applicationid, formid) => {
+        if (!state.loadedForms[applicationid]) {
+          return []
+        }
+        return state.loadedForms[applicationid].find((form) => {
           return form.id === formid
         })
       }
