@@ -177,7 +177,7 @@ export default {
     loadedTeam (state) {
       return (applicationid, teamid) => {
         if (!state.loadedTeams[applicationid]) {
-          return []
+          return null
         }
         return state.loadedTeams[applicationid].find((team) => {
           return team.id === teamid

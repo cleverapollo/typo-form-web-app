@@ -122,7 +122,7 @@ export default {
     loadedForm (state) {
       return (applicationid, formid) => {
         if (!state.loadedForms[applicationid]) {
-          return []
+          return null
         }
         return state.loadedForms[applicationid].find((form) => {
           return form.id === formid

@@ -149,7 +149,7 @@
     },
     watch: {
       team (value) {
-        if (value !== null && value !== undefined && value.shareToken === undefined && this.userIsAdmin) {
+        if (value !== null && value !== undefined && value.shareToken === undefined) {
           this.$store.dispatch('loadTeamToken', {applicationid: this.application_id, id: this.id})
         }
       }
