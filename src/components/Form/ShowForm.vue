@@ -16,13 +16,7 @@
             <h1 class="primary--text">{{ form.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <v-container>
-              <v-layout wrap>
-                <v-flex xs12>
-                  <sections :sections='sections'></sections>
-                </v-flex>
-              </v-layout>
-            </v-container>
+            <sections :id=-1></sections>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
@@ -42,51 +36,12 @@
     components: {
       sections
     },
-    data () {
-      return {
-        sections: [
-          {
-            id: 1,
-            name: 'Section1',
-            description: 'Section 1 Description',
-            order: 1,
-            questions: [
-              {
-                id: 1,
-                name: 'Question 1',
-                order: 1
-              },
-              {
-                id: 2,
-                name: 'Question 2',
-                order: 2
-              }
-            ]
-          },
-          {
-            id: 2,
-            name: 'Section2',
-            description: 'Section 2 Description',
-            order: 2,
-            questions: [
-              {
-                id: 3,
-                name: 'Question 3',
-                order: 3
-              },
-              {
-                id: 4,
-                name: 'Question 4',
-                order: 4
-              }
-            ]
-          }
-        ]
-      }
-    },
     computed: {
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
+      },
+      list () {
+        return this.$store.getters.loadedSections
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -98,12 +53,7 @@
         return this.application.pivot.role === 'Admin' || this.application.pivot.role === 'SuperAdmin'
       },
       form () {
-        // return this.$store.getters.loadedForm(parseInt(this.id))
-        let loadedForm = this.$store.getters.loadedForm(parseInt(this.id))
-        if (loadedForm) {
-          // loadedForm.pivot.role = 'Admin'
-        }
-        return loadedForm
+        return this.$store.getters.loadedForm(parseInt(this.id))
       },
       loading () {
         return this.$store.getters.loading
@@ -121,6 +71,7 @@
     created: function () {
       this.$store.dispatch('loadApplications')
       this.$store.dispatch('loadForms', this.application_id)
+      this.$store.dispatch('loadSections', this.id)
     }
   }
 </script>

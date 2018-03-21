@@ -1,20 +1,16 @@
 <template>
-  <v-container>
-    <v-layout row wrap>
-      <v-flex xs12>
-        <draggable v-model="list" class="dragArea" :options="{group:'people'}">
-          <div v-for="(element, index) in list" :key="index">
-            <v-card>
-              <v-card-title>
-                <h3 v-if='false'>{{'Question ' + (index + 1) + ' of ' + list.length}}</h3>
-                <h1>{{element.name}}</h1>
-              </v-card-title>
-            </v-card>
+  <draggable v-model="list" class="dragArea" :options="{group:'people'}" :move="checkMove">
+    <div v-for="(element, index) in list" :key="index" class="question">
+      <v-card>
+        <v-card-title>
+          <div>
+            <h3>{{'Question ' + (index + 1) + ' of ' + list.length}}</h3>
+            <h1>{{element.name}}</h1>
           </div>
-        </draggable>
-      </v-flex>
-    </v-layout>
-  </v-container>
+        </v-card-title>
+      </v-card>
+    </div>
+  </draggable>
 </template>
 
 <script>
@@ -27,6 +23,11 @@
     data () {
       return {
         list: this.questions
+      }
+    },
+    methods: {
+      checkMove: function (evt) {
+        console.log(evt)
       }
     }
   }

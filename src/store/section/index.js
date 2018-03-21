@@ -14,15 +14,16 @@ export default {
       state.loadedSections.push(payload)
     },
     updateSection (state, payload) {
-      const section = state.loadedSections.find(section => {
+      const index = state.loadedSections.findIndex(section => {
         return section.id === payload.id
       })
-      if (payload.name) {
-        section.name = payload.name
-      }
-      if (payload.order) {
-        section.order = payload.order
-      }
+      state.loadedSections.splice(index, 1, payload)
+    },
+    updateQuestion (state, payload) {
+      const index = state.loadedSections.findIndex(section => {
+        return section.id === payload.id
+      })
+      state.loadedSections[index].questions = payload.questions
     },
     deleteSection (state, payload) {
       state.loadedSections = state.loadedSections.filter(e => {
@@ -32,6 +33,7 @@ export default {
   },
   actions: {
     loadSections ({commit}, formid) {
+      /*
       commit('setLoading', true)
       window.axios.get(FORM_URL + formid + SECTION_URL)
         .then(
@@ -46,6 +48,48 @@ export default {
             console.log(error)
           }
         )
+      */
+      const response = [
+        {
+          id: 1,
+          name: 'Section1',
+          description: 'Section 1 Description',
+          order: 1,
+          parent_section_id: -1,
+          questions: [
+            {
+              id: 1,
+              name: 'Question 1',
+              order: 1
+            },
+            {
+              id: 2,
+              name: 'Question 2',
+              order: 2
+            }
+          ]
+        },
+        {
+          id: 2,
+          name: 'Section2',
+          description: 'Section 2 Description',
+          order: 2,
+          parent_section_id: -1,
+          questions: [
+            {
+              id: 3,
+              name: 'Question 3',
+              order: 3
+            },
+            {
+              id: 4,
+              name: 'Question 4',
+              order: 4
+            }
+          ]
+        }
+      ]
+      commit('setLoadedSections', response)
     },
     createSection ({commit, getters}, payload) {
       const section = {
@@ -67,15 +111,9 @@ export default {
         )
     },
     updateSection ({commit}, payload) {
+      /*
       commit('setLoading', true)
-      const updateObj = {}
-      if (payload.name) {
-        updateObj.name = payload.name
-      }
-      if (payload.order) {
-        updateObj.order = payload.order
-      }
-      window.axios.put(FORM_URL + payload.formid + SECTION_URL + payload.id, updateObj)
+      window.axios.put(FORM_URL + payload.formid + SECTION_URL + payload.id, payload)
         .then(response => {
           commit('setLoading', false)
           commit('updateSection', response['data']['section'])
@@ -84,6 +122,26 @@ export default {
           console.log(error)
           commit('setLoading', false)
         })
+      */
+      const children = payload.value
+      let childQuestions = []
+      for (let i = 0; i < children.length; i++) {
+        let child = children[i]
+        child.order = i + 1
+        if (typeof (child.parent_section_id) !== 'undefined') {
+          child.parent_section_id = payload.id
+          commit('updateSection', child)
+        } else {
+          childQuestions.push(child)
+        }
+      }
+      if (payload.id !== -1) {
+        const updateQuestion = {
+          id: payload.id,
+          questions: childQuestions
+        }
+        commit('updateQuestion', updateQuestion)
+      }
     },
     deleteSection ({commit}, payload) {
       commit('setLoading', true)
@@ -101,13 +159,30 @@ export default {
   getters: {
     loadedSections (state) {
       return state.loadedSections.sort((sectionA, sectionB) => {
-        return sectionA.id > sectionB.id
+        return sectionA.order > sectionB.order
       })
     },
     loadedSection (state) {
       return (sectionid) => {
         return state.loadedSections.find((section) => {
           return section.id === sectionid
+        })
+      }
+    },
+    loadedChildren (state) {
+      return (parentsectionid) => {
+        const childSections = state.loadedSections.filter((section) => {
+          return section.parent_section_id === parentsectionid
+        })
+        const section = state.loadedSections.find((section) => {
+          return section.id === parentsectionid
+        })
+        let childQuestions = []
+        if (section) {
+          childQuestions = section.questions
+        }
+        return [...childSections, ...childQuestions].sort((childA, childB) => {
+          return childA.order > childB.order
         })
       }
     }

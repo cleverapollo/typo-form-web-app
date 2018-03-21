@@ -1,37 +1,48 @@
 <template>
-  <v-container>
-    <v-layout row wrap>
-      <v-flex xs12>
-        <draggable v-model="list" class="dragArea" :options="{group:'people'}">
-          <div v-for="(element, index) in list" :key="index">
-            <v-card>
-              <v-card-title>
-                <h3 v-if='false'>{{'Section ' + (index + 1) + ' of ' + list.length}}</h3>
-                <h1>{{element.name}}</h1>
-              </v-card-title>
-              <v-card-text>
-                <questions :questions='element.questions'></questions>
-              </v-card-text>
-            </v-card>
+  <draggable v-model="list" class="dragArea" :options="{group:'people'}" style="min-height: 50px">
+    <div v-for="(element, index) in list" :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id" class="section">
+      <v-card>
+        <v-card-title>
+          <div>
+            <h3>{{(index + 1) + ' of ' + list.length}}</h3>
+            <h1>{{element.name}}</h1>
           </div>
-        </draggable>
-      </v-flex>
-    </v-layout>
-  </v-container>
+        </v-card-title>
+        <v-card-text v-if="isSection(element)">
+          <sections :id='element.id'></sections>
+        </v-card-text>
+      </v-card>
+    </div>
+  </draggable>
 </template>
 
 <script>
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions.vue'
   export default {
-    props: ['sections'],
+    name: 'sections',
+    props: ['id'],
     components: {
       draggable,
       questions
     },
-    data () {
-      return {
-        list: this.sections
+    computed: {
+      list: {
+        get () {
+          return this.$store.getters.loadedChildren(this.id)
+        },
+        set (value) {
+          const updateObj = {
+            id: this.id,
+            value: value
+          }
+          this.$store.dispatch('updateSection', updateObj)
+        }
+      }
+    },
+    methods: {
+      isSection (element) {
+        return typeof (element.questions) !== 'undefined'
       }
     }
   }
