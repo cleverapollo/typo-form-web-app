@@ -138,10 +138,10 @@
         return this.$store.getters.loading
       },
       users () {
-        return this.$store.getters.loadedTeamUsers
+        return this.$store.getters.loadedTeamUsers(parseInt(this.id))
       },
       invitedUsers () {
-        return this.$store.getters.invitedTeamUsers
+        return this.$store.getters.invitedTeamUsers(parseInt(this.id))
       },
       joinURL () {
         return window.origin + '/join/team/' + this.team.shareToken

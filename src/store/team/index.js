@@ -27,7 +27,7 @@ export default {
       }
     },
     deleteTeam (state, payload) {
-      state.loadedTeams = state.loadedTeams[payload.applicationid].filter(e => {
+      state.loadedTeams[payload.applicationid] = state.loadedTeams[payload.applicationid].filter(e => {
         return e.id !== payload.id
       })
     },

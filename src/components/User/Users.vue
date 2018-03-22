@@ -80,10 +80,10 @@
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
       users () {
-        return this.$store.getters.loadedUsers
+        return this.$store.getters.loadedUsers(parseInt(this.application_id))
       },
       invitedUsers () {
-        return this.$store.getters.invitedUsers
+        return this.$store.getters.invitedUsers(parseInt(this.application_id))
       },
       loading () {
         return this.$store.getters.loading

@@ -37,7 +37,7 @@
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
       user () {
-        return this.$store.getters.loadedUser(parseInt(this.id))
+        return this.$store.getters.loadedUser(parseInt(this.application_id), parseInt(this.id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined

@@ -5,27 +5,30 @@ const USER_URL = `/user/`
 
 export default {
   state: {
-    loadedTeamUsers: [],
-    invitedTeamUsers: []
+    loadedTeamUsers: {},
+    invitedTeamUsers: {}
   },
   mutations: {
     setLoadedTeamUsers (state, payload) {
-      state.loadedTeamUsers = payload
+      let users = Object.assign({}, state.loadedTeamUsers)
+      users[payload.teamid] = payload.users
+      state.loadedTeamUsers = users
     },
     setInvitedTeamUsers (state, payload) {
-      state.invitedTeamUsers = payload
+      let users = Object.assign({}, state.invitedTeamUsers)
+      users[payload.teamid] = payload.users
+      state.invitedTeamUsers = users
     },
     updateTeamUser (state, payload) {
-      const teamuser = state.loadedTeamUsers.find(teamuser => {
-        return teamuser.id === payload.user_id
+      const user = state.loadedTeamUsers[payload.teamid].find(user => {
+        return user.id === payload.user.user_id
       })
-      console.log(payload)
-      if (payload.role) {
-        teamuser.team_pivot.role = payload.role
+      if (payload.user.role) {
+        user.team_pivot.role = payload.user.role
       }
     },
     deleteTeamUser (state, payload) {
-      state.loadedTeamUsers = state.loadedTeamUsers.filter(e => {
+      state.loadedTeamUsers[payload.teamid] = state.loadedTeamUsers[payload.teamid].filter(e => {
         return e.id !== payload.id
       })
     }
@@ -37,8 +40,17 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedTeamUsers', response['data']['users']['current'])
-            commit('setInvitedTeamUsers', response['data']['users']['unaccepted'])
+            const updateLoadedObj = {
+              teamid: payload.teamid,
+              users: response['data']['users']['current']
+            }
+            commit('setLoadedTeamUsers', updateLoadedObj)
+
+            const updateInvitedObj = {
+              teamid: payload.teamid,
+              users: response['data']['users']['unaccepted']
+            }
+            commit('setInvitedTeamUsers', updateInvitedObj)
           }
         )
         .catch(
@@ -55,10 +67,16 @@ export default {
         updateObj.role = payload.role
       }
       window.axios.put(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.teamid + USER_URL + payload.id, updateObj)
-        .then(response => {
-          commit('setLoading', false)
-          commit('updateTeamUser', response['data']['user'])
-        })
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              teamid: payload.teamid,
+              user: response['data']['user']
+            }
+            commit('updateTeamUser', updateObj)
+          }
+        )
         .catch(error => {
           console.log(error)
           commit('setLoading', false)
@@ -79,19 +97,32 @@ export default {
   },
   getters: {
     loadedTeamUsers (state) {
-      return state.loadedTeamUsers.sort((teamuserA, teamuserB) => {
-        return teamuserA.id > teamuserB.id
-      })
+      return (teamid) => {
+        if (!state.loadedTeamUsers[teamid]) {
+          return []
+        }
+        return state.loadedTeamUsers[teamid].sort((userA, userB) => {
+          return userA.id > userB.id
+        })
+      }
     },
     invitedTeamUsers (state) {
-      return state.invitedTeamUsers.sort((teamuserA, teamuserB) => {
-        return teamuserA.id > teamuserB.id
-      })
+      return (teamid) => {
+        if (!state.invitedTeamUsers[teamid]) {
+          return []
+        }
+        return state.invitedTeamUsers[teamid].sort((userA, userB) => {
+          return userA.id > userB.id
+        })
+      }
     },
     loadedTeamUser (state) {
-      return (teamuserid) => {
-        return state.loadedTeamUsers.find((teamuser) => {
-          return teamuser.id === teamuserid
+      return (teamid, userid) => {
+        if (!state.loadedTeamUsers[teamid]) {
+          return null
+        }
+        return state.loadedTeamUsers[teamid].find((user) => {
+          return user.id === userid
         })
       }
     }

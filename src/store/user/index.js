@@ -4,26 +4,30 @@ const USER_URL = `/user/`
 
 export default {
   state: {
-    loadedUsers: [],
-    invitedUsers: []
+    loadedUsers: {},
+    invitedUsers: {}
   },
   mutations: {
     setLoadedUsers (state, payload) {
-      state.loadedUsers = payload
+      let users = Object.assign({}, state.loadedUsers)
+      users[payload.applicationid] = payload.users
+      state.loadedUsers = users
     },
     setInvitedUsers (state, payload) {
-      state.invitedUsers = payload
+      let users = Object.assign({}, state.invitedUsers)
+      users[payload.applicationid] = payload.users
+      state.invitedUsers = users
     },
     updateUser (state, payload) {
-      const user = state.loadedUsers.find(user => {
-        return user.id === payload.user_id
+      const user = state.loadedUsers[payload.applicationid].find(user => {
+        return user.id === payload.user.user_id
       })
-      if (payload.role) {
-        user.application_pivot.role = payload.role
+      if (payload.user.role) {
+        user.application_pivot.role = payload.user.role
       }
     },
     deleteUser (state, payload) {
-      state.loadedUsers = state.loadedUsers.filter(e => {
+      state.loadedUsers[payload.applicationid] = state.loadedUsers[payload.applicationid].filter(e => {
         return e.id !== payload.id
       })
     }
@@ -35,8 +39,17 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedUsers', response['data']['users']['current'])
-            commit('setInvitedUsers', response['data']['users']['unaccepted'])
+            const updateLoadedObj = {
+              applicationid: applicationid,
+              users: response['data']['users']['current']
+            }
+            commit('setLoadedUsers', updateLoadedObj)
+
+            const updateInvitedObj = {
+              applicationid: applicationid,
+              users: response['data']['users']['unaccepted']
+            }
+            commit('setInvitedUsers', updateInvitedObj)
           }
         )
         .catch(
@@ -53,10 +66,16 @@ export default {
         updateObj.role = payload.role
       }
       window.axios.put(APPLICATION_URL + payload.applicationid + USER_URL + payload.id, updateObj)
-        .then(response => {
-          commit('setLoading', false)
-          commit('updateUser', response['data']['user'])
-        })
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              applicationid: payload.applicationid,
+              user: response['data']['user']
+            }
+            commit('updateUser', updateObj)
+          }
+        )
         .catch(error => {
           console.log(error)
           commit('setLoading', false)
@@ -77,18 +96,31 @@ export default {
   },
   getters: {
     loadedUsers (state) {
-      return state.loadedUsers.sort((userA, userB) => {
-        return userA.id > userB.id
-      })
+      return (applicationid) => {
+        if (!state.loadedUsers[applicationid]) {
+          return []
+        }
+        return state.loadedUsers[applicationid].sort((userA, userB) => {
+          return userA.id > userB.id
+        })
+      }
     },
     invitedUsers (state) {
-      return state.invitedUsers.sort((userA, userB) => {
-        return userA.id > userB.id
-      })
+      return (applicationid) => {
+        if (!state.invitedUsers[applicationid]) {
+          return []
+        }
+        return state.invitedUsers[applicationid].sort((userA, userB) => {
+          return userA.id > userB.id
+        })
+      }
     },
     loadedUser (state) {
-      return (userid) => {
-        return state.loadedUsers.find((user) => {
+      return (applicationid, userid) => {
+        if (!state.loadedUsers[applicationid]) {
+          return null
+        }
+        return state.loadedUsers[applicationid].find((user) => {
           return user.id === userid
         })
       }

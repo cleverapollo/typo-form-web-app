@@ -25,7 +25,7 @@ export default {
       }
     },
     deleteForm (state, payload) {
-      state.loadedForms = state.loadedForms[payload.applicationid].filter(e => {
+      state.loadedForms[payload.applicationid] = state.loadedForms[payload.applicationid].filter(e => {
         return e.id !== payload.id
       })
     }
