@@ -1,6 +1,6 @@
 <template>
-  <draggable v-model="list" class="dragArea" :options="{group:'people'}" style="min-height: 50px">
-    <div v-for="(element, index) in list" :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id" class="section">
+  <draggable v-model="list" class="dragArea" :options="{group:'people', draggable:'.item'}" style="min-height: 100px">
+    <div v-for="(element, index) in list" :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id" class="item" v-bind:class="{ question: !isSection(element) }">
       <v-card>
         <v-card-title>
           <div>
@@ -11,6 +11,13 @@
         <v-card-text v-if="isSection(element)">
           <sections :id='element.id'></sections>
         </v-card-text>
+      </v-card>
+    </div>
+    <div slot="footer" v-if="isSectionEmpty">
+      <v-card>
+        <v-card-title>
+          <h3>There is no questions</h3>
+        </v-card-title>
       </v-card>
     </div>
   </draggable>
@@ -38,11 +45,14 @@
           }
           this.$store.dispatch('updateSection', updateObj)
         }
+      },
+      isSectionEmpty () {
+        return !this.list.length
       }
     },
     methods: {
       isSection (element) {
-        return typeof (element.questions) !== 'undefined'
+        return element.questions !== undefined
       }
     }
   }

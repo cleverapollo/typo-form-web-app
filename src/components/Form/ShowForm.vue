@@ -16,7 +16,21 @@
             <h1 class="primary--text">{{ form.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <sections :id=-1></sections>
+            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.item'}" style="min-height: 100px" :move="checkMove">
+              <div v-for="(element, index) in list" :key="'Section ' + element.id" class="item">
+                <v-card>
+                  <v-card-title>
+                    <div>
+                      <h3>{{(index + 1) + ' of ' + list.length}}</h3>
+                      <h1>{{element.name}}</h1>
+                    </div>
+                  </v-card-title>
+                  <v-card-text>
+                    <sections :id='element.id'></sections>
+                  </v-card-text>
+                </v-card>
+              </div>
+            </draggable>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
@@ -30,18 +44,29 @@
 </template>
 
 <script>
+  import draggable from 'vuedraggable'
   import sections from '../Section/Sections.vue'
   export default {
     props: ['application_id', 'id'],
     components: {
+      draggable,
       sections
     },
     computed: {
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
-      list () {
-        return this.$store.getters.loadedSections
+      list: {
+        get () {
+          return this.$store.getters.loadedChildren(-1)
+        },
+        set (value) {
+          const updateObj = {
+            id: -1,
+            value: value
+          }
+          this.$store.dispatch('updateSection', updateObj)
+        }
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -66,6 +91,12 @@
           id: this.form.id
         })
         this.$router.push('/applications/' + this.application_id + '/forms')
+      },
+      checkMove: function (evt) {
+        if (evt.to.className.includes('parent') && evt.dragged.className.includes('question')) {
+          return false
+        }
+        return true
       }
     },
     created: function () {
