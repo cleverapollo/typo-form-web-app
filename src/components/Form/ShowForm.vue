@@ -16,19 +16,9 @@
             <h1 class="primary--text">{{ form.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.item'}" style="min-height: 100px" :move="checkMove">
+            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.item'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
               <div v-for="(element, index) in list" :key="'Section ' + element.id" class="item">
-                <v-card>
-                  <v-card-title>
-                    <div>
-                      <h3>{{(index + 1) + ' of ' + list.length}}</h3>
-                      <h1>{{element.name}}</h1>
-                    </div>
-                  </v-card-title>
-                  <v-card-text>
-                    <sections :id='element.id'></sections>
-                  </v-card-text>
-                </v-card>
+                <sections :section='element'></sections>
               </div>
             </draggable>
           </v-card-text>
@@ -93,10 +83,17 @@
         this.$router.push('/applications/' + this.application_id + '/forms')
       },
       checkMove: function (evt) {
+        console.log('moved', evt)
         if (evt.to.className.includes('parent') && evt.dragged.className.includes('question')) {
           return false
         }
         return true
+      },
+      checkAdd: function (evt) {
+        console.log('added', evt)
+      },
+      checkRemove: function (evt) {
+        console.log('removed', evt)
       }
     },
     created: function () {
