@@ -5,16 +5,25 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 import { store } from './store'
+
 import AlertCmp from './components/Shared/Alert.vue'
+
 import EditEmail from './components/Auth/EditProfile/EditEmail.vue'
 import EditPassword from './components/Auth/EditProfile/EditPassword.vue'
+
 import EditApplication from './components/Application/EditApplication.vue'
 import InviteApplication from './components/Application/InviteApplication.vue'
+
 import EditTeam from './components/Team/EditTeam.vue'
 import InviteTeam from './components/Team/InviteTeam.vue'
+
 import EditUser from './components/User/EditUser.vue'
+
 import EditForm from './components/Form/EditForm.vue'
+
 import EditTeamUser from './components/Team/EditTeamUser.vue'
+
+import CreateSection from './components/Section/CreateSection.vue'
 
 import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
@@ -32,6 +41,7 @@ Vue.component('app-edit-team', EditTeam)
 Vue.component('app-edit-user', EditUser)
 Vue.component('app-edit-form', EditForm)
 Vue.component('app-edit-teamuser', EditTeamUser)
+Vue.component('app-create-section', CreateSection)
 
 /* eslint-disable no-new */
 new Vue({

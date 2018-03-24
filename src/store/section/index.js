@@ -56,6 +56,7 @@ export default {
           description: 'Section 1 Description',
           order: 1,
           parent_section_id: -1,
+          form_id: 1,
           questions: [
             {
               id: 1,
@@ -75,6 +76,7 @@ export default {
           description: 'Section 2 Description',
           order: 2,
           parent_section_id: -1,
+          form_id: 1,
           questions: [
             {
               id: 3,
@@ -92,9 +94,13 @@ export default {
       commit('setLoadedSections', response)
     },
     createSection ({commit, getters}, payload) {
-      const section = {
+      let section = {
         name: payload.name,
         order: payload.order
+      }
+
+      if (payload.section_id !== -1) {
+        section.section_id = payload.section_id
       }
       window.axios.post(FORM_URL + payload.formid + SECTION_URL, section)
         .then(

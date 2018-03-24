@@ -16,14 +16,15 @@
             <h1 class="primary--text">{{ form.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.item'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
-              <div v-for="(element, index) in list" :key="'Section ' + element.id" class="item">
+            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
+              <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item">
                 <sections :section='element'></sections>
               </div>
             </draggable>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
+            <app-create-section :order="list.length" :section_id=-1 :form_id="id"></app-create-section>
             <app-edit-form :form="form" :application_id="application_id"></app-edit-form>
             <v-btn class="error" @click=onDeleteForm>Delete</v-btn>
           </v-card-actions>

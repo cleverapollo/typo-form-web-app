@@ -21,6 +21,10 @@
         </div>
       </draggable>
     </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn class="error" @click=onDeleteSection>Delete</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -33,6 +37,11 @@
     components: {
       draggable,
       questions
+    },
+    data () {
+      return {
+        editedName: this.section.name
+      }
     },
     computed: {
       list: {
@@ -54,6 +63,24 @@
     methods: {
       isSection (element) {
         return element.questions !== undefined
+      },
+      onUpdateSection () {
+        if (this.editedName.trim() === '') {
+          return
+        }
+        this.$store.dispatch('updateSection',
+          {
+            formid: this.section.form_id,
+            section_id: this.section.section_id,
+            order: this.section.order,
+            name: this.editedName
+          })
+      },
+      onDeleteSection () {
+        this.$store.dispatch('deleteSection', {
+          formid: this.section.form_id,
+          id: this.section.id
+        })
       },
       checkMove: function (evt) {
         console.log('moved', evt)
