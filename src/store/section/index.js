@@ -4,26 +4,28 @@ const SECTION_URL = '/section/'
 
 export default {
   state: {
-    loadedSections: []
+    loadedSections: {}
   },
   mutations: {
     setLoadedSections (state, payload) {
-      state.loadedSections = payload
+      let sections = Object.assign({}, state.loadedSections)
+      sections[payload.formid] = payload.sections
+      state.loadedSections = sections
     },
     createSection (state, payload) {
-      state.loadedSections.push(payload)
+      state.loadedSections[payload.formid].push(payload.section)
     },
     updateSection (state, payload) {
-      const index = state.loadedSections.findIndex(section => {
-        return section.id === payload.id
+      const index = state.loadedSections[payload.formid].findIndex(section => {
+        return section.id === payload.section.id
       })
-      state.loadedSections.splice(index, 1, payload)
+      state.loadedSections.splice(index, 1, payload.section)
     },
     updateQuestion (state, payload) {
-      const index = state.loadedSections.findIndex(section => {
-        return section.id === payload.id
+      const index = state.loadedSections[payload.formid].findIndex(section => {
+        return section.id === payload.section.id
       })
-      state.loadedSections[index].questions = payload.questions
+      state.loadedSections[payload.formid][index].questions = payload.section.questions
     },
     deleteSection (state, payload) {
       state.loadedSections = state.loadedSections.filter(e => {
@@ -33,13 +35,16 @@ export default {
   },
   actions: {
     loadSections ({commit}, formid) {
-      /*
       commit('setLoading', true)
       window.axios.get(FORM_URL + formid + SECTION_URL)
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedSections', response['data']['sections'])
+            const updateObj = {
+              formid: formid,
+              sections: response['data']['sections']
+            }
+            commit('setLoadedSections', updateObj)
           }
         )
         .catch(
@@ -48,7 +53,7 @@ export default {
             console.log(error)
           }
         )
-      */
+      /*
       const response = [
         {
           id: 1,
@@ -91,14 +96,13 @@ export default {
           ]
         }
       ]
-      commit('setLoadedSections', response)
+      commit('setLoadedSections', response) */
     },
     createSection ({commit, getters}, payload) {
       let section = {
         name: payload.name,
         order: payload.order
       }
-
       if (payload.section_id !== -1) {
         section.section_id = payload.section_id
       }
@@ -106,7 +110,11 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('createSection', response['data']['section'])
+            const createObj = {
+              formid: payload.formid,
+              section: response['data']['section']
+            }
+            commit('createSection', createObj)
           }
         )
         .catch(
@@ -117,18 +125,24 @@ export default {
         )
     },
     updateSection ({commit}, payload) {
-      /*
       commit('setLoading', true)
       window.axios.put(FORM_URL + payload.formid + SECTION_URL + payload.id, payload)
-        .then(response => {
-          commit('setLoading', false)
-          commit('updateSection', response['data']['section'])
-        })
+        .then(
+          response =>
+          {
+            commit('setLoading', false)
+            const updateObj = {
+              formid: payload.formid,
+              section: response['data']['section']
+            }
+            commit('updateSection', updateObj)
+          }
+        )
         .catch(error => {
           console.log(error)
           commit('setLoading', false)
         })
-      */
+      /*
       const children = payload.value
       let childQuestions = []
       for (let i = 0; i < children.length; i++) {
@@ -147,7 +161,7 @@ export default {
           questions: childQuestions
         }
         commit('updateQuestion', updateQuestion)
-      }
+      } */
     },
     deleteSection ({commit}, payload) {
       commit('setLoading', true)
