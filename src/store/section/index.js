@@ -28,7 +28,7 @@ export default {
       state.loadedSections[payload.formid][index].questions = payload.section.questions
     },
     deleteSection (state, payload) {
-      state.loadedSections = state.loadedSections.filter(e => {
+      state.loadedSections = state.loadedSections[payload.formid].filter(e => {
         return e.id !== payload.id
       })
     }

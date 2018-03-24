@@ -9,7 +9,7 @@
     <v-card-text>
       <draggable v-model="list" class="dragArea" :options="{group:'people', draggable:'.item'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
         <div v-for="(element, index) in list" :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id" class="item" v-bind:class="{ question: !isSection(element) }">
-          <sections :section='element' v-if="isSection(element)"></sections>
+          <sections :section='element' :formid='formid' v-if="isSection(element)"></sections>
           <questions :element='element' v-else></questions>
         </div>
         <div slot="footer" v-if="isSectionEmpty">
@@ -34,7 +34,7 @@
   import questions from '../Question/Questions.vue'
   export default {
     name: 'sections',
-    props: ['section'],
+    props: ['section', 'formid'],
     components: {
       draggable,
       questions
@@ -79,13 +79,13 @@
       },
       onDuplicateSection () {
         this.$store.dispatch('duplicateSection', {
-          formid: this.section.form_id,
+          formid: this.formid,
           id: this.section.id
         })
       },
       onDeleteSection () {
         this.$store.dispatch('deleteSection', {
-          formid: this.section.form_id,
+          formid: this.formid,
           id: this.section.id
         })
       },

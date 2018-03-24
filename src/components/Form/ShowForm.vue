@@ -18,7 +18,7 @@
           <v-card-text>
             <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
               <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item">
-                <sections :section='element'></sections>
+                <sections :section='element' :formid='id'></sections>
               </div>
             </draggable>
           </v-card-text>
