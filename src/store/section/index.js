@@ -170,9 +170,9 @@ export default {
             commit('setLoading', false)
             const updateObj = {
               formid: payload.formid,
-              section: response['data']['section']
+              sections: response['data']['sections']
             }
-            commit('updateSection', updateObj)
+            commit('setLoadedSections', updateObj)
           }
         )
         .catch(error => {
