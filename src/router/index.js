@@ -26,6 +26,8 @@ import Forms from '@/components/Form/Forms'
 import CreateForm from '@/components/Form/CreateForm'
 import ShowForm from '@/components/Form/ShowForm'
 
+import ShowSubmission from '@/components/Submission/ShowSubmission'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -142,6 +144,12 @@ const router = new Router({
       path: '/applications/:application_id/forms/show/:id',
       name: 'ShowForm',
       component: ShowForm,
+      props: true
+    },
+    {
+      path: '/applications/:application_id/forms/show/:id/submission',
+      name: 'ShowSubmission',
+      component: ShowSubmission,
       props: true
     }
   ],

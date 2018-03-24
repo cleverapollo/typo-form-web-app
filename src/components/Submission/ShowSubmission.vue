@@ -16,18 +16,10 @@
             <h1 class="primary--text">{{ form.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
-              <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item">
-                <sections :section='element'></sections>
-              </div>
-            </draggable>
+            <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item">
+              <sections :section='element'></sections>
+            </div>
           </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <app-create-section :order="list.length + 1" :section_id=-1 :form_id="id"></app-create-section>
-            <app-edit-form :form="form" :application_id="application_id"></app-edit-form>
-            <v-btn class="error" @click=onDeleteForm>Delete</v-btn>
-          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -62,11 +54,11 @@
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
-      userIsnotAdmin () {
+      userIsAdmin () {
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.pivot.role !== 'Admin' && this.application.pivot.role !== 'SuperAdmin'
+        return this.application.pivot.role === 'Admin' || this.application.pivot.role === 'SuperAdmin'
       },
       form () {
         return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))
@@ -76,32 +68,10 @@
       }
     },
     watch: {
-      userIsnotAdmin (value) {
+      userIsAdmin (value) {
         if (value) {
-          this.$router.push('/applications/' + this.application_id + '/forms/show/' + this.id + '/submission')
+          this.$router.push('/applications/' + this.application_id + '/forms/show/' + this.id)
         }
-      }
-    },
-    methods: {
-      onDeleteForm () {
-        this.$store.dispatch('deleteForm', {
-          applicationid: this.application_id,
-          id: this.form.id
-        })
-        this.$router.push('/applications/' + this.application_id + '/forms')
-      },
-      checkMove: function (evt) {
-        console.log('moved', evt)
-        if (evt.to.className.includes('parent') && evt.dragged.className.includes('question')) {
-          return false
-        }
-        return true
-      },
-      checkAdd: function (evt) {
-        console.log('added', evt)
-      },
-      checkRemove: function (evt) {
-        console.log('removed', evt)
       }
     },
     created: function () {
