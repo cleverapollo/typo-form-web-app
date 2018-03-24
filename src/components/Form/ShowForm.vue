@@ -24,7 +24,7 @@
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
-            <app-create-section :order="list.length" :section_id=-1 :form_id="id"></app-create-section>
+            <app-create-section :order="list.length + 1" :section_id=-1 :form_id="id"></app-create-section>
             <app-edit-form :form="form" :application_id="application_id"></app-edit-form>
             <v-btn class="error" @click=onDeleteForm>Delete</v-btn>
           </v-card-actions>
@@ -49,7 +49,7 @@
       },
       list: {
         get () {
-          return this.$store.getters.loadedChildren(-1)
+          return this.$store.getters.loadedChildren(this.id, null)
         },
         set (value) {
           const updateObj = {

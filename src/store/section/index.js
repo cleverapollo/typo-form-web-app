@@ -128,8 +128,7 @@ export default {
       commit('setLoading', true)
       window.axios.put(FORM_URL + payload.formid + SECTION_URL + payload.id, payload)
         .then(
-          response =>
-          {
+          response => {
             commit('setLoading', false)
             const updateObj = {
               formid: payload.formid,
@@ -178,23 +177,34 @@ export default {
   },
   getters: {
     loadedSections (state) {
-      return state.loadedSections.sort((sectionA, sectionB) => {
-        return sectionA.order > sectionB.order
-      })
+      return (formid) => {
+        if (!state.loadedSections[formid]) {
+          return []
+        }
+        return state.loadedSections[formid].sort((sectionA, sectionB) => {
+          return sectionA.order > sectionB.order
+        })
+      }
     },
     loadedSection (state) {
-      return (sectionid) => {
-        return state.loadedSections.find((section) => {
+      return (formid, sectionid) => {
+        if (!state.loadedSections[formid]) {
+          return null
+        }
+        return state.loadedSections[formid].find((section) => {
           return section.id === sectionid
         })
       }
     },
     loadedChildren (state) {
-      return (parentsectionid) => {
-        const childSections = state.loadedSections.filter((section) => {
-          return section.parent_section_id === parentsectionid
+      return (formid, parentsectionid) => {
+        if (!state.loadedSections[formid]) {
+          return []
+        }
+        const childSections = state.loadedSections[formid].filter((section) => {
+          return section.section_id === parentsectionid
         })
-        const section = state.loadedSections.find((section) => {
+        const section = state.loadedSections[formid].find((section) => {
           return section.id === parentsectionid
         })
         let childQuestions = []
