@@ -25,6 +25,8 @@ import EditTeamUser from './components/Team/EditTeamUser.vue'
 
 import CreateSection from './components/Section/CreateSection.vue'
 
+import CreateQuestion from './components/Question/CreateQuestion.vue'
+
 import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
 
@@ -42,6 +44,7 @@ Vue.component('app-edit-user', EditUser)
 Vue.component('app-edit-form', EditForm)
 Vue.component('app-edit-teamuser', EditTeamUser)
 Vue.component('app-create-section', CreateSection)
+Vue.component('app-create-question', CreateQuestion)
 
 /* eslint-disable no-new */
 new Vue({

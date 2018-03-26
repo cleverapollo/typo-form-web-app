@@ -1,20 +1,18 @@
 <template>
-  <v-dialog width="350px" persistent v-model="createSection">
+  <v-dialog width="350px" persistent v-model="createQuestion">
     <v-btn
       dark
-      fab
-      small
       class="primary"
       slot="activator"
     >
-      <v-icon>add</v-icon>
+      Create Question
     </v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-title>
-              <h2>Create Section</h2>
+              <h2>Create Question</h2>
             </v-card-title>
           </v-flex>
         </v-layout>
@@ -28,6 +26,24 @@
                 id="name"
                 v-model="editedName"
                 required></v-text-field>
+              <v-text-field
+                name="description"
+                label="Description"
+                id="description"
+                v-model="editedDescription"
+                required></v-text-field>
+              <v-select
+                :items="questionTypes"
+                item-text="type"
+                item-value="id"
+                v-model="questionType"
+                label="Question Type"
+                single-line
+              ></v-select>
+              <v-switch
+                :label="`Required`"
+                v-model="mandatory"
+              ></v-switch>
             </v-card-text>
           </v-flex>
         </v-layout>
@@ -64,31 +80,42 @@
 
 <script>
   export default {
-    props: ['order', 'section_id', 'form_id'],
+    props: ['order', 'section_id'],
     data () {
       return {
-        createSection: false,
-        editedName: ''
+        createQuestion: false,
+        editedName: '',
+        editedDescription: '',
+        questionType: 1,
+        mandatory: false
       }
     },
     methods: {
       onSaveChanges () {
-        if (this.editedName.trim() === '') {
+        if (this.editedName.trim() === '' || this.editedDescription.trim() === '') {
           return
         }
-        this.createSection = false
-        this.$store.dispatch('createSection',
+        this.createQuestion = false
+        this.$store.dispatch('createQuestion',
           {
-            formid: this.form_id,
-            section_id: this.section_id,
-            name: this.editedName,
+            sectionid: this.section_id,
+            question: this.editedName,
+            description: this.editedDescription,
+            question_type_id: this.questionType,
+            mandatory: this.mandatory,
             order: this.order
           })
         this.editedName = ''
+        this.editedDescription = ''
+        this.mandatory = false
+        this.questionType = 1
       },
       onCancel () {
         this.editedName = ''
-        this.createSection = false
+        this.editedDescription = ''
+        this.mandatory = false
+        this.questionType = 1
+        this.createQuestion = false
       }
     },
     computed: {
@@ -97,7 +124,13 @@
       },
       loading () {
         return this.$store.getters.loading
+      },
+      questionTypes () {
+        return this.$store.getters.loadedQuestionTypes
       }
+    },
+    created: function () {
+      this.$store.dispatch('loadQuestionTypes')
     }
   }
 </script>
