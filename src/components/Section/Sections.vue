@@ -25,6 +25,8 @@
       <v-spacer></v-spacer>
       <v-btn class="success" @click=onDuplicateSection>Duplicate Section</v-btn>
       <v-btn class="error" @click=onDeleteSection>Delete Section</v-btn>
+      <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id="section.id" :form_id="formid"></app-create-section>
+      <app-create-question :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id="section.id"></app-create-question>
     </v-card-actions>
   </v-card>
 </template>
@@ -47,7 +49,7 @@
     computed: {
       list: {
         get () {
-          return this.$store.getters.loadedChildren(this.section.id)
+          return this.$store.getters.loadedChildren(this.formid, this.section.id)
         },
         set (value) {
           const updateObj = {
