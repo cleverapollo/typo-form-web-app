@@ -16,7 +16,7 @@
             <h1 class="primary--text">{{ user.email }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{ user.first_name }} {{ user.last_name }} - {{ user.team_pivot.role }}</h3>
+            <h3>{{ user.first_name }} {{ user.last_name }} - {{ user.team_role }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
@@ -46,7 +46,7 @@
         if (!this.userIsAuthenticated) {
           return false
         }
-        return this.team.pivot.role === 'Admin' || this.team.pivot.role === 'SuperAdmin'
+        return this.team.team_role === 'Admin' || this.team.team_role === 'Super Admin'
       },
       loading () {
         return this.$store.getters.loading

@@ -19,7 +19,7 @@ export default {
       const index = state.loadedSections[payload.formid].findIndex(section => {
         return section.id === payload.section.id
       })
-      state.loadedSections.splice(index, 1, payload.section)
+      state.loadedSections[payload.formid].splice(index, 1, payload.section)
     },
     updateQuestion (state, payload) {
       const index = state.loadedSections[payload.formid].findIndex(section => {
@@ -28,7 +28,7 @@ export default {
       state.loadedSections[payload.formid][index].questions = payload.section.questions
     },
     deleteSection (state, payload) {
-      state.loadedSections = state.loadedSections[payload.formid].filter(e => {
+      state.loadedSections[payload.formid] = state.loadedSections[payload.formid].filter(e => {
         return e.id !== payload.id
       })
     }
@@ -53,15 +53,13 @@ export default {
             console.log(error)
           }
         )
-      /*
-      const response = [
+      /* const response = [
         {
           id: 1,
           name: 'Section1',
           description: 'Section 1 Description',
           order: 1,
           parent_section_id: -1,
-          form_id: 1,
           questions: [
             {
               id: 1,
@@ -81,7 +79,6 @@ export default {
           description: 'Section 2 Description',
           order: 2,
           parent_section_id: -1,
-          form_id: 1,
           questions: [
             {
               id: 3,
@@ -96,7 +93,11 @@ export default {
           ]
         }
       ]
-      commit('setLoadedSections', response) */
+      const updateObj = {
+        formid: 1,
+        sections: response
+      }
+      commit('setLoadedSections', updateObj) */
     },
     createSection ({commit, getters}, payload) {
       let section = {

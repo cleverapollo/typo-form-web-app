@@ -23,7 +23,7 @@ export default {
         return user.id === payload.user.user_id
       })
       if (payload.user.role) {
-        user.application_pivot.role = payload.user.role
+        user.application_role = payload.user.role
       }
     },
     deleteUser (state, payload) {
