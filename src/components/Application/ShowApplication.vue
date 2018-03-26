@@ -59,7 +59,7 @@
         if (!this.userIsAuthenticated) {
           return false
         }
-        return this.application.pivot.role === 'Admin' || this.application.pivot.role === 'SuperAdmin'
+        return this.application.role === 'Admin' || this.application.role === 'Super Admin'
       },
       loading () {
         return this.$store.getters.loading

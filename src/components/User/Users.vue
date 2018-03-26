@@ -32,7 +32,7 @@
                   <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
                   <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
                   <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
-                  <td @click=onLoadUser(props.item.id)>{{ props.item.application_pivot.role }}</td>
+                  <td @click=onLoadUser(props.item.id)>{{ props.item.application_role }}</td>
                 </template>
               </v-data-table>
             </v-tabs-content>
@@ -95,7 +95,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.pivot.role === 'Admin' || this.application.pivot.role === 'SuperAdmin'
+        return this.application.application_role === 'Admin' || this.application.application_role === 'SuperAdmin'
       }
     },
     methods: {

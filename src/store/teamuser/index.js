@@ -24,7 +24,7 @@ export default {
         return user.id === payload.user.user_id
       })
       if (payload.user.role) {
-        user.team_pivot.role = payload.user.role
+        user.team_role = payload.user.role
       }
     },
     deleteTeamUser (state, payload) {

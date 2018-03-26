@@ -66,7 +66,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.pivot.role !== 'Admin' && this.application.pivot.role !== 'SuperAdmin'
+        return this.application.role !== 'Admin' && this.application.role !== 'Super Admin'
       },
       form () {
         return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))
