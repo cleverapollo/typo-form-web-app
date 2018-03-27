@@ -10,7 +10,6 @@
           fab
           router
           @click=onCreateForm()
-          v-if="!userIsNotAdmin()"
           class="primary"
         >
           <v-icon>add</v-icon>
@@ -27,7 +26,6 @@
         </v-data-table>
       </v-flex>
     </v-layout>
-
   </v-container>
 </template>
 
@@ -37,7 +35,7 @@
     data () {
       return {
         headers: [
-          {text: 'Name', value: 'name', sortable: false, align: 'left'}
+          { text: 'Name', value: 'name', sortable: false, align: 'left' }
         ]
       }
     },
@@ -55,19 +53,6 @@
       },
       onCreateForm () {
         this.$router.push('/applications/' + this.application_id + '/forms/new')
-      },
-      application () {
-        return this.$store.getters.loadedApplication(parseInt(this.application_id))
-      },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsNotAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return true
-        }
-
-        return this.application.role !== 'Admin' && this.application.role !== 'Super Admin'
       }
     },
     created: function () {
