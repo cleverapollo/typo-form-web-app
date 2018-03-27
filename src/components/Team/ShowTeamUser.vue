@@ -43,10 +43,10 @@
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsAdmin () {
-        if (!this.userIsAuthenticated) {
+        if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.team.team_role === 'Admin' || this.team.team_role === 'Super Admin'
+        return this.team.role === 'Admin' || this.team.role === 'Super Admin'
       },
       loading () {
         return this.$store.getters.loading
