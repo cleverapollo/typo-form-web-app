@@ -5,36 +5,11 @@ const QUESTION_URL = '/question/'
 
 export default {
   state: {
-    loadedQuestions: [],
     loadedQuestionTypes: []
   },
   mutations: {
     setLoadedQuestionTypes (state, payload) {
       state.loadedQuestionTypes = payload
-    },
-    setLoadedQuestions (state, payload) {
-      state.loadedQuestions = payload
-    },
-    createQuestion (state, payload) {
-      console.log(state, payload)
-      // state.loadedSections[payload.sectionid].push(payload.question)
-      state.loadedQuestions.push(payload.question)
-    },
-    updateQuestion (state, payload) {
-      const question = state.loadedQuestions.find(question => {
-        return question.id === payload.id
-      })
-      if (payload.name) {
-        question.name = payload.name
-      }
-      if (payload.order) {
-        question.order = payload.order
-      }
-    },
-    deleteQuestion (state, payload) {
-      state.loadedQuestions = state.loadedQuestions.filter(e => {
-        return e.id !== payload.id
-      })
     }
   },
   actions: {
@@ -61,13 +36,18 @@ export default {
       ]
       commit('setLoadedQuestionTypes', response)
     },
-    loadQuestions ({commit}, sectionid) {
+    loadQuestions ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.get(SECTION_URL + sectionid + QUESTION_URL)
+      window.axios.get(SECTION_URL + payload.sectionid + QUESTION_URL)
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedQuestions', response['data']['questions'])
+            const createObj = {
+              formid: payload.formid,
+              sectionid: payload.sectionid,
+              questions: response['data']['questions']
+            }
+            commit('setLoadedQuestions', createObj)
           }
         )
         .catch(
@@ -90,6 +70,7 @@ export default {
           response => {
             commit('setLoading', false)
             const createdObj = {
+              formid: payload.formid,
               sectionid: payload.sectionid,
               question: response['data']['question']
             }
@@ -106,17 +87,33 @@ export default {
     updateQuestion ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
-      if (payload.name) {
-        updateObj.name = payload.name
+      if (payload.question) {
+        updateObj.question = payload.question
+      }
+      if (payload.description) {
+        updateObj.description = payload.description
+      }
+      if (payload.question_type_id) {
+        updateObj.question_type_id = payload.question_type_id
+      }
+      if (payload.mandatory) {
+        updateObj.mandatory = payload.mandatory
       }
       if (payload.order) {
         updateObj.order = payload.order
       }
       window.axios.put(SECTION_URL + payload.sectionid + QUESTION_URL + payload.id, updateObj)
-        .then(response => {
-          commit('setLoading', false)
-          commit('updateQuestion', response['data']['question'])
-        })
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              formid: payload.formid,
+              sectionid: payload.sectionid,
+              question: response['data']['question']
+            }
+            commit('updateQuestion', updateObj)
+          }
+        )
         .catch(error => {
           console.log(error)
           commit('setLoading', false)
@@ -141,14 +138,34 @@ export default {
         return questiontypeA.id > questiontypeB.id
       })
     },
-    loadedQuestions (state) {
-      return state.loadedQuestions.sort((questionA, questionB) => {
-        return questionA.id > questionB.id
-      })
+    loadedQuestions (state, getters, rootState) {
+      return (formid, sectionid) => {
+        if (!rootState.section.loadedSections[formid]) {
+          return []
+        }
+        const section = rootState.section.loadedSections[formid].find((section) => {
+          return section.id === sectionid
+        })
+        if (!section) {
+          return []
+        }
+        return section.questions.sort((questionA, questionB) => {
+          return questionA.order > questionB.order
+        })
+      }
     },
-    loadedQuestion (state) {
-      return (questionid) => {
-        return state.loadedQuestions.find((question) => {
+    loadedQuestion (state, getters, rootState) {
+      return (formid, sectionid, questionid) => {
+        if (!rootState.section.loadedSections[formid]) {
+          return null
+        }
+        const section = rootState.section.loadedSections[formid].find((section) => {
+          return section.id === sectionid
+        })
+        if (!section) {
+          return null
+        }
+        return section.questions.find((question) => {
           return question.id === questionid
         })
       }

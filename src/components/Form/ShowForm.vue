@@ -24,7 +24,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id=-1 :form_id="id"></app-create-section>
+            <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :sectionid=-1 :formid="id"></app-create-section>
             <app-edit-form :form="form" :application_id="application_id"></app-edit-form>
             <v-btn class="error" @click=onDeleteForm>Delete</v-btn>
           </v-card-actions>
@@ -108,6 +108,7 @@
       this.$store.dispatch('loadApplications')
       this.$store.dispatch('loadForms', this.application_id)
       this.$store.dispatch('loadSections', this.id)
+      this.$store.dispatch('loadQuestionTypes')
     }
   }
 </script>

@@ -10,7 +10,7 @@
       <draggable v-model="list" class="dragArea" :options="{group:'people', draggable:'.item'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
         <div v-for="(element, index) in list" :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id" class="item" v-bind:class="{ question: !isSection(element) }">
           <sections :section='element' :formid='formid' v-if="isSection(element)"></sections>
-          <questions :element='element' v-else></questions>
+          <questions :question='element' :formid='formid' :sectionid="section.id" v-else></questions>
         </div>
         <div slot="footer" v-if="isSectionEmpty">
           <v-card>
@@ -25,8 +25,8 @@
       <v-spacer></v-spacer>
       <v-btn class="success" @click=onDuplicateSection>Duplicate Section</v-btn>
       <v-btn class="error" @click=onDeleteSection>Delete Section</v-btn>
-      <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id="section.id" :form_id="formid"></app-create-section>
-      <app-create-question :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id="section.id"></app-create-question>
+      <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :sectionid="section.id" :formid="formid"></app-create-section>
+      <app-create-question :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :sectionid="section.id" :formid="formid"></app-create-question>
     </v-card-actions>
   </v-card>
 </template>
@@ -73,7 +73,7 @@
         }
         this.$store.dispatch('updateSection',
           {
-            formid: this.section.form_id,
+            formid: this.formid,
             section_id: this.section.section_id,
             order: this.section.order,
             name: this.editedName

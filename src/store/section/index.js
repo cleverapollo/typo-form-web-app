@@ -21,15 +21,45 @@ export default {
       })
       state.loadedSections[payload.formid].splice(index, 1, payload.section)
     },
-    updateQuestion (state, payload) {
-      const index = state.loadedSections[payload.formid].findIndex(section => {
-        return section.id === payload.section.id
-      })
-      state.loadedSections[payload.formid][index].questions = payload.section.questions
-    },
     deleteSection (state, payload) {
       state.loadedSections[payload.formid] = state.loadedSections[payload.formid].filter(e => {
         return e.id !== payload.id
+      })
+    },
+
+    setLoadedQuestions (state, payload) {
+      state.loadedSections[payload.formid][payload.sectionid].questions = payload.questions
+    },
+    createQuestion (state, payload) {
+      state.loadedSections[payload.formid][payload.sectionid].questions.push(payload.question)
+    },
+    updateQuestion (state, payload) {
+      const index = state.loadedSections[payload.formid][payload.sectionid].questions.findIndex(question => {
+        return question.id === payload.question.id
+      })
+      state.loadedSections[payload.formid][payload.sectionid].questions[index] = payload.section.question
+    },
+    deleteQuestion (state, payload) {
+      state.loadedSections[payload.formid][payload.sectionid].questions = state.loadedSections[payload.formid][payload.sectionid].questions.filter(e => {
+        return e.id !== payload.question.id
+      })
+    },
+
+    setLoadedAnswers (state, payload) {
+      state.loadedSections[payload.formid][payload.sectionid].questions[payload.answerid].answers = payload.answers
+    },
+    createAnswer (state, payload) {
+      state.loadedSections[payload.formid][payload.sectionid].questions[payload.questionid].answers.push(payload.answer)
+    },
+    updateAnswer (state, payload) {
+      const index = state.loadedSections[payload.formid][payload.sectionid].questions[payload.questionid].answers.findIndex(answer => {
+        return answer.id === payload.answer.id
+      })
+      state.loadedSections[payload.formid][payload.sectionid].questions[payload.questionid].answers[index] = payload.section.answer
+    },
+    deleteAnswer (state, payload) {
+      state.loadedSections[payload.formid][payload.sectionid].questions[payload.questionid].answers = state.loadedSections[payload.formid][payload.sectionid].questions[payload.questionid].answers.filter(e => {
+        return e.id !== payload.answer.id
       })
     }
   },

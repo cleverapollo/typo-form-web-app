@@ -1,18 +1,18 @@
 <template>
-  <v-dialog width="350px" persistent v-model="createSection">
+  <v-dialog width="350px" persistent v-model="createAnswer">
     <v-btn
       dark
       class="primary"
       slot="activator"
     >
-      Create Section
+      Create Answer
     </v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-title>
-              <h2>Create Section</h2>
+              <h2>Create Answer</h2>
             </v-card-title>
           </v-flex>
         </v-layout>
@@ -62,31 +62,32 @@
 
 <script>
   export default {
-    props: ['order', 'sectionid', 'formid'],
+    props: ['order', 'formid', 'sectionid', 'questionid'],
     data () {
       return {
-        createSection: false,
+        createAnswer: false,
         editedName: ''
       }
     },
     methods: {
       onSaveChanges () {
-        if (this.editedName.trim() === '') {
+        if (this.editedName.trim() === '' || this.editedDescription.trim() === '') {
           return
         }
-        this.createSection = false
-        this.$store.dispatch('createSection',
+        this.createAnswer = false
+        this.$store.dispatch('createAnswer',
           {
             formid: this.formid,
-            section_id: this.sectionid,
-            name: this.editedName,
+            sectionid: this.sectionid,
+            questionid: this.questionid,
+            answer: this.editedName,
             order: this.order
           })
         this.editedName = ''
       },
       onCancel () {
         this.editedName = ''
-        this.createSection = false
+        this.createAnswer = false
       }
     },
     computed: {
