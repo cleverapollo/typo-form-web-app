@@ -63,14 +63,14 @@
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsNotAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
+        if (!this.userIsAuthenticated || !this.application()) {
           return true
         }
-
         return this.application.role !== 'Admin' && this.application.role !== 'Super Admin'
       }
     },
     created: function () {
+      this.$store.dispatch('loadApplications')
       this.$store.dispatch('loadForms', this.application_id)
     }
   }

@@ -24,7 +24,8 @@ import ShowApplication from '@/components/Application/ShowApplication'
 
 import Forms from '@/components/Form/Forms'
 import CreateForm from '@/components/Form/CreateForm'
-import ShowForm from '@/components/Form/ShowForm'
+// import ShowForm from '@/components/Form/ShowForm'
+import QuestionsAndSubmissions from '@/components/Form/QuestionsAndSubmissions'
 
 import ShowSubmission from '@/components/Submission/ShowSubmission'
 
@@ -140,10 +141,16 @@ const router = new Router({
       component: CreateForm,
       props: true
     },
+    // {
+    //   path: '/applications/:application_id/forms/show/:id',
+    //   name: 'ShowForm',
+    //   component: ShowForm,
+    //   props: true
+    // },
     {
       path: '/applications/:application_id/forms/show/:id',
-      name: 'ShowForm',
-      component: ShowForm,
+      name: 'QuestionsAndSubmissions',
+      component: QuestionsAndSubmissions,
       props: true
     },
     {

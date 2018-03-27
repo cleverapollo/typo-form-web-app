@@ -105,7 +105,6 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadApplications')
       this.$store.dispatch('loadForms', this.application_id)
       this.$store.dispatch('loadSections', this.id)
     }
