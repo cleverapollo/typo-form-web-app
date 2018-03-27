@@ -49,7 +49,7 @@
     data () {
       return {
         tabs: ['Questions', 'Submissions'],
-        active: null,
+        active: null
       }
     },
     computed: {
