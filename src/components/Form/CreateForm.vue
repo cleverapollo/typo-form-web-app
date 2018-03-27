@@ -43,13 +43,33 @@
       }
     },
     computed: {
+      application () {
+        return this.$store.getters.loadedApplication(parseInt(this.application_id))
+      },
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      userIsAdmin () {
+        console.log(this.application.role === 'Admin' || this.application.role === 'Super Admin')
+        if (!this.userIsAuthenticated || !this.application) {
+          return false
+        }
+        return this.application.role === 'Admin' || this.application.role === 'Super Admin'
+      },
       formIsValid () {
         return this.name !== ''
       }
     },
+    watch: {
+      application (value) {
+        if (value.role === 'User') {
+          this.$router.push('/')
+        }
+      }
+    },
     methods: {
       onCreateForm () {
-        if (!this.formIsValid) {
+        if (!this.formIsValid || !this.userIsAdmin) {
           return
         }
         const formData = {
@@ -59,6 +79,9 @@
         this.$store.dispatch('createForm', formData)
         this.$router.push('/applications/' + this.application_id + '/forms')
       }
+    },
+    created: function () {
+      this.$store.dispatch('loadApplications')
     }
   }
 </script>
