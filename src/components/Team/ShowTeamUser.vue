@@ -43,7 +43,7 @@
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsAdmin () {
-        if (!this.userIsAuthenticated) {
+        if (!this.userIsAuthenticated || !this.application) {
           return false
         }
         return this.team.role === 'Admin' || this.team.role === 'Super Admin'

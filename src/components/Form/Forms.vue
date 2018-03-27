@@ -11,6 +11,7 @@
           router
           @click=onCreateForm()
           class="primary"
+          v-if="userIsAdmin"
         >
           <v-icon>add</v-icon>
         </v-btn>
@@ -40,6 +41,18 @@
       }
     },
     computed: {
+      application () {
+        return this.$store.getters.loadedApplication(parseInt(this.application_id))
+      },
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      userIsAdmin () {
+        if (!this.userIsAuthenticated || !this.application) {
+          return false
+        }
+        return this.application.role === 'Admin' || this.application.role === 'Super Admin'
+      },
       forms () {
         return this.$store.getters.loadedForms(parseInt(this.application_id))
       },
@@ -56,6 +69,7 @@
       }
     },
     created: function () {
+      this.$store.dispatch('loadApplications')
       this.$store.dispatch('loadForms', this.application_id)
     }
   }
