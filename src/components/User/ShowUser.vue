@@ -46,7 +46,7 @@
         if (!this.userIsAuthenticated) {
           return false
         }
-        return this.application.application_role === 'Admin' || this.application.application_role === 'Super Admin'
+        return this.application.role === 'Admin' || this.application.role === 'Super Admin'
       },
       loading () {
         return this.$store.getters.loading
