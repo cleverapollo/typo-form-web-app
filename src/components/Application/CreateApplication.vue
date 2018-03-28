@@ -41,7 +41,7 @@
                           <v-flex xs12 sm4 offset-sm1 d-flex>
                             <v-select
                               :items="['User', 'Admin']"
-                              v-model="item.role"
+                              v-model="item.application_role"
                               label="Role"
                               single-line
                             ></v-select>
@@ -82,15 +82,15 @@
         invitations: [
           {
             email: '',
-            role: 'User'
+            application_role: 'User'
           },
           {
             email: '',
-            role: 'User'
+            application_role: 'User'
           },
           {
             email: '',
-            role: 'User'
+            application_role: 'User'
           }
         ]
       }
@@ -120,7 +120,7 @@
       onAddMember () {
         this.invitations.push({
           email: '',
-          role: 'User'
+          application_role: 'User'
         })
       }
     },

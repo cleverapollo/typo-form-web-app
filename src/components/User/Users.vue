@@ -95,7 +95,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.role === 'Admin' || this.application.role === 'SuperAdmin'
+        return this.application.application_role === 'Admin' || this.application.application_role === 'SuperAdmin'
       }
     },
     methods: {

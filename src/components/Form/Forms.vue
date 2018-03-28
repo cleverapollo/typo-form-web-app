@@ -51,7 +51,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.role === 'Admin' || this.application.role === 'Super Admin'
+        return this.application.application_role === 'Admin' || this.application.application_role === 'Super Admin'
       },
       forms () {
         return this.$store.getters.loadedForms(parseInt(this.application_id))
