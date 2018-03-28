@@ -1,8 +1,9 @@
 <template>
-  <v-card>
+  <v-card active-class='active-section' class='elevation-12'>
     <v-toolbar>
+      <v-toolbar-title>{{ 'Section ' + section.order }}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon @click='toggleExpand'>
+      <v-btn icon @click.prevent='toggleExpand'>
         <v-icon>expand</v-icon>
       </v-btn>
       <v-menu bottom left>
@@ -10,34 +11,34 @@
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
-          <v-list-tile v-for='(item, key) in items' @click='item.cb'>
-            <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+          <v-list-tile v-for='(action, key) in actions' :key="`action ${key}`" @click='action.cb'>
+            <v-list-tile-title>{{ action.name }}</v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-menu>
     </v-toolbar>
     <v-card-title>
-      <div class="section-name">
+      <div class='section-name'>
         <template v-if='expanded'>
           <v-layout row>
             <v-flex xs12>
               <v-text-field
                 label='Section Name'
-                :value='section.name'
-              ></v-text-field>
+                v-model='editedName'
+                autofocus
+              ></v-text-field><!-- @blur='checkUpdate' -->
             </v-flex>
           </v-layout>
         </template>
         <template v-else>
-          <h1>{{ 'Section ' + section.order }}</h1>
-          <h2>{{ section.name }}</h2>
+          <h1 @click='toggleExpand'>{{ section.name }}</h1>
         </template>
       </div>
     </v-card-title>
     <v-card-text>
-      <draggable v-model="list" class="dragArea" :options="{group:'people', draggable:'.item'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
-        <div v-for="(element, index) in list" :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id" class="item" v-bind:class="{ question: !isSection(element) }">
-          <sections :section='element' :form_id='form_id' v-if="isSection(element)"></sections>
+      <draggable v-model='list' v-show='expanded' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px' :move='checkMove' @add='checkAdd' @remove='checkRemove'>
+        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' class='item' :class='{ question: !isSection(element) }'>
+          <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
           <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
@@ -51,11 +52,11 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn class="success" @click=onDuplicateSection>Duplicate Section</v-btn>
-      <v-btn class="primary" @click=onUpdateSection>Update Section</v-btn>
-      <v-btn class="error" @click=onDeleteSection>Delete Section</v-btn>
-      <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id="section.id" :form_id="form_id"></app-create-section>
-      <app-create-question :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id="section.id" :form_id="form_id"></app-create-question>
+      <v-btn class='success' @click='duplicateSection'>Duplicate Section</v-btn>
+      <v-btn class="primary" @click='updateSection'>Update Section</v-btn>
+      <v-btn class='error' @click='deleteSection'>Delete Section</v-btn>
+      <app-create-section :order='list.length === 0 ? 1 : list[list.length-1].order + 1' :section_id='section.id' :form_id='form_id'></app-create-section>
+      <app-create-question :order='list.length === 0 ? 1 : list[list.length-1].order + 1' :section_id='section.id' :form_id='form_id'></app-create-question>
     </v-card-actions>
   </v-card>
 </template>
@@ -63,6 +64,7 @@
 <script>
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions.vue'
+  import * as _ from 'lodash'
   export default {
     name: 'sections',
     props: ['section', 'form_id'],
@@ -73,15 +75,15 @@
     data () {
       return {
         editedName: this.section.name,
-        items: [{
+        actions: [{
           name: 'Duplicate section',
-          cb: this.onDuplicateSection.bind(this)
+          cb: this.duplicateSection.bind(this)
         },
         {
           name: 'Add question',
           cb: this.addQuestion.bind(this)
         }],
-        expanded: true
+        expanded: false
       }
     },
     computed: {
@@ -102,29 +104,32 @@
       }
     },
     methods: {
+      toggleExpand: _.debounce(function () {
+        this.expanded = !this.expanded
+      }, 200),
       isSection (element) {
         return element.questions !== undefined
       },
-      onUpdateSection () {
+      updateSection () {
         if (this.editedName.trim() === '') {
           return
         }
         this.$store.dispatch('updateSection',
           {
             formid: this.form_id,
-            section_id: this.section.section_id,
             id: this.section.id,
+            section_id: this.section.section_id,
             order: this.section.order,
             name: this.editedName
           })
       },
-      onDuplicateSection () {
+      duplicateSection () {
         this.$store.dispatch('duplicateSection', {
           formid: this.form_id,
           id: this.section.id
         })
       },
-      onDeleteSection () {
+      deleteSection () {
         this.$store.dispatch('deleteSection', {
           formid: this.form_id,
           id: this.section.id
@@ -143,11 +148,15 @@
       checkRemove: function (evt) {
         console.log('removed', evt)
       },
-      toggleExpand: function () {
-        this.expanded = !this.expanded
-      },
       addQuestion: function () {
         console.log('add question here')
+      },
+      checkUpdate: function () {
+        if (this.editedName !== this.section.name) {
+          this.updateSection()
+        } else {
+          this.toggleExpand()
+        }
       }
     }
   }

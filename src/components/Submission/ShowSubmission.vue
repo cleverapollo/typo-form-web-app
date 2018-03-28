@@ -17,7 +17,7 @@
           </v-card-title>
           <v-card-text>
             <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item">
-              <sections :section='element'></sections>
+              <sections :section='element' :form_id='form.id'></sections>
             </div>
           </v-card-text>
         </v-card>
