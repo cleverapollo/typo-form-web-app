@@ -32,7 +32,7 @@
     <v-card-text>
       <draggable v-model="answers" class="dragArea" :options="{group:'people', draggable:'.item' + question.id}" style="min-height: 100px">
         <div v-for="(element, index) in answers" :key="'Answer ' + element.id" class="'item' + question.id">
-          <answers :answer='element' :formid='formid' :sectionid='sectionid' :questionid ='question.id'></answers>
+          <answers :answer='element' :form_id='form_id' :section_id='section_id' :question_id ='question.id'></answers>
         </div>
         <div slot="footer" v-if="isQuestionEmpty">
           <v-card>
@@ -48,7 +48,7 @@
       <v-btn class="success" @click=onDuplicateQuestion>Duplicate Question</v-btn>
       <v-btn class="primary" @click=onUpdateQuestion>Update Qustion</v-btn>
       <v-btn class="error" @click=onDeleteQuestion>Delete Question</v-btn>
-      <app-create-answer :order="answers.length === 0 ? 1 : answers[answers.length-1].order + 1" :formid="formid" :sectionid="sectionid" :questionid="question.id"></app-create-answer>
+      <app-create-answer :order="answers.length === 0 ? 1 : answers[answers.length-1].order + 1" :form_id="form_id" :section_id="section_id" :question_id="question.id"></app-create-answer>
     </v-card-actions>
   </v-card>
 </template>
@@ -57,7 +57,7 @@
   import draggable from 'vuedraggable'
   import answers from '../Answer/Answers.vue'
   export default {
-    props: ['question', 'formid', 'sectionid'],
+    props: ['question', 'form_id', 'section_id'],
     components: {
       draggable,
       answers
@@ -89,8 +89,8 @@
         }
         this.$store.dispatch('updateQuestion',
           {
-            formid: this.formid,
-            sectionid: this.sectionid,
+            formid: this.form_id,
+            sectionid: this.section_id,
             id: this.question.id,
             question: this.editedName,
             description: this.editedDescription,
@@ -101,15 +101,15 @@
       },
       onDuplicateQuestion () {
         this.$store.dispatch('duplicateQuestion', {
-          formid: this.formid,
-          sectionid: this.sectionid,
+          formid: this.form_id,
+          sectionid: this.section_id,
           id: this.question.id
         })
       },
       onDeleteQuestion () {
         this.$store.dispatch('deleteQuestion', {
-          formid: this.formid,
-          sectionid: this.sectionid,
+          formid: this.form_id,
+          sectionid: this.section_id,
           id: this.question.id
         })
       }

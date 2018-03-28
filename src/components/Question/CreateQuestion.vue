@@ -80,7 +80,7 @@
 
 <script>
   export default {
-    props: ['order', 'sectionid', 'formid'],
+    props: ['order', 'section_id', 'form_id'],
     data () {
       return {
         createQuestion: false,
@@ -98,8 +98,8 @@
         this.createQuestion = false
         this.$store.dispatch('createQuestion',
           {
-            formid: this.formid,
-            sectionid: this.sectionid,
+            formid: this.form_id,
+            sectionid: this.section_id,
             question: this.editedName,
             description: this.editedDescription,
             question_type_id: this.questionType,

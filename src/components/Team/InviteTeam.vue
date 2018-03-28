@@ -32,7 +32,7 @@
                   <v-flex xs12 sm4 offset-sm1 d-flex>
                     <v-select
                       :items="['User', 'Admin']"
-                      v-model="item.role"
+                      v-model="item.team_role"
                       label="Role"
                       single-line
                     ></v-select>
@@ -89,15 +89,15 @@
         invitations: [
           {
             email: '',
-            role: 'User'
+            team_role: 'User'
           },
           {
             email: '',
-            role: 'User'
+            team_role: 'User'
           },
           {
             email: '',
-            role: 'User'
+            team_role: 'User'
           }
         ]
       }
@@ -117,15 +117,15 @@
         this.invitations = [
           {
             email: '',
-            role: 'User'
+            team_role: 'User'
           },
           {
             email: '',
-            role: 'User'
+            team_role: 'User'
           },
           {
             email: '',
-            role: 'User'
+            team_role: 'User'
           }
         ]
         this.inviteTeam = false
@@ -133,7 +133,7 @@
       onAddMember () {
         this.invitations.push({
           email: '',
-          role: 'User'
+          team_role: 'User'
         })
       }
     },

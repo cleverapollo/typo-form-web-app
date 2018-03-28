@@ -22,7 +22,7 @@
 <script>
   import draggable from 'vuedraggable'
   export default {
-    props: ['answer', 'formid', 'sectionid', 'questionid'],
+    props: ['answer', 'form_id', 'section_id', 'question_id'],
     components: {
       draggable
     },
@@ -41,9 +41,9 @@
         }
         this.$store.dispatch('updateAnswer',
           {
-            formid: this.formid,
-            sectionid: this.sectionid,
-            questionid: this.questionid,
+            formid: this.form_id,
+            sectionid: this.section_id,
+            questionid: this.question_id,
             id: this.answer.id,
             answer: this.editedName,
             order: this.answer.order
@@ -51,9 +51,9 @@
       },
       onDeleteAnswer () {
         this.$store.dispatch('deleteAnswer', {
-          formid: this.formid,
-          sectionid: this.sectionid,
-          questionid: this.questionid,
+          formid: this.form_id,
+          sectionid: this.section_id,
+          questionid: this.question_id,
           id: this.answer.id
         })
       }

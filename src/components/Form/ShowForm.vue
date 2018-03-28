@@ -18,13 +18,13 @@
           <v-card-text>
             <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
               <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item">
-                <sections :section='element' :formid='id'></sections>
+                <sections :section='element' :form_id='id'></sections>
               </div>
             </draggable>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :sectionid=-1 :formid="id"></app-create-section>
+            <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id=-1 :form_id="id"></app-create-section>
             <app-edit-form :form="form" :application_id="application_id"></app-edit-form>
             <v-btn class="error" @click=onDeleteForm>Delete</v-btn>
           </v-card-actions>
@@ -66,7 +66,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.role !== 'Admin' && this.application.role !== 'Super Admin'
+        return this.application.application_role !== 'Admin' && this.application.application_role !== 'Super Admin'
       },
       form () {
         return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))

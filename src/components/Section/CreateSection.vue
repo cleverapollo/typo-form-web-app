@@ -62,7 +62,7 @@
 
 <script>
   export default {
-    props: ['order', 'sectionid', 'formid'],
+    props: ['order', 'section_id', 'form_id'],
     data () {
       return {
         createSection: false,
@@ -77,8 +77,8 @@
         this.createSection = false
         this.$store.dispatch('createSection',
           {
-            formid: this.formid,
-            section_id: this.sectionid,
+            formid: this.form_id,
+            section_id: this.section_id,
             name: this.editedName,
             order: this.order
           })

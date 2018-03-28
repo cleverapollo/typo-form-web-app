@@ -62,7 +62,7 @@
 
 <script>
   export default {
-    props: ['order', 'formid', 'sectionid', 'questionid'],
+    props: ['order', 'form_id', 'section_id', 'question_id'],
     data () {
       return {
         createAnswer: false,
@@ -77,9 +77,9 @@
         this.createAnswer = false
         this.$store.dispatch('createAnswer',
           {
-            formid: this.formid,
-            sectionid: this.sectionid,
-            questionid: this.questionid,
+            formid: this.form_id,
+            sectionid: this.section_id,
+            questionid: this.question_id,
             answer: this.editedName,
             order: this.order
           })
