@@ -78,12 +78,12 @@ export default {
           commit('setLoading', false)
         })
     },
-    deleteQuestion ({commit}, payload) {
+    deleteAnswer ({commit}, payload) {
       commit('setLoading', true)
       window.axios.delete(QUESTION_URL + payload.questionid + ANSWER_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
-          commit('deleteQuestion', payload)
+          commit('deleteAnswer', payload)
         })
         .catch(error => {
           console.log(error)

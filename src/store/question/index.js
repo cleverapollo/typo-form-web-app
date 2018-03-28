@@ -119,6 +119,25 @@ export default {
           commit('setLoading', false)
         })
     },
+    duplicateQuestion ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.post(SECTION_URL + payload.sectionid + QUESTION_URL + payload.id)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              formid: payload.formid,
+              sectionid: payload.sectionid,
+              questions: response['data']['questions']
+            }
+            commit('setLoadedQuestions', updateObj)
+          }
+        )
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
     deleteQuestion ({commit}, payload) {
       commit('setLoading', true)
       window.axios.delete(SECTION_URL + payload.sectionid + QUESTION_URL + payload.id)

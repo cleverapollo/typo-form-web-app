@@ -30,9 +30,9 @@
       </div>
     </v-card-title>
     <v-card-text>
-      <draggable v-model="answers" class="dragArea" :options="{group:'people', draggable:'.item' + this.question.id}" style="min-height: 100px">
-        <div v-for="(element, index) in answers" :key="'Answer ' + element.id" class="item" + this.question.id>
-          <answers :answer='element' :formid='formid' :sectionid='sectionid' :questionid ='this.id'></answers>
+      <draggable v-model="answers" class="dragArea" :options="{group:'people', draggable:'.item' + question.id}" style="min-height: 100px">
+        <div v-for="(element, index) in answers" :key="'Answer ' + element.id" class="'item' + question.id">
+          <answers :answer='element' :formid='formid' :sectionid='sectionid' :questionid ='question.id'></answers>
         </div>
         <div slot="footer" v-if="isQuestionEmpty">
           <v-card>
@@ -46,6 +46,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn class="success" @click=onDuplicateQuestion>Duplicate Question</v-btn>
+      <v-btn class="primary" @click=onUpdateQuestion>Update Qustion</v-btn>
       <v-btn class="error" @click=onDeleteQuestion>Delete Question</v-btn>
       <app-create-answer :order="answers.length === 0 ? 1 : answers[answers.length-1].order + 1" :formid="formid" :sectionid="sectionid" :questionid="question.id"></app-create-answer>
     </v-card-actions>
@@ -83,7 +84,7 @@
         console.log(evt)
       },
       onUpdateQuestion () {
-        if (this.question.trim() === '') {
+        if (this.editedName.trim() === '' || this.editedDescription.trim() === '') {
           return
         }
         this.$store.dispatch('updateQuestion',

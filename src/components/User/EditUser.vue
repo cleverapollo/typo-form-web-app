@@ -81,7 +81,7 @@
               applicationid: this.application_id,
               id: this.id,
               email: this.editedEmail,
-              role: this.editedRole
+              application_role: this.editedRole
             })
         }
       },

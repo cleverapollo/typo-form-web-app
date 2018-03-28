@@ -28,38 +28,74 @@ export default {
     },
 
     setLoadedQuestions (state, payload) {
-      state.loadedSections[payload.formid][payload.sectionid].questions = payload.questions
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      section.questions = payload.questions
     },
     createQuestion (state, payload) {
-      state.loadedSections[payload.formid][payload.sectionid].questions.push(payload.question)
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      section.questions.push(payload.question)
     },
     updateQuestion (state, payload) {
-      const index = state.loadedSections[payload.formid][payload.sectionid].questions.findIndex(question => {
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      const index = section.questions.findIndex(question => {
         return question.id === payload.question.id
       })
-      state.loadedSections[payload.formid][payload.sectionid].questions[index] = payload.section.question
+      section.questions.splice(index, 1, payload.question)
     },
     deleteQuestion (state, payload) {
-      state.loadedSections[payload.formid][payload.sectionid].questions = state.loadedSections[payload.formid][payload.sectionid].questions.filter(e => {
-        return e.id !== payload.question.id
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      section.questions = section.questions.filter(e => {
+        return e.id !== payload.id
       })
     },
 
     setLoadedAnswers (state, payload) {
-      state.loadedSections[payload.formid][payload.sectionid].questions[payload.answerid].answers = payload.answers
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      const question = section.questions.find((question) => {
+        return question.id === payload.questionid
+      })
+      question.answers = payload.answers
     },
     createAnswer (state, payload) {
-      state.loadedSections[payload.formid][payload.sectionid].questions[payload.questionid].answers.push(payload.answer)
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      const question = section.questions.find((question) => {
+        return question.id === payload.questionid
+      })
+      question.answers.push(payload.answer)
     },
     updateAnswer (state, payload) {
-      const index = state.loadedSections[payload.formid][payload.sectionid].questions[payload.questionid].answers.findIndex(answer => {
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      const question = section.questions.find((question) => {
+        return question.id === payload.questionid
+      })
+      const index = question.answers.findIndex(answer => {
         return answer.id === payload.answer.id
       })
-      state.loadedSections[payload.formid][payload.sectionid].questions[payload.questionid].answers[index] = payload.section.answer
+      question.answers.splice(index, 1, payload.answer)
     },
     deleteAnswer (state, payload) {
-      state.loadedSections[payload.formid][payload.sectionid].questions[payload.questionid].answers = state.loadedSections[payload.formid][payload.sectionid].questions[payload.questionid].answers.filter(e => {
-        return e.id !== payload.answer.id
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      const question = section.questions.find((question) => {
+        return question.id === payload.questionid
+      })
+      question.answers = question.answers.filter(e => {
+        return e.id !== payload.id
       })
     }
   },
@@ -83,51 +119,6 @@ export default {
             console.log(error)
           }
         )
-      /* const response = [
-        {
-          id: 1,
-          name: 'Section1',
-          description: 'Section 1 Description',
-          order: 1,
-          parent_section_id: -1,
-          questions: [
-            {
-              id: 1,
-              name: 'Question 1',
-              order: 1
-            },
-            {
-              id: 2,
-              name: 'Question 2',
-              order: 2
-            }
-          ]
-        },
-        {
-          id: 2,
-          name: 'Section2',
-          description: 'Section 2 Description',
-          order: 2,
-          parent_section_id: -1,
-          questions: [
-            {
-              id: 3,
-              name: 'Question 3',
-              order: 3
-            },
-            {
-              id: 4,
-              name: 'Question 4',
-              order: 4
-            }
-          ]
-        }
-      ]
-      const updateObj = {
-        formid: 1,
-        sections: response
-      }
-      commit('setLoadedSections', updateObj) */
     },
     createSection ({commit, getters}, payload) {
       let section = {

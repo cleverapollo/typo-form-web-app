@@ -24,6 +24,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn class="success" @click=onDuplicateSection>Duplicate Section</v-btn>
+      <v-btn class="primary" @click=onUpdateSection>Update Section</v-btn>
       <v-btn class="error" @click=onDeleteSection>Delete Section</v-btn>
       <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :sectionid="section.id" :formid="formid"></app-create-section>
       <app-create-question :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :sectionid="section.id" :formid="formid"></app-create-question>
@@ -52,11 +53,11 @@
           return this.$store.getters.loadedChildren(this.formid, this.section.id)
         },
         set (value) {
-          const updateObj = {
+          /* const updateObj = {
             id: this.section.id,
             value: value
           }
-          this.$store.dispatch('updateSection', updateObj)
+          this.$store.dispatch('updateSection', updateObj) */
         }
       },
       isSectionEmpty () {
@@ -75,6 +76,7 @@
           {
             formid: this.formid,
             section_id: this.section.section_id,
+            id: this.section.id,
             order: this.section.order,
             name: this.editedName
           })

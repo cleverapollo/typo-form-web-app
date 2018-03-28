@@ -71,7 +71,7 @@
     },
     methods: {
       onSaveChanges () {
-        if (this.editedName.trim() === '' || this.editedDescription.trim() === '') {
+        if (this.editedName.trim() === '') {
           return
         }
         this.createAnswer = false

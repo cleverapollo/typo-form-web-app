@@ -132,7 +132,7 @@
         if (!this.userIsAuthenticated || !this.team) {
           return false
         }
-        return this.team.team_role === 'Admin'
+        return this.team.role === 'Admin'
       },
       loading () {
         return this.$store.getters.loading
