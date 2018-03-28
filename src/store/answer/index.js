@@ -3,41 +3,20 @@ const QUESTION_URL = `${API_URL}question/`
 const ANSWER_URL = '/answer/'
 
 export default {
-  state: {
-    loadedAnswers: []
-  },
-  mutations: {
-    setLoadedAnswers (state, payload) {
-      state.loadedAnswers = payload
-    },
-    createAnswer (state, payload) {
-      state.loadedAnswers.push(payload)
-    },
-    updateAnswer (state, payload) {
-      const answer = state.loadedAnswers.find(answer => {
-        return answer.id === payload.id
-      })
-      if (payload.name) {
-        answer.name = payload.name
-      }
-      if (payload.order) {
-        answer.order = payload.order
-      }
-    },
-    deleteAnswer (state, payload) {
-      state.loadedAnswers = state.loadedAnswers.filter(e => {
-        return e.id !== payload.id
-      })
-    }
-  },
   actions: {
-    loadAnswers ({commit}, questionid) {
+    loadAnswers ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.get(QUESTION_URL + questionid + ANSWER_URL)
+      window.axios.get(QUESTION_URL + payload.questionid + ANSWER_URL)
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedAnswers', response['data']['answers'])
+            const createObj = {
+              formid: payload.formid,
+              sectionid: payload.sectionid,
+              questionid: payload.questionid,
+              answers: response['data']['answers']
+            }
+            commit('setLoadedAnswers', createObj)
           }
         )
         .catch(
@@ -49,14 +28,20 @@ export default {
     },
     createAnswer ({commit, getters}, payload) {
       const answer = {
-        name: payload.name,
+        answer: payload.answer,
         order: payload.order
       }
       window.axios.post(QUESTION_URL + payload.questionid + ANSWER_URL, answer)
         .then(
           response => {
             commit('setLoading', false)
-            commit('createAnswer', response['data']['answer'])
+            const createdObj = {
+              formid: payload.formid,
+              sectionid: payload.sectionid,
+              questionid: payload.questionid,
+              answer: response['data']['answer']
+            }
+            commit('createAnswer', createdObj)
           }
         )
         .catch(
@@ -69,17 +54,25 @@ export default {
     updateAnswer ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
-      if (payload.name) {
-        updateObj.name = payload.name
+      if (payload.answer) {
+        updateObj.answer = payload.answer
       }
       if (payload.order) {
         updateObj.order = payload.order
       }
       window.axios.put(QUESTION_URL + payload.questionid + ANSWER_URL + payload.id, updateObj)
-        .then(response => {
-          commit('setLoading', false)
-          commit('updateAnswer', response['data']['answer'])
-        })
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              formid: payload.formid,
+              sectionid: payload.sectionid,
+              questionid: payload.questionid,
+              answer: response['data']['answer']
+            }
+            commit('updateAnswer', updateObj)
+          }
+        )
         .catch(error => {
           console.log(error)
           commit('setLoading', false)
@@ -99,14 +92,46 @@ export default {
     }
   },
   getters: {
-    loadedAnswers (state) {
-      return state.loadedAnswers.sort((answerA, answerB) => {
-        return answerA.id > answerB.id
-      })
+    loadedAnswers (state, getters, rootState) {
+      return (formid, sectionid, questionid) => {
+        if (!rootState.section.loadedSections[formid]) {
+          return []
+        }
+        const section = rootState.section.loadedSections[formid].find((section) => {
+          return section.id === sectionid
+        })
+        if (!section) {
+          return []
+        }
+        const question = section.questions.find((question) => {
+          return question.id === questionid
+        })
+        if (!question) {
+          return []
+        }
+        return question.answers.sort((answerA, answerB) => {
+          return answerA.order > answerB.order
+        })
+      }
     },
-    loadedAnswer (state) {
-      return (answerid) => {
-        return state.loadedAnswers.find((answer) => {
+    loadedAnswer (state, getters, rootState) {
+      return (formid, sectionid, questionid, answerid) => {
+        if (!rootState.section.loadedSections[formid]) {
+          return null
+        }
+        const section = rootState.section.loadedSections[formid].find((section) => {
+          return section.id === sectionid
+        })
+        if (!section) {
+          return null
+        }
+        const question = section.questions.find((question) => {
+          return question.id === questionid
+        })
+        if (!question) {
+          return null
+        }
+        return question.answers.find((answer) => {
           return answer.id === answerid
         })
       }

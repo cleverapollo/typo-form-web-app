@@ -22,8 +22,8 @@ export default {
       const user = state.loadedUsers[payload.applicationid].find(user => {
         return user.id === payload.user.user_id
       })
-      if (payload.user.role) {
-        user.application_role = payload.user.role
+      if (payload.user.application_role) {
+        user.application_role = payload.user.application_role
       }
     },
     deleteUser (state, payload) {
@@ -62,8 +62,8 @@ export default {
     updateUser ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
-      if (payload.role) {
-        updateObj.role = payload.role
+      if (payload.application_role) {
+        updateObj.application_role = payload.application_role
       }
       window.axios.put(APPLICATION_URL + payload.applicationid + USER_URL + payload.id, updateObj)
         .then(

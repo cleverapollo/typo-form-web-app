@@ -82,7 +82,7 @@
               teamid: this.team_id,
               id: this.id,
               email: this.editedEmail,
-              role: this.editedRole
+              team_role: this.editedRole
             })
         }
       },

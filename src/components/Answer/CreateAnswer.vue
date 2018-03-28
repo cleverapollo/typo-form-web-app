@@ -1,18 +1,18 @@
 <template>
-  <v-dialog width="350px" persistent v-model="createQuestion">
+  <v-dialog width="350px" persistent v-model="createAnswer">
     <v-btn
       dark
       class="primary"
       slot="activator"
     >
-      Create Question
+      Create Answer
     </v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-title>
-              <h2>Create Question</h2>
+              <h2>Create Answer</h2>
             </v-card-title>
           </v-flex>
         </v-layout>
@@ -26,24 +26,6 @@
                 id="name"
                 v-model="editedName"
                 required></v-text-field>
-              <v-text-field
-                name="description"
-                label="Description"
-                id="description"
-                v-model="editedDescription"
-                required></v-text-field>
-              <v-select
-                :items="questionTypes"
-                item-text="type"
-                item-value="id"
-                v-model="questionType"
-                label="Question Type"
-                single-line
-              ></v-select>
-              <v-switch
-                :label="`Required`"
-                v-model="mandatory"
-              ></v-switch>
             </v-card-text>
           </v-flex>
         </v-layout>
@@ -80,43 +62,32 @@
 
 <script>
   export default {
-    props: ['order', 'section_id', 'form_id'],
+    props: ['order', 'form_id', 'section_id', 'question_id'],
     data () {
       return {
-        createQuestion: false,
-        editedName: '',
-        editedDescription: '',
-        questionType: 1,
-        mandatory: false
+        createAnswer: false,
+        editedName: ''
       }
     },
     methods: {
       onSaveChanges () {
-        if (this.editedName.trim() === '' || this.editedDescription.trim() === '') {
+        if (this.editedName.trim() === '') {
           return
         }
-        this.createQuestion = false
-        this.$store.dispatch('createQuestion',
+        this.createAnswer = false
+        this.$store.dispatch('createAnswer',
           {
             formid: this.form_id,
             sectionid: this.section_id,
-            question: this.editedName,
-            description: this.editedDescription,
-            question_type_id: this.questionType,
-            mandatory: this.mandatory,
+            questionid: this.question_id,
+            answer: this.editedName,
             order: this.order
           })
         this.editedName = ''
-        this.editedDescription = ''
-        this.mandatory = false
-        this.questionType = 1
       },
       onCancel () {
         this.editedName = ''
-        this.editedDescription = ''
-        this.mandatory = false
-        this.questionType = 1
-        this.createQuestion = false
+        this.createAnswer = false
       }
     },
     computed: {
@@ -125,13 +96,7 @@
       },
       loading () {
         return this.$store.getters.loading
-      },
-      questionTypes () {
-        return this.$store.getters.loadedQuestionTypes
       }
-    },
-    created: function () {
-      this.$store.dispatch('loadQuestionTypes')
     }
   }
 </script>
