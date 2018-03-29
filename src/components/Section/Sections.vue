@@ -19,19 +19,20 @@
     </v-toolbar>
     <v-card-title>
       <div class='section-name'>
-        <template v-if='expanded'>
+        <template v-if='editMode'>
           <v-layout row>
             <v-flex xs12>
               <v-text-field
                 label='Section Name'
                 v-model='editedName'
                 autofocus
-              ></v-text-field><!-- @blur='checkUpdate' -->
+                @blur='checkUpdate'
+              ></v-text-field>
             </v-flex>
           </v-layout>
         </template>
         <template v-else>
-          <h1 @click='toggleExpand'>{{ section.name }}</h1>
+          <h1 @click='setEditMode'>{{ section.name }}</h1>
         </template>
       </div>
     </v-card-title>
@@ -64,7 +65,6 @@
 <script>
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions.vue'
-  import * as _ from 'lodash'
   export default {
     name: 'sections',
     props: ['section', 'form_id'],
@@ -83,7 +83,8 @@
           name: 'Add question',
           cb: this.addQuestion.bind(this)
         }],
-        expanded: false
+        expanded: false,
+        editMode: false
       }
     },
     computed: {
@@ -104,9 +105,12 @@
       }
     },
     methods: {
-      toggleExpand: _.debounce(function () {
+      setEditMode () {
+        this.editMode = true
+      },
+      toggleExpand () {
         this.expanded = !this.expanded
-      }, 200),
+      },
       isSection (element) {
         return element.questions !== undefined
       },
@@ -155,7 +159,7 @@
         if (this.editedName !== this.section.name) {
           this.updateSection()
         } else {
-          this.toggleExpand()
+          this.editMode = false
         }
       }
     }
