@@ -28,13 +28,6 @@ export default {
             console.log(error)
           }
         )
-      /* const response = [
-        {
-          id: 1,
-          type: 'Short Answer'
-        }
-      ]
-      commit('setLoadedQuestionTypes', response) */
     },
     loadQuestions ({commit}, payload) {
       commit('setLoading', true)
