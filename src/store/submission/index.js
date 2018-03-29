@@ -4,28 +4,55 @@ const SUBMISSION_URL = '/submission/'
 
 export default {
   state: {
-    loadedSubmissions: []
+    loadedSubmissions: {}
   },
   mutations: {
     setLoadedSubmissions (state, payload) {
-      state.loadedSubmissions = payload
+      let submissions = Object.assign({}, state.loadedSubmissions)
+      submissions[payload.formid] = payload.submissions
+      state.loadedSubmissions = submissions
     },
     createSubmission (state, payload) {
-      state.loadedSubmissions.push(payload)
+      state.loadedSubmissions[payload.formid].push(payload.submission)
     },
     updateSubmission (state, payload) {
-      const submission = state.loadedSubmissions.find(submission => {
-        return submission.id === payload.id
+      const index = state.loadedSubmissions[payload.formid].findIndex(submission => {
+        return submission.id === payload.submission.id
       })
-      if (payload.name) {
-        submission.name = payload.name
-      }
-      if (payload.order) {
-        submission.order = payload.order
-      }
+      state.loadedSubmissions[payload.formid].splice(index, 1, payload.submission)
     },
     deleteSubmission (state, payload) {
-      state.loadedSubmissions = state.loadedSubmissions.filter(e => {
+      state.loadedSubmissions[payload.formid] = state.loadedSubmissions[payload.formid].filter(e => {
+        return e.id !== payload.id
+      })
+    },
+
+    setLoadedResponses (state, payload) {
+      const submission = state.loadedSubmissions[payload.formid].find((submission) => {
+        return submission.id === payload.submissionid
+      })
+      submission.responses = payload.responses
+    },
+    createResponse (state, payload) {
+      const submission = state.loadedSubmissions[payload.formid].find((submission) => {
+        return submission.id === payload.submissionid
+      })
+      submission.responses.push(payload.response)
+    },
+    updateResponse (state, payload) {
+      const submission = state.loadedSubmissions[payload.formid].find((submission) => {
+        return submission.id === payload.submissionid
+      })
+      const index = submission.responses.findIndex(response => {
+        return response.id === payload.response.id
+      })
+      submission.responses.splice(index, 1, payload.response)
+    },
+    deleteResponse (state, payload) {
+      const submission = state.loadedSubmissions[payload.formid].find((submission) => {
+        return submission.id === payload.submissionid
+      })
+      submission.responses = submission.responses.filter(e => {
         return e.id !== payload.id
       })
     }
@@ -37,7 +64,11 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            commit('setLoadedSubmissions', response['data']['submissions'])
+            const updateObj = {
+              formid: formid,
+              submissions: response['data']['submissions']
+            }
+            commit('setLoadedSubmissions', updateObj)
           }
         )
         .catch(
@@ -48,15 +79,25 @@ export default {
         )
     },
     createSubmission ({commit, getters}, payload) {
-      const submission = {
-        name: payload.name,
-        order: payload.order
+      let submission = {}
+      if (payload.team_id) {
+        submission.team_id = payload.team_id
+      }
+      if (payload.period_start) {
+        submission.period_start = payload.period_start
+      }
+      if (payload.period_end) {
+        submission.period_end = payload.period_end
       }
       window.axios.post(FORM_URL + payload.formid + SUBMISSION_URL, submission)
         .then(
           response => {
             commit('setLoading', false)
-            commit('createSubmission', response['data']['submission'])
+            const createObj = {
+              formid: payload.formid,
+              submission: response['data']['submission']
+            }
+            commit('createSubmission', createObj)
           }
         )
         .catch(
@@ -68,18 +109,45 @@ export default {
     },
     updateSubmission ({commit}, payload) {
       commit('setLoading', true)
-      const updateObj = {}
-      if (payload.name) {
-        updateObj.name = payload.name
+      let submission = {}
+      if (payload.team_id) {
+        submission.team_id = payload.team_id
       }
-      if (payload.order) {
-        updateObj.order = payload.order
+      if (payload.period_start) {
+        submission.period_start = payload.period_start
       }
-      window.axios.put(FORM_URL + payload.formid + SUBMISSION_URL + payload.id, updateObj)
-        .then(response => {
+      if (payload.period_end) {
+        submission.period_end = payload.period_end
+      }
+      window.axios.put(FORM_URL + payload.formid + SUBMISSION_URL + payload.id, submission)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              formid: payload.formid,
+              submission: response['data']['submission']
+            }
+            commit('updateSubmission', updateObj)
+          }
+        )
+        .catch(error => {
+          console.log(error)
           commit('setLoading', false)
-          commit('updateSubmission', response['data']['submission'])
         })
+    },
+    duplicateSubmission ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.post(FORM_URL + payload.formid + SUBMISSION_URL + payload.id)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              formid: payload.formid,
+              submissions: response['data']['submissions']
+            }
+            commit('setLoadedSubmissions', updateObj)
+          }
+        )
         .catch(error => {
           console.log(error)
           commit('setLoading', false)
@@ -100,13 +168,21 @@ export default {
   },
   getters: {
     loadedSubmissions (state) {
-      return state.loadedSubmissions.sort((submissionA, submissionB) => {
-        return submissionA.id > submissionB.id
-      })
+      return (formid) => {
+        if (!state.loadedSubmissions[formid]) {
+          return []
+        }
+        return state.loadedSubmissions[formid].sort((submissionA, submissionB) => {
+          return submissionA.order > submissionB.order
+        })
+      }
     },
     loadedSubmission (state) {
-      return (submissionid) => {
-        return state.loadedSubmissions.find((submission) => {
+      return (formid, submissionid) => {
+        if (!state.loadedSubmissions[formid]) {
+          return null
+        }
+        return state.loadedSubmissions[formid].find((submission) => {
           return submission.id === submissionid
         })
       }
