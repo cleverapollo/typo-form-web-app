@@ -27,7 +27,7 @@
             :id="tabs[1]"
           >
             <v-card flat>
-              <submissions :application_id="application_id" :id="id"></submissions>
+              <submissions :application_id="application_id"></submissions>
             </v-card>
           </v-tabs-content>
         </v-tabs-items>
@@ -38,7 +38,7 @@
 
 <script>
   import questions from './ShowForm.vue'
-  import submissions from '../Submission/ShowSubmission.vue'
+  import submissions from '../Submission/Submissions.vue'
 
   export default {
     props: ['application_id', 'id'],
