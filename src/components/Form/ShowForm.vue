@@ -16,7 +16,8 @@
             <h1 class="primary--text">{{ form.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
+            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}"
+                       style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
               <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item">
                 <sections :section='element' :formid='id'></sections>
               </div>
@@ -24,7 +25,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id=-1 :form_id="id"></app-create-section>
+            <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id=-1
+                                :form_id="id"></app-create-section>
             <app-edit-form :form="form" :application_id="application_id"></app-edit-form>
             <v-btn class="error" @click=onDeleteForm>Delete</v-btn>
           </v-card-actions>
@@ -37,8 +39,9 @@
 <script>
   import draggable from 'vuedraggable'
   import sections from '../Section/Sections.vue'
+
   export default {
-    props: ['application_id', 'id'],
+    props: ['application_id', 'id', 'submission_id', 'form_type'],
     components: {
       draggable,
       sections
@@ -73,13 +76,6 @@
       },
       loading () {
         return this.$store.getters.loading
-      }
-    },
-    watch: {
-      userIsnotAdmin (value) {
-        if (value) {
-          this.$router.push('/applications/' + this.application_id + '/forms/show/' + this.id + '/submission')
-        }
       }
     },
     methods: {

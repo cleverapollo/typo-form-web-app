@@ -4,7 +4,8 @@
       <v-tabs v-model="active">
         <v-tabs-bar class="primary" dark>
           <v-tabs-item
-            v-for="tab in tabs"
+            v-for="(tab, index) in tabs"
+            v-if="userIsAdmin || index != 0"
             :key="tab"
             :href="'#' + tab"
             ripple
@@ -15,19 +16,16 @@
         </v-tabs-bar>
         <v-tabs-items>
           <v-tabs-content
-            :key="tabs[0]"
-            :id="tabs[0]"
+            v-for="(tab, index) in tabs"
+            v-if="userIsAdmin || index != 0"
+            :key="tab"
+            :id="tab"
           >
-            <v-card flat>
-              <questions :application_id="application_id" :id="id"></questions>
+            <v-card v-if="index == 0" flat>
+              <questions :application_id="application_id" :id="id" :submission_id="1" :form_type="0"></questions>
             </v-card>
-          </v-tabs-content>
-          <v-tabs-content
-            :key="tabs[1]"
-            :id="tabs[1]"
-          >
-            <v-card flat>
-              <submissions :application_id="application_id"></submissions>
+            <v-card v-else flat>
+              <submissions :application_id="application_id" :form_id="id"></submissions>
             </v-card>
           </v-tabs-content>
         </v-tabs-items>
@@ -59,18 +57,11 @@
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
-      userIsNotAdmin () {
+      userIsAdmin () {
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.role !== 'Admin' && this.application.role !== 'Super Admin'
-      }
-    },
-    watch: {
-      userIsNotAdmin (value) {
-        if (value) {
-          this.$router.push('/applications/' + this.application_id + '/forms/show/' + this.id + '/submission')
-        }
+        return this.application.role === 'Admin' || this.application.role === 'Super Admin'
       }
     },
     methods: {},
