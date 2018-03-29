@@ -27,12 +27,10 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
   import sections from '../Section/Sections.vue'
   export default {
     props: ['application_id', 'id'],
     components: {
-      draggable,
       sections
     },
     computed: {
@@ -65,13 +63,6 @@
       },
       loading () {
         return this.$store.getters.loading
-      }
-    },
-    watch: {
-      userIsAdmin (value) {
-        if (value) {
-          this.$router.push('/applications/' + this.application_id + '/forms/show/' + this.id)
-        }
       }
     },
     created: function () {
