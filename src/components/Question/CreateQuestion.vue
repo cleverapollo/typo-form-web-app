@@ -131,7 +131,6 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadQuestionTypes')
     }
   }
 </script>

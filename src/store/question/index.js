@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const SECTION_URL = `${API_URL}section/`
 const QUESTION_URL = '/question/'
-// const QUESTION_TYPE_URL = `${API_URL}question-type/`
+const QUESTION_TYPE_URL = `${API_URL}question_types/`
 
 export default {
   state: {
@@ -14,7 +14,7 @@ export default {
   },
   actions: {
     loadQuestionTypes ({commit}) {
-      /* commit('setLoading', true)
+      commit('setLoading', true)
       window.axios.get(QUESTION_TYPE_URL)
         .then(
           response => {
@@ -27,14 +27,14 @@ export default {
             commit('setLoading', false)
             console.log(error)
           }
-        ) */
-      const response = [
+        )
+      /* const response = [
         {
           id: 1,
           type: 'Short Answer'
         }
       ]
-      commit('setLoadedQuestionTypes', response)
+      commit('setLoadedQuestionTypes', response) */
     },
     loadQuestions ({commit}, payload) {
       commit('setLoading', true)
