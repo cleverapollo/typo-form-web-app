@@ -2,12 +2,10 @@
   <v-dialog width="350px" persistent v-model="createSection">
     <v-btn
       dark
-      fab
-      small
       class="primary"
       slot="activator"
     >
-      <v-icon>add</v-icon>
+      Create Section
     </v-btn>
     <v-card>
       <v-container>

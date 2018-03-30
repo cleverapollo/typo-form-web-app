@@ -50,11 +50,11 @@
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsAdmin () {
-        console.log(this.application.role === 'Admin' || this.application.role === 'Super Admin')
+        console.log(this.application.application_role === 'Admin' || this.application.application_role === 'Super Admin')
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.role === 'Admin' || this.application.role === 'Super Admin'
+        return this.application.application_role === 'Admin' || this.application.application_role === 'Super Admin'
       },
       formIsValid () {
         return this.name !== ''
@@ -62,7 +62,7 @@
     },
     watch: {
       application (value) {
-        if (value.role === 'User') {
+        if (value.application_role === 'User') {
           this.$router.push('/')
         }
       }

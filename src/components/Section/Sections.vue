@@ -9,8 +9,8 @@
     <v-card-text>
       <draggable v-model="list" class="dragArea" :options="{group:'people', draggable:'.item'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
         <div v-for="(element, index) in list" :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id" class="item" v-bind:class="{ question: !isSection(element) }">
-          <sections :section='element' :formid='formid' v-if="isSection(element)"></sections>
-          <questions :element='element' v-else></questions>
+          <sections :section='element' :form_id='form_id' v-if="isSection(element)"></sections>
+          <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
         </div>
         <div slot="footer" v-if="isSectionEmpty">
           <v-card>
@@ -24,9 +24,10 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn class="success" @click=onDuplicateSection>Duplicate Section</v-btn>
+      <v-btn class="primary" @click=onUpdateSection>Update Section</v-btn>
       <v-btn class="error" @click=onDeleteSection>Delete Section</v-btn>
-      <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id="section.id" :form_id="formid"></app-create-section>
-      <app-create-question :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id="section.id"></app-create-question>
+      <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id="section.id" :form_id="form_id"></app-create-section>
+      <app-create-question :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id="section.id" :form_id="form_id"></app-create-question>
     </v-card-actions>
   </v-card>
 </template>
@@ -36,7 +37,7 @@
   import questions from '../Question/Questions.vue'
   export default {
     name: 'sections',
-    props: ['section', 'formid'],
+    props: ['section', 'form_id'],
     components: {
       draggable,
       questions
@@ -49,14 +50,14 @@
     computed: {
       list: {
         get () {
-          return this.$store.getters.loadedChildren(this.formid, this.section.id)
+          return this.$store.getters.loadedChildren(this.form_id, this.section.id)
         },
         set (value) {
-          const updateObj = {
+          /* const updateObj = {
             id: this.section.id,
             value: value
           }
-          this.$store.dispatch('updateSection', updateObj)
+          this.$store.dispatch('updateSection', updateObj) */
         }
       },
       isSectionEmpty () {
@@ -73,21 +74,22 @@
         }
         this.$store.dispatch('updateSection',
           {
-            formid: this.section.form_id,
+            formid: this.form_id,
             section_id: this.section.section_id,
+            id: this.section.id,
             order: this.section.order,
             name: this.editedName
           })
       },
       onDuplicateSection () {
         this.$store.dispatch('duplicateSection', {
-          formid: this.formid,
+          formid: this.form_id,
           id: this.section.id
         })
       },
       onDeleteSection () {
         this.$store.dispatch('deleteSection', {
-          formid: this.formid,
+          formid: this.form_id,
           id: this.section.id
         })
       },

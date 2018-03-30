@@ -1,12 +1,18 @@
 <template>
-  <v-dialog width="350px" persistent v-model="editTeamUser">
-    <v-btn class="primary" slot="activator">Edit</v-btn>
+  <v-dialog width="350px" persistent v-model="createAnswer">
+    <v-btn
+      dark
+      class="primary"
+      slot="activator"
+    >
+      Create Answer
+    </v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-title>
-              <h2>Edit User</h2>
+              <h2>Create Answer</h2>
             </v-card-title>
           </v-flex>
         </v-layout>
@@ -15,18 +21,11 @@
           <v-flex xs12>
             <v-card-text>
               <v-text-field
-                name="email"
-                label="Email"
-                id="email"
-                v-model="editedEmail"
-                type="email"
-                disabled></v-text-field>
-              <v-select
-                :items="['User', 'Admin']"
-                v-model="editedRole"
-                label="Role"
-                single-line
-              ></v-select>
+                name="name"
+                label="Name"
+                id="name"
+                v-model="editedName"
+                required></v-text-field>
             </v-card-text>
           </v-flex>
         </v-layout>
@@ -63,33 +62,32 @@
 
 <script>
   export default {
-    props: ['user', 'application_id', 'team_id'],
+    props: ['order', 'form_id', 'section_id', 'question_id'],
     data () {
       return {
-        id: this.user.id,
-        editTeamUser: false,
-        editedEmail: this.user.email,
-        editedRole: this.user.team_role
+        createAnswer: false,
+        editedName: ''
       }
     },
     methods: {
       onSaveChanges () {
-        this.editTeamUser = false
-        if (this.editedRole.trim() !== this.user.team_role) {
-          this.$store.dispatch('updateTeamUser',
-            {
-              applicationid: this.application_id,
-              teamid: this.team_id,
-              id: this.id,
-              email: this.editedEmail,
-              team_role: this.editedRole
-            })
+        if (this.editedName.trim() === '') {
+          return
         }
+        this.createAnswer = false
+        this.$store.dispatch('createAnswer',
+          {
+            formid: this.form_id,
+            sectionid: this.section_id,
+            questionid: this.question_id,
+            answer: this.editedName,
+            order: this.order
+          })
+        this.editedName = ''
       },
       onCancel () {
-        this.editedEmail = this.user.email
-        this.editedRole = this.user.team_role
-        this.editTeamUser = false
+        this.editedName = ''
+        this.createAnswer = false
       }
     },
     computed: {
