@@ -34,7 +34,8 @@
               v-model='questionTypeId'
               label='Question Type'
               single-line
-              hide-details
+              auto
+              @change='updateQuestionType'
             ></v-select>
           </v-flex>
         </v-layout>
@@ -91,6 +92,7 @@
   import multipleChoice from './components/MultipleChoice'
   import checkboxes from './components/Checkboxes'
   import dropdown from './components/Dropdown'
+  import fileupload from './components/FileUpload'
   import linearScale from './components/LinearScale'
   import multipleChoiceGrid from './components/MultipleChoiceGrid'
   import checkboxGrid from './components/CheckboxGrid'
@@ -105,12 +107,10 @@
     },
     data () {
       return {
-        editModeName: false,
-        editModeDescription: false,
         editedName: this.question.question,
         editedDescription: this.question.description,
-        questionTypeId: 1,
-        mandatory: false,
+        questionTypeId: this.question.question_type_id,
+        mandatory: this.question.mandatory,
         answers: this.question.answers,
         questionsComponentsMap: {
           'Short answer': shortAnswer,
@@ -118,6 +118,7 @@
           'Multiple choice': multipleChoice,
           'Checkboxes': checkboxes,
           'Dropdown': dropdown,
+          'File upload': fileupload,
           'Linear scale': linearScale,
           'Multiple choice grid': multipleChoiceGrid,
           'Checkbox grid': checkboxGrid,
@@ -134,9 +135,6 @@
       questionTypes () {
         return this.$store.getters.loadedQuestionTypes
       },
-      isQuestionEmpty () {
-        return !this.answers.length
-      },
       questionComponent: {
         get: function () {
           const index = _.findIndex(this.questionTypes, type => { return type.id === this.questionTypeId })
@@ -148,10 +146,12 @@
         }
       }
     },
+    watch: {
+      mandatory (value) {
+        this.updateQuestion()
+      }
+    },
     methods: {
-      checkMove: function (evt) {
-        console.log(evt)
-      },
       checkUpdateName: function () {
         if (this.editedName !== this.question.question) {
           this.updateQuestion()
@@ -161,6 +161,10 @@
         if (this.editedDescription !== this.question.description) {
           this.updateQuestion()
         }
+      },
+      updateQuestionType (value) {
+        this.questionTypeId = value
+        this.updateQuestion()
       },
       updateQuestion () {
         if (this.editedName.trim() === '' || this.editedDescription.trim() === '') {
@@ -173,7 +177,7 @@
             id: this.question.id,
             question: this.editedName,
             description: this.editedDescription,
-            question_type_id: this.questionType,
+            question_type_id: this.questionTypeId,
             mandatory: this.mandatory,
             order: this.question.order
           })

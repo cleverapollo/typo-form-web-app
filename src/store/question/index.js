@@ -89,7 +89,7 @@ export default {
       if (payload.question_type_id) {
         updateObj.question_type_id = payload.question_type_id
       }
-      if (payload.mandatory) {
+      if (payload.mandatory !== undefined) {
         updateObj.mandatory = payload.mandatory
       }
       if (payload.order) {
@@ -146,9 +146,7 @@ export default {
   },
   getters: {
     loadedQuestionTypes (state) {
-      return state.loadedQuestionTypes.sort((questiontypeA, questiontypeB) => {
-        return questiontypeA.id > questiontypeB.id
-      })
+      return state.loadedQuestionTypes
     },
     loadedQuestions (state, getters, rootState) {
       return (formid, sectionid) => {

@@ -1,11 +1,13 @@
 <template>
-
+	<div>
+		File Upload
+	</div>
 </template>
 
 <script>
-    export default {
-        name: "file-upload"
-    }
+  export default {
+    name: 'fileupload'
+  }
 </script>
 
 <style scoped>
