@@ -1,18 +1,29 @@
 <template>
-  <v-card active-class='active-section' class='elevation-12'>
+  <v-card active-class='active-section' class='elevation-12 mx-5'>
     <v-toolbar>
       <v-toolbar-title>{{ 'Section ' + section.order }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click.prevent='toggleExpand'>
-        <v-icon>expand</v-icon>
+        <v-icon v-if='expanded'>expand_less</v-icon>
+        <v-icon v-else>expand_more</v-icon>
       </v-btn>
-      <v-menu bottom left>
+      <v-menu offset-y bottom left>
         <v-btn icon slot='activator'>
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
+          <v-list-tile @click=''>
+            <v-list-tile-title>
+              <app-create-section :section_id='section.id' :form_id='form_id'></app-create-section>
+            </v-list-tile-title>
+          </v-list-tile>
           <v-list-tile v-for='(action, key) in actions' :key="`action ${key}`" @click='action.cb'>
             <v-list-tile-title>{{ action.name }}</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click=''>
+            <v-list-tile-title>
+              <app-create-question :section_id='section.id' :form_id='form_id'></app-create-question>
+            </v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-menu>
@@ -36,9 +47,9 @@
         </template>
       </div>
     </v-card-title>
-    <v-card-text>
-      <draggable v-model='list' v-show='expanded' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px' :move='checkMove' @add='checkAdd' @remove='checkRemove'>
-        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' class='item' :class='{ question: !isSection(element) }'>
+    <v-card-text class='px-0'>
+      <draggable v-model='list' v-show='expanded' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
+        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' class='item pb-5' :class='{ question: !isSection(element) }'>
           <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
           <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
         </div>
@@ -51,14 +62,6 @@
         </div>
       </draggable>
     </v-card-text>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn class='success' @click='duplicateSection'>Duplicate Section</v-btn>
-      <v-btn class="primary" @click='updateSection'>Update Section</v-btn>
-      <v-btn class='error' @click='deleteSection'>Delete Section</v-btn>
-      <app-create-section :order='list.length === 0 ? 1 : list[list.length-1].order + 1' :section_id='section.id' :form_id='form_id'></app-create-section>
-      <app-create-question :order='list.length === 0 ? 1 : list[list.length-1].order + 1' :section_id='section.id' :form_id='form_id'></app-create-question>
-    </v-card-actions>
   </v-card>
 </template>
 
@@ -80,10 +83,10 @@
           cb: this.duplicateSection.bind(this)
         },
         {
-          name: 'Add question',
-          cb: this.addQuestion.bind(this)
+          name: 'Delete section',
+          cb: this.deleteSection.bind(this)
         }],
-        expanded: false,
+        expanded: true,
         editMode: false
       }
     },
@@ -138,22 +141,6 @@
           formid: this.form_id,
           id: this.section.id
         })
-      },
-      checkMove: function (evt) {
-        console.log('moved', evt)
-        if (evt.to.className.includes('parent') && evt.dragged.className.includes('question')) {
-          return false
-        }
-        return true
-      },
-      checkAdd: function (evt) {
-        console.log('added', evt)
-      },
-      checkRemove: function (evt) {
-        console.log('removed', evt)
-      },
-      addQuestion: function () {
-        console.log('add question here')
       },
       checkUpdate: function () {
         if (this.editedName !== this.section.name) {

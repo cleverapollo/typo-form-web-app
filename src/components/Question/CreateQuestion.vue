@@ -1,12 +1,8 @@
 <template>
   <v-dialog width="350px" persistent v-model="createQuestion">
-    <v-btn
-      dark
-      class="primary"
-      slot="activator"
-    >
+    <div slot="activator">
       Create Question
-    </v-btn>
+    </div>
     <v-card>
       <v-container>
         <v-layout row wrap>
@@ -80,7 +76,7 @@
 
 <script>
   export default {
-    props: ['order', 'section_id', 'form_id'],
+    props: ['section_id', 'form_id'],
     data () {
       return {
         createQuestion: false,
@@ -103,8 +99,7 @@
             question: this.editedName,
             description: this.editedDescription,
             question_type_id: this.questionType,
-            mandatory: this.mandatory,
-            order: this.order
+            mandatory: this.mandatory
           })
         this.editedName = ''
         this.editedDescription = ''

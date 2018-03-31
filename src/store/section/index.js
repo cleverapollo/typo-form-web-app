@@ -15,6 +15,25 @@ export default {
     createSection (state, payload) {
       state.loadedSections[payload.formid].push(payload.section)
     },
+    duplicateSection (state, payload) {
+      const childSections = state.loadedSections[payload.formid].filter((section) => {
+        return section.section_id === payload.section.section_id && section.order >= payload.section.order
+      })
+      childSections.map(function (section) {
+        section.order = section.order + 1
+      })
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.section.section_id
+      })
+      if (section) {
+        section.questions.map(function (question) {
+          if (question.order >= payload.section.order) {
+            question.order = question.order + 1
+          }
+        })
+      }
+      state.loadedSections[payload.formid].push(payload.section)
+    },
     updateSection (state, payload) {
       const index = state.loadedSections[payload.formid].findIndex(section => {
         return section.id === payload.section.id
@@ -37,6 +56,25 @@ export default {
       const section = state.loadedSections[payload.formid].find((section) => {
         return section.id === payload.sectionid
       })
+      section.questions.push(payload.question)
+    },
+    duplicateQuestion (state, payload) {
+      const childSections = state.loadedSections[payload.formid].filter((section) => {
+        return section.section_id === payload.sectionid && section.order >= payload.question.order
+      })
+      childSections.map(function (section) {
+        section.order = section.order + 1
+      })
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      if (section) {
+        section.questions.map(function (question) {
+          if (question.order >= payload.question.order) {
+            question.order = question.order + 1
+          }
+        })
+      }
       section.questions.push(payload.question)
     },
     updateQuestion (state, payload) {
@@ -190,11 +228,11 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            const updateObj = {
+            const createObj = {
               formid: payload.formid,
-              sections: response['data']['sections']
+              section: response['data']['section']
             }
-            commit('setLoadedSections', updateObj)
+            commit('duplicateSection', createObj)
           }
         )
         .catch(error => {

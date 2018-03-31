@@ -39,7 +39,7 @@
       },
       list: {
         get () {
-          return this.$store.getters.loadedChildren(this.id, null)
+          return this.$store.getters.loadedSubmissions(this.id)
         },
         set (value) {
           const updateObj = {

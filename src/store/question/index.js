@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const SECTION_URL = `${API_URL}section/`
 const QUESTION_URL = '/question/'
-const QUESTION_TYPE_URL = `${API_URL}question_types/`
+const QUESTION_TYPE_URL = `${API_URL}question-type/`
 
 export default {
   state: {
@@ -118,12 +118,12 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            const updateObj = {
+            const createdObj = {
               formid: payload.formid,
               sectionid: payload.sectionid,
-              questions: response['data']['questions']
+              question: response['data']['question']
             }
-            commit('setLoadedQuestions', updateObj)
+            commit('duplicateQuestion', createdObj)
           }
         )
         .catch(error => {

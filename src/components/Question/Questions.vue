@@ -2,16 +2,6 @@
   <v-card active-class='active-question' class='elevation-12'>
     <v-toolbar>
       <v-toolbar-title>{{ 'Question ' + question.order }}</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-select
-        :items='questionTypes'
-        item-text='type'
-        item-value='id'
-        v-model='questionTypeId'
-        label='Question Type'
-        single-line
-        hide-details
-      ></v-select>
       <!--<v-menu bottom left>-->
         <!--<v-btn icon slot='activator'>-->
           <!--{{ questionTypeString }}-->
@@ -23,73 +13,72 @@
         <!--</v-list>-->
       <!--</v-menu>-->
     </v-toolbar>
-    <v-card-title>
-      <div>
-        <template v-if='editModeName'>
-          <v-layout row>
-            <v-flex xs12>
-              <v-text-field
-                label='Question Name'
-                v-model='editedName'
-                autofocus
-                @blur='checkUpdateName'
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-        </template>
-        <template v-else>
-          <h3 @mousedown='setEditModeName'>{{ question.question }}</h3>
-        </template>
-        <template v-if='editModeDescription'>
-          <v-layout row>
-            <v-flex xs12>
-              <v-text-field
-                label='Description'
-                v-model='editedDescription'
-                autofocus
-                @blur='checkUpdateDescription'
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-        </template>
-        <template v-else>
-          <h4 @mousedown='setEditModeDescription'>{{ question.description }}</h4>
-        </template>
+    <v-card-text>
+      <v-container fluid>
+
+        <v-layout row>
+          <v-flex xs4>
+            <v-text-field
+              label='Question'
+              single-line
+              autofocus
+              @blur='checkUpdateName'
+              v-model='editedName'
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs7 offset-xs1>
+            <v-select
+              :items='questionTypes'
+              item-text='type'
+              item-value='id'
+              v-model='questionTypeId'
+              label='Question Type'
+              single-line
+              hide-details
+            ></v-select>
+          </v-flex>
+        </v-layout>
+
+        <v-layout>
+          <v-flex>
+            <v-text-field
+              label='Description'
+              v-model='editedDescription'
+              single-line
+              autofocus
+              @blur='checkUpdateDescription'
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+
+        <v-layout>
+          <v-flex>
+            <component
+              :is='questionComponent'
+              :options='questionOptions'
+              :has-other='questionHasOther'
+              :rows='questionRows'
+              :columns='questionColumns'
+              @update-options='onOptionsUpdate'
+              @update-hasOther='onHasOtherUpdate'
+              @update-rows='onRowsUpdate'
+              @update-columns='onColumnsUpdate'
+            ></component>
+          </v-flex>
+        </v-layout>
+
+        <v-divider></v-divider>
+      </v-container>
+    </v-card-text>
+    <v-card-actions class='pa-3'>
+        <v-spacer></v-spacer>
+        <v-btn color='grey darken-2' flat icon @click='duplicateQuestion'><v-icon>content_copy</v-icon></v-btn>
+        <v-btn color='grey darken-2' flat icon @click='deleteQuestion'><v-icon>delete</v-icon></v-btn>
         <v-switch
           :label='`Required`'
           v-model='mandatory'
         ></v-switch>
-      </div>
-      <!--<h1>{{ question.name }}</h1>-->
-      <!--</div>-->
-    <!--</v-card-title>-->
-    </v-card-title>
-    <v-card-text>
-      <component
-        :is='questionComponent'
-        :options='questionOptions'
-        :has-other='questionHasOther'
-        :rows='questionRows'
-        :columns='questionColumns'
-        @update-options='onOptionsUpdate'
-        @update-hasOther='onHasOtherUpdate'
-        @update-rows='onRowsUpdate'
-        @update-columns='onColumnsUpdate'
-      ></component>
-      <!--<div slot='footer' v-if='isQuestionEmpty'>-->
-        <!--<v-card>-->
-          <!--<v-card-title>-->
-            <!--<h3>There is no answers</h3>-->
-          <!--</v-card-title>-->
-        <!--</v-card>-->
-      <!--</div>-->
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn class='success' @click='duplicateQuestion'>Duplicate Question</v-btn>
-      <v-btn class='primary' @click='updateQuestion'>Update Qustion</v-btn>
-      <v-btn class='error' @click='deleteQuestion'>Delete Question</v-btn>
-      <app-create-answer :order='answers.length === 0 ? 1 : answers[answers.length-1].order + 1' :form_id='form_id' :section_id='section_id' :question_id='question.id'></app-create-answer>
+        <!--<app-create-answer :order='answers.length === 0 ? 1 : answers[answers.length-1].order + 1' :form_id='form_id' :section_id='section_id' :question_id='question.id'></app-create-answer>-->
     </v-card-actions>
   </v-card>
 </template>
@@ -141,9 +130,6 @@
         questionColumns: []
       }
     },
-    mounted () {
-      console.log('questionTypes', this.questionTypes)
-    },
     computed: {
       questionTypes () {
         return this.$store.getters.loadedQuestionTypes
@@ -169,26 +155,12 @@
       checkUpdateName: function () {
         if (this.editedName !== this.question.question) {
           this.updateQuestion()
-        } else {
-          this.editModeName = false
         }
       },
       checkUpdateDescription: function () {
         if (this.editedDescription !== this.question.description) {
           this.updateQuestion()
-        } else {
-          this.editModeDescription = false
         }
-      },
-      setEditModeName () {
-        setTimeout(() => {
-          this.editModeName = true
-        }, 0)
-      },
-      setEditModeDescription () {
-        setTimeout(() => {
-          this.editModeDescription = true
-        }, 0)
       },
       updateQuestion () {
         if (this.editedName.trim() === '' || this.editedDescription.trim() === '') {

@@ -1,6 +1,6 @@
 <template>
   <v-dialog width="350px" persistent v-model="editForm">
-    <v-btn class="primary" slot="activator">Edit</v-btn>
+    <div slot="activator">Edit Form</div>
     <v-card>
       <v-container>
         <v-layout row wrap>
