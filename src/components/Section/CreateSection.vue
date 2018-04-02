@@ -1,12 +1,8 @@
 <template>
   <v-dialog width="350px" persistent v-model="createSection">
-    <v-btn
-      dark
-      class="primary"
-      slot="activator"
-    >
+    <div slot="activator">
       Create Section
-    </v-btn>
+    </div>
     <v-card>
       <v-container>
         <v-layout row wrap>
@@ -62,7 +58,7 @@
 
 <script>
   export default {
-    props: ['order', 'section_id', 'form_id'],
+    props: ['section_id', 'form_id'],
     data () {
       return {
         createSection: false,
@@ -79,8 +75,7 @@
           {
             formid: this.form_id,
             section_id: this.section_id,
-            name: this.editedName,
-            order: this.order
+            name: this.editedName
           })
         this.editedName = ''
       },

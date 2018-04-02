@@ -24,7 +24,8 @@
               <v-card-text>
                 <v-select
                   :items="submissionTypes"
-                  item-value="name"
+                  item-value="id"
+                  item-text="name"
                   v-model="submissionType"
                   label="Submission Type"
                   single-line
@@ -66,20 +67,27 @@
 
 <script>
   export default {
+    props: ['application_id', 'form_id'],
     data () {
       return {
         createSubmission: false,
-        submissionTypes: [
-          {text: 'Anthonie'},
-          {text: 'Zheming'},
-          {text: 'CSC Company'}
-        ],
         submissionType: 1
       }
     },
     methods: {
       onCreate () {
         this.createSubmission = false
+
+        let submissionData = {
+          formid: this.form_id
+        }
+        if (this.submissionType !== 0) {
+          submissionData = {
+            formid: this.form_id,
+            team_id: this.submissionType
+          }
+        }
+        this.$store.dispatch('createSubmission', submissionData)
       },
       onCancel () {
         this.questionType = 1
@@ -89,6 +97,18 @@
     computed: {
       loading () {
         return this.$store.getters.loading
+      },
+      submissions () {
+        return this.$store.getters.loadedSubmissions(parseInt(this.form_id))
+      },
+      teams () {
+        return this.$store.getters.loadedTeams(parseInt(this.application_id))
+      },
+      submissionTypes () {
+        let items = []
+        items[0] = {name: 'Your Self', id: 0}
+
+        return items
       }
     }
   }

@@ -108,11 +108,6 @@ export default {
     }
   },
   getters: {
-    loadedResponseTypes (state) {
-      return state.loadedResponseTypes.sort((responsetypeA, responsetypeB) => {
-        return responsetypeA.id > responsetypeB.id
-      })
-    },
     loadedResponses (state, getters, rootState) {
       return (formid, submissionid) => {
         if (!rootState.submission.loadedSubmissions[formid]) {

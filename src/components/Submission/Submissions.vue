@@ -12,20 +12,20 @@
             <v-toolbar-title>List</v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
-          <v-list >
-            <template v-for="(item, index) in items">
-              <v-list-tile @click="onSubmission(item.submission_id)">
+          <v-list>
+            <template v-for="(submission, index) in submissions">
+              <v-list-tile @click="onSubmission(submission.id)">
                 <v-list-tile-content>
                   <v-list-tile-title
-                    v-html="item.name"></v-list-tile-title>
+                    v-html="getSubmissionName(submission)"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
-              <v-divider v-if="index + 1 < items.length" :key="item.name"></v-divider>
+              <v-divider v-if="index + 1 < submissions.length"></v-divider>
             </template>
           </v-list>
         </v-card>
         <v-card v-if="!userIsAdmin">
-          <create-submission></create-submission>
+          <create-submission :application_id="application_id" :form_id="form_id"></create-submission>
         </v-card>
       </v-flex>
     </v-layout>
@@ -45,27 +45,13 @@
     data () {
       return {
         submission_id: 1,
-        form_type: 1,
-        items: [
-          {
-            id: 1,
-            submission_id: 1,
-            name: 'Salvatory'
-          },
-          {
-            id: 3,
-            submission_id: 3,
-            name: 'Igor'
-          },
-          {
-            id: 5,
-            submission_id: 5,
-            name: 'alexandar'
-          }
-        ]
+        form_type: 1
       }
     },
     computed: {
+      submissions () {
+        return this.$store.getters.loadedSubmissions(parseInt(this.form_id))
+      },
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
@@ -82,7 +68,18 @@
     methods: {
       onSubmission (id) {
         this.submission_id = id
+      },
+      getSubmissionName (submission) {
+        if (submission.team == null) {
+          return submission.user.first_name + ' ' + submission.user.last_name
+        } else {
+          alert(1)
+          return submission.team.name
+        }
       }
+    },
+    created () {
+      this.$store.dispatch('loadSubmissions', this.form_id)
     },
     watch: {
       userIsAdmin (value) {

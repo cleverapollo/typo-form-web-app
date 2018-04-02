@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const SECTION_URL = `${API_URL}section/`
 const QUESTION_URL = '/question/'
-const QUESTION_TYPE_URL = `${API_URL}question_types/`
+const QUESTION_TYPE_URL = `${API_URL}question-type/`
 
 export default {
   state: {
@@ -89,7 +89,7 @@ export default {
       if (payload.question_type_id) {
         updateObj.question_type_id = payload.question_type_id
       }
-      if (payload.mandatory) {
+      if (payload.mandatory !== undefined) {
         updateObj.mandatory = payload.mandatory
       }
       if (payload.order) {
@@ -118,12 +118,12 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            const updateObj = {
+            const createdObj = {
               formid: payload.formid,
               sectionid: payload.sectionid,
-              questions: response['data']['questions']
+              question: response['data']['question']
             }
-            commit('setLoadedQuestions', updateObj)
+            commit('duplicateQuestion', createdObj)
           }
         )
         .catch(error => {
@@ -146,9 +146,7 @@ export default {
   },
   getters: {
     loadedQuestionTypes (state) {
-      return state.loadedQuestionTypes.sort((questiontypeA, questiontypeB) => {
-        return questiontypeA.id > questiontypeB.id
-      })
+      return state.loadedQuestionTypes
     },
     loadedQuestions (state, getters, rootState) {
       return (formid, sectionid) => {

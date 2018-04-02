@@ -14,22 +14,35 @@
         <v-card v-if="form">
           <v-card-title>
             <h1 class="primary--text">{{ form.name }}</h1>
+            <v-spacer></v-spacer>
+            <v-menu offset-y bottom left>
+              <v-btn icon slot='activator'>
+                <v-icon>more_vert</v-icon>
+              </v-btn>
+              <v-list>
+                <v-list-tile @click=''>
+                  <v-list-tile-title>
+                    <app-create-section :section_id='-1' :form_id='id'></app-create-section>
+                  </v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile @click=''>
+                  <v-list-tile-title>
+                    <app-edit-form :form='form' :application_id='application_id'></app-edit-form>
+                  </v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile v-for='(action, key) in actions' :key="`action ${key}`" @click='action.cb'>
+                  <v-list-tile-title>{{ action.name }}</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
           </v-card-title>
           <v-card-text>
-            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}"
-                       style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
-              <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item">
+            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
+              <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item pb-5">
                 <sections :section='element' :form_id='id'></sections>
               </div>
             </draggable>
           </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <app-create-section :order="list.length === 0 ? 1 : list[list.length-1].order + 1" :section_id=-1
-                                :form_id="id"></app-create-section>
-            <app-edit-form :form="form" :application_id="application_id"></app-edit-form>
-            <v-btn class="error" @click=onDeleteForm>Delete</v-btn>
-          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -45,6 +58,15 @@
     components: {
       draggable,
       sections
+    },
+    data () {
+      return {
+        showDialog: false,
+        actions: [{
+          name: 'Delete Form',
+          cb: this.onDeleteForm.bind(this)
+        }]
+      }
     },
     computed: {
       application () {
@@ -85,6 +107,12 @@
           id: this.form.id
         })
         this.$router.push('/applications/' + this.application_id + '/forms')
+      },
+      createSection () {
+        this.showDialog = true
+      },
+      hideDialog () {
+        this.showDialog = false
       },
       checkMove: function (evt) {
         console.log('moved', evt)
