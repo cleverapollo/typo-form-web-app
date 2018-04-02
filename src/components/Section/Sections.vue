@@ -48,8 +48,10 @@
       </div>
     </v-card-title>
     <v-card-text class='px-0'>
-      <draggable v-model='list' v-show='expanded' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
-        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' class='item pb-5' :class='{ question: !isSection(element) }'>
+      <draggable v-model='list' v-show='expanded' class='dragArea' :options='{group:"people", draggable:".item"}'
+                 style='min-height: 100px'>
+        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
+             class='item pb-5' :class='{ question: !isSection(element) }'>
           <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
           <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
         </div>
@@ -68,24 +70,29 @@
 <script>
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions.vue'
+  import answer from '../Submission/Answer/Answers.vue'
+
   export default {
     name: 'sections',
     props: ['section', 'form_id'],
     components: {
       draggable,
-      questions
+      questions,
+      answer
     },
     data () {
       return {
         editedName: this.section.name,
-        actions: [{
-          name: 'Duplicate section',
-          cb: this.duplicateSection.bind(this)
-        },
-        {
-          name: 'Delete section',
-          cb: this.deleteSection.bind(this)
-        }],
+        actions: [
+          {
+            name: 'Duplicate section',
+            cb: this.duplicateSection.bind(this)
+          },
+          {
+            name: 'Delete section',
+            cb: this.deleteSection.bind(this)
+          }
+        ],
         expanded: true,
         editMode: false
       }

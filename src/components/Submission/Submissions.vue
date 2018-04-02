@@ -3,7 +3,7 @@
     <v-layout row wrap>
       <v-flex xs9>
         <show-submission :application_id="application_id" :form_id="form_id" :submission_id="submission_id"
-                         :form_type="1"></show-submission>
+        ></show-submission>
       </v-flex>
       <v-flex xs3>
         <v-card>

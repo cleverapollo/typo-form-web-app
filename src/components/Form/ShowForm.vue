@@ -54,7 +54,7 @@
   import sections from '../Section/Sections.vue'
 
   export default {
-    props: ['application_id', 'id', 'submission_id', 'form_type'],
+    props: ['application_id', 'id', 'submission_id'],
     components: {
       draggable,
       sections
