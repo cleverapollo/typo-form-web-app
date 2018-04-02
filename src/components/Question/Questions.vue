@@ -162,7 +162,49 @@
           this.updateQuestion()
         }
       },
+      createAnswer: function (answer, parameter) {
+        this.$store.dispatch('createAnswer',
+          {
+            formid: this.form_id,
+            sectionid: this.section_id,
+            questionid: this.question.id,
+            answer: answer,
+            order: 1,
+            parameter: parameter
+          })
+      },
+      deleteAnswers: function () {
+        this.$store.dispatch('deleteAnswers', {
+          formid: this.form_id,
+          sectionid: this.section_id,
+          questionid: this.question_id
+        })
+      },
+      changeAnswers: function () {
+        this.$store.dispatch('changeAnswers', {
+          formid: this.form_id,
+          sectionid: this.section_id,
+          questionid: this.question_id
+        })
+      },
       updateQuestionType (value) {
+        if (this.questionTypeId === 1 || this.questionTypeId === 2 || this.questionTypeId === 6 || this.questionTypeId === 7 || this.questionTypeId === 10 || this.questionTypeId === 11) {
+          if (this.value === 3 || this.value === 4 || this.value === 5) {
+            this.createAnswer('Option 1', true)
+          } else if (this.value === 8 || this.value === 9) {
+            this.createAnswer('Column 1', true)
+          }
+        } else if (this.questionTypeId === 8 || this.questionTypeId === 9) {
+          if (this.value === 3 || this.value === 4 || this.value === 5) {
+            this.changeAnswers()
+          }
+        }
+        if ((this.questionTypeId !== 8 && this.questionTypeId !== 9) && (this.value === 8 || this.value === 9)) {
+          this.createAnswer('Row 1', false)
+        }
+        if (this.value === 1 || this.value === 2 || this.value === 6 || this.value === 7 || this.value === 10 || this.value === 11) {
+          this.deleteAnswers()
+        }
         this.questionTypeId = value
         this.updateQuestion()
       },

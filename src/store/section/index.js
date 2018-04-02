@@ -135,6 +135,26 @@ export default {
       question.answers = question.answers.filter(e => {
         return e.id !== payload.id
       })
+    },
+    deleteAnswers (state, payload) {
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      const question = section.questions.find((question) => {
+        return question.id === payload.questionid
+      })
+      question.answers = []
+    },
+    changeAnswers (state, payload) {
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      const question = section.questions.find((question) => {
+        return question.id === payload.questionid
+      })
+      question.answers = question.answers.filter(e => {
+        return e.paramter
+      })
     }
   },
   actions: {

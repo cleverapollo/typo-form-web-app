@@ -1,6 +1,7 @@
 const API_URL = process.env.API_URL
 const QUESTION_URL = `${API_URL}question/`
 const ANSWER_URL = '/answer/'
+const CHANGE_URL = 'delete'
 
 export default {
   actions: {
@@ -84,6 +85,30 @@ export default {
         .then(() => {
           commit('setLoading', false)
           commit('deleteAnswer', payload)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    deleteAnswers ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.delete(QUESTION_URL + payload.questionid + ANSWER_URL)
+        .then(() => {
+          commit('setLoading', false)
+          commit('deleteAnswers', payload)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    changeAnswers ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.delete(QUESTION_URL + payload.questionid + ANSWER_URL + CHANGE_URL)
+        .then(() => {
+          commit('setLoading', false)
+          commit('changeAnswers', payload)
         })
         .catch(error => {
           console.log(error)
