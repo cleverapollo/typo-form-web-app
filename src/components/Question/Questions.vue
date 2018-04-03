@@ -2,16 +2,6 @@
   <v-card active-class='active-question' class='elevation-12'>
     <v-toolbar>
       <v-toolbar-title>{{ 'Question ' + question.order }}</v-toolbar-title>
-      <!--<v-menu bottom left>-->
-        <!--<v-btn icon slot='activator'>-->
-          <!--{{ questionTypeString }}-->
-        <!--</v-btn>-->
-        <!--<v-list>-->
-          <!--<v-list-tile v-for='(type, key) in types' :key='`type ${key}`' @click='setTypeKey(key)'>-->
-            <!--<v-list-tile-title>{{ type.name }}</v-list-tile-title>-->
-          <!--</v-list-tile>-->
-        <!--</v-list>-->
-      <!--</v-menu>-->
     </v-toolbar>
     <v-card-text>
       <v-container fluid>
@@ -25,39 +15,39 @@
               v-model='editedName'
             ></v-text-field>
           </v-flex>
-          <v-flex xs7 offset-xs1>
-            <!--<v-select-->
-              <!--:items='questionTypes'-->
-              <!--item-text='type'-->
-              <!--item-value='id'-->
-              <!--v-model='questionTypeId'-->
-              <!--label='Question Type'-->
-              <!--single-line-->
-              <!--auto-->
-              <!--@change='updateQuestionType'-->
-            <!--&gt;</v-select>-->
-            <div>
-              <v-menu>
-                <v-btn slot="activator">
-                  <v-icon left>{{ questionTypeIcon }}</v-icon>
-                  {{ questionTypeString }}
-                  <v-icon right>arrow_drop_down</v-icon>
-                </v-btn>
-                <v-list>
-                  <template v-for="(item, index) in menuItems">
-                    <v-list-tile v-if="item.action" :key="index" @click="setQuestionType(item.title)">
-                      <v-list-tile-action>
-                        <v-icon>{{ item.action }}</v-icon>
-                      </v-list-tile-action>
-                      <v-list-tile-content>
-                        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                      </v-list-tile-content>
-                    </v-list-tile>
-                    <v-divider v-else-if="item.divider" :key="index"></v-divider>
-                  </template>
-                </v-list>
-              </v-menu>
-            </div>
+          <v-flex xs4 offset-xs1>
+            <v-select
+              :items='menuItems'
+              item-text='title'
+              item-value='title'
+              v-model='questionTypeString'
+              auto
+              persistent-hint
+              hint=' '
+              @change='updateQuestionType'
+            >
+              <template slot='selection' slot-scope='data'>
+                <v-list-tile-avatar>
+                  <v-icon v-text='data.item.action'></v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content style='color: black'>
+                  <v-list-tile-title v-html='data.item.title'></v-list-tile-title>
+                </v-list-tile-content>
+              </template>
+              <template slot='item' slot-scope='data'>
+                <template v-if='typeof data.item !== "object"'>
+                  <v-list-tile-content v-text='data.item'></v-list-tile-content>
+                </template>
+                <template v-else>
+                  <v-list-tile-avatar>
+                    <v-icon v-text='data.item.action'></v-icon>
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html='data.item.title'></v-list-tile-title>
+                  </v-list-tile-content>
+                </template>
+              </template>
+            </v-select>
           </v-flex>
         </v-layout>
 
@@ -81,7 +71,7 @@
               :has-other='questionHasOther'
               :rows='questionRows'
               :columns='questionColumns'
-              :mandatory='mandatory'
+              :has-validation='mandatory && hasValidation'
               @update-options='onOptionsUpdate'
               @update-hasOther='onHasOtherUpdate'
               @update-rows='onRowsUpdate'
@@ -98,10 +88,14 @@
         <v-btn color='grey darken-2' flat icon @click='duplicateQuestion'><v-icon>content_copy</v-icon></v-btn>
         <v-btn color='grey darken-2' flat icon @click='deleteQuestion'><v-icon>delete</v-icon></v-btn>
         <v-switch
-          :label='`Required`'
+          label='Required'
           v-model='mandatory'
         ></v-switch>
-        <!--<app-create-answer :order='answers.length === 0 ? 1 : answers[answers.length-1].order + 1' :form_id='form_id' :section_id='section_id' :question_id='question.id'></app-create-answer>-->
+        <v-checkbox
+          v-show='mandatory'
+          label='include validation'
+          v-model='hasValidation'
+        ></v-checkbox>
     </v-card-actions>
   </v-card>
 </template>
@@ -200,7 +194,8 @@
             action: 'schedule',
             title: 'Time'
           }
-        ]
+        ],
+        hasValidation: false
       }
     },
     computed: {
@@ -215,6 +210,9 @@
           } else {
             return 'Short answer'
           }
+        },
+        set: function (str) {
+          this.setQuestionType(str)
         }
       },
       questionComponent: {
@@ -254,7 +252,7 @@
         }
       },
       updateQuestionType (value) {
-        this.questionTypeId = value
+        this.questionTypeString = value
         this.updateQuestion()
       },
       updateQuestion () {

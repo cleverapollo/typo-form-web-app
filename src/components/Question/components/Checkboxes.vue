@@ -49,7 +49,7 @@
         <v-btn flat color="primary" @click='setHasOther'>add "other"</v-btn>
       </div>
     </div>
-    <v-layout v-if='mandatory'>
+    <v-layout v-if='hasValidation'>
       <v-flex xs4>
         <v-text-field
           name='min-answer-count'
@@ -84,7 +84,7 @@
       'hasOther': {
         default: false
       },
-      'mandatory': {
+      'hasValidation': {
         type: Boolean,
         default: false
       }

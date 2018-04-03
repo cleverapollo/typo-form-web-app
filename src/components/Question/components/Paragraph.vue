@@ -18,7 +18,7 @@
           v-model="activeValidationType"
         ></v-select>
       </v-flex>
-      <v-flex v-if='mandatory' xs3 offset-xs1>
+      <v-flex v-if='"Text" === activeValidationType' xs3 offset-xs1>
         <v-text-field
           name='min-char-count'
           label='Minimum character count'
@@ -26,7 +26,7 @@
           mask='###'
         ></v-text-field>
       </v-flex>
-      <v-flex v-if='mandatory' xs3 offset-xs1>
+      <v-flex v-if='"Text" === activeValidationType' xs3 offset-xs1>
         <v-text-field
           name='max-char-count'
           label='Maximum character count'
@@ -45,10 +45,6 @@
       hasValidation: {
         type: Boolean,
         default: true
-      },
-      mandatory: {
-        type: Boolean,
-        default: false
       }
     },
     data () {
