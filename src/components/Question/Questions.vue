@@ -15,7 +15,6 @@
     </v-toolbar>
     <v-card-text>
       <v-container fluid>
-
         <v-layout row>
           <v-flex xs4>
             <v-text-field
@@ -27,16 +26,38 @@
             ></v-text-field>
           </v-flex>
           <v-flex xs7 offset-xs1>
-            <v-select
-              :items='questionTypes'
-              item-text='type'
-              item-value='id'
-              v-model='questionTypeId'
-              label='Question Type'
-              single-line
-              auto
-              @change='updateQuestionType'
-            ></v-select>
+            <!--<v-select-->
+              <!--:items='questionTypes'-->
+              <!--item-text='type'-->
+              <!--item-value='id'-->
+              <!--v-model='questionTypeId'-->
+              <!--label='Question Type'-->
+              <!--single-line-->
+              <!--auto-->
+              <!--@change='updateQuestionType'-->
+            <!--&gt;</v-select>-->
+            <div>
+              <v-menu>
+                <v-btn slot="activator">
+                  <v-icon left>{{ questionTypeIcon }}</v-icon>
+                  {{ questionTypeString }}
+                  <v-icon right>arrow_drop_down</v-icon>
+                </v-btn>
+                <v-list>
+                  <template v-for="(item, index) in menuItems">
+                    <v-list-tile v-if="item.action" :key="index" @click="setQuestionType(item.title)">
+                      <v-list-tile-action>
+                        <v-icon>{{ item.action }}</v-icon>
+                      </v-list-tile-action>
+                      <v-list-tile-content>
+                        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                    <v-divider v-else-if="item.divider" :key="index"></v-divider>
+                  </template>
+                </v-list>
+              </v-menu>
+            </div>
           </v-flex>
         </v-layout>
 
@@ -60,6 +81,7 @@
               :has-other='questionHasOther'
               :rows='questionRows'
               :columns='questionColumns'
+              :mandatory='mandatory'
               @update-options='onOptionsUpdate'
               @update-hasOther='onHasOtherUpdate'
               @update-rows='onRowsUpdate'
@@ -110,7 +132,7 @@
         editedName: this.question.question,
         editedDescription: this.question.description,
         questionTypeId: this.question.question_type_id,
-        mandatory: this.question.mandatory,
+        mandatory: !!this.question.mandatory, // got number type
         answers: this.question.answers,
         questionsComponentsMap: {
           'Short answer': shortAnswer,
@@ -128,20 +150,86 @@
         questionOptions: [],
         questionHasOther: false,
         questionRows: [],
-        questionColumns: []
+        questionColumns: [],
+        menuItems: [
+          {
+            action: 'short_text',
+            title: 'Short answer'
+          },
+          {
+            action: 'subject',
+            title: 'Paragraph'
+          },
+          { divider: true },
+          {
+            action: 'radio_button_checked',
+            title: 'Multiple choice'
+          },
+          {
+            action: 'check_box',
+            title: 'Checkboxes'
+          },
+          {
+            action: 'arrow_drop_down_circle',
+            title: 'Dropdown'
+          },
+          { divider: true },
+          {
+            action: 'cloud_upload',
+            title: 'File upload'
+          },
+          { divider: true },
+          {
+            action: 'linear_scale',
+            title: 'Linear scale'
+          },
+          {
+            action: 'apps',
+            title: 'Multiple choice grid'
+          },
+          {
+            action: 'apps',
+            title: 'Checkbox grid'
+          },
+          { divider: true },
+          {
+            action: 'event',
+            title: 'Date'
+          },
+          {
+            action: 'schedule',
+            title: 'Time'
+          }
+        ]
       }
     },
     computed: {
       questionTypes () {
         return this.$store.getters.loadedQuestionTypes
       },
-      questionComponent: {
+      questionTypeString: {
         get: function () {
           const index = _.findIndex(this.questionTypes, type => { return type.id === this.questionTypeId })
           if (this.questionTypes[index]) {
-            return this.questionsComponentsMap[ this.questionTypes[index].type ]
+            return this.questionTypes[index].type
           } else {
-            return this.questionsComponentsMap[ 'Short answer' ]
+            return 'Short answer'
+          }
+        }
+      },
+      questionComponent: {
+        get: function () {
+          return this.questionsComponentsMap[ this.questionTypeString ]
+        }
+      },
+      questionTypeIcon: {
+        get: function () {
+          const index = _.findIndex(this.menuItems, menuItem => { return menuItem.title === this.questionTypeString })
+          if (this.menuItems[index]) {
+            return this.menuItems[index].action
+          } else {
+            console.log('exception: questionTypeString is not included in menuItem.title')
+            return ''
           }
         }
       }
@@ -152,6 +240,9 @@
       }
     },
     methods: {
+      setQuestionType (str) {
+        this.questionTypeId = _.findIndex(this.questionTypes, type => { return type.type === str }) + 1
+      },
       checkUpdateName: function () {
         if (this.editedName !== this.question.question) {
           this.updateQuestion()
