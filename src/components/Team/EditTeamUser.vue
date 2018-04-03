@@ -77,14 +77,14 @@
     methods: {
       onSaveChanges () {
         this.editTeamUser = false
-        if (this.editedRole.trim() !== this.user.team_role_id) {
+        if (this.editedRole !== this.user.team_role_id) {
           this.$store.dispatch('updateTeamUser',
             {
               applicationid: this.application_id,
               teamid: this.team_id,
               id: this.id,
               email: this.editedEmail,
-              team_role: this.editedRole
+              team_role_id: this.editedRole
             })
         }
       },

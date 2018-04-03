@@ -49,6 +49,24 @@
         <v-btn flat color="primary" @click='setHasOther'>add "other"</v-btn>
       </div>
     </div>
+    <v-layout v-if='hasValidation'>
+      <v-flex xs4>
+        <v-text-field
+          name='min-answer-count'
+          label='Minimum answer count'
+          v-model='minAnswerCount'
+          mask='###'
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs3 offset-xs1>
+        <v-text-field
+          name='max-answer-count'
+          label='Maximum answer count'
+          v-model='maxAnswerCount'
+          mask='###'
+        ></v-text-field>
+      </v-flex>
+    </v-layout>
   </draggable>
 </template>
 
@@ -65,10 +83,20 @@
       },
       'hasOther': {
         default: false
+      },
+      'hasValidation': {
+        type: Boolean,
+        default: false
       }
     },
     components: {
       draggable
+    },
+    data () {
+      return {
+        minAnswerCount: 0,
+        maxAnswerCount: 0
+      }
     },
     methods: {
       addOption () {

@@ -16,7 +16,7 @@
             <h1 class="primary--text">{{ user.email }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{ user.first_name }} {{ user.last_name }} - {{ roles[user.application_role_id] }}</h3>
+            <h3>{{ user.first_name }} {{ user.last_name }} - {{ getRole(user.application_role_id) }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
@@ -62,6 +62,12 @@
           id: this.user.id
         })
         this.$router.push('/applications/' + this.application_id + '/users')
+      },
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role.name
       }
     },
     created: function () {

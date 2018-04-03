@@ -2,20 +2,9 @@
   <v-card active-class='active-question' class='elevation-12'>
     <v-toolbar>
       <v-toolbar-title>{{ 'Question ' + question.order }}</v-toolbar-title>
-      <!--<v-menu bottom left>-->
-        <!--<v-btn icon slot='activator'>-->
-          <!--{{ questionTypeString }}-->
-        <!--</v-btn>-->
-        <!--<v-list>-->
-          <!--<v-list-tile v-for='(type, key) in types' :key='`type ${key}`' @click='setTypeKey(key)'>-->
-            <!--<v-list-tile-title>{{ type.name }}</v-list-tile-title>-->
-          <!--</v-list-tile>-->
-        <!--</v-list>-->
-      <!--</v-menu>-->
     </v-toolbar>
     <v-card-text>
       <v-container fluid>
-
         <v-layout row>
           <v-flex xs4>
             <v-text-field
@@ -26,17 +15,39 @@
               v-model='editedName'
             ></v-text-field>
           </v-flex>
-          <v-flex xs7 offset-xs1>
+          <v-flex xs4 offset-xs1>
             <v-select
-              :items='questionTypes'
-              item-text='type'
-              item-value='id'
-              v-model='questionTypeId'
-              label='Question Type'
-              single-line
+              :items='menuItems'
+              item-text='title'
+              item-value='title'
+              v-model='questionTypeString'
               auto
+              persistent-hint
+              hint=' '
               @change='updateQuestionType'
-            ></v-select>
+            >
+              <template slot='selection' slot-scope='data'>
+                <v-list-tile-avatar>
+                  <v-icon v-text='data.item.action'></v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content style='color: black'>
+                  <v-list-tile-title v-html='data.item.title'></v-list-tile-title>
+                </v-list-tile-content>
+              </template>
+              <template slot='item' slot-scope='data'>
+                <template v-if='typeof data.item !== "object"'>
+                  <v-list-tile-content v-text='data.item'></v-list-tile-content>
+                </template>
+                <template v-else>
+                  <v-list-tile-avatar>
+                    <v-icon v-text='data.item.action'></v-icon>
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html='data.item.title'></v-list-tile-title>
+                  </v-list-tile-content>
+                </template>
+              </template>
+            </v-select>
           </v-flex>
         </v-layout>
 
@@ -60,6 +71,7 @@
               :has-other='questionHasOther'
               :rows='questionRows'
               :columns='questionColumns'
+              :has-validation='mandatory && hasValidation'
               @update-options='onOptionsUpdate'
               @update-hasOther='onHasOtherUpdate'
               @update-rows='onRowsUpdate'
@@ -76,10 +88,14 @@
         <v-btn color='grey darken-2' flat icon @click='duplicateQuestion'><v-icon>content_copy</v-icon></v-btn>
         <v-btn color='grey darken-2' flat icon @click='deleteQuestion'><v-icon>delete</v-icon></v-btn>
         <v-switch
-          :label='`Required`'
+          label='Required'
           v-model='mandatory'
         ></v-switch>
-        <!--<app-create-answer :order='answers.length === 0 ? 1 : answers[answers.length-1].order + 1' :form_id='form_id' :section_id='section_id' :question_id='question.id'></app-create-answer>-->
+        <v-checkbox
+          v-show='mandatory'
+          label='include validation'
+          v-model='hasValidation'
+        ></v-checkbox>
     </v-card-actions>
   </v-card>
 </template>
@@ -110,7 +126,7 @@
         editedName: this.question.question,
         editedDescription: this.question.description,
         questionTypeId: this.question.question_type_id,
-        mandatory: this.question.mandatory,
+        mandatory: !!this.question.mandatory, // got number type
         answers: this.question.answers,
         questionsComponentsMap: {
           'Short answer': shortAnswer,
@@ -128,21 +144,80 @@
         questionOptions: [],
         questionHasOther: false,
         questionRows: [],
-        questionColumns: []
+        questionColumns: [],
+        menuItems: [
+          {
+            action: 'short_text',
+            title: 'Short answer'
+          },
+          {
+            action: 'subject',
+            title: 'Paragraph'
+          },
+          { divider: true },
+          {
+            action: 'radio_button_checked',
+            title: 'Multiple choice'
+          },
+          {
+            action: 'check_box',
+            title: 'Checkboxes'
+          },
+          {
+            action: 'arrow_drop_down_circle',
+            title: 'Dropdown'
+          },
+          { divider: true },
+          {
+            action: 'cloud_upload',
+            title: 'File upload'
+          },
+          { divider: true },
+          {
+            action: 'linear_scale',
+            title: 'Linear scale'
+          },
+          {
+            action: 'apps',
+            title: 'Multiple choice grid'
+          },
+          {
+            action: 'apps',
+            title: 'Checkbox grid'
+          },
+          { divider: true },
+          {
+            action: 'event',
+            title: 'Date'
+          },
+          {
+            action: 'schedule',
+            title: 'Time'
+          }
+        ],
+        hasValidation: false
       }
     },
     computed: {
       questionTypes () {
         return this.$store.getters.loadedQuestionTypes
       },
-      questionComponent: {
+      questionTypeString: {
         get: function () {
           const index = _.findIndex(this.questionTypes, type => { return type.id === this.questionTypeId })
           if (this.questionTypes[index]) {
-            return this.questionsComponentsMap[ this.questionTypes[index].type ]
+            return this.questionTypes[index].type
           } else {
-            return this.questionsComponentsMap[ 'Short answer' ]
+            return 'Short answer'
           }
+        },
+        set: function (str) {
+          this.setQuestionType(str)
+        }
+      },
+      questionComponent: {
+        get: function () {
+          return this.questionsComponentsMap[ this.questionTypeString ]
         }
       }
     },
@@ -152,6 +227,9 @@
       }
     },
     methods: {
+      setQuestionType (str) {
+        this.questionTypeId = _.findIndex(this.questionTypes, type => { return type.type === str }) + 1
+      },
       checkUpdateName: function () {
         if (this.editedName !== this.question.question) {
           this.updateQuestion()
@@ -187,25 +265,52 @@
           questionid: this.question_id
         })
       },
+      group (value) {
+        if (value === 'Short answer' ||
+        value === 'Paragraph' ||
+        value === 'File upload' ||
+        value === 'Linear scale' ||
+        value === 'Date' ||
+        value === 'Time') {
+          return 1
+        } else if (value === 'Multiple choice' ||
+        value === 'Checkboxes' ||
+        value === 'Dropdown') {
+          return 2
+        } else if (value === 'Multiple choice grid' ||
+        value === 'Checkbox grid') {
+          return 3
+        } else {
+          return 1
+        }
+      },
       updateQuestionType (value) {
-        if (this.questionTypeId === 1 || this.questionTypeId === 2 || this.questionTypeId === 6 || this.questionTypeId === 7 || this.questionTypeId === 10 || this.questionTypeId === 11) {
-          if (this.value === 3 || this.value === 4 || this.value === 5) {
-            this.createAnswer('Option 1', true)
-          } else if (this.value === 8 || this.value === 9) {
-            this.createAnswer('Column 1', true)
-          }
-        } else if (this.questionTypeId === 8 || this.questionTypeId === 9) {
-          if (this.value === 3 || this.value === 4 || this.value === 5) {
-            this.changeAnswers()
-          }
-        }
-        if ((this.questionTypeId !== 8 && this.questionTypeId !== 9) && (this.value === 8 || this.value === 9)) {
+        // 1, 2, 6, 7, 10, 11 - QuestionType Group 1
+        // 3, 4, 5 - QuestionType Group 2
+        // 8, 9 - QuestionType Group 3
+        // Group 1 -> Group 2: createAnswer('Option 1', true)
+        // Gropu 1 -> Group 3: createAnswer('Column 1', true), createAnswer('Row 1', false)
+        // -> Group1 : deleteAnswers
+        // Group3 -> Group 2: deleteAnswer('Row 1', false)
+        // Group2 -> Group 3: createAnswer('Row 1', false)
+
+        const newQuestionTypeId = _.findIndex(this.questionTypes, type => { return type.type === value }) + 1
+        const oldGroup = this.group(this.questionTypeId)
+        const newGroup = this.group(newQuestionTypeId)
+        if (oldGroup === 1 && newGroup === 2) {
+          this.createAnswer('Option 1', true)
+        } else if (oldGroup === 1 && newGroup === 3) {
+          this.createAnswer('Column 1', true)
           this.createAnswer('Row 1', false)
-        }
-        if (this.value === 1 || this.value === 2 || this.value === 6 || this.value === 7 || this.value === 10 || this.value === 11) {
+        } else if (oldGroup === 2 && newGroup === 3) {
+          this.createAnswer('Row 1', false)
+        } else if (oldGroup === 3 && newGroup === 2) {
+          this.changeAnswers()
+        } else {
           this.deleteAnswers()
         }
-        this.questionTypeId = value
+
+        this.questionTypeString = value
         this.updateQuestion()
       },
       updateQuestion () {

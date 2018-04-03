@@ -48,7 +48,7 @@
                       <td @click=onLoadTeamUser(props.item.id)>{{ props.item.first_name }}</td>
                       <td @click=onLoadTeamUser(props.item.id)>{{ props.item.last_name }}</td>
                       <td @click=onLoadTeamUser(props.item.id)>{{ props.item.email }}</td>
-                      <td @click=onLoadTeamUser(props.item.id)>{{ roles[props.item.team_role_id] }}</td>
+                      <td @click=onLoadTeamUser(props.item.id)>{{ getRole(props.item.team_role_id) }}</td>
                     </template>
                   </v-data-table>
                 </v-tabs-content>
@@ -97,7 +97,7 @@
                 <td @click=onLoadTeamUser(props.item.id)>{{ props.item.first_name }}</td>
                 <td @click=onLoadTeamUser(props.item.id)>{{ props.item.last_name }}</td>
                 <td @click=onLoadTeamUser(props.item.id)>{{ props.item.email }}</td>
-                <td @click=onLoadTeamUser(props.item.id)>{{ roles[props.item.team_role_id] }}</td>
+                <td @click=onLoadTeamUser(props.item.id)>{{ getRole(props.item.team_role_id) }}</td>
               </template>
             </v-data-table>
           </v-card-text>
@@ -167,6 +167,12 @@
       },
       onLoadTeamUser (id) {
         this.$router.push('/applications/' + this.application_id + '/teams/' + this.id + '/users/' + id)
+      },
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role.name
       }
     },
     created: function () {

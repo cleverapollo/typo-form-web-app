@@ -16,7 +16,7 @@
             <h1 class="primary--text">{{ user.email }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{ user.first_name }} {{ user.last_name }} - {{ roles[user.team_role_id] }}</h3>
+            <h3>{{ user.first_name }} {{ user.last_name }} - {{ getRole(user.team_role_id) }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
@@ -46,7 +46,7 @@
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
+        if (!this.userIsAuthenticated || !this.team) {
           return false
         }
         return this.team.team_role_id === 2
@@ -63,6 +63,12 @@
           id: this.user.id
         })
         this.$router.push('/applications/' + this.application_id + '/teams/show/' + this.team_id)
+      },
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role.name
       }
     },
     created: function () {

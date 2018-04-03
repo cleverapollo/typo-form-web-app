@@ -34,7 +34,7 @@
                       :items="roles"
                       item-text="name"
                       item-value="id"
-                      v-model="item.team_role"
+                      v-model="item.team_role_id"
                       label="Role"
                       single-line
                     ></v-select>
@@ -91,15 +91,15 @@
         invitations: [
           {
             email: '',
-            team_role: ''
+            team_role_id: ''
           },
           {
             email: '',
-            team_role: ''
+            team_role_id: ''
           },
           {
             email: '',
-            team_role: ''
+            team_role_id: ''
           }
         ]
       }
@@ -119,15 +119,15 @@
         this.invitations = [
           {
             email: '',
-            team_role: ''
+            team_role_id: ''
           },
           {
             email: '',
-            team_role: ''
+            team_role_id: ''
           },
           {
             email: '',
-            team_role: ''
+            team_role_id: ''
           }
         ]
         this.inviteTeam = false
@@ -135,7 +135,7 @@
       onAddMember () {
         this.invitations.push({
           email: '',
-          team_role: ''
+          team_role_id: ''
         })
       }
     },

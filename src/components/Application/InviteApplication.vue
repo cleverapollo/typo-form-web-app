@@ -34,7 +34,7 @@
                       :items="roles"
                       item-text="name"
                       item-value="id"
-                      v-model="item.application_role"
+                      v-model="item.application_role_id"
                       label="Role"
                       single-line
                     ></v-select>
@@ -91,15 +91,15 @@
         invitations: [
           {
             email: '',
-            application_role: ''
+            application_role_id: ''
           },
           {
             email: '',
-            application_role: ''
+            application_role_id: ''
           },
           {
             email: '',
-            application_role: ''
+            application_role_id: ''
           }
         ]
       }
@@ -119,15 +119,15 @@
         this.invitations = [
           {
             email: '',
-            application_role: ''
+            application_role_id: ''
           },
           {
             email: '',
-            application_role: ''
+            application_role_id: ''
           },
           {
             email: '',
-            application_role: ''
+            application_role_id: ''
           }
         ]
         this.inviteApplication = false
@@ -135,7 +135,7 @@
       onAddMember () {
         this.invitations.push({
           email: '',
-          application_role: ''
+          application_role_id: ''
         })
       }
     },

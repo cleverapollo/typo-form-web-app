@@ -77,13 +77,13 @@
     methods: {
       onSaveChanges () {
         this.editUser = false
-        if (this.editedRole.trim() !== this.user.application_role_id) {
+        if (this.editedRole !== this.user.application_role_id) {
           this.$store.dispatch('updateUser',
             {
               applicationid: this.application_id,
               id: this.id,
               email: this.editedEmail,
-              application_role: this.editedRole
+              application_role_id: this.editedRole
             })
         }
       },
@@ -94,6 +94,9 @@
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       error () {
         return this.$store.getters.error
       },
