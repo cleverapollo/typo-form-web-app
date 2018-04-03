@@ -32,7 +32,7 @@
                   <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
                   <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
                   <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
-                  <td @click=onLoadUser(props.item.id)>{{ props.item.application_role }}</td>
+                  <td @click=onLoadUser(props.item.id)>{{ getRole(props.item.application_role_id) }}</td>
                 </template>
               </v-data-table>
             </v-tabs-content>
@@ -76,6 +76,9 @@
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
@@ -95,12 +98,18 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.application_role === 'Admin' || this.application.application_role === 'SuperAdmin'
+        return this.application.application_role_id === 2
       }
     },
     methods: {
       onLoadUser (id) {
         this.$router.push('/applications/' + this.application_id + '/users/show/' + id)
+      },
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role.name
       }
     },
     created: function () {

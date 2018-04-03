@@ -16,7 +16,7 @@
             <h1 class="primary--text">{{ user.email }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{ user.first_name }} {{ user.last_name }} - {{ user.team_role }}</h3>
+            <h3>{{ user.first_name }} {{ user.last_name }} - {{ getRole(user.team_role_id) }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
@@ -33,6 +33,9 @@
   export default {
     props: ['application_id', 'team_id', 'id'],
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       team () {
         return this.$store.getters.loadedTeam(parseInt(this.application_id), parseInt(this.team_id))
       },
@@ -43,10 +46,10 @@
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
+        if (!this.userIsAuthenticated || !this.team) {
           return false
         }
-        return this.team.team_role === 'Admin' || this.team.team_role === 'Super Admin'
+        return this.team.team_role_id === 2
       },
       loading () {
         return this.$store.getters.loading
@@ -60,6 +63,12 @@
           id: this.user.id
         })
         this.$router.push('/applications/' + this.application_id + '/teams/show/' + this.team_id)
+      },
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role.name
       }
     },
     created: function () {

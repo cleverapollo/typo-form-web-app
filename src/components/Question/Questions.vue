@@ -219,17 +219,6 @@
         get: function () {
           return this.questionsComponentsMap[ this.questionTypeString ]
         }
-      },
-      questionTypeIcon: {
-        get: function () {
-          const index = _.findIndex(this.menuItems, menuItem => { return menuItem.title === this.questionTypeString })
-          if (this.menuItems[index]) {
-            return this.menuItems[index].action
-          } else {
-            console.log('exception: questionTypeString is not included in menuItem.title')
-            return ''
-          }
-        }
       }
     },
     watch: {
@@ -251,7 +240,76 @@
           this.updateQuestion()
         }
       },
+      createAnswer: function (answer, parameter) {
+        this.$store.dispatch('createAnswer',
+          {
+            formid: this.form_id,
+            sectionid: this.section_id,
+            questionid: this.question.id,
+            answer: answer,
+            order: 1,
+            parameter: parameter
+          })
+      },
+      deleteAnswers: function () {
+        this.$store.dispatch('deleteAnswers', {
+          formid: this.form_id,
+          sectionid: this.section_id,
+          questionid: this.question_id
+        })
+      },
+      changeAnswers: function () {
+        this.$store.dispatch('changeAnswers', {
+          formid: this.form_id,
+          sectionid: this.section_id,
+          questionid: this.question_id
+        })
+      },
+      group (value) {
+        if (value === 'Short answer' ||
+        value === 'Paragraph' ||
+        value === 'File upload' ||
+        value === 'Linear scale' ||
+        value === 'Date' ||
+        value === 'Time') {
+          return 1
+        } else if (value === 'Multiple choice' ||
+        value === 'Checkboxes' ||
+        value === 'Dropdown') {
+          return 2
+        } else if (value === 'Multiple choice grid' ||
+        value === 'Checkbox grid') {
+          return 3
+        } else {
+          return 1
+        }
+      },
       updateQuestionType (value) {
+        // 1, 2, 6, 7, 10, 11 - QuestionType Group 1
+        // 3, 4, 5 - QuestionType Group 2
+        // 8, 9 - QuestionType Group 3
+        // Group 1 -> Group 2: createAnswer('Option 1', true)
+        // Gropu 1 -> Group 3: createAnswer('Column 1', true), createAnswer('Row 1', false)
+        // -> Group1 : deleteAnswers
+        // Group3 -> Group 2: deleteAnswer('Row 1', false)
+        // Group2 -> Group 3: createAnswer('Row 1', false)
+
+        const newQuestionTypeId = _.findIndex(this.questionTypes, type => { return type.type === value }) + 1
+        const oldGroup = this.group(this.questionTypeId)
+        const newGroup = this.group(newQuestionTypeId)
+        if (oldGroup === 1 && newGroup === 2) {
+          this.createAnswer('Option 1', true)
+        } else if (oldGroup === 1 && newGroup === 3) {
+          this.createAnswer('Column 1', true)
+          this.createAnswer('Row 1', false)
+        } else if (oldGroup === 2 && newGroup === 3) {
+          this.createAnswer('Row 1', false)
+        } else if (oldGroup === 3 && newGroup === 2) {
+          this.changeAnswers()
+        } else {
+          this.deleteAnswers()
+        }
+
         this.questionTypeString = value
         this.updateQuestion()
       },

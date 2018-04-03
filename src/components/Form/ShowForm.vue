@@ -90,7 +90,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.application_role !== 'Admin' && this.application.application_role !== 'Super Admin'
+        return this.application.application_role_id === 3
       },
       form () {
         return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))

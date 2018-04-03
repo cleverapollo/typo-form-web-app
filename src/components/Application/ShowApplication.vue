@@ -59,7 +59,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.application_role === 'Admin' || this.application.application_role === 'Super Admin'
+        return this.application.application_role_id === 2
       },
       loading () {
         return this.$store.getters.loading
