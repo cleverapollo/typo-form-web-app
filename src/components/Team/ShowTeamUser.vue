@@ -16,7 +16,7 @@
             <h1 class="primary--text">{{ user.email }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{ user.first_name }} {{ user.last_name }} - {{ user.team_role }}</h3>
+            <h3>{{ user.first_name }} {{ user.last_name }} - {{ roles[user.team_role_id] }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-spacer></v-spacer>
@@ -33,6 +33,9 @@
   export default {
     props: ['application_id', 'team_id', 'id'],
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       team () {
         return this.$store.getters.loadedTeam(parseInt(this.application_id), parseInt(this.team_id))
       },
@@ -46,7 +49,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.team.team_role === 'Admin' || this.team.team_role === 'Super Admin'
+        return this.team.team_role_id === 2
       },
       loading () {
         return this.$store.getters.loading

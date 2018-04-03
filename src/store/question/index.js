@@ -1,34 +1,9 @@
 const API_URL = process.env.API_URL
 const SECTION_URL = `${API_URL}section/`
 const QUESTION_URL = '/question/'
-const QUESTION_TYPE_URL = `${API_URL}question-type/`
 
 export default {
-  state: {
-    loadedQuestionTypes: []
-  },
-  mutations: {
-    setLoadedQuestionTypes (state, payload) {
-      state.loadedQuestionTypes = payload
-    }
-  },
   actions: {
-    loadQuestionTypes ({commit}) {
-      commit('setLoading', true)
-      window.axios.get(QUESTION_TYPE_URL)
-        .then(
-          response => {
-            commit('setLoading', false)
-            commit('setLoadedQuestionTypes', response['data']['question_types'])
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
-    },
     loadQuestions ({commit}, payload) {
       commit('setLoading', true)
       window.axios.get(SECTION_URL + payload.sectionid + QUESTION_URL)
@@ -145,9 +120,6 @@ export default {
     }
   },
   getters: {
-    loadedQuestionTypes (state) {
-      return state.loadedQuestionTypes
-    },
     loadedQuestions (state, getters, rootState) {
       return (formid, sectionid) => {
         if (!rootState.section.loadedSections[formid]) {

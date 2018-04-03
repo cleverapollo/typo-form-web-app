@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
+import {store} from '../store'
 
 import Profile from '@/components/Auth/Profile'
 import Signup from '@/components/Auth/Signup'
@@ -154,6 +155,19 @@ const router = new Router({
     }
   ],
   mode: 'history'
+})
+
+router.beforeEach((to, from, next) => {
+  const previous = localStorage.getItem('previous')
+  if (!store.getters.user && (to.name !== 'Signin') && (to.name !== 'Signup')) {
+    localStorage.setItem('previous', to.path)
+    next('/signin')
+  } else if (store.getters.user && previous) {
+    localStorage.removeItem('previous')
+    next(previous)
+  } else {
+    next()
+  }
 })
 
 export default router

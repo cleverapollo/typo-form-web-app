@@ -97,6 +97,9 @@ export default {
           {icon: 'account_circle', title: 'My account', link: '/profile'},
           {icon: 'apps', title: 'Applications', link: '/applications'}
         ]
+        this.$store.dispatch('loadQuestionTypes')
+        this.$store.dispatch('loadRoles')
+        this.$store.dispatch('loadPeriods')
       }
     }
   },

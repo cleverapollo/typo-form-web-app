@@ -48,7 +48,7 @@
                       <td @click=onLoadTeamUser(props.item.id)>{{ props.item.first_name }}</td>
                       <td @click=onLoadTeamUser(props.item.id)>{{ props.item.last_name }}</td>
                       <td @click=onLoadTeamUser(props.item.id)>{{ props.item.email }}</td>
-                      <td @click=onLoadTeamUser(props.item.id)>{{ props.item.team_role }}</td>
+                      <td @click=onLoadTeamUser(props.item.id)>{{ roles[props.item.team_role_id] }}</td>
                     </template>
                   </v-data-table>
                 </v-tabs-content>
@@ -97,7 +97,7 @@
                 <td @click=onLoadTeamUser(props.item.id)>{{ props.item.first_name }}</td>
                 <td @click=onLoadTeamUser(props.item.id)>{{ props.item.last_name }}</td>
                 <td @click=onLoadTeamUser(props.item.id)>{{ props.item.email }}</td>
-                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.team_role }}</td>
+                <td @click=onLoadTeamUser(props.item.id)>{{ roles[props.item.team_role_id] }}</td>
               </template>
             </v-data-table>
           </v-card-text>
@@ -122,6 +122,9 @@
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       team () {
         return this.$store.getters.loadedTeam(parseInt(this.application_id), parseInt(this.id))
       },
@@ -132,7 +135,7 @@
         if (!this.userIsAuthenticated || !this.team) {
           return false
         }
-        return this.team.team_role === 'Admin'
+        return this.team.team_role_id === 2
       },
       loading () {
         return this.$store.getters.loading

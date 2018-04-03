@@ -22,8 +22,8 @@ export default {
       const user = state.loadedUsers[payload.applicationid].find(user => {
         return user.id === payload.user.user_id
       })
-      if (payload.user.application_role) {
-        user.application_role = payload.user.application_role
+      if (payload.user.application_role_id) {
+        user.application_role_id = payload.user.application_role_id
       }
     },
     deleteUser (state, payload) {

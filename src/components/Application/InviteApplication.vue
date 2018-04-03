@@ -31,7 +31,9 @@
                   </v-flex>
                   <v-flex xs12 sm4 offset-sm1 d-flex>
                     <v-select
-                      :items="['User', 'Admin']"
+                      :items="roles"
+                      item-text="name"
+                      item-value="id"
                       v-model="item.application_role"
                       label="Role"
                       single-line
@@ -89,15 +91,15 @@
         invitations: [
           {
             email: '',
-            application_role: 'User'
+            application_role: ''
           },
           {
             email: '',
-            application_role: 'User'
+            application_role: ''
           },
           {
             email: '',
-            application_role: 'User'
+            application_role: ''
           }
         ]
       }
@@ -117,15 +119,15 @@
         this.invitations = [
           {
             email: '',
-            application_role: 'User'
+            application_role: ''
           },
           {
             email: '',
-            application_role: 'User'
+            application_role: ''
           },
           {
             email: '',
-            application_role: 'User'
+            application_role: ''
           }
         ]
         this.inviteApplication = false
@@ -133,11 +135,14 @@
       onAddMember () {
         this.invitations.push({
           email: '',
-          application_role: 'User'
+          application_role: ''
         })
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       error () {
         return this.$store.getters.error
       },
