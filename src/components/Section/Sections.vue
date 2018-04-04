@@ -79,10 +79,6 @@
       return {
         editedName: this.section.name,
         actions: [{
-          name: 'Duplicate section',
-          cb: this.duplicateSection.bind(this)
-        },
-        {
           name: 'Delete section',
           cb: this.deleteSection.bind(this)
         }],
@@ -125,12 +121,6 @@
             order: this.section.order,
             name: this.editedName
           })
-      },
-      duplicateSection () {
-        this.$store.dispatch('duplicateSection', {
-          formid: this.form_id,
-          id: this.section.id
-        })
       },
       deleteSection () {
         this.$store.dispatch('deleteSection', {

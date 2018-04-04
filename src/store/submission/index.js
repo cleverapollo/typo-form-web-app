@@ -135,24 +135,6 @@ export default {
           commit('setLoading', false)
         })
     },
-    duplicateSubmission ({commit}, payload) {
-      commit('setLoading', true)
-      window.axios.post(FORM_URL + payload.formid + SUBMISSION_URL + payload.id)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              formid: payload.formid,
-              submissions: response['data']['submissions']
-            }
-            commit('setLoadedSubmissions', updateObj)
-          }
-        )
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
-    },
     deleteSubmission ({commit}, payload) {
       commit('setLoading', true)
       window.axios.delete(FORM_URL + payload.formid + SUBMISSION_URL + payload.id)

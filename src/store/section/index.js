@@ -15,25 +15,6 @@ export default {
     createSection (state, payload) {
       state.loadedSections[payload.formid].push(payload.section)
     },
-    duplicateSection (state, payload) {
-      const childSections = state.loadedSections[payload.formid].filter((section) => {
-        return section.parent_section_id === payload.section.parent_section_id && section.order >= payload.section.order
-      })
-      childSections.map(function (section) {
-        section.order = section.order + 1
-      })
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.section.parent_section_id
-      })
-      if (section) {
-        section.questions.map(function (question) {
-          if (question.order >= payload.section.order) {
-            question.order = question.order + 1
-          }
-        })
-      }
-      state.loadedSections[payload.formid].push(payload.section)
-    },
     updateSection (state, payload) {
       const index = state.loadedSections[payload.formid].findIndex(section => {
         return section.id === payload.section.id
@@ -214,24 +195,6 @@ export default {
               section: response['data']['section']
             }
             commit('updateSection', updateObj)
-          }
-        )
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
-    },
-    duplicateSection ({commit}, payload) {
-      commit('setLoading', true)
-      window.axios.post(FORM_URL + payload.formid + SECTION_URL + payload.id)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const createObj = {
-              formid: payload.formid,
-              section: response['data']['section']
-            }
-            commit('duplicateSection', createObj)
           }
         )
         .catch(error => {
