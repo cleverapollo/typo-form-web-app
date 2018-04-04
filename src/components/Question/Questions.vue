@@ -86,7 +86,7 @@
 
 <script>
   import draggable from 'vuedraggable'
-  import answers from '../Answer/Answers.vue'
+//  import answers from '../Answer/Answers.vue'
   import shortAnswer from './components/ShortAnswer'
   import paragraph from './components/Paragraph'
   import multipleChoice from './components/MultipleChoice'
@@ -102,8 +102,7 @@
   export default {
     props: ['question', 'form_id', 'section_id'],
     components: {
-      draggable,
-      answers
+      draggable
     },
     data () {
       return {

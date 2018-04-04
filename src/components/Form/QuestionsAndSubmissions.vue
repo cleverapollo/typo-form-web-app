@@ -22,7 +22,7 @@
             :id="tab"
           >
             <v-card v-if="index == 0" flat>
-              <questions :application_id="application_id" :id="id" :submission_id="1"></questions>
+              <questions :application_id="application_id" :id="id" :submission_id="1" :form_type="'questions'"></questions>
             </v-card>
             <v-card v-else flat>
               <submissions :application_id="application_id" :form_id="id"></submissions>

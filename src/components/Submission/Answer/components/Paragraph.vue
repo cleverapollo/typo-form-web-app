@@ -1,11 +1,14 @@
 <template>
   <v-layout row>
-    <v-flex xs10>
+    <v-flex xs12>
       <v-text-field
-        name="paragraph"
-        value="Long answer text"
-        multiple
-        disabled
+        label="Message"
+        v-model="message"
+        counter
+        max="120"
+        full-width
+        multi-line
+        single-line
       ></v-text-field>
     </v-flex>
   </v-layout>
@@ -13,7 +16,10 @@
 
 <script>
   export default {
-    name: 'paragraph'
+    name: 'paragraph',
+    data: () => ({
+      message: ''
+    })
   }
 </script>
 

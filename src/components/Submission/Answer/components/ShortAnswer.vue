@@ -4,7 +4,6 @@
       <v-text-field
         name="short-answer"
         value="Short answer text"
-        disabled
       ></v-text-field>
     </v-flex>
   </v-layout>

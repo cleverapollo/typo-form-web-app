@@ -1,33 +1,15 @@
 <template>
-  <draggable v-model='computedOptions' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
+  <div>
     <v-layout row v-for='(optionString, index) in computedOptions' :key='"Option " + index' class='"item" + index'>
-      <div class='radio-wrapper'>
-        <i aria-hidden="true" class="icon">{{ index + 1 }}.</i>
-      </div>
-      <div class='input-wrapper'>
-        <v-text-field
-          autofocus
-          :value='optionString'
-        ></v-text-field>
-      </div>
-      <div class='close-wrapper' v-show='computedOptions.length > 1'>
-        <v-btn flat icon @click='removeOption(index)'>
-          <v-icon>close</v-icon>
-        </v-btn>
-      </div>
+      <v-select
+        v-bind:items="computedOptions"
+        v-model="selectedOption"
+        label="Select"
+        single-line
+        bottom
+      ></v-select>
     </v-layout>
-    <div class='actions'>
-      <div class='radio-wrapper'>
-        <i aria-hidden="true" class="icon">{{ computedOptions.length + 1 }}.</i>
-      </div>
-      <div class='input-wrapper'>
-        <v-text-field
-          value='Add option'
-          @click='addOption'
-        ></v-text-field>
-      </div>
-    </div>
-  </draggable>
+  </div>
 </template>
 
 <script>
@@ -45,6 +27,9 @@
         default: false
       }
     },
+    data: () => ({
+      selectedOption: null
+    }),
     components: {
       draggable
     },

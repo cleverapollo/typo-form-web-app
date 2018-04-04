@@ -1,18 +1,64 @@
 <template>
   <v-layout row>
     <v-flex xs4>
-      <v-text-field
-        value='Month, day, year'
-        append-icon="event"
-        disabled
-      ></v-text-field>
+      <v-menu
+        lazy
+        :close-on-content-click="false"
+        v-model="menu"
+        transition="scale-transition"
+        offset-y
+        full-width
+        :nudge-right="40"
+        max-width="290px"
+        min-width="290px"
+      >
+        <v-text-field
+          slot="activator"
+          label="MM/DD/YYYY"
+          v-model="dateFormatted"
+          prepend-icon="event"
+          @blur="date = parseDate(dateFormatted)"
+        ></v-text-field>
+        <v-date-picker v-model="date" @input="dateFormatted = formatDate($event)" no-title scrollable actions>
+          <template slot-scope="{ save, cancel }">
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
+              <v-btn flat color="primary" @click="save">OK</v-btn>
+            </v-card-actions>
+          </template>
+        </v-date-picker>
+      </v-menu>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
   export default {
-    name: 'date-component'
+    name: 'date-component',
+    data: () => ({
+      date: null,
+      dateFormatted: false,
+      modal: false
+    }),
+    methods: {
+      formatDate (date) {
+        if (!date) {
+          return null
+        }
+
+        const [year, month, day] = date.split('-')
+        return `${month}/${day}/${year}`
+      },
+      parseDate (date) {
+        if (!date) {
+          return null
+        }
+
+        const [month, day, year] = date.split('/')
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      }
+    }
   }
 </script>
 

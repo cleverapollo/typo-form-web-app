@@ -39,7 +39,7 @@
           <v-card-text>
             <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
               <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item pb-5">
-                <sections :section='element' :form_id='id'></sections>
+                <sections :section='element' :form_id='id' :form_type="form_type"></sections>
               </div>
             </draggable>
           </v-card-text>
@@ -54,7 +54,7 @@
   import sections from '../Section/Sections.vue'
 
   export default {
-    props: ['application_id', 'id', 'submission_id'],
+    props: ['application_id', 'id', 'submission_id', 'form_type'],
     components: {
       draggable,
       sections

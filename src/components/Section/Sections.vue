@@ -1,6 +1,6 @@
 <template>
   <v-card active-class='active-section' class='elevation-12 mx-5'>
-    <v-toolbar>
+    <v-toolbar v-if="form_type==='questions'">
       <v-toolbar-title>{{ 'Section ' + section.order }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click.prevent='toggleExpand'>
@@ -53,7 +53,8 @@
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
              class='item pb-5' :class='{ question: !isSection(element) }'>
           <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
-          <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
+          <questions :question='element' :form_id='form_id' :section_id="section.id" v-else-if="form_type==='questions'"></questions>
+          <answer :question='element' :form_id='form_id' :section_id="section.id" v-else></answer>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
           <v-card>
@@ -74,7 +75,7 @@
 
   export default {
     name: 'sections',
-    props: ['section', 'form_id'],
+    props: ['section', 'form_id', 'form_type'],
     components: {
       draggable,
       questions,

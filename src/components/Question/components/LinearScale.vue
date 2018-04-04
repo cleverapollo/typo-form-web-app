@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-layout row style='padding: 20px 30px'>
+      <v-flex>{{ start }}</v-flex>
       <div class='select-wrapper'>
         <v-select
           v-model='start'

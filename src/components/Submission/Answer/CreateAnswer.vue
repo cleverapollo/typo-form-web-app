@@ -1,18 +1,14 @@
 <template>
-  <v-dialog width="350px" persistent v-model="createAnswer">
-    <v-btn
-      dark
-      class="primary"
-      slot="activator"
-    >
-      Create Answer
-    </v-btn>
+  <v-dialog width="350px" persistent v-model="createSection">
+    <div slot="activator">
+      Create Section
+    </div>
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-title>
-              <h2>Create Answer</h2>
+              <h2>Create Section</h2>
             </v-card-title>
           </v-flex>
         </v-layout>
@@ -40,9 +36,9 @@
               >
                 Close
               </v-btn>
-              <v-btn 
-                flat 
-                class="primary" 
+              <v-btn
+                flat
+                class="primary"
                 @click="onSaveChanges"
                 :disabled="loading"
                 :loading="loading"
@@ -62,10 +58,10 @@
 
 <script>
   export default {
-    props: ['order', 'form_id', 'section_id', 'question_id'],
+    props: ['section_id', 'form_id'],
     data () {
       return {
-        createAnswer: false,
+        createSection: false,
         editedName: ''
       }
     },
@@ -74,20 +70,18 @@
         if (this.editedName.trim() === '') {
           return
         }
-        this.createAnswer = false
-        this.$store.dispatch('createAnswer',
+        this.createSection = false
+        this.$store.dispatch('createSection',
           {
             formid: this.form_id,
-            sectionid: this.section_id,
-            questionid: this.question_id,
-            answer: this.editedName,
-            order: this.order
+            section_id: this.section_id,
+            name: this.editedName
           })
         this.editedName = ''
       },
       onCancel () {
         this.editedName = ''
-        this.createAnswer = false
+        this.createSection = false
       }
     },
     computed: {

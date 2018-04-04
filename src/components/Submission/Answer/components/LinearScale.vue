@@ -1,48 +1,24 @@
 <template>
   <div>
-    <v-layout row style='padding: 20px 30px'>
-      <div class='select-wrapper'>
-        <v-select
-          v-model='start'
-          :items='startItems'
-          item-text='text'
-          item-value='id'
-        ></v-select>
-      </div>
-      <div class='to'>
-        to
-      </div>
-      <div class='select-wrapper'>
-        <v-select
-          v-model='end'
-          :items='endItems'
-          item-text='text'
-          item-value='id'
-        ></v-select>
-      </div>
-    </v-layout>
-    <v-layout row>
-      <div class='number-wrapper'>
-        {{ start }}
-      </div>
-      <v-flex xs3>
-        <v-text-field
-          value='Label (option)'
-          xs3
-          disabled
-        ></v-text-field>
+    <v-layout row class="p-2">
+      <v-flex xs8 offset-xs2>
+        <v-layout row>
+          <v-flex v-for="n in end" :key="n" v-if="n-1!=start">
+            <span class="optionLabel">{{ n }}</span>
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
-    <v-layout row>
-      <div class='number-wrapper'>
-        {{ end }}
-      </div>
-      <v-flex xs3>
-        <v-text-field
-          value='Label (option)'
-          disabled
-        ></v-text-field>
+    <v-layout row style='p-2'>
+      <v-flex xs2 class="text-center">{{ startString }}</v-flex>
+      <v-flex xs8>
+        <v-layout row>
+          <v-radio-group row>
+            <v-radio v-for="n in end" :key="n" v-if="n-1!=start" :value="'radio-'+n"></v-radio>
+          </v-radio-group>
+        </v-layout>
       </v-flex>
+      <v-flex xs2 class="text-center">{{ endString }}</v-flex>
     </v-layout>
   </div>
 </template>
@@ -52,8 +28,10 @@
     name: 'linear-scale',
     data () {
       return {
+        startString: 'start',
+        endString: 'end',
         start: 1,
-        end: 5,
+        end: 8,
         startItems: [
           {
             id: 0,
@@ -108,21 +86,7 @@
 </script>
 
 <style scoped>
-  .select-wrapper {
-    display: flex;
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-  .to {
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-  .number-wrapper {
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-    margin-right: 10px;
+  .optionLabel {
+    padding-left: 9px;
   }
 </style>

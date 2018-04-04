@@ -1,54 +1,8 @@
 <template>
   <draggable v-model='computedOptions' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
-    <v-layout row v-for='(optionString, index) in computedOptions' :key='"Option " + index' class='"item" + index'>
-      <div class='radio-wrapper'>
-        <i aria-hidden="true" class="icon icon--selection-control material-icons">radio_button_unchecked</i>
-      </div>
-      <div class='input-wrapper'>
-        <v-text-field
-          autofocus
-          :value='optionString'
-        ></v-text-field>
-      </div>
-      <div class='close-wrapper' v-show='computedOptions.length > 1'>
-        <v-btn flat icon @click='removeOption(index)'>
-          <v-icon>close</v-icon>
-        </v-btn>
-      </div>
-    </v-layout>
-    <v-layout row v-show='computedHasOther'>
-      <div class='radio-wrapper'>
-        <i aria-hidden="true" class="icon icon--selection-control material-icons">radio_button_unchecked</i>
-      </div>
-      <div class='input-wrapper'>
-        <v-text-field
-          disabled
-          value='Other...'
-        ></v-text-field>
-      </div>
-      <div class='close-wrapper'>
-        <v-btn flat icon @click='unsetHasOther()'>
-          <v-icon>close</v-icon>
-        </v-btn>
-      </div>
-    </v-layout>
-    <div class='actions'>
-      <div class='radio-wrapper'>
-        <i aria-hidden="true" class="icon icon--selection-control material-icons">radio_button_unchecked</i>
-      </div>
-      <div class='input-wrapper'>
-        <v-text-field
-          value='Add option'
-          @click='addOption'
-        ></v-text-field>
-      </div>
-      <div v-show='!computedHasOther' style="padding: 1.6em 0 0 1.6em">
-        or
-      </div>
-      <div v-show='!computedHasOther' style="padding: 9px 0">
-        <v-btn flat color="primary" @click='setHasOther'>add "other"</v-btn>
-      </div>
-    </div>
+    <v-radio-group row >
+      <v-radio v-for='(optionString, index) in computedOptions' :key='"Option " + index' :label="optionString" :value="'radio-1'+index" ></v-radio>
+    </v-radio-group>
   </draggable>
 </template>
 
