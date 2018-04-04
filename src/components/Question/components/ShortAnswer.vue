@@ -41,6 +41,11 @@
   export default {
     name: 'short-answer',
     props: {
+      'answers': {
+        default: function () {
+          return []
+        }
+      },
       'hasValidation': {
         type: Boolean,
         default: true
@@ -54,6 +59,11 @@
         ],
         minCharCount: 0,
         maxCharCount: 0
+      }
+    },
+    mounted () {
+      if (this.answers.length) {
+        this.$emit('delete-answers')
       }
     }
   }

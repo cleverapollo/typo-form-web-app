@@ -22,7 +22,7 @@
               <v-list>
                 <v-list-tile @click=''>
                   <v-list-tile-title>
-                    <app-create-section :section_id='-1' :form_id='id'></app-create-section>
+                    <app-create-section :parent_section_id='-1' :form_id='id'></app-create-section>
                   </v-list-tile-title>
                 </v-list-tile>
                 <v-list-tile @click=''>

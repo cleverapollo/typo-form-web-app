@@ -4,9 +4,9 @@
       <v-toolbar-title>{{ 'Question ' + question.order }}</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <v-container fluid>
-        <v-layout row>
-          <v-flex xs4>
+      <v-container>
+        <v-layout>
+          <v-flex xs4 class='pt-3'>
             <v-text-field
               label='Question'
               single-line
@@ -52,7 +52,7 @@
         </v-layout>
 
         <v-layout>
-          <v-flex>
+          <v-flex xs10>
             <v-text-field
               label='Description'
               v-model='editedDescription'
@@ -64,18 +64,16 @@
         </v-layout>
 
         <v-layout>
-          <v-flex>
+          <v-flex xs12>
             <component
               :is='questionComponent'
-              :options='questionOptions'
-              :has-other='questionHasOther'
-              :rows='questionRows'
-              :columns='questionColumns'
+              :answers='answers'
               :has-validation='mandatory && hasValidation'
-              @update-options='onOptionsUpdate'
-              @update-hasOther='onHasOtherUpdate'
-              @update-rows='onRowsUpdate'
-              @update-columns='onColumnsUpdate'
+              @create-answer='createAnswer'
+              @delete-answer='deleteAnswer'
+              @delete-answers='deleteAnswers'
+              @change-answer='changeAnswer'
+              @update-answer='updateAnswer'
             ></component>
           </v-flex>
         </v-layout>
@@ -127,7 +125,6 @@
         editedDescription: this.question.description,
         questionTypeId: this.question.question_type_id,
         mandatory: !!this.question.mandatory, // got number type
-        answers: this.question.answers,
         questionsComponentsMap: {
           'Short answer': shortAnswer,
           'Paragraph': paragraph,
@@ -141,10 +138,6 @@
           'Date': dateComponent,
           'Time': timeComponent
         },
-        questionOptions: [],
-        questionHasOther: false,
-        questionRows: [],
-        questionColumns: [],
         menuItems: [
           {
             action: 'short_text',
@@ -199,8 +192,11 @@
       }
     },
     computed: {
+      answers () {
+        return _.sortBy(this.question.answers, element => { return 1000000 * (1 - element.parameter) + element.order })
+      },
       questionTypes () {
-        return this.$store.getters.loadedQuestionTypes
+        return this.$store.getters.questionTypes
       },
       questionTypeString: {
         get: function () {
@@ -240,49 +236,51 @@
           this.updateQuestion()
         }
       },
-      createAnswer: function (answer, parameter) {
+      createAnswer: function (args) {
+        const answer = args[0]
+        const parameter = args[1]
         this.$store.dispatch('createAnswer',
           {
             formid: this.form_id,
             sectionid: this.section_id,
             questionid: this.question.id,
             answer: answer,
-            order: 1,
             parameter: parameter
           })
+      },
+      updateAnswer: function (args) {
+        const id = args[0]
+        const answer = args[1]
+        this.$store.dispatch('updateAnswer',
+          {
+            formid: this.form_id,
+            sectionid: this.section_id,
+            questionid: this.question.id,
+            id: id,
+            answer: answer
+          })
+      },
+      deleteAnswer: function (id) {
+        this.$store.dispatch('deleteAnswer', {
+          formid: this.form_id,
+          sectionid: this.section_id,
+          questionid: this.question.id,
+          id: id
+        })
       },
       deleteAnswers: function () {
         this.$store.dispatch('deleteAnswers', {
           formid: this.form_id,
           sectionid: this.section_id,
-          questionid: this.question_id
+          questionid: this.question.id
         })
       },
-      changeAnswers: function () {
+      changeAnswer: function () {
         this.$store.dispatch('changeAnswers', {
           formid: this.form_id,
           sectionid: this.section_id,
-          questionid: this.question_id
+          questionid: this.question.id
         })
-      },
-      group (value) {
-        if (value === 'Short answer' ||
-        value === 'Paragraph' ||
-        value === 'File upload' ||
-        value === 'Linear scale' ||
-        value === 'Date' ||
-        value === 'Time') {
-          return 1
-        } else if (value === 'Multiple choice' ||
-        value === 'Checkboxes' ||
-        value === 'Dropdown') {
-          return 2
-        } else if (value === 'Multiple choice grid' ||
-        value === 'Checkbox grid') {
-          return 3
-        } else {
-          return 1
-        }
       },
       updateQuestionType (value) {
         // 1, 2, 6, 7, 10, 11 - QuestionType Group 1
@@ -293,22 +291,6 @@
         // -> Group1 : deleteAnswers
         // Group3 -> Group 2: deleteAnswer('Row 1', false)
         // Group2 -> Group 3: createAnswer('Row 1', false)
-
-        const newQuestionTypeId = _.findIndex(this.questionTypes, type => { return type.type === value }) + 1
-        const oldGroup = this.group(this.questionTypeId)
-        const newGroup = this.group(newQuestionTypeId)
-        if (oldGroup === 1 && newGroup === 2) {
-          this.createAnswer('Option 1', true)
-        } else if (oldGroup === 1 && newGroup === 3) {
-          this.createAnswer('Column 1', true)
-          this.createAnswer('Row 1', false)
-        } else if (oldGroup === 2 && newGroup === 3) {
-          this.createAnswer('Row 1', false)
-        } else if (oldGroup === 3 && newGroup === 2) {
-          this.changeAnswers()
-        } else {
-          this.deleteAnswers()
-        }
 
         this.questionTypeString = value
         this.updateQuestion()
@@ -325,8 +307,7 @@
             question: this.editedName,
             description: this.editedDescription,
             question_type_id: this.questionTypeId,
-            mandatory: this.mandatory,
-            order: this.question.order
+            mandatory: this.mandatory
           })
       },
       duplicateQuestion () {
@@ -342,22 +323,6 @@
           sectionid: this.section_id,
           id: this.question.id
         })
-      },
-      onOptionsUpdate (options) {
-        console.log('options updated', options)
-        this.questionOptions = options
-      },
-      onHasOtherUpdate (hasOther) {
-        console.log('hasOther updated', hasOther)
-        this.questionHasOther = hasOther
-      },
-      onRowsUpdate (rows) {
-        console.log('rows updated', rows)
-        this.questionRows = rows
-      },
-      onColumnsUpdate (columns) {
-        console.log('columns updated', columns)
-        this.questionColumns = columns
       }
     }
   }

@@ -53,7 +53,8 @@ export default {
     },
     createForm ({commit, getters}, payload) {
       const form = {
-        name: payload.name
+        name: payload.name,
+        show_progress: true
       }
       window.axios.post(APPLICATION_URL + payload.applicationid + FORM_URL, form)
         .then(

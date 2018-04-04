@@ -1,5 +1,5 @@
 <template>
-  <v-card active-class='active-section' class='elevation-12 mx-5'>
+  <v-card active-class='active-section' class='elevation-12' v-bind:class='{"mx-5": section.parent_section_id !== null}'>
     <v-toolbar>
       <v-toolbar-title>{{ 'Section ' + section.order }}</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -14,7 +14,7 @@
         <v-list>
           <v-list-tile @click=''>
             <v-list-tile-title>
-              <app-create-section :section_id='section.id' :form_id='form_id'></app-create-section>
+              <app-create-section :parent_section_id='section.id' :form_id='form_id'></app-create-section>
             </v-list-tile-title>
           </v-list-tile>
           <v-list-tile v-for='(action, key) in actions' :key="`action ${key}`" @click='action.cb'>
@@ -96,11 +96,7 @@
           return this.$store.getters.loadedChildren(this.form_id, this.section.id)
         },
         set (value) {
-          /* const updateObj = {
-            id: this.section.id,
-            value: value
-          }
-          this.$store.dispatch('updateSection', updateObj) */
+          // TODO: Drggable components
         }
       },
       isSectionEmpty () {
@@ -125,7 +121,7 @@
           {
             formid: this.form_id,
             id: this.section.id,
-            section_id: this.section.section_id,
+            parent_section_id: this.section.parent_section_id,
             order: this.section.order,
             name: this.editedName
           })

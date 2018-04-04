@@ -17,13 +17,13 @@ export default {
     },
     duplicateSection (state, payload) {
       const childSections = state.loadedSections[payload.formid].filter((section) => {
-        return section.section_id === payload.section.section_id && section.order >= payload.section.order
+        return section.parent_section_id === payload.section.parent_section_id && section.order >= payload.section.order
       })
       childSections.map(function (section) {
         section.order = section.order + 1
       })
       const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.section.section_id
+        return section.id === payload.section.parent_section_id
       })
       if (section) {
         section.questions.map(function (question) {
@@ -60,7 +60,7 @@ export default {
     },
     duplicateQuestion (state, payload) {
       const childSections = state.loadedSections[payload.formid].filter((section) => {
-        return section.section_id === payload.sectionid && section.order >= payload.question.order
+        return section.parent_section_id === payload.sectionid && section.order >= payload.question.order
       })
       childSections.map(function (section) {
         section.order = section.order + 1
@@ -153,7 +153,7 @@ export default {
         return question.id === payload.questionid
       })
       question.answers = question.answers.filter(e => {
-        return e.paramter
+        return e.parameter === 1
       })
     }
   },
@@ -180,11 +180,10 @@ export default {
     },
     createSection ({commit, getters}, payload) {
       let section = {
-        name: payload.name,
-        order: payload.order
+        name: payload.name
       }
-      if (payload.section_id !== -1) {
-        section.section_id = payload.section_id
+      if (payload.parent_section_id !== -1) {
+        section.parent_section_id = payload.parent_section_id
       }
       window.axios.post(FORM_URL + payload.formid + SECTION_URL, section)
         .then(
@@ -221,26 +220,6 @@ export default {
           console.log(error)
           commit('setLoading', false)
         })
-      /*
-      const children = payload.value
-      let childQuestions = []
-      for (let i = 0; i < children.length; i++) {
-        let child = children[i]
-        child.order = i + 1
-        if (typeof (child.parent_section_id) !== 'undefined') {
-          child.parent_section_id = payload.id
-          commit('updateSection', child)
-        } else {
-          childQuestions.push(child)
-        }
-      }
-      if (payload.id !== -1) {
-        const updateQuestion = {
-          id: payload.id,
-          questions: childQuestions
-        }
-        commit('updateQuestion', updateQuestion)
-      } */
     },
     duplicateSection ({commit}, payload) {
       commit('setLoading', true)
@@ -300,7 +279,7 @@ export default {
           return []
         }
         const childSections = state.loadedSections[formid].filter((section) => {
-          return section.section_id === parentsectionid
+          return section.parent_section_id === parentsectionid
         })
         const section = state.loadedSections[formid].find((section) => {
           return section.id === parentsectionid

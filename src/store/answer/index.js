@@ -30,7 +30,7 @@ export default {
     createAnswer ({commit, getters}, payload) {
       const answer = {
         answer: payload.answer,
-        order: payload.order
+        parameter: payload.parameter
       }
       window.axios.post(QUESTION_URL + payload.questionid + ANSWER_URL, answer)
         .then(
@@ -57,9 +57,6 @@ export default {
       const updateObj = {}
       if (payload.answer) {
         updateObj.answer = payload.answer
-      }
-      if (payload.order) {
-        updateObj.order = payload.order
       }
       window.axios.put(QUESTION_URL + payload.questionid + ANSWER_URL + payload.id, updateObj)
         .then(
@@ -134,9 +131,7 @@ export default {
         if (!question) {
           return []
         }
-        return question.answers.sort((answerA, answerB) => {
-          return answerA.order > answerB.order
-        })
+        return question.answers
       }
     },
     loadedAnswer (state, getters, rootState) {

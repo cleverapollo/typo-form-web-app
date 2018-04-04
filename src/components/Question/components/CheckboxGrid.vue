@@ -1,67 +1,65 @@
 <template>
-  <v-layout>
-    <v-flex xs6>
-      <div>Rows</div>
-      <draggable v-model='computedRows' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
-        <v-layout row v-for='(rowString, index) in computedRows' :key='"Option " + index' class='"item" + index'>
-          <div class='radio-wrapper'>
-            <i aria-hidden="true" class="icon">{{ index + 1 }}.</i>
-          </div>
-          <div class='input-wrapper'>
+  <v-layout justify-space-between>
+    <v-flex xs5>
+      <h3>Rows</h3>
+      <draggable v-model='rows' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
+        <v-layout row v-for='(rowAnswer, index) in rows' :key='"Option " + index' :class='"item" + index'>
+          <v-flex style='max-width: 20px; min-width: 20px' class='mt-4'>
+            {{index+1}}.
+          </v-flex>
+          <v-flex xs10 style='min-width: 60px'>
             <v-text-field
+              :value='rowAnswer.answer'
               autofocus
-              :value='rowString'
+              @change='updateAnswer(rowAnswer.id, $event)'
             ></v-text-field>
-          </div>
-          <div class='close-wrapper' v-show='computedRows.length > 1'>
-            <v-btn flat icon @click='removeRow(index)'>
+          </v-flex>
+          <v-flex style='width: 30px'  v-show='rows.length > 1'>
+            <v-btn flat icon @click='deleteAnswer(index)' class='mt-3'>
               <v-icon>close</v-icon>
             </v-btn>
-          </div>
+          </v-flex>
         </v-layout>
-        <div class='actions'>
-          <div class='radio-wrapper'>
-            <i aria-hidden="true" class="icon">{{ computedRows.length + 1 }}.</i>
-          </div>
-          <div class='input-wrapper'>
+        <v-layout row d-inline-flex>
+          <v-flex style='min-width: 20px' class='mt-4'>
+            {{rows.length+1}}.
+          </v-flex>
+          <v-flex xs10 style='max-width: 80px'>
             <v-text-field
-              value='Add row'
-              @click='addRow'
+              value='Add option'
+              @click='createAnswer(false)'
             ></v-text-field>
-          </div>
-        </div>
+          </v-flex>
+        </v-layout>
       </draggable>
     </v-flex>
-    <v-flex xs6>
-      <div>Columns</div>
-      <draggable v-model='computedColumns' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
-        <v-layout row v-for='(columnString, index) in computedColumns' :key='"Option " + index' class='"item" + index'>
-          <div class='radio-wrapper'>
-            <i aria-hidden="true" class="icon icon--selection-control material-icons">check_box_outline_blank</i>
-          </div>
-          <div class='input-wrapper'>
+    <v-flex xs5 offset-xs1>
+      <h3>Columns</h3>
+      <draggable v-model='columns' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
+        <v-layout row v-for='(columnAnswer, index) in columns' :key='"Option " + index' :class='"item" + index'>
+          <v-flex xs10 style='min-width: 120px'>
             <v-text-field
+              prepend-icon='check_box_outline_blank'
+              :value='columnAnswer.answer'
               autofocus
-              :value='columnString'
+              @change='updateAnswer(columnAnswer.id, $event)'
             ></v-text-field>
-          </div>
-          <div class='close-wrapper' v-show='computedColumns.length > 1'>
-            <v-btn flat icon @click='removeColumn(index)'>
+          </v-flex>
+          <v-flex style='width: 30px' v-show='columns.length > 1'>
+            <v-btn flat icon @click='deleteAnswer(index)' class='mt-3'>
               <v-icon>close</v-icon>
             </v-btn>
-          </div>
+          </v-flex>
         </v-layout>
-        <div class='actions'>
-          <div class='radio-wrapper'>
-            <i aria-hidden="true" class="icon icon--selection-control material-icons">check_box_outline_blank</i>
-          </div>
-          <div class='input-wrapper'>
+        <v-layout row d-inline-flex>
+          <v-flex style='width: 125px'>
             <v-text-field
-              value='Add column'
-              @click='addColumn'
+              prepend-icon='check_box_outline_blank'
+              value='Add option'
+              @click='createAnswer(true)'
             ></v-text-field>
-          </div>
-        </div>
+          </v-flex>
+        </v-layout>
       </draggable>
     </v-flex>
   </v-layout>
@@ -69,16 +67,10 @@
 
 <script>
   import draggable from 'vuedraggable'
-  import * as _ from 'lodash'
   export default {
     name: 'checkbox-grid',
     props: {
-      'rows': {
-        default: function () {
-          return []
-        }
-      },
-      'columns': {
+      'answers': {
         default: function () {
           return []
         }
@@ -88,49 +80,52 @@
       draggable
     },
     methods: {
-      addRow () {
-        this.computedRows.push(`Row ${this.computedRows.length + 1}`)
+      createAnswer (parameter) {
+        let str = `Row ${this.rows.length + 1}`
+        if (parameter) {
+          str = `Column ${this.columns.length + 1}`
+        }
+        this.$emit('create-answer', [str, parameter])
       },
-      removeRow (index) {
-        const rows = _.remove(this.computedRows, (item, n) => { return n !== index })
-        this.computedRows = rows
+      deleteAnswer (index) {
+        this.$emit('delete-answer', this.answers[index].id)
       },
-      addColumn () {
-        this.computedColumns.push(`Column ${this.computedColumns.length + 1}`)
-      },
-      removeColumn (index) {
-        const columns = _.remove(this.computedColumns, (item, n) => { return n !== index })
-        this.computedColumns = columns
+      updateAnswer (index, value) {
+        this.$emit('update-answer', [index, value])
       }
     },
     mounted () {
-      if (this.rows.length === 0) {
-        this.computedRows = [
-          'Row 1'
-        ]
-      }
-      if (this.columns.length === 0) {
-        this.computedColumns = [
-          'Column 1'
-        ]
+      if (this.answers.length === 0) {
+        this.createAnswer(true)
+        this.createAnswer(false)
+      } else {
+        if (this.answers.length === 2 && this.answers[0].answer.substr(0, 11) === 'LinearScale' && this.answers[1].answer.substr(0, 11) === 'LinearScale') {
+          this.$emit('delete-answers')
+        } else {
+          const lastAnswer = this.answers[this.answers.length - 1]
+          const firstAnswer = this.answers[0]
+          if (!lastAnswer.parameter && lastAnswer.answer === 'Other...') {
+            this.$emit('change-answer')
+          }
+          if (lastAnswer.parameter) {
+            this.createAnswer(false)
+          }
+          if (!firstAnswer.parameter) {
+            this.createAnswer(true)
+          }
+        }
       }
     },
     computed: {
-      computedRows: {
-        get: function () {
-          return this.rows
-        },
-        set: function (rows) {
-          this.$emit('update-rows', rows)
-        }
+      rows () {
+        return this.answers.filter(e => {
+          return !e.parameter
+        })
       },
-      computedColumns: {
-        get: function () {
-          return this.columns
-        },
-        set: function (columns) {
-          this.$emit('update-columns', columns)
-        }
+      columns () {
+        return this.answers.filter(e => {
+          return e.parameter
+        })
       }
     }
   }
