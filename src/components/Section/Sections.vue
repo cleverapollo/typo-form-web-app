@@ -48,13 +48,12 @@
       </div>
     </v-card-title>
     <v-card-text class='px-0'>
-      <draggable v-model='list' v-show='expanded' class='dragArea' :options='{group:"people", draggable:".item"}'
+      <draggable v-if="form_type==='questions'" v-model='list' v-show='expanded' class='dragArea' :options='{group:"people", draggable:".item"}'
                  style='min-height: 100px'>
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
              class='item pb-5' :class='{ question: !isSection(element) }'>
           <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
-          <questions :question='element' :form_id='form_id' :section_id="section.id" v-else-if="form_type==='questions'"></questions>
-          <answer :question='element' :form_id='form_id' :section_id="section.id" v-else></answer>
+          <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
           <v-card>
@@ -64,6 +63,20 @@
           </v-card>
         </div>
       </draggable>
+      <div v-else>
+        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
+             class='item pb-5' :class='{ question: !isSection(element) }'>
+          <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
+          <answer :question='element' :form_id='form_id' :section_id="section.id" v-else></answer>
+        </div>
+        <div slot='footer' v-if='isSectionEmpty'>
+          <v-card>
+            <v-card-title>
+              <h3>There is no questions</h3>
+            </v-card-title>
+          </v-card>
+        </div>
+      </div>
     </v-card-text>
   </v-card>
 </template>

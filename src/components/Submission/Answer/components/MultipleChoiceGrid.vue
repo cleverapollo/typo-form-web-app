@@ -25,8 +25,7 @@
 
 
 <script>
-  import draggable from 'vuedraggable'
-  import * as _ from 'lodash'
+//  import * as _ from 'lodash'
   export default {
     name: 'multiple-choice-grid',
     props: {
@@ -41,24 +40,7 @@
         }
       }
     },
-    components: {
-      draggable
-    },
     methods: {
-      addRow () {
-        this.computedRows.push(`Row ${this.computedRows.length + 1}`)
-      },
-      removeRow (index) {
-        const rows = _.remove(this.computedRows, (item, n) => { return n !== index })
-        this.computedRows = rows
-      },
-      addColumn () {
-        this.computedColumns.push(`Column ${this.computedColumns.length + 1}`)
-      },
-      removeColumn (index) {
-        const columns = _.remove(this.computedColumns, (item, n) => { return n !== index })
-        this.computedColumns = columns
-      }
     },
     mounted () {
       if (this.rows.length === 0) {

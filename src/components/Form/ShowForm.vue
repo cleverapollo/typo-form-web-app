@@ -15,7 +15,7 @@
           <v-card-title>
             <h1 class="primary--text">{{ form.name }}</h1>
             <v-spacer></v-spacer>
-            <v-menu offset-y bottom left>
+            <v-menu v-if="form_type==='questions'" offset-y bottom left>
               <v-btn icon slot='activator'>
                 <v-icon>more_vert</v-icon>
               </v-btn>

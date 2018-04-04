@@ -13,8 +13,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
-  import * as _ from 'lodash'
+//  import * as _ from 'lodash'
   export default {
     name: 'dropdown',
     props: {
@@ -30,23 +29,7 @@
     data: () => ({
       selectedOption: null
     }),
-    components: {
-      draggable
-    },
     methods: {
-      addOption () {
-        this.computedOptions.push(`Option ${this.computedOptions.length + 1}`)
-      },
-      removeOption (index) {
-        const options = _.remove(this.computedOptions, (item, n) => { return n !== index })
-        this.computedOptions = options
-      },
-      setHasOther () {
-        this.computedHasOther = true
-      },
-      unsetHasOther () {
-        this.computedHasOther = false
-      }
     },
     mounted () {
       if (this.options.length === 0) {
@@ -63,14 +46,6 @@
         },
         set: function (options) {
           this.$emit('update-options', options)
-        }
-      },
-      computedHasOther: {
-        get: function () {
-          return this.hasOther
-        },
-        set: function (hasOther) {
-          this.$emit('update-hasOther', hasOther)
         }
       }
     }
