@@ -118,7 +118,6 @@
             formid: this.form_id,
             id: this.section.id,
             parent_section_id: this.section.parent_section_id,
-            order: this.section.order,
             name: this.editedName
           })
       },

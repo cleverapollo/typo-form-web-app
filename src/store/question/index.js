@@ -30,8 +30,7 @@ export default {
         question: payload.question,
         description: payload.description,
         mandatory: payload.mandatory,
-        question_type_id: payload.question_type_id,
-        order: payload.order
+        question_type_id: payload.question_type_id
       }
       window.axios.post(SECTION_URL + payload.sectionid + QUESTION_URL, question)
         .then(
@@ -66,9 +65,6 @@ export default {
       }
       if (payload.mandatory !== undefined) {
         updateObj.mandatory = payload.mandatory
-      }
-      if (payload.order) {
-        updateObj.order = payload.order
       }
       window.axios.put(SECTION_URL + payload.sectionid + QUESTION_URL + payload.id, updateObj)
         .then(

@@ -154,9 +154,7 @@ export default {
         if (!state.loadedSubmissions[formid]) {
           return []
         }
-        return state.loadedSubmissions[formid].sort((submissionA, submissionB) => {
-          return submissionA.order > submissionB.order
-        })
+        return state.loadedSubmissions[formid]
       }
     },
     loadedSubmission (state) {

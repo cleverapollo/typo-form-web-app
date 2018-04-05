@@ -4,103 +4,100 @@
       <v-toolbar-title>{{ 'Question ' + question.order }}</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <v-container>
-        <v-layout>
-          <v-flex xs4 class='pt-3'>
-            <v-text-field
-              label='Question'
-              single-line
-              autofocus
-              @blur='checkUpdateName'
-              v-model='editedName'
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs4 offset-xs1>
-            <v-select
-              :items='menuItems'
-              item-text='title'
-              item-value='title'
-              v-model='questionTypeString'
-              auto
-              persistent-hint
-              hint=' '
-              @change='updateQuestionType'
-            >
-              <template slot='selection' slot-scope='data'>
+      <v-layout>
+        <v-flex xs4 class='pt-3'>
+          <v-text-field
+            label='Question'
+            single-line
+            autofocus
+            @blur='checkUpdateName'
+            v-model='editedName'
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs4 offset-xs1>
+          <v-select
+            :items='menuItems'
+            item-text='title'
+            item-value='title'
+            v-model='questionTypeString'
+            auto
+            persistent-hint
+            hint=' '
+            @change='updateQuestionType'
+          >
+            <template slot='selection' slot-scope='data'>
+              <v-list-tile-avatar>
+                <v-icon v-text='data.item.action'></v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content style='color: black'>
+                <v-list-tile-title v-html='data.item.title'></v-list-tile-title>
+              </v-list-tile-content>
+            </template>
+            <template slot='item' slot-scope='data'>
+              <template v-if='typeof data.item !== "object"'>
+                <v-list-tile-content v-text='data.item'></v-list-tile-content>
+              </template>
+              <template v-else>
                 <v-list-tile-avatar>
                   <v-icon v-text='data.item.action'></v-icon>
                 </v-list-tile-avatar>
-                <v-list-tile-content style='color: black'>
+                <v-list-tile-content>
                   <v-list-tile-title v-html='data.item.title'></v-list-tile-title>
                 </v-list-tile-content>
               </template>
-              <template slot='item' slot-scope='data'>
-                <template v-if='typeof data.item !== "object"'>
-                  <v-list-tile-content v-text='data.item'></v-list-tile-content>
-                </template>
-                <template v-else>
-                  <v-list-tile-avatar>
-                    <v-icon v-text='data.item.action'></v-icon>
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    <v-list-tile-title v-html='data.item.title'></v-list-tile-title>
-                  </v-list-tile-content>
-                </template>
-              </template>
-            </v-select>
-          </v-flex>
-        </v-layout>
+            </template>
+          </v-select>
+        </v-flex>
+      </v-layout>
 
-        <v-layout>
-          <v-flex xs10>
-            <v-text-field
-              label='Description'
-              v-model='editedDescription'
-              single-line
-              autofocus
-              @blur='checkUpdateDescription'
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
+      <v-layout>
+        <v-flex xs10>
+          <v-text-field
+            label='Description'
+            v-model='editedDescription'
+            single-line
+            autofocus
+            @blur='checkUpdateDescription'
+          ></v-text-field>
+        </v-flex>
+      </v-layout>
 
-        <v-layout>
-          <v-flex xs12>
-            <component
-              :is='questionComponent'
-              :answers='answers'
-              :has-validation='mandatory && hasValidation'
-              @create-answer='createAnswer'
-              @delete-answer='deleteAnswer'
-              @delete-answers='deleteAnswers'
-              @change-answer='changeAnswer'
-              @update-answer='updateAnswer'
-            ></component>
-          </v-flex>
-        </v-layout>
+      <v-layout>
+        <v-flex xs12>
+          <component
+            :is='questionComponent'
+            :answers='answers'
+            :has-validation='mandatory && hasValidation'
+            @create-answer='createAnswer'
+            @delete-answer='deleteAnswer'
+            @delete-answers='deleteAnswers'
+            @change-answer='changeAnswer'
+            @update-answer='updateAnswer'
+          ></component>
+        </v-flex>
+      </v-layout>
 
-        <v-divider></v-divider>
-      </v-container>
+      <v-divider></v-divider>
     </v-card-text>
     <v-card-actions class='pa-3'>
-        <v-spacer></v-spacer>
-        <v-btn color='grey darken-2' flat icon @click='duplicateQuestion'><v-icon>content_copy</v-icon></v-btn>
-        <v-btn color='grey darken-2' flat icon @click='deleteQuestion'><v-icon>delete</v-icon></v-btn>
-        <v-switch
-          label='Required'
-          v-model='mandatory'
-        ></v-switch>
-        <v-checkbox
-          v-show='mandatory'
-          label='include validation'
-          v-model='hasValidation'
-        ></v-checkbox>
+      <v-spacer></v-spacer>
+      <v-btn color='grey darken-2' flat icon @click='duplicateQuestion'><v-icon>content_copy</v-icon></v-btn>
+      <v-btn color='grey darken-2' flat icon @click='deleteQuestion'><v-icon>delete</v-icon></v-btn>
+      <v-switch
+        label='Required'
+        v-model='mandatory'
+      ></v-switch>
+      <v-checkbox
+        v-show='mandatory'
+        label='include validation'
+        v-model='hasValidation'
+      ></v-checkbox>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
   import draggable from 'vuedraggable'
-  import answers from '../Answer/Answers.vue'
   import shortAnswer from './components/ShortAnswer'
   import paragraph from './components/Paragraph'
   import multipleChoice from './components/MultipleChoice'
@@ -116,8 +113,7 @@
   export default {
     props: ['question', 'form_id', 'section_id'],
     components: {
-      draggable,
-      answers
+      draggable
     },
     data () {
       return {

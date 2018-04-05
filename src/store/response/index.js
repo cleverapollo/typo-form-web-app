@@ -100,9 +100,7 @@ export default {
         if (!submission) {
           return []
         }
-        return submission.responses.sort((responseA, responseB) => {
-          return responseA.order > responseB.order
-        })
+        return submission.responses
       }
     },
     loadedResponse (state, getters, rootState) {
