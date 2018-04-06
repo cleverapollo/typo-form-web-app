@@ -37,8 +37,8 @@
             </v-menu>
           </v-card-title>
           <v-card-text>
-            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
-              <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item pb-5">
+            <draggable v-model="list" class="parent" :options="{group:'people', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
+              <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
                 <sections :section='element' :form_id='id'></sections>
               </div>
             </draggable>
@@ -76,11 +76,7 @@
           return this.$store.getters.loadedChildren(this.id, null)
         },
         set (value) {
-          const updateObj = {
-            id: -1,
-            value: value
-          }
-          this.$store.dispatch('updateSection', updateObj)
+          // TODO: update
         }
       },
       userIsAuthenticated () {
@@ -120,18 +116,60 @@
       hideDialog () {
         this.showDialog = false
       },
-      checkMove: function (evt) {
-        console.log('moved', evt)
-        if (evt.to.className.includes('parent') && evt.dragged.className.includes('question')) {
-          return false
+      checkEnd: function (evt) {
+        if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
+          return
         }
-        return true
-      },
-      checkAdd: function (evt) {
-        console.log('added', evt)
-      },
-      checkRemove: function (evt) {
-        console.log('removed', evt)
+        if (evt.item.className.includes('question') && evt.to.className.includes('parent')) {
+          return
+        }
+        let newIndex = evt.newIndex
+
+        if (evt.to.className === evt.from.className && evt.newIndex > evt.oldIndex) {
+          newIndex = newIndex + 1
+        }
+
+        const elementClass = evt.item.className
+        const parentClass = evt.to.className
+        let parentSectionId = parentClass.substr(7)
+        if (parentSectionId === '') {
+          parentSectionId = null
+        } else {
+          parentSectionId = parseInt(parentSectionId)
+        }
+
+        const children = this.$store.getters.loadedChildren(this.id, parentSectionId)
+        let order = 0
+        if (children.length === 0) {
+          order = 1
+        } else if (children.length === newIndex) {
+          order = children[newIndex - 1].order + 1
+        } else {
+          order = children[newIndex].order
+        }
+
+        if (elementClass.includes('section')) {
+          const elementId = parseInt(elementClass.substr(17))
+          this.$store.dispatch('moveSection',
+            {
+              formid: this.id,
+              sectionid: elementId,
+              parent_section_id: parentSectionId,
+              order: order
+            })
+        } else {
+          const oldparentClass = evt.from.className
+          const oldparentSectionId = parseInt(oldparentClass.substr(7))
+          const elementId = parseInt(elementClass.substr(18))
+          this.$store.dispatch('moveQuestion',
+            {
+              formid: this.id,
+              questionid: elementId,
+              oldparent_section_id: oldparentSectionId,
+              parent_section_id: parentSectionId,
+              order: order
+            })
+        }
       }
     },
     created: function () {

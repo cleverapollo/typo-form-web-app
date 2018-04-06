@@ -1,6 +1,6 @@
 <template>
   <v-card active-class='active-section' class='elevation-12' v-bind:class='{"mx-5": section.parent_section_id !== null}'>
-    <v-toolbar>
+    <v-toolbar class='handle'>
       <v-toolbar-title>{{ 'Section ' + section.order }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click.prevent='toggleExpand'>
@@ -37,7 +37,7 @@
                 label='Section Name'
                 v-model='editedName'
                 autofocus
-                @blur='checkUpdate'
+                @blur='checkNameUpdate'
               ></v-text-field>
             </v-flex>
           </v-layout>
@@ -48,8 +48,8 @@
       </div>
     </v-card-title>
     <v-card-text class='px-0'>
-      <draggable v-model='list' v-show='expanded' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
-        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' class='item pb-5' :class='{ question: !isSection(element) }'>
+      <draggable v-model='list' v-show='expanded' :class="'section' + section.id" :options='{group:"people", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
+        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
           <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
           <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
         </div>
@@ -127,11 +127,66 @@
           id: this.section.id
         })
       },
-      checkUpdate: function () {
+      checkNameUpdate: function () {
         if (this.editedName !== this.section.name) {
           this.updateSection()
         } else {
           this.editMode = false
+        }
+      },
+      checkEnd: function (evt) {
+        if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
+          return
+        }
+        if (evt.item.className.includes('question') && evt.to.className.includes('parent')) {
+          return
+        }
+        let newIndex = evt.newIndex
+
+        if (evt.to.className === evt.from.className && evt.newIndex > evt.oldIndex) {
+          newIndex = newIndex + 1
+        }
+
+        const elementClass = evt.item.className
+        const parentClass = evt.to.className
+        let parentSectionId = parentClass.substr(7)
+        if (parentSectionId === '') {
+          parentSectionId = null
+        } else {
+          parentSectionId = parseInt(parentSectionId)
+        }
+
+        const children = this.$store.getters.loadedChildren(this.form_id, parentSectionId)
+        let order = 0
+        if (children.length === 0) {
+          order = 1
+        } else if (children.length === newIndex) {
+          order = children[newIndex - 1].order + 1
+        } else {
+          order = children[newIndex].order
+        }
+
+        if (elementClass.includes('section')) {
+          const elementId = parseInt(elementClass.substr(17))
+          this.$store.dispatch('moveSection',
+            {
+              formid: this.form_id,
+              sectionid: elementId,
+              parent_section_id: parentSectionId,
+              order: order
+            })
+        } else {
+          const oldparentClass = evt.from.className
+          const oldparentSectionId = parseInt(oldparentClass.substr(7))
+          const elementId = parseInt(elementClass.substr(18))
+          this.$store.dispatch('moveQuestion',
+            {
+              formid: this.form_id,
+              questionid: elementId,
+              oldparent_section_id: oldparentSectionId,
+              parent_section_id: parentSectionId,
+              order: order
+            })
         }
       }
     }

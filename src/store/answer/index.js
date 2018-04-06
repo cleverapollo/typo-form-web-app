@@ -2,6 +2,7 @@ const API_URL = process.env.API_URL
 const QUESTION_URL = `${API_URL}question/`
 const ANSWER_URL = '/answer/'
 const CHANGE_URL = 'delete'
+const MOVE_URL = '/move/'
 
 export default {
   actions: {
@@ -69,6 +70,29 @@ export default {
               answer: response['data']['answer']
             }
             commit('updateAnswer', updateObj)
+          }
+        )
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    moveAnswer ({commit}, payload) {
+      commit('setLoading', true)
+      const updateObj = {}
+      if (payload.order) {
+        updateObj.order = payload.order
+      }
+      window.axios.post(QUESTION_URL + payload.questionid + ANSWER_URL + payload.id + MOVE_URL, updateObj)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              formid: payload.formid,
+              sectionid: payload.sectionid,
+              question: response['data']['data']
+            }
+            commit('updateQuestion', updateObj)
           }
         )
         .catch(error => {

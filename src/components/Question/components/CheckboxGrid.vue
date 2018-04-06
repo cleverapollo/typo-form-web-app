@@ -1,9 +1,9 @@
 <template>
-  <v-layout justify-space-between>
+  <v-layout>
     <v-flex xs5>
       <h3>Rows</h3>
-      <draggable v-model='rows' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
-        <v-layout row v-for='(rowAnswer, index) in rows' :key='"Option " + index' :class='"item" + index'>
+      <draggable v-model='rows' class='dragArea1' :options='{group:"people", draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
+        <v-layout row v-for='(rowAnswer, index) in rows' :key='"Option " + index' class='answer' :class='"answer" + rowAnswer.id'>
           <v-flex style='max-width: 20px; min-width: 20px' class='mt-4'>
             {{index+1}}.
           </v-flex>
@@ -35,8 +35,8 @@
     </v-flex>
     <v-flex xs5 offset-xs1>
       <h3>Columns</h3>
-      <draggable v-model='columns' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
-        <v-layout row v-for='(columnAnswer, index) in columns' :key='"Option " + index' :class='"item" + index'>
+      <draggable v-model='columns' class='dragArea2' :options='{group:"people", draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
+        <v-layout row v-for='(columnAnswer, index) in columns' :key='"Option " + index' class='answer' :class='"answer" + columnAnswer.id'>
           <v-flex xs10 style='min-width: 120px'>
             <v-text-field
               prepend-icon='check_box_outline_blank'
@@ -92,6 +92,37 @@
       },
       updateAnswer (index, value) {
         this.$emit('update-answer', [index, value])
+      },
+      checkEnd: function (evt) {
+        if (evt.to.className !== evt.from.className) {
+          return
+        }
+        if (evt.newIndex === evt.oldIndex) {
+          return
+        }
+        let newIndex = evt.newIndex
+
+        if (evt.newIndex > evt.oldIndex) {
+          newIndex = newIndex + 1
+        }
+
+        let order = 1
+        if (evt.to.className === 'dragArea1') {
+          if (this.rows.length === newIndex) {
+            order = this.rows[newIndex - 1].order + 1
+          } else {
+            order = this.rows[newIndex].order
+          }
+        } else {
+          if (this.columns.length === newIndex) {
+            order = this.columns[newIndex - 1].order + 1
+          } else {
+            order = this.columns[newIndex].order
+          }
+        }
+
+        const elementId = parseInt(evt.item.className.substr(24))
+        this.$emit('move-answer', [elementId, order])
       }
     },
     mounted () {
@@ -117,42 +148,24 @@
       }
     },
     computed: {
-      rows () {
-        return this.answers.filter(e => {
-          return !e.parameter
-        })
+      rows: {
+        get () {
+          return this.answers.filter(e => { return !e.parameter })
+          .sort((a, b) => { return a.order > b.order })
+        },
+        set (value) {
+          // TODO: draggable
+        }
       },
-      columns () {
-        return this.answers.filter(e => {
-          return e.parameter
-        })
+      columns: {
+        get () {
+          return this.answers.filter(e => { return e.parameter })
+          .sort((a, b) => { return a.order > b.order })
+        },
+        set (value) {
+          // TODO: draggable
+        }
       }
     }
   }
 </script>
-
-<style scoped>
-  .radio-wrapper {
-    display: inline-block;
-  }
-  .radio-wrapper > i {
-    font-style: normal;
-    color: inherit;
-    margin-top: 1em;
-    margin-right: 0.3em;
-  }
-  .input-wrapper {
-    display: inline-block;
-    width: 70%;
-  }
-  .close-wrapper {
-    display: inline-block;
-    padding: 0.5em;
-  }
-  .actions {
-    display: flex;
-  }
-  .actions > .input-wrapper {
-    width: 7em;
-  }
-</style>

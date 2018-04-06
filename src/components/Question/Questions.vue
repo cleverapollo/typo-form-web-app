@@ -1,6 +1,6 @@
 <template>
   <v-card active-class='active-question' class='elevation-12'>
-    <v-toolbar>
+    <v-toolbar class='handle'>
       <v-toolbar-title>{{ 'Question ' + question.order }}</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
@@ -73,6 +73,7 @@
             @delete-answers='deleteAnswers'
             @change-answer='changeAnswer'
             @update-answer='updateAnswer'
+            @move-answer='moveAnswer'
           ></component>
         </v-flex>
       </v-layout>
@@ -97,7 +98,6 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
   import shortAnswer from './components/ShortAnswer'
   import paragraph from './components/Paragraph'
   import multipleChoice from './components/MultipleChoice'
@@ -112,9 +112,6 @@
   import * as _ from 'lodash'
   export default {
     props: ['question', 'form_id', 'section_id'],
-    components: {
-      draggable
-    },
     data () {
       return {
         editedName: this.question.question,
@@ -318,6 +315,17 @@
           formid: this.form_id,
           sectionid: this.section_id,
           id: this.question.id
+        })
+      },
+      moveAnswer (args) {
+        const id = args[0]
+        const order = args[1]
+        this.$store.dispatch('moveAnswer', {
+          formid: this.form_id,
+          sectionid: this.section_id,
+          questionid: this.question.id,
+          id: id,
+          order: order
         })
       }
     }
