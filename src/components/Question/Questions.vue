@@ -61,7 +61,6 @@
           ></v-text-field>
         </v-flex>
       </v-layout>
-
       <v-layout>
         <v-flex xs12>
           <component
@@ -77,22 +76,36 @@
           ></component>
         </v-flex>
       </v-layout>
-
-      <v-divider></v-divider>
     </v-card-text>
+    <v-divider></v-divider>
     <v-card-actions class='pa-3'>
       <v-spacer></v-spacer>
       <v-btn color='grey darken-2' flat icon @click='duplicateQuestion'><v-icon>content_copy</v-icon></v-btn>
       <v-btn color='grey darken-2' flat icon @click='deleteQuestion'><v-icon>delete</v-icon></v-btn>
+      <div class='v-divider'>&nbsp</div>
       <v-switch
+        class='switch-mandatory'
         label='Required'
         v-model='mandatory'
+        hide-details
       ></v-switch>
-      <v-checkbox
-        v-show='mandatory'
-        label='include validation'
-        v-model='hasValidation'
-      ></v-checkbox>
+      <v-menu offset-y bottom left>
+        <v-btn icon slot='activator'>
+          <v-icon>more_vert</v-icon>
+        </v-btn>
+        <v-list>
+          <v-list-tile v-if='mandatory' @click='toggleHasValidation'>
+            <v-list-tile-title>
+              {{ hasValidation ? 'Remove Validation' : 'Include Validation' }}
+            </v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile v-else disabled>
+            <v-list-tile-title>
+              Include Validation
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </v-card-actions>
   </v-card>
 </template>
@@ -216,6 +229,9 @@
       }
     },
     methods: {
+      toggleHasValidation () {
+        this.hasValidation = !this.hasValidation
+      },
       setQuestionType (str) {
         this.questionTypeId = _.findIndex(this.questionTypes, type => { return type.type === str }) + 1
       },
@@ -331,3 +347,13 @@
     }
   }
 </script>
+<style scoped>
+  .switch-mandatory {
+    max-width: 120px;
+    margin-left: 20px;
+  }
+  .v-divider {
+    line-height: 2;
+    border-right: 1px solid #ccc;
+  }
+</style>
