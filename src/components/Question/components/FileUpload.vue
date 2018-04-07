@@ -1,30 +1,30 @@
 <template>
-	<v-layout column>
-    <v-layout row class='height-75'>
-      <v-flex xs8 class='vertical-middle'>
+  <v-flex justify-space-around style='max-width: 500px'>
+    <v-layout row wrap class='pb-4' align-baseline>
+      <v-flex>
         Allow only specific file types
       </v-flex>
-      <v-flex xs2 class='vertical-middle'>
+      <v-flex style='max-width: 40px'>
         <v-switch hide-details v-model='config.specificFileType'></v-switch>
       </v-flex>
     </v-layout>
-    <v-layout row class='height-75'>
-      <v-flex xs8 class='vertical-middle'>
+    <v-layout row wrap align-baseline>
+      <v-flex>
         Maximum number of files
       </v-flex>
-      <div class='sel-number vertical-middle'>
+      <v-flex style='max-width: 50px'>
         <v-select v-model='config.maxFilesNumber' :items='maxFilesNumberOptions'></v-select>
-      </div>
+      </v-flex>
     </v-layout>
-    <v-layout row class='height-75'>
-      <v-flex xs8 class='vertical-middle'>
+    <v-layout row wrap align-baseline>
+      <v-flex>
         Maximum file size
       </v-flex>
-      <div class='vertical-middle sel-size'>
+      <v-flex style='max-width: 90px'>
         <v-select v-model='config.maxFileSize' :items='maxFileSizeOptions'></v-select>
-      </div>
+      </v-flex>
     </v-layout>
-  </v-layout>
+  </v-flex>
 </template>
 
 <script>
@@ -56,18 +56,3 @@
   }
 </script>
 
-<style scoped>
-  .height-75 {
-    height: 75px;
-  }
-  .vertical-middle {
-    display: flex;
-    align-items: center;
-  }
-  .sel-number {
-    width: 60px;
-  }
-  .sel-size {
-    width: 100px;
-  }
-</style>
