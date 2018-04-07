@@ -89,7 +89,7 @@
         v-model='mandatory'
         hide-details
       ></v-switch>
-      <v-menu offset-y bottom left>
+      <v-menu v-if='ifRequireValidation[questionTypeString]' offset-y bottom right>
         <v-btn icon slot='activator'>
           <v-icon>more_vert</v-icon>
         </v-btn>
@@ -143,6 +143,11 @@
           'Checkbox grid': checkboxGrid,
           'Date': dateComponent,
           'Time': timeComponent
+        },
+        ifRequireValidation: {
+          'Short answer': true,
+          'Paragraph': true,
+          'Checkboxes': true
         },
         menuItems: [
           {
