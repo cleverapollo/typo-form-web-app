@@ -5,7 +5,7 @@
     </v-toolbar>
     <v-card-text>
       <v-layout>
-        <v-flex xs4 class='pt-3'>
+        <v-flex xs4 offset-xs1 class='pt-3'>
           <v-text-field
             label='Question'
             single-line
@@ -51,7 +51,7 @@
       </v-layout>
 
       <v-layout>
-        <v-flex xs10>
+        <v-flex xs9 offset-xs1>
           <v-text-field
             label='Description'
             v-model='editedDescription'
@@ -62,7 +62,7 @@
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-flex xs12>
+        <v-flex xs10 offset-xs1>
           <component
             :is='questionComponent'
             :answers='answers'
