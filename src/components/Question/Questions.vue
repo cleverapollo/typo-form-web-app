@@ -4,8 +4,8 @@
       <v-toolbar-title>{{ 'Question ' + question.order }}</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <v-layout>
-        <v-flex xs4 offset-xs1 class='pt-3'>
+      <v-layout row wrap justify-space-between>
+        <v-flex xs4 class='pt-3' style='min-width: 210px'>
           <v-text-field
             label='Question'
             single-line
@@ -14,7 +14,7 @@
             v-model='editedName'
           ></v-text-field>
         </v-flex>
-        <v-flex xs4 offset-xs1>
+        <v-flex xs4 style='min-width: 210px'>
           <v-select
             :items='menuItems'
             item-text='title'
@@ -51,7 +51,7 @@
       </v-layout>
 
       <v-layout>
-        <v-flex xs9 offset-xs1>
+        <v-flex>
           <v-text-field
             label='Description'
             v-model='editedDescription'
@@ -62,7 +62,7 @@
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-flex xs10 offset-xs1>
+        <v-flex xs12>
           <component
             :is='questionComponent'
             :answers='answers'
@@ -83,7 +83,7 @@
       <v-btn color='grey darken-2' flat icon @click='duplicateQuestion'><v-icon>content_copy</v-icon></v-btn>
       <v-btn color='grey darken-2' flat icon @click='deleteQuestion'><v-icon>delete</v-icon></v-btn>
       <div class='v-divider'>&nbsp</div>
-      <v-switch
+      <v-switch style='min-width: 110px; max-width: 110px;'
         class='switch-mandatory'
         label='Required'
         v-model='mandatory'

@@ -29,34 +29,27 @@
       </v-menu>
     </v-toolbar>
     <v-card-title>
-      <v-layout column>
-        <v-layout row>
-          <v-flex xs12>
-            <div class='section-name'>
-              <template v-if='editMode'>
-                <v-text-field
-                  label='Section Name'
-                  v-model='editedName'
-                  autofocus
-                  @blur='checkNameUpdate'
-                ></v-text-field>
-              </template>
-              <template v-else>
-                <h1 @click='setEditMode'>{{ section.name }}</h1>
-              </template>
-            </div>
-          </v-flex>
-        </v-layout>
-        <v-layout row>
-          <v-flex xs12>
-            <v-spacer></v-spacer>
-            <v-checkbox
-              label='Repeatable'
-              v-model='hasRepeatableQuestions'
-            ></v-checkbox>
-          </v-flex>
-        </v-layout>
-      </v-layout>
+      <v-flex>
+        <div class='section-name'>
+          <template v-if='editMode'>
+            <v-text-field
+              label='Section Name'
+              v-model='editedName'
+              autofocus
+              @blur='checkNameUpdate'
+            ></v-text-field>
+          </template>
+          <template v-else>
+            <h1 @click='setEditMode'>{{ section.name }}</h1>
+          </template>
+        </div>
+      </v-flex>
+      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4'>
+        <v-switch
+          label='Repeatable'
+          v-model='hasRepeatableQuestions'
+        ></v-switch>
+      </v-flex>
     </v-card-title>
     <v-card-text class='px-0'>
       <question-repeatable v-if='hasRepeatableQuestions' :questions='section.questions' :answers='section.questions[0].answers'></question-repeatable>
@@ -80,14 +73,14 @@
 <script>
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions'
-  import QuestionRepeatable from '../Question/components/QuestionRepeatable'
+  import questionRepeatable from '../Question/components/QuestionRepeatable'
   export default {
     name: 'sections',
     props: ['section', 'form_id'],
     components: {
       draggable,
       questions,
-      QuestionRepeatable
+      questionRepeatable
     },
     data () {
       return {

@@ -1,7 +1,7 @@
 <template>
-  <v-layout>
-    <v-flex xs5 offset-xs1>
-      <h3>Questions</h3>
+  <v-layout row wrap justify-space-around>
+    <v-flex xs5 style='min-width: 200px'>
+      <h3>Rows</h3>
       <draggable v-model='computedQuestions' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
         <v-layout row v-for='(question, index) in computedQuestions' :key='"Option " + index' :class='"item" + index'>
           <v-flex style='max-width: 20px; min-width: 20px' class='mt-4'>
@@ -14,8 +14,8 @@
               @change='updateAnswer(question.id, $event)'
             ></v-text-field>
           </v-flex>
-          <v-flex style='width: 30px'  v-show='computedQuestions.length > 1'>
-            <v-btn flat icon @click='deleteAnswer(index)' class='mt-3'>
+          <v-flex style='width: 30px' v-show='computedQuestions.length > 1'>
+            <v-btn flat icon @click='deleteAnswer(index)' class='mt-3 mx-0'>
               <v-icon>close</v-icon>
             </v-btn>
           </v-flex>
@@ -33,11 +33,11 @@
         </v-layout>
       </draggable>
     </v-flex>
-    <v-flex xs5>
-      <h3>Answers</h3>
+    <v-flex xs5 style='min-width: 200px'>
+      <h3>Columns</h3>
       <draggable v-model='computedAnswers' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
         <v-layout row v-for='(answer, index) in computedAnswers' :key='"Option " + index' :class='"item" + index'>
-          <v-flex xs10 style='min-width: 120px'>
+          <v-flex xs10 style='min-width: 100px'>
             <v-text-field
               prepend-icon='radio_button_unchecked'
               :value='answer.answer'
@@ -46,7 +46,7 @@
             ></v-text-field>
           </v-flex>
           <v-flex style='width: 30px' v-show='computedAnswers.length > 1'>
-            <v-btn flat icon @click='deleteAnswer(index)' class='mt-3'>
+            <v-btn flat icon @click='deleteAnswer(index)' class='mt-3 mx-0'>
               <v-icon>close</v-icon>
             </v-btn>
           </v-flex>

@@ -1,6 +1,6 @@
 <template>
-  <v-layout>
-    <v-flex xs5>
+  <v-layout row wrap justify-space-around>
+    <v-flex xs5 style='min-width: 200px'>
       <h3>Rows</h3>
       <draggable v-model='rows' class='dragArea1' :options='{group:"people", draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
         <v-layout row v-for='(rowAnswer, index) in rows' :key='"Option " + index' class='answer' :class='"answer" + rowAnswer.id'>
@@ -33,7 +33,7 @@
         </v-layout>
       </draggable>
     </v-flex>
-    <v-flex xs5 offset-xs1>
+    <v-flex xs5 style='min-width: 200px'>
       <h3>Columns</h3>
       <draggable v-model='columns' class='dragArea2' :options='{group:"people", draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
         <v-layout row v-for='(columnAnswer, index) in columns' :key='"Option " + index' class='answer' :class='"answer" + columnAnswer.id'>
