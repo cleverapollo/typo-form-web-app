@@ -1,5 +1,6 @@
 <template>
-  <v-card active-class='active-section' class='elevation-12 mx-5'>
+  <v-card active-class='active-section' class='elevation-12'
+          v-bind:class='{"mx-5": section.parent_section_id !== null}'>
     <v-toolbar v-if="form_type==='questions'">
       <v-toolbar-title>{{ 'Section ' + section.order }}</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -14,7 +15,7 @@
         <v-list>
           <v-list-tile @click=''>
             <v-list-tile-title>
-              <app-create-section :section_id='section.id' :form_id='form_id'></app-create-section>
+              <app-create-section :parent_section_id='section.id' :form_id='form_id'></app-create-section>
             </v-list-tile-title>
           </v-list-tile>
           <v-list-tile v-for='(action, key) in actions' :key="`action ${key}`" @click='action.cb'>
@@ -48,11 +49,13 @@
       </div>
     </v-card-title>
     <v-card-text class='px-0'>
-      <draggable v-if="form_type==='questions'" v-model='list' v-show='expanded' class='dragArea' :options='{group:"people", draggable:".item"}'
+      <draggable v-if="form_type==='questions'" v-model='list' v-show='expanded' class='dragArea'
+                 :options='{group:"people", draggable:".item"}'
                  style='min-height: 100px'>
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
              class='item pb-5' :class='{ question: !isSection(element) }'>
-          <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
+          <sections :section='element' :form_id='form_id' v-if='isSection(element)' :submission_id='submission_id'
+                    :form_type="form_type"></sections>
           <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
@@ -66,8 +69,10 @@
       <div v-else>
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
              class='item pb-5' :class='{ question: !isSection(element) }'>
-          <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
-          <answer :question='element' :form_id='form_id' :section_id="section.id" v-else></answer>
+          <sections :section='element' :form_id='form_id' :submission_id='submission_id'
+                    v-if='isSection(element)'></sections>
+          <answer :question='element' :form_id='form_id' :submission_id='submission_id' :section_id="section.id"
+                  v-else></answer>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
           <v-card>
@@ -88,7 +93,7 @@
 
   export default {
     name: 'sections',
-    props: ['section', 'form_id', 'form_type'],
+    props: ['section', 'form_id', 'submission_id', 'form_type'],
     components: {
       draggable,
       questions,
@@ -97,16 +102,10 @@
     data () {
       return {
         editedName: this.section.name,
-        actions: [
-          {
-            name: 'Duplicate section',
-            cb: this.duplicateSection.bind(this)
-          },
-          {
-            name: 'Delete section',
-            cb: this.deleteSection.bind(this)
-          }
-        ],
+        actions: [{
+          name: 'Delete section',
+          cb: this.deleteSection.bind(this)
+        }],
         expanded: true,
         editMode: false
       }
@@ -117,11 +116,7 @@
           return this.$store.getters.loadedChildren(this.form_id, this.section.id)
         },
         set (value) {
-          /* const updateObj = {
-            id: this.section.id,
-            value: value
-          }
-          this.$store.dispatch('updateSection', updateObj) */
+          // TODO: Drggable components
         }
       },
       isSectionEmpty () {
@@ -146,16 +141,9 @@
           {
             formid: this.form_id,
             id: this.section.id,
-            section_id: this.section.section_id,
-            order: this.section.order,
+            parent_section_id: this.section.parent_section_id,
             name: this.editedName
           })
-      },
-      duplicateSection () {
-        this.$store.dispatch('duplicateSection', {
-          formid: this.form_id,
-          id: this.section.id
-        })
       },
       deleteSection () {
         this.$store.dispatch('deleteSection', {

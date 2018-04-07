@@ -1,47 +1,39 @@
 <template>
   <v-card active-class='active-question' class='elevation-12'>
     <v-card-text>
-      <v-container fluid>
-
-        <v-layout row>
-          <v-flex xs4>
-            <h2>
-              {{ editedName }}
-            </h2>
-          </v-flex>
-        </v-layout>
-
-        <v-layout>
-          <v-flex>
-            <p>
-              {{ editedDescription }}
-            </p>
-          </v-flex>
-        </v-layout>
-
-        <v-layout>
-          <v-flex>
-            <component
-              :is='questionComponent'
-              :options='questionOptions'
-              :has-other='questionHasOther'
-              :rows='questionRows'
-              :columns='questionColumns'
-              @update-options='onOptionsUpdate'
-              @update-hasOther='onHasOtherUpdate'
-              @update-rows='onRowsUpdate'
-              @update-columns='onColumnsUpdate'
-            ></component>
-          </v-flex>
-        </v-layout>
-      </v-container>
+      <v-layout row>
+        <v-flex xs4>
+          <h2>
+            {{ editedName }}
+          </h2>
+        </v-flex>
+      </v-layout>
+      <v-layout>
+        <v-flex>
+          <p>
+            {{ editedDescription }}
+          </p>
+        </v-flex>
+      </v-layout>
+      <v-layout>
+        <v-flex xs12>
+          <component
+            :is='questionComponent'
+            :answers='answers'
+            :responses='responses'
+            :has-validation='mandatory && hasValidation'
+            @create-response="createResponse"
+            @update-response="updateResponse"
+            @delete-response="deleteResponse"
+          ></component>
+        </v-flex>
+      </v-layout>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
   import draggable from 'vuedraggable'
-  //  import answers from '../Answer/Answers.vue'
   import shortAnswer from './components/ShortAnswer'
   import paragraph from './components/Paragraph'
   import multipleChoice from './components/MultipleChoice'
@@ -56,7 +48,7 @@
   import * as _ from 'lodash'
 
   export default {
-    props: ['question', 'form_id', 'section_id'],
+    props: ['question', 'form_id', 'submission_id', 'section_id'],
     components: {
       draggable
     },
@@ -65,8 +57,7 @@
         editedName: this.question.question,
         editedDescription: this.question.description,
         questionTypeId: this.question.question_type_id,
-        mandatory: this.question.mandatory,
-        answers: this.question.answers,
+        mandatory: !!this.question.mandatory, // got number type
         questionsComponentsMap: {
           'Short answer': shortAnswer,
           'Paragraph': paragraph,
@@ -80,94 +71,136 @@
           'Date': dateComponent,
           'Time': timeComponent
         },
-        questionOptions: [],
-        questionHasOther: false,
-        questionRows: [],
-        questionColumns: []
+        menuItems: [
+          {
+            action: 'short_text',
+            title: 'Short answer'
+          },
+          {
+            action: 'subject',
+            title: 'Paragraph'
+          },
+          {divider: true},
+          {
+            action: 'radio_button_checked',
+            title: 'Multiple choice'
+          },
+          {
+            action: 'check_box',
+            title: 'Checkboxes'
+          },
+          {
+            action: 'arrow_drop_down_circle',
+            title: 'Dropdown'
+          },
+          {divider: true},
+          {
+            action: 'cloud_upload',
+            title: 'File upload'
+          },
+          {divider: true},
+          {
+            action: 'linear_scale',
+            title: 'Linear scale'
+          },
+          {
+            action: 'apps',
+            title: 'Multiple choice grid'
+          },
+          {
+            action: 'apps',
+            title: 'Checkbox grid'
+          },
+          {divider: true},
+          {
+            action: 'event',
+            title: 'Date'
+          },
+          {
+            action: 'schedule',
+            title: 'Time'
+          }
+        ],
+        hasValidation: false
       }
     },
     computed: {
-      questionTypes () {
-        return this.$store.getters.loadedQuestionTypes
+      answers () {
+        return _.sortBy(this.question.answers, element => {
+          return 1000000 * (1 - element.parameter) + element.order
+        })
       },
-      questionComponent: {
+      responses () {
+        let submission = this.$store.getters.loadedSubmission(parseInt(this.form_id), parseInt(this.submission_id))
+        return submission.responses.filter((response) => {
+          return response.question_id === this.question.id
+        })
+      },
+      questionTypes () {
+        return this.$store.getters.questionTypes
+      },
+      questionTypeString: {
         get: function () {
           const index = _.findIndex(this.questionTypes, type => {
             return type.id === this.questionTypeId
           })
           if (this.questionTypes[index]) {
-            return this.questionsComponentsMap[this.questionTypes[index].type]
+            return this.questionTypes[index].type
           } else {
-            return this.questionsComponentsMap['Short answer']
+            return 'Short answer'
           }
+        },
+        set: function (str) {
+          this.setQuestionType(str)
+        }
+      },
+      questionComponent: {
+        get: function () {
+          return this.questionsComponentsMap[this.questionTypeString]
         }
       }
     },
     watch: {
       mandatory (value) {
-        this.updateQuestion()
       }
     },
     methods: {
-      checkUpdateName: function () {
-        if (this.editedName !== this.question.question) {
-          this.updateQuestion()
-        }
+      setQuestionType (str) {
+        this.questionTypeId = _.findIndex(this.questionTypes, type => {
+          return type.type === str
+        }) + 1
       },
-      checkUpdateDescription: function () {
-        if (this.editedDescription !== this.question.description) {
-          this.updateQuestion()
-        }
-      },
-      updateQuestionType (value) {
-        this.questionTypeId = value
-        this.updateQuestion()
-      },
-      updateQuestion () {
-        if (this.editedName.trim() === '' || this.editedDescription.trim() === '') {
-          return
-        }
-        this.$store.dispatch('updateQuestion',
-          {
-            formid: this.form_id,
-            sectionid: this.section_id,
-            id: this.question.id,
-            question: this.editedName,
-            description: this.editedDescription,
-            question_type_id: this.questionTypeId,
-            mandatory: this.mandatory,
-            order: this.question.order
-          })
-      },
-      duplicateQuestion () {
-        this.$store.dispatch('duplicateQuestion', {
+      createResponse (args) {
+        const answerid = args[0]
+        const response = args[1]
+        this.$store.dispatch('createResponse', {
+          submissionid: this.submission_id,
+          questionid: this.question.id,
           formid: this.form_id,
-          sectionid: this.section_id,
-          id: this.question.id
+          answerid: answerid,
+          response: response
         })
       },
-      deleteQuestion () {
-        this.$store.dispatch('deleteQuestion', {
+      updateResponse (args) {
+        const answerid = args[0]
+        const response = args[1]
+        const id = args[2]
+        this.$store.dispatch('updateResponse', {
+          submissionid: this.submission_id,
+          questionid: this.question.id,
           formid: this.form_id,
-          sectionid: this.section_id,
-          id: this.question.id
+          answerid: answerid,
+          response: response,
+          id: id
         })
       },
-      onOptionsUpdate (options) {
-        console.log('options updated', options)
-        this.questionOptions = options
-      },
-      onHasOtherUpdate (hasOther) {
-        console.log('hasOther updated', hasOther)
-        this.questionHasOther = hasOther
-      },
-      onRowsUpdate (rows) {
-        console.log('rows updated', rows)
-        this.questionRows = rows
-      },
-      onColumnsUpdate (columns) {
-        console.log('columns updated', columns)
-        this.questionColumns = columns
+      deleteResponse (id) {
+        this.$store.dispatch('deleteResponse', {
+          submissionid: this.submission_id,
+          questionid: this.question.id,
+          formid: this.form_id,
+          id: id
+        })
       }
     }
   }

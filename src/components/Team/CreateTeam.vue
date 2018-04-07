@@ -50,8 +50,10 @@
                           </v-flex>
                           <v-flex xs12 sm4 offset-sm1 d-flex>
                             <v-select
-                              :items="['User', 'Admin']"
-                              v-model="item.team_role"
+                              :items="roles"
+                              item-text="name"
+                              item-value="id"
+                              v-model="item.team_role_id"
                               label="Role"
                               single-line
                             ></v-select>
@@ -94,20 +96,23 @@
         invitations: [
           {
             email: '',
-            team_role: 'User'
+            team_role_id: ''
           },
           {
             email: '',
-            team_role: 'User'
+            team_role_id: ''
           },
           {
             email: '',
-            team_role: 'User'
+            team_role_id: ''
           }
         ]
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       formIsValid () {
         return this.name !== ''
       }
@@ -131,7 +136,7 @@
       onAddMember () {
         this.invitations.push({
           email: '',
-          team_role: 'User'
+          team_role_id: ''
         })
       }
     }

@@ -22,7 +22,7 @@
             :id="tab"
           >
             <v-card v-if="index == 0" flat>
-              <questions :application_id="application_id" :id="id" :submission_id="1" :form_type="'questions'"></questions>
+              <questions :application_id="application_id" :id="id" :submission_id="-1" :form_type="'questions'"></questions>
             </v-card>
             <v-card v-else flat>
               <submissions :application_id="application_id" :form_id="id"></submissions>
@@ -61,7 +61,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.applictaion_role === 'Admin' || this.application.application_role === 'Super Admin'
+        return this.application.application_role_id === 2
       }
     },
     methods: {},

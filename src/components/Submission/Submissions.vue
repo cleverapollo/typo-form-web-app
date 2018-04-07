@@ -1,35 +1,33 @@
 <template>
-  <v-container>
-    <v-layout row wrap>
-      <v-flex xs9>
-        <show-submission :application_id="application_id" :form_id="form_id" :submission_id="submission_id"
-        ></show-submission>
-      </v-flex>
-      <v-flex xs3>
-        <v-card>
-          <v-toolbar color="primary" dark>
-            <v-toolbar-side-icon></v-toolbar-side-icon>
-            <v-toolbar-title>List</v-toolbar-title>
-            <v-spacer></v-spacer>
-          </v-toolbar>
-          <v-list>
-            <template v-for="(submission, index) in submissions">
-              <v-list-tile @click="onSubmission(submission.id)">
-                <v-list-tile-content>
-                  <v-list-tile-title
-                    v-html="getSubmissionName(submission)"></v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-divider v-if="index + 1 < submissions.length"></v-divider>
-            </template>
-          </v-list>
-        </v-card>
-        <v-card v-if="!userIsAdmin">
-          <create-submission :application_id="application_id" :form_id="form_id"></create-submission>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-layout row wrap>
+    <v-flex xs9>
+      <show-submission :application_id="application_id" :form_id="form_id" :submission_id="submission_id"
+      ></show-submission>
+    </v-flex>
+    <v-flex xs3>
+      <v-card>
+        <v-toolbar color="primary" dark>
+          <v-toolbar-side-icon></v-toolbar-side-icon>
+          <v-toolbar-title>List</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-list>
+          <template v-for="(submission, index) in submissions">
+            <v-list-tile @click="onSubmission(submission.id)">
+              <v-list-tile-content>
+                <v-list-tile-title
+                  v-html="getSubmissionName(submission)"></v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-divider v-if="index + 1 < submissions.length"></v-divider>
+          </template>
+        </v-list>
+      </v-card>
+      <v-card v-if="!userIsAdmin">
+        <create-submission :application_id="application_id" :form_id="form_id"></create-submission>
+      </v-card>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>

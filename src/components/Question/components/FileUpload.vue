@@ -6,7 +6,19 @@
 
 <script>
   export default {
-    name: 'fileupload'
+    name: 'fileupload',
+    props: {
+      'answers': {
+        default: function () {
+          return []
+        }
+      }
+    },
+    mounted () {
+      if (this.answers.length) {
+        this.$emit('delete-answers')
+      }
+    }
   }
 </script>
 

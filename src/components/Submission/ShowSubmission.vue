@@ -21,7 +21,13 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.role === 'Admin' || this.application.role === 'Super Admin'
+        return this.application.application_role_id === 2
+      },
+      form () {
+        return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))
+      },
+      loading () {
+        return this.$store.getters.loading
       }
     }
   }

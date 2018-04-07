@@ -1,77 +1,80 @@
 <template>
   <v-layout column>
-    <v-flex xs10 offset-xs2>
+    <v-flex xs10 offset-xs2 class="pb-3">
       <v-layout row>
-        <v-flex v-for='(columnString, index) in computedColumns' :key='"OptionString " + index'>{{ columnString }}</v-flex>
+        <v-flex v-for='(column, index) in computedColumns' :key='"ColumnString " + index'>
+          {{ column.answer }}
+        </v-flex>
       </v-layout>
     </v-flex>
     <v-flex>
-      <v-layout row v-for='(rowString, index) in computedRows' :key='"row " + index'>
+      <v-layout row v-for='(row, index) in computedRows' :key='"row " + index'>
         <v-flex xs2>
-          <v-layout row>
-            <h3>{{ index + 1 }}.</h3>
-            <h3>{{rowString}}</h3>
-          </v-layout>
+          {{ row.answer }}
         </v-flex>
-        <v-flex xs10>
-            <v-checkbox v-for='(columnString, index) in computedColumns' :key='"column " + index2' v-model="checkAble"></v-checkbox>
-        </v-flex>
+        <v-checkbox v-for='(column, index2) in computedColumns' :key='"column " + index2'
+                    v-model="ex1[index]" :value="column.id" @change="onSave(row.id, column.id)"></v-checkbox>
+
       </v-layout>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-//  import * as _ from 'lodash'
+  //  import * as _ from 'lodash'
 
   export default {
     name: 'checkbox-grid',
-    props: {
-      'rows': {
-        default: function () {
-          return []
-        }
-      },
-      'columns': {
-        default: function () {
-          return []
-        }
-      }
-    },
+    props: ['answers', 'responses'],
     data () {
       return {
-        checkAble: false
+        ex1: []
       }
-    },
-    methods: {
     },
     mounted () {
-      if (this.rows.length === 0) {
-        this.computedRows = [
-          'Row 1'
-        ]
-      }
-      if (this.columns.length === 0) {
-        this.computedColumns = [
-          'Column 1'
-        ]
+      for (let i = 0; i < this.computedRows.length; i++) {
+        const filteredResponses = this.responses.filter((response) => {
+          return this.computedRows[i].id === response.answer_id
+        })
+        this.ex1[i] = filteredResponses.map((response) => {
+          return parseInt(response.response)
+        })
       }
     },
     computed: {
-      computedRows: {
-        get: function () {
-          return this.rows
-        },
-        set: function (rows) {
-          this.$emit('update-rows', rows)
+      computedRows () {
+        return this.answers.filter((answer) => {
+          return !answer.parameter
+        })
+      },
+      computedColumns () {
+        return this.answers.filter((answer) => {
+          return answer.parameter
+        })
+      }
+    },
+    methods: {
+      checkAble (answerid, responseid) {
+        const index = this.responses.findIndex((response) => {
+          return response.answer_id === answerid && parseInt(response.response) === responseid
+        })
+        if (index === -1) {
+          return false
+        } else {
+          return true
         }
       },
-      computedColumns: {
-        get: function () {
-          return this.columns
-        },
-        set: function (columns) {
-          this.$emit('update-columns', columns)
+      responseIdFromAnswer (answerid, responseid) {
+        const response = this.responses.find((response) => {
+          return response.answer_id === answerid && parseInt(response.response) === responseid
+        })
+        return response.id
+      },
+      onSave (answerid, response) {
+        if (!this.checkAble(answerid, response)) {
+          this.$emit('create-response', [answerid, response])
+        } else {
+          this.$emit('delete-response', this.responseIdFromAnswer(answerid, response))
         }
       }
     }

@@ -1,46 +1,48 @@
 <template>
   <div>
-    <v-layout row v-for='(optionString, index) in computedOptions' :key='"Option " + index' class='"item" + index'>
-      <v-checkbox :label="optionString" v-model="checkAble"></v-checkbox>
+    <v-layout row v-for='(answer, index) in answers' :key='"Option " + index' class='"item" + index'>
+      <v-checkbox :label="answer.answer" v-model='ex1' :value="answer.id" @change="onSave(answer.id)"></v-checkbox>
     </v-layout>
   </div>
 </template>
-
 <script>
-//  import * as _ from 'lodash'
+  //  import * as _ from 'lodash'
 
   export default {
     name: 'checkboxes',
-    props: {
-      'options': {
-        default: function () {
-          return []
-        }
-      },
-      'hasOther': {
-        default: false
-      }
-    },
+    props: ['answers', 'responses'],
     data () {
       return {
-        checkAble: false
+        ex1: []
       }
     },
-    methods: {},
     mounted () {
-      if (this.options.length === 0) {
-        this.computedOptions = [
-          'Option 1'
-        ]
-      }
+      this.ex1 = this.responses.map((response) => {
+        return response.answer_id
+      })
     },
-    computed: {
-      computedOptions: {
-        get: function () {
-          return this.options
-        },
-        set: function (options) {
-          this.$emit('update-options', options)
+    methods: {
+      checkAble (answerid) {
+        const index = this.responses.findIndex((response) => {
+          return response.answer_id === answerid
+        })
+        if (index === -1) {
+          return false
+        } else {
+          return true
+        }
+      },
+      responseIdFromAnswer (answerid) {
+        const response = this.responses.find((response) => {
+          return response.answer_id === answerid
+        })
+        return response.id
+      },
+      onSave (answerid) {
+        if (!this.checkAble(answerid)) {
+          this.$emit('create-response', [answerid, null])
+        } else {
+          this.$emit('delete-response', this.responseIdFromAnswer(answerid))
         }
       }
     }

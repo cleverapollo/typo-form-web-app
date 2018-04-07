@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-layout row wrap v-if="loading">
       <v-flex xs12 class="text-xs-center">
         <v-progress-circular
@@ -22,7 +22,7 @@
               <v-list>
                 <v-list-tile @click=''>
                   <v-list-tile-title>
-                    <app-create-section :section_id='-1' :form_id='id'></app-create-section>
+                    <app-create-section :parent_section_id='-1' :form_id='id'></app-create-section>
                   </v-list-tile-title>
                 </v-list-tile>
                 <v-list-tile @click=''>
@@ -39,14 +39,14 @@
           <v-card-text>
             <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
               <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item pb-5">
-                <sections :section='element' :form_id='id' :form_type="form_type"></sections>
+                <sections :section='element' :form_id='id' :submission_id='submission_id' :form_type='form_type'></sections>
               </div>
             </draggable>
           </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -77,11 +77,7 @@
           return this.$store.getters.loadedChildren(this.id, null)
         },
         set (value) {
-          const updateObj = {
-            id: -1,
-            value: value
-          }
-          this.$store.dispatch('updateSection', updateObj)
+          // TODO: draggable
         }
       },
       userIsAuthenticated () {
@@ -91,7 +87,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.application_role !== 'Admin' && this.application.application_role !== 'Super Admin'
+        return this.application.application_role_id === 3
       },
       form () {
         return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))
@@ -131,7 +127,7 @@
     created: function () {
       this.$store.dispatch('loadForms', this.application_id)
       this.$store.dispatch('loadSections', this.id)
-      this.$store.dispatch('loadQuestionTypes')
+      this.$store.dispatch('loadSubmissions', this.id)
     }
   }
 </script>

@@ -122,7 +122,7 @@
         return this.$store.getters.loading
       },
       questionTypes () {
-        return this.$store.getters.loadedQuestionTypes
+        return this.$store.getters.questionTypes
       }
     },
     created: function () {

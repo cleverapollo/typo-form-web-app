@@ -1,9 +1,7 @@
 <template>
-  <draggable v-model='computedOptions' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
     <v-radio-group row >
       <v-radio v-for='(optionString, index) in computedOptions' :key='"Option " + index' :label="optionString" :value="'radio-1'+index" ></v-radio>
     </v-radio-group>
-  </draggable>
 </template>
 
 <script>

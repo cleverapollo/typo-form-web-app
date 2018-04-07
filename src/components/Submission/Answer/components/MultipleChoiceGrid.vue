@@ -15,7 +15,7 @@
         </v-flex>
         <v-flex xs10>
           <v-radio-group row class="pt-0 pb-0">
-            <v-radio v-for='(columnString, index) in computedColumns' :key='"column " + index2' :value="'option-'+index+'-'+index2"></v-radio>
+            <v-radio v-for='(columnString, index2) in computedColumns' :key='"column " + index2' :value="'option-'+index+'-'+index2"></v-radio>
           </v-radio-group>
         </v-flex>
       </v-layout>

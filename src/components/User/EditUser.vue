@@ -22,7 +22,9 @@
                 type="email"
                 disabled></v-text-field>
               <v-select
-                :items="['User', 'Admin']"
+                :items="roles"
+                item-text="name"
+                item-value="id"
                 v-model="editedRole"
                 label="Role"
                 single-line
@@ -69,29 +71,32 @@
         id: this.user.id,
         editUser: false,
         editedEmail: this.user.email,
-        editedRole: this.user.application_role
+        editedRole: this.user.application_role_id
       }
     },
     methods: {
       onSaveChanges () {
         this.editUser = false
-        if (this.editedRole.trim() !== this.user.application_role) {
+        if (this.editedRole !== this.user.application_role_id) {
           this.$store.dispatch('updateUser',
             {
               applicationid: this.application_id,
               id: this.id,
               email: this.editedEmail,
-              application_role: this.editedRole
+              application_role_id: this.editedRole
             })
         }
       },
       onCancel () {
         this.editedEmail = this.user.email
-        this.editedRole = this.user.application_role
+        this.editedRole = this.user.application_role_id
         this.editUser = false
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       error () {
         return this.$store.getters.error
       },

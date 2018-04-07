@@ -23,8 +23,8 @@ export default {
       const user = state.loadedTeamUsers[payload.teamid].find(user => {
         return user.id === payload.user.user_id
       })
-      if (payload.user.team_role) {
-        user.team_role = payload.user.team_role
+      if (payload.user.team_role_id) {
+        user.team_role_id = payload.user.team_role_id
       }
     },
     deleteTeamUser (state, payload) {
@@ -63,8 +63,8 @@ export default {
     updateTeamUser ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
-      if (payload.team_role) {
-        updateObj.team_role = payload.team_role
+      if (payload.team_role_id) {
+        updateObj.team_role_id = payload.team_role_id
       }
       window.axios.put(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.teamid + USER_URL + payload.id, updateObj)
         .then(

@@ -12,7 +12,19 @@
 
 <script>
   export default {
-    name: 'date-component'
+    name: 'date-component',
+    props: {
+      'answers': {
+        default: function () {
+          return []
+        }
+      }
+    },
+    mounted () {
+      if (this.answers.length) {
+        this.$emit('delete-answers')
+      }
+    }
   }
 </script>
 
