@@ -119,6 +119,12 @@ export default {
         return e.id !== payload.id
       })
     },
+    deleteQuestions (state, payload) {
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      section.questions = []
+    },
 
     setLoadedAnswers (state, payload) {
       const section = state.loadedSections[payload.formid].find((section) => {

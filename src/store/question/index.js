@@ -135,6 +135,18 @@ export default {
           console.log(error)
           commit('setLoading', false)
         })
+    },
+    deleteQuestions ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.delete(SECTION_URL + payload.sectionid + QUESTION_URL)
+        .then(() => {
+          commit('setLoading', false)
+          commit('deleteQuestions', payload)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
     }
   },
   getters: {

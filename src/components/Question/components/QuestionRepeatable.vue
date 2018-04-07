@@ -11,11 +11,11 @@
             <v-text-field
               :value='question.question'
               autofocus
-              @change='updateAnswer(question.id, $event)'
+              @change='updateQuestion(question.id, $event)'
             ></v-text-field>
           </v-flex>
           <v-flex style='width: 30px' v-show='computedQuestions.length > 1'>
-            <v-btn flat icon @click='deleteAnswer(index)' class='mt-3 mx-0'>
+            <v-btn flat icon @click='deleteQuestion(question.id)' class='mt-3 mx-0'>
               <v-icon>close</v-icon>
             </v-btn>
           </v-flex>
@@ -46,7 +46,7 @@
             ></v-text-field>
           </v-flex>
           <v-flex style='width: 30px' v-show='computedAnswers.length > 1'>
-            <v-btn flat icon @click='deleteAnswer(index)' class='mt-3 mx-0'>
+            <v-btn flat icon @click='deleteAnswer(answer.id)' class='mt-3 mx-0'>
               <v-icon>close</v-icon>
             </v-btn>
           </v-flex>
@@ -75,12 +75,6 @@
         default: function () {
           return []
         }
-      },
-      'answers': {
-        type: Array,
-        default: function () {
-          return []
-        }
       }
     },
     components: {
@@ -88,20 +82,53 @@
     },
     methods: {
       createQuestion () {
+        const question = `Row ${this.computedQuestions.length + 1}`
+        this.$emit('create-question', [question, 'Row', 1, true])
+      },
+      updateQuestion (index, value) {
+        this.$emit('update-question', [index, value])
+      },
+      deleteQuestion (index) {
+        this.$emit('delete-question', index)
       },
       createAnswer () {
+        const answer = `Column ${this.computedAnswers.length + 1}`
+        const questionid = this.questions.find((question) => {
+          return question.question === 'Answers'
+        }).id
+        this.$emit('create-answer', [questionid, answer])
       },
       deleteAnswer (index) {
+        const questionid = this.questions.find((question) => {
+          return question.question === 'Answers'
+        }).id
+        this.$emit('delete-answer', [questionid, index])
       },
       updateAnswer (index, value) {
+        const questionid = this.questions.find((question) => {
+          return question.question === 'Answers'
+        }).id
+        this.$emit('update-answer', [questionid, index, value])
       }
     },
     computed: {
       computedQuestions () {
-        return this.questions
+        return this.questions.filter((question) => {
+          return question.question !== 'Answers'
+        })
       },
       computedAnswers () {
-        return this.answers
+        if (!this.questions.length) {
+          return []
+        }
+        return this.questions.find((question) => {
+          return question.question === 'Answers'
+        }).answers
+      }
+    },
+    mounted () {
+      if (!this.questions.length) {
+        this.$emit('create-question', ['Answers', 'This question contains answers', 1, true])
       }
     }
   }

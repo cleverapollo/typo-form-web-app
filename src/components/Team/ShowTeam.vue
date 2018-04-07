@@ -172,7 +172,7 @@
         const role = this.roles.find((role) => {
           return role.id === roleId
         })
-        return role.name
+        return role ? role.name : 'undefined'
       }
     },
     created: function () {

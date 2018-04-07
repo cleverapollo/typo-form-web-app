@@ -68,7 +68,7 @@
         const role = this.roles.find((role) => {
           return role.id === roleId
         })
-        return role.name
+        return role ? role.name : 'undefined'
       },
       onLoadForm (id) {
         this.$router.push('/applications/' + this.application_id + '/forms/show/' + id)

@@ -48,11 +48,22 @@
         <v-switch
           label='Repeatable'
           v-model='hasRepeatableQuestions'
+          @change='changeRepeatable($event)'
         ></v-switch>
       </v-flex>
     </v-card-title>
     <v-card-text class='px-0'>
-      <question-repeatable v-if='hasRepeatableQuestions' :questions='section.questions' :answers='section.questions[0].answers'></question-repeatable>
+      <question-repeatable
+        v-if='hasRepeatableQuestions'
+        :questions='section.questions'
+        @create-question='createQuestion'
+        @delete-question='deleteQuestion'
+        @update-question='updateQuestion'
+        @create-answer='createAnswer'
+        @delete-answer='deleteAnswer'
+        @update-answer='updateAnswer'
+        >
+      </question-repeatable>
       <draggable v-else v-model='list' v-show='expanded' :class="'section' + section.id" :options='{group:"people", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
           <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
@@ -91,7 +102,7 @@
         }],
         expanded: true,
         editMode: false,
-        hasRepeatableQuestions: this.section['repeatable']
+        hasRepeatableQuestions: this.section.repeatable
       }
     },
     computed: {
@@ -108,6 +119,78 @@
       }
     },
     methods: {
+      changeRepeatable (value) {
+        this.updateSection()
+        this.$store.dispatch('deleteQuestions', {
+          formid: this.form_id,
+          sectionid: this.section.id
+        })
+      },
+      createQuestion (args) {
+        const qustionName = args[0]
+        const questionDescription = args[1]
+        const questionType = args[2]
+        const mandatory = args[3]
+
+        this.$store.dispatch('createQuestion', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          question: qustionName,
+          description: questionDescription,
+          question_type_id: questionType,
+          mandatory: mandatory
+        })
+      },
+      deleteQuestion (id) {
+        this.$store.dispatch('deleteQuestion', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          id: id
+        })
+      },
+      updateQuestion (args) {
+        const index = args[0]
+        const value = args[1]
+        this.$store.dispatch('updateQuestion', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          id: index,
+          question: value
+        })
+      },
+      createAnswer (args) {
+        const questionid = args[0]
+        const answer = args[1]
+        this.$store.dispatch('createAnswer', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          questionid: questionid,
+          answer: answer,
+          parameter: true
+        })
+      },
+      deleteAnswer (args) {
+        const questionid = args[0]
+        const index = args[1]
+        this.$store.dispatch('deleteAnswer', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          questionid: questionid,
+          id: index
+        })
+      },
+      updateAnswer (args) {
+        const questionid = args[0]
+        const index = args[1]
+        const answer = args[2]
+        this.$store.dispatch('updateAnswer', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          questionid: questionid,
+          id: index,
+          answer: answer
+        })
+      },
       setEditMode () {
         this.editMode = true
       },
@@ -126,7 +209,8 @@
             formid: this.form_id,
             id: this.section.id,
             parent_section_id: this.section.parent_section_id,
-            name: this.editedName
+            name: this.editedName,
+            repeatable: this.hasRepeatableQuestions
           })
       },
       deleteSection () {
