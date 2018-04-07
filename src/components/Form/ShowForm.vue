@@ -68,6 +68,9 @@
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
@@ -86,7 +89,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.application_role_id === 3
+        return this.getRole(this.application.application_role_id) === 'User'
       },
       form () {
         return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))
@@ -103,6 +106,12 @@
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role.name
+      },
       onDeleteForm () {
         this.$store.dispatch('deleteForm', {
           applicationid: this.application_id,

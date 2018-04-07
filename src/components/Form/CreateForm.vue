@@ -43,6 +43,9 @@
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
@@ -53,7 +56,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.application_role_id === 2
+        return this.getRole(this.application.application_role_id) === 'Admin'
       },
       formIsValid () {
         return this.name !== ''
@@ -61,12 +64,18 @@
     },
     watch: {
       application (value) {
-        if (value.application_role_id === 3) {
+        if (this.getRole(value.application_role_id) === 'User') {
           this.$router.push('/applications/')
         }
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role.name
+      },
       onCreateForm () {
         if (!this.formIsValid || !this.userIsAdmin) {
           return

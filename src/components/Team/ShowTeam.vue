@@ -135,7 +135,7 @@
         if (!this.userIsAuthenticated || !this.team) {
           return false
         }
-        return this.team.team_role_id === 2
+        return this.getRole(this.team.team_role_id) === 'Admin'
       },
       loading () {
         return this.$store.getters.loading

@@ -49,7 +49,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.application_role_id === 2
+        return this.getRole(this.application.application_role_id) === 'Admin'
       },
       loading () {
         return this.$store.getters.loading
