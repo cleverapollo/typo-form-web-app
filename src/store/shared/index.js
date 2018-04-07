@@ -138,9 +138,7 @@ export default {
       return state.periods
     },
     roles (state) {
-      return state.roles.filter((role) => {
-        return role.name !== 'Super Admin'
-      })
+      return state.roles
     }
   }
 }
