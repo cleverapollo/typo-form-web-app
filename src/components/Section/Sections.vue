@@ -20,7 +20,7 @@
           <v-list-tile v-for='(action, key) in actions' :key="`action ${key}`" @click='action.cb'>
             <v-list-tile-title>{{ action.name }}</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile @click=''>
+          <v-list-tile v-show='!hasRepeatableQuestions' @click=''>
             <v-list-tile-title>
               <app-create-question :section_id='section.id' :form_id='form_id'></app-create-question>
             </v-list-tile-title>
@@ -29,26 +29,38 @@
       </v-menu>
     </v-toolbar>
     <v-card-title>
-      <div class='section-name'>
-        <template v-if='editMode'>
-          <v-layout row>
-            <v-flex xs12>
-              <v-text-field
-                label='Section Name'
-                v-model='editedName'
-                autofocus
-                @blur='checkNameUpdate'
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-        </template>
-        <template v-else>
-          <h1 @click='setEditMode'>{{ section.name }}</h1>
-        </template>
-      </div>
+      <v-layout column>
+        <v-layout row>
+          <v-flex xs12>
+            <div class='section-name'>
+              <template v-if='editMode'>
+                <v-text-field
+                  label='Section Name'
+                  v-model='editedName'
+                  autofocus
+                  @blur='checkNameUpdate'
+                ></v-text-field>
+              </template>
+              <template v-else>
+                <h1 @click='setEditMode'>{{ section.name }}</h1>
+              </template>
+            </div>
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex xs12>
+            <v-spacer></v-spacer>
+            <v-checkbox
+              label='Repeatable'
+              v-model='hasRepeatableQuestions'
+            ></v-checkbox>
+          </v-flex>
+        </v-layout>
+      </v-layout>
     </v-card-title>
     <v-card-text class='px-0'>
-      <draggable v-model='list' v-show='expanded' :class="'section' + section.id" :options='{group:"people", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
+      <question-repeatable v-if='hasRepeatableQuestions' :questions='section.questions' :answers='section.questions[0].answers'></question-repeatable>
+      <draggable v-else v-model='list' v-show='expanded' :class="'section' + section.id" :options='{group:"people", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
           <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
           <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
@@ -67,13 +79,15 @@
 
 <script>
   import draggable from 'vuedraggable'
-  import questions from '../Question/Questions.vue'
+  import questions from '../Question/Questions'
+  import QuestionRepeatable from '../Question/components/QuestionRepeatable'
   export default {
     name: 'sections',
     props: ['section', 'form_id'],
     components: {
       draggable,
-      questions
+      questions,
+      QuestionRepeatable
     },
     data () {
       return {
@@ -83,7 +97,8 @@
           cb: this.deleteSection.bind(this)
         }],
         expanded: true,
-        editMode: false
+        editMode: false,
+        hasRepeatableQuestions: this.section['repeatable']
       }
     },
     computed: {
