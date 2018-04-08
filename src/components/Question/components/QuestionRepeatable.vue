@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap justify-space-around>
-    <v-flex xs5 style='min-width: 200px'>
+    <v-flex xs5 style='min-width: 130px'>
       <h3>Rows</h3>
       <draggable v-model='computedQuestions' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
         <v-layout row v-for='(question, index) in computedQuestions' :key='"Option " + index' :class='"item" + index'>
@@ -20,20 +20,20 @@
             </v-btn>
           </v-flex>
         </v-layout>
-        <v-layout row d-inline-flex>
+        <v-layout row wrap d-inline-flex>
           <v-flex style='min-width: 20px' class='mt-4'>
             {{computedQuestions.length+1}}.
           </v-flex>
           <v-flex xs10 style='max-width: 80px'>
             <v-text-field
-              value='Add option'
+              value='Add Row'
               @click='createQuestion()'
             ></v-text-field>
           </v-flex>
         </v-layout>
       </draggable>
     </v-flex>
-    <v-flex xs5 style='min-width: 200px'>
+    <v-flex xs5 style='min-width: 130px'>
       <h3>Columns</h3>
       <draggable v-model='computedAnswers' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
         <v-layout row v-for='(answer, index) in computedAnswers' :key='"Option " + index' :class='"item" + index'>
@@ -51,11 +51,11 @@
             </v-btn>
           </v-flex>
         </v-layout>
-        <v-layout row d-inline-flex>
-          <v-flex style='width: 125px'>
+        <v-layout row wrap d-inline-flex>
+          <v-flex style='width: 130px'>
             <v-text-field
               prepend-icon='radio_button_unchecked'
-              value='Add option'
+              value='Add Column'
               @click='createAnswer()'
             ></v-text-field>
           </v-flex>

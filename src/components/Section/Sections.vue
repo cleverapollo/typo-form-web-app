@@ -120,11 +120,11 @@
     },
     methods: {
       changeRepeatable (value) {
-        this.updateSection()
         this.$store.dispatch('deleteQuestions', {
           formid: this.form_id,
           sectionid: this.section.id
         })
+        this.updateSection()
       },
       createQuestion (args) {
         const qustionName = args[0]
