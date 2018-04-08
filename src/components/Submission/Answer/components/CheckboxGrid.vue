@@ -32,14 +32,16 @@
       }
     },
     mounted () {
+      let ex = []
       for (let i = 0; i < this.computedRows.length; i++) {
         const filteredResponses = this.responses.filter((response) => {
           return this.computedRows[i].id === response.answer_id
         })
-        this.ex1[i] = filteredResponses.map((response) => {
+        ex[i] = filteredResponses.map((response) => {
           return parseInt(response.response)
         })
       }
+      this.ex1 = ex
     },
     computed: {
       computedRows () {

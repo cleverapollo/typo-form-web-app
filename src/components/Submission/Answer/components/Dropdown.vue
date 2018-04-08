@@ -1,9 +1,12 @@
 <template>
   <div>
-    <v-layout row v-for='(optionString, index) in computedOptions' :key='"Option " + index' class='"item" + index'>
+    <v-layout>
       <v-select
         v-bind:items="computedOptions"
         v-model="selectedOption"
+        item-text="answer"
+        item-value="id"
+        @change="onSave($event)"
         label="Select"
         single-line
         bottom
@@ -13,67 +16,31 @@
 </template>
 
 <script>
-//  import * as _ from 'lodash'
+  //  import * as _ from 'lodash'
   export default {
     name: 'dropdown',
-    props: {
-      'options': {
-        default: function () {
-          return []
-        }
-      },
-      'hasOther': {
-        default: false
-      }
-    },
+    props: ['answers', 'responses'],
     data: () => ({
       selectedOption: null
     }),
     methods: {
+      onSave (value) {
+        if (this.responses.length) {
+          this.$emit('update-response', [null, value, this.responses[0].id])
+        } else {
+          this.$emit('create-response', [null, value])
+        }
+      }
     },
     mounted () {
-      if (this.options.length === 0) {
-        this.computedOptions = [
-          'Option 1'
-        ]
+      if (this.responses.length) {
+        this.selectedOption = parseInt(this.responses[0].response)
       }
-      this.unsetHasOther()
     },
     computed: {
-      computedOptions: {
-        get: function () {
-          return this.options
-        },
-        set: function (options) {
-          this.$emit('update-options', options)
-        }
+      computedOptions () {
+        return this.answers
       }
     }
   }
 </script>
-
-<style scoped>
-  .radio-wrapper {
-    display: inline-block;
-  }
-  .radio-wrapper > i {
-    font-style: normal;
-    color: inherit;
-    margin-top: 1em;
-    margin-right: 0.3em;
-  }
-  .input-wrapper {
-    display: inline-block;
-    width: 70%;
-  }
-  .close-wrapper {
-    display: inline-block;
-    padding: 0.5em;
-  }
-  .actions {
-    display: flex;
-  }
-  .actions > .input-wrapper {
-    width: 6em;
-  }
-</style>
