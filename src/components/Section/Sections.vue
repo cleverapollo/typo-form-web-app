@@ -1,7 +1,7 @@
 <template>
   <v-card active-class='active-section' class='elevation-12' v-bind:class='{"mx-5": section.parent_section_id !== null}'>
     <v-toolbar class='handle'>
-      <v-toolbar-title>{{ 'Section ' + section.order }}</v-toolbar-title>
+      <v-toolbar-title>{{ 'Section ' + index }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click.prevent='toggleExpand'>
         <v-icon v-if='expanded'>expand_less</v-icon>
@@ -52,7 +52,7 @@
         ></v-switch>
       </v-flex>
     </v-card-title>
-    <v-card-text class='px-0'>
+    <v-card-text class='px-0' v-show='expanded'>
       <question-repeatable
         v-if='hasRepeatableQuestions'
         :questions='section.questions'
@@ -64,10 +64,10 @@
         @update-answer='updateAnswer'
         >
       </question-repeatable>
-      <draggable v-else v-model='list' v-show='expanded' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
+      <draggable v-else v-model='list' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
-          <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
-          <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
+          <sections :section='element' :form_id='form_id' v-if='isSection(element)' :index='index + 1'></sections>
+          <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' v-else></questions>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
           <v-card>
@@ -87,7 +87,7 @@
   import questionRepeatable from '../Question/components/QuestionRepeatable'
   export default {
     name: 'sections',
-    props: ['section', 'form_id'],
+    props: ['section', 'form_id', 'index'],
     components: {
       draggable,
       questions,

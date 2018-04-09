@@ -1,7 +1,7 @@
 <template>
   <v-card active-class='active-question' class='elevation-12'>
     <v-toolbar class='handle'>
-      <v-toolbar-title>{{ 'Question ' + question.order }}</v-toolbar-title>
+      <v-toolbar-title>{{ 'Question ' + index }}</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
       <v-layout row wrap justify-space-between>
@@ -124,7 +124,7 @@
   import timeComponent from './components/Time'
   import * as _ from 'lodash'
   export default {
-    props: ['question', 'form_id', 'section_id'],
+    props: ['question', 'form_id', 'section_id', 'index'],
     data () {
       return {
         editedName: this.question.question,

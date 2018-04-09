@@ -39,7 +39,7 @@
           <v-card-text>
             <draggable v-model="list" class="parent" :options="{group:'parent', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
               <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
-                <sections :section='element' :form_id='id'></sections>
+                <sections :section='element' :form_id='id' :index='index + 1'></sections>
               </div>
             </draggable>
           </v-card-text>
