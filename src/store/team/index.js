@@ -30,16 +30,6 @@ export default {
       state.loadedTeams[payload.applicationid] = state.loadedTeams[payload.applicationid].filter(e => {
         return e.id !== payload.id
       })
-    },
-    setLoadedTeamToken (state, payload) {
-      if (payload.shareToken) {
-        const index = state.loadedTeams[payload.applicationid].findIndex(team => {
-          return team.id === parseInt(payload.id)
-        })
-        let team = state.loadedTeams[payload.applicationid][index]
-        team.shareToken = payload.shareToken
-        state.loadedTeams[payload.applicationid].splice(index, 1, team)
-      }
     }
   },
   actions: {
@@ -54,27 +44,6 @@ export default {
               teams: response['data']['teams']
             }
             commit('setLoadedTeams', updateObj)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
-    },
-    loadTeamToken ({commit}, payload) {
-      commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id + '/get-token')
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              id: payload.id,
-              applicationid: payload.applicationid,
-              shareToken: response['data']['shareToken']
-            }
-            commit('setLoadedTeamToken', updateObj)
           }
         )
         .catch(

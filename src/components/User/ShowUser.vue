@@ -19,6 +19,7 @@
             <h3>{{ user.first_name }} {{ user.last_name }} - {{ getRole(user.application_role_id) }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
+            <v-btn color="info" @click=onBack>Back</v-btn>
             <v-spacer></v-spacer>
             <app-edit-user :user="user" :application_id="application_id"></app-edit-user>
             <v-btn class="error" @click=onDeleteUser>Delete</v-btn>
@@ -68,6 +69,9 @@
           return role.id === roleId
         })
         return role ? role.name : 'undefined'
+      },
+      onBack () {
+        this.$router.push('/applications/' + this.application_id + '/users')
       }
     },
     created: function () {

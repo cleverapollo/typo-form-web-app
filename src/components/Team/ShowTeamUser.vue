@@ -19,6 +19,7 @@
             <h3>{{ user.first_name }} {{ user.last_name }} - {{ getRole(user.team_role_id) }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
+            <v-btn color="info" @click=onBack>Back</v-btn>
             <v-spacer></v-spacer>
             <app-edit-teamuser :user="user" :application_id="application_id" :team_id="team_id"></app-edit-teamuser>
             <v-btn class="error" @click=onDeleteTeamUser>Delete</v-btn>
@@ -69,6 +70,9 @@
           return role.id === roleId
         })
         return role ? role.name : 'undefined'
+      },
+      onBack () {
+        this.$router.push('/applications/' + this.application_id + '/teams/show/' + this.team_id)
       }
     },
     created: function () {

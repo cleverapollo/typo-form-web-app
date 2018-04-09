@@ -43,6 +43,10 @@
               </div>
             </draggable>
           </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="info" @click=onBack>Back</v-btn>
+          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -179,6 +183,9 @@
               order: order
             })
         }
+      },
+      onBack () {
+        this.$router.push('/applications/' + this.application_id + '/forms')
       }
     },
     created: function () {

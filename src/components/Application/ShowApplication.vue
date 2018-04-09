@@ -26,6 +26,7 @@
             </v-list>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
+            <v-btn color="info" @click=onBack>Back</v-btn>
             <v-spacer></v-spacer>
             <app-edit-application :application="application"></app-edit-application>
             <v-btn class="error" @click=onDeleteApplication>Delete</v-btn>
@@ -68,14 +69,7 @@
         return this.$store.getters.loading
       },
       joinURL () {
-        return window.origin + '/join/application/' + this.application.shareToken
-      }
-    },
-    watch: {
-      application (value) {
-        if (value !== null && value !== undefined && value.shareToken === undefined && this.userIsAdmin) {
-          this.$store.dispatch('loadApplicationToken', {id: this.id})
-        }
+        return window.origin + '/join/application/' + this.application.share_token
       }
     },
     methods: {
@@ -96,6 +90,9 @@
       },
       showUsersToAdmin (type) {
         return type !== 'users' || this.userIsAdmin
+      },
+      onBack () {
+        this.$router.push('/applications')
       }
     },
     created: function () {

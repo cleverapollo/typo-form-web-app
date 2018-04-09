@@ -15,6 +15,11 @@
         >
           <v-icon>add</v-icon>
         </v-btn>
+        <v-btn
+          color="info"
+          @click=onBack>
+          Back
+        </v-btn>
         <v-data-table
           :headers="headers"
           :items="forms"
@@ -75,6 +80,9 @@
       },
       onCreateForm () {
         this.$router.push('/applications/' + this.application_id + '/forms/new')
+      },
+      onBack () {
+        this.$router.push('/applications/show/' + this.application_id)
       }
     },
     created: function () {
