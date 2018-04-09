@@ -56,6 +56,9 @@
       <question-repeatable
         v-if='hasRepeatableQuestions'
         :questions='section.questions'
+        :min-rows='section.min_rows'
+        :max-rows='section.max_rows'
+        @update-limitation='updateRepeatableLimitation'
         @create-question='createQuestion'
         @delete-question='deleteQuestion'
         @update-question='updateQuestion'
@@ -317,6 +320,13 @@
               order: order
             })
         }
+      },
+      updateRepeatableLimitation (limitation) {
+        // limitation = {min_rows: '', max_rows: ''}
+        // todo: update min_rows and max_rows
+        console.log('limitation update', limitation)
+        this.section.min_rows = limitation.min_rows || this.section.min_rows
+        this.section.max_rows = limitation.max_rows || this.section.max_rows
       }
     }
   }

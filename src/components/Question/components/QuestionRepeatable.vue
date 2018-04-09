@@ -1,6 +1,7 @@
 <template>
   <v-layout row wrap justify-space-around>
     <v-flex xs5 style='min-width: 130px'>
+      <v-text-field label='Minimum rows count' @change='updateMinRows' :value='minRows'></v-text-field>
       <h3>Rows</h3>
       <draggable v-model='computedQuestions' class='dragArea1' :options='{draggable:".repeatableItem"}' style='min-height: 100px' @end='checkEnd'>
         <v-layout row v-for='(question, index) in computedQuestions' :key='"Option " + index' class='repeatableItem' :class='"item" + question.id'>
@@ -34,6 +35,7 @@
       </draggable>
     </v-flex>
     <v-flex xs5 style='min-width: 130px'>
+      <v-text-field label='Maximum rows count' @change='updateMaxRows' :value='maxRows'></v-text-field>
       <h3>Columns</h3>
       <draggable v-model='computedAnswers' class='dragArea2' :options='{draggable:".repeatableItem"}' style='min-height: 100px' @end='checkEnd'>
         <v-layout row v-for='(answer, index) in computedAnswers' :key='"Option " + index' class='repeatableItem' :class='"item" + answer.id'>
@@ -75,6 +77,12 @@
         default: function () {
           return []
         }
+      },
+      'minRows': {
+        default: null
+      },
+      'maxRows': {
+        default: null
       }
     },
     components: {
@@ -142,6 +150,30 @@
             return question.question === 'Answers'
           }).id
           this.$emit('move-answer', [questionid, elementId, order])
+        }
+      },
+      updateMinRows (value) {
+        const min = parseInt(value)
+        console.log('min', min)
+        if (this.maxRows && this.maxRows < min) { // validation
+          console.log('this.maxRows && this.maxRows < min', this.maxRows, this.maxRows < min)
+          // return
+        } else {
+          console.log('emit')
+          this.$emit('update-limitation', {
+            'min_rows': min
+          })
+        }
+      },
+      updateMaxRows (value) {
+        const max = parseInt(value)
+        console.log('max', max)
+        if (this.minRows && this.minRows > max) { // validation
+          // return
+        } else {
+          this.$emit('update-limitation', {
+            max_rows: max
+          })
         }
       }
     },
