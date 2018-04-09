@@ -2,8 +2,8 @@
   <v-layout row wrap justify-space-around>
     <v-flex xs5 style='min-width: 130px'>
       <h3>Rows</h3>
-      <draggable v-model='computedQuestions' class='dragArea1' :options='{draggable:".item"}' style='min-height: 100px' @end='checkEnd'>
-        <v-layout row v-for='(question, index) in computedQuestions' :key='"Option " + index' class='item' :class='"item" + question.id'>
+      <draggable v-model='computedQuestions' class='dragArea1' :options='{draggable:".repeatableItem"}' style='min-height: 100px' @end='checkEnd'>
+        <v-layout row v-for='(question, index) in computedQuestions' :key='"Option " + index' class='repeatableItem' :class='"item" + question.id'>
           <v-flex style='max-width: 20px; min-width: 20px' class='mt-4'>
             {{index+1}}.
           </v-flex>
@@ -35,8 +35,8 @@
     </v-flex>
     <v-flex xs5 style='min-width: 130px'>
       <h3>Columns</h3>
-      <draggable v-model='computedAnswers' class='dragArea2' :options='{draggable:".item"}' style='min-height: 100px' @end='checkEnd'>
-        <v-layout row v-for='(answer, index) in computedAnswers' :key='"Option " + index' class='item' :class='"item" + answer.id'>
+      <draggable v-model='computedAnswers' class='dragArea2' :options='{draggable:".repeatableItem"}' style='min-height: 100px' @end='checkEnd'>
+        <v-layout row v-for='(answer, index) in computedAnswers' :key='"Option " + index' class='repeatableItem' :class='"item" + answer.id'>
           <v-flex xs10 style='min-width: 100px'>
             <v-text-field
               prepend-icon='radio_button_unchecked'
@@ -122,7 +122,7 @@
         if (evt.newIndex > evt.oldIndex) {
           newIndex = newIndex + 1
         }
-        const elementId = parseInt(evt.item.className.substr(20))
+        const elementId = parseInt(evt.item.className.substr(30))
 
         let order = 1
         if (evt.to.className === 'dragArea1') {
