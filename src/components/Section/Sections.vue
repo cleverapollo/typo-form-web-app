@@ -64,7 +64,7 @@
         @update-answer='updateAnswer'
         >
       </question-repeatable>
-      <draggable v-else v-model='list' v-show='expanded' :class="'section' + section.id" :options='{group:"people", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
+      <draggable v-else v-model='list' v-show='expanded' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
           <sections :section='element' :form_id='form_id' v-if='isSection(element)'></sections>
           <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>

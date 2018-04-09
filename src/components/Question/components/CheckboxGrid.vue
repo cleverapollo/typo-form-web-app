@@ -2,7 +2,7 @@
   <v-layout row wrap justify-space-around>
     <v-flex xs5 style='min-width: 200px'>
       <h3>Rows</h3>
-      <draggable v-model='rows' class='dragArea1' :options='{group:"people", draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
+      <draggable v-model='rows' class='dragArea1' :options='{draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
         <v-layout row v-for='(rowAnswer, index) in rows' :key='"Option " + index' class='answer' :class='"answer" + rowAnswer.id'>
           <v-flex style='max-width: 20px; min-width: 20px' class='mt-4'>
             {{index+1}}.
@@ -35,7 +35,7 @@
     </v-flex>
     <v-flex xs5 style='min-width: 200px'>
       <h3>Columns</h3>
-      <draggable v-model='columns' class='dragArea2' :options='{group:"people", draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
+      <draggable v-model='columns' class='dragArea2' :options='{draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
         <v-layout row v-for='(columnAnswer, index) in columns' :key='"Option " + index' class='answer' :class='"answer" + columnAnswer.id'>
           <v-flex xs10 style='min-width: 120px'>
             <v-text-field

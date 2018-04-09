@@ -37,7 +37,7 @@
             </v-menu>
           </v-card-title>
           <v-card-text>
-            <draggable v-model="list" class="parent" :options="{group:'people', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
+            <draggable v-model="list" class="parent" :options="{group:'parent', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
               <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
                 <sections :section='element' :form_id='id'></sections>
               </div>

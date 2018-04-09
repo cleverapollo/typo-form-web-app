@@ -215,7 +215,7 @@
           if (this.questionTypes[index]) {
             return this.questionTypes[index].type
           } else {
-            return 'Short answer'
+            return 'Undefined'
           }
         },
         set: function (str) {

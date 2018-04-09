@@ -1,5 +1,5 @@
 <template>
-  <draggable v-model='list' class='dragArea' :options='{group:"people", draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
+  <draggable v-model='list' class='dragArea' :options='{draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
     <v-layout row v-for='(answer, index) in list' :key='"Option " + index' class='answer' :class='"answer" + answer.id'>
       <v-flex style='max-width: 20px; min-width: 20px' class='mt-4'>
         {{index+1}}.
