@@ -105,6 +105,11 @@
         hasRepeatableQuestions: this.section.repeatable
       }
     },
+    watch: {
+      repeatable (value) {
+        this.hasRepeatableQuestions = value
+      }
+    },
     computed: {
       list: {
         get () {
@@ -116,6 +121,9 @@
       },
       isSectionEmpty () {
         return !this.list.length
+      },
+      repeatable () {
+        return this.section.repeatable
       }
     },
     methods: {
@@ -124,6 +132,9 @@
           formid: this.form_id,
           sectionid: this.section.id
         })
+        if (value) {
+          this.createQuestion(['Answers', 'This question contains answers', 1, true])
+        }
         this.updateSection()
       },
       createQuestion (args) {

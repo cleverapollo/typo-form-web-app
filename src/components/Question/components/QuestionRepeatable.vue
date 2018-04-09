@@ -125,11 +125,6 @@
           return question.question === 'Answers'
         }).answers
       }
-    },
-    mounted () {
-      if (!this.questions.length) {
-        this.$emit('create-question', ['Answers', 'This question contains answers', 1, true])
-      }
     }
   }
 </script>
