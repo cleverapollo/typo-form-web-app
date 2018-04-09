@@ -62,6 +62,8 @@
         @create-answer='createAnswer'
         @delete-answer='deleteAnswer'
         @update-answer='updateAnswer'
+        @move-answer='moveAnswer'
+        @move-question='moveQuestion'
         >
       </question-repeatable>
       <draggable v-else v-model='list' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
@@ -236,6 +238,30 @@
         } else {
           this.editMode = false
         }
+      },
+      moveAnswer (args) {
+        const questionid = args[0]
+        const id = args[1]
+        const order = args[2]
+        this.$store.dispatch('moveAnswer', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          questionid: questionid,
+          id: id,
+          order: order
+        })
+      },
+      moveQuestion (args) {
+        const id = args[0]
+        const order = args[1]
+        this.$store.dispatch('moveQuestion',
+          {
+            formid: this.form_id,
+            questionid: id,
+            oldparent_section_id: this.section.id,
+            parent_section_id: this.section.id,
+            order: order
+          })
       },
       checkEnd: function (evt) {
         if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {

@@ -2,8 +2,8 @@
   <v-layout row wrap justify-space-around>
     <v-flex xs5 style='min-width: 130px'>
       <h3>Rows</h3>
-      <draggable v-model='computedQuestions' class='dragArea' :options='{draggable:".item"}' style='min-height: 100px'>
-        <v-layout row v-for='(question, index) in computedQuestions' :key='"Option " + index' :class='"item" + index'>
+      <draggable v-model='computedQuestions' class='dragArea1' :options='{draggable:".item"}' style='min-height: 100px' @end='checkEnd'>
+        <v-layout row v-for='(question, index) in computedQuestions' :key='"Option " + index' class='item' :class='"item" + question.id'>
           <v-flex style='max-width: 20px; min-width: 20px' class='mt-4'>
             {{index+1}}.
           </v-flex>
@@ -35,8 +35,8 @@
     </v-flex>
     <v-flex xs5 style='min-width: 130px'>
       <h3>Columns</h3>
-      <draggable v-model='computedAnswers' class='dragArea' :options='{draggable:".item"}' style='min-height: 100px'>
-        <v-layout row v-for='(answer, index) in computedAnswers' :key='"Option " + index' :class='"item" + index'>
+      <draggable v-model='computedAnswers' class='dragArea2' :options='{draggable:".item"}' style='min-height: 100px' @end='checkEnd'>
+        <v-layout row v-for='(answer, index) in computedAnswers' :key='"Option " + index' class='item' :class='"item" + answer.id'>
           <v-flex xs10 style='min-width: 100px'>
             <v-text-field
               prepend-icon='radio_button_unchecked'
@@ -109,21 +109,69 @@
           return question.question === 'Answers'
         }).id
         this.$emit('update-answer', [questionid, index, value])
+      },
+      checkEnd: function (evt) {
+        if (evt.to.className !== evt.from.className) {
+          return
+        }
+        if (evt.newIndex === evt.oldIndex) {
+          return
+        }
+        let newIndex = evt.newIndex
+
+        if (evt.newIndex > evt.oldIndex) {
+          newIndex = newIndex + 1
+        }
+        const elementId = parseInt(evt.item.className.substr(20))
+
+        let order = 1
+        if (evt.to.className === 'dragArea1') {
+          if (this.computedQuestions.length === newIndex) {
+            order = this.computedQuestions[newIndex - 1].order + 1
+          } else {
+            order = this.computedQuestions[newIndex].order
+          }
+          this.$emit('move-question', [elementId, order])
+        } else {
+          if (this.computedAnswers.length === newIndex) {
+            order = this.computedAnswers[newIndex - 1].order + 1
+          } else {
+            order = this.computedAnswers[newIndex].order
+          }
+          const questionid = this.questions.find((question) => {
+            return question.question === 'Answers'
+          }).id
+          this.$emit('move-answer', [questionid, elementId, order])
+        }
       }
     },
     computed: {
-      computedQuestions () {
-        return this.questions.filter((question) => {
-          return question.question !== 'Answers'
-        })
-      },
-      computedAnswers () {
-        if (!this.questions.length) {
-          return []
+      computedQuestions: {
+        get () {
+          return this.questions.filter((question) => {
+            return question.question !== 'Answers'
+          }).sort((questionA, questionB) => {
+            return questionA.order > questionB.order
+          })
+        },
+        set (value) {
+          // TODO: Draggable
         }
-        return this.questions.find((question) => {
-          return question.question === 'Answers'
-        }).answers
+      },
+      computedAnswers: {
+        get () {
+          if (!this.questions.length) {
+            return []
+          }
+          return this.questions.find((question) => {
+            return question.question === 'Answers'
+          }).answers.sort((answerA, answerB) => {
+            return answerA.order > answerB.order
+          })
+        },
+        set (value) {
+          // TODO: Draggable
+        }
       }
     }
   }
