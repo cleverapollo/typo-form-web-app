@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import {store} from '../store'
 
 import Profile from '@/components/Auth/Profile'
 import Signup from '@/components/Auth/Signup'
@@ -156,11 +155,12 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  const expireDate = localStorage.getItem('expire_date')
   const previous = localStorage.getItem('previous')
-  if (!store.getters.user && (to.name !== 'Signin') && (to.name !== 'Signup')) {
+  if ((expireDate === null || Date.now() - expireDate > 86400000) && (to.name !== 'Signin') && (to.name !== 'Signup')) {
     localStorage.setItem('previous', to.path)
     next('/signin')
-  } else if (store.getters.user && previous) {
+  } else if ((expireDate !== null && Date.now() - expireDate < 86400000) && previous) {
     localStorage.removeItem('previous')
     next(previous)
   } else {

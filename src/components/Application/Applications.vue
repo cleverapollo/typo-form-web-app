@@ -40,6 +40,9 @@
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       applications () {
         return this.$store.getters.loadedApplications
       },
@@ -47,10 +50,16 @@
         return this.$store.getters.loading
       },
       userIsSuper () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined && this.$store.getters.user.role === 1
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined && this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
       onLoadApplication (id) {
         this.$router.push('/applications/show/' + id)
       }

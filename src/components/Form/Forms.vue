@@ -15,6 +15,11 @@
         >
           <v-icon>add</v-icon>
         </v-btn>
+        <v-btn
+          color="info"
+          @click=onBack>
+          Back
+        </v-btn>
         <v-data-table
           :headers="headers"
           :items="forms"
@@ -41,6 +46,9 @@
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
@@ -51,7 +59,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.application_role_id === 2
+        return this.getRole(this.application.application_role_id) === 'Admin'
       },
       forms () {
         return this.$store.getters.loadedForms(parseInt(this.application_id))
@@ -61,11 +69,20 @@
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
       onLoadForm (id) {
         this.$router.push('/applications/' + this.application_id + '/forms/show/' + id)
       },
       onCreateForm () {
         this.$router.push('/applications/' + this.application_id + '/forms/new')
+      },
+      onBack () {
+        this.$router.push('/applications/show/' + this.application_id)
       }
     },
     created: function () {

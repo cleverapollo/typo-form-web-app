@@ -26,6 +26,7 @@
             </v-list>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
+            <v-btn color="info" @click=onBack>Back</v-btn>
             <v-spacer></v-spacer>
             <app-edit-application :application="application"></app-edit-application>
             <v-btn class="error" @click=onDeleteApplication>Delete</v-btn>
@@ -49,6 +50,9 @@
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.id))
       },
@@ -59,23 +63,22 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.application_role_id === 2
+        return this.getRole(this.application.application_role_id) === 'Admin'
       },
       loading () {
         return this.$store.getters.loading
       },
       joinURL () {
-        return window.origin + '/join/application/' + this.application.shareToken
-      }
-    },
-    watch: {
-      application (value) {
-        if (value !== null && value !== undefined && value.shareToken === undefined && this.userIsAdmin) {
-          this.$store.dispatch('loadApplicationToken', {id: this.id})
-        }
+        return window.origin + '/join/application/' + this.application.share_token
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
       onDeleteApplication () {
         this.$store.dispatch('deleteApplication', {
           id: this.application.id
@@ -87,6 +90,9 @@
       },
       showUsersToAdmin (type) {
         return type !== 'users' || this.userIsAdmin
+      },
+      onBack () {
+        this.$router.push('/applications')
       }
     },
     created: function () {

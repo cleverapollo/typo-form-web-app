@@ -1,6 +1,7 @@
 const API_URL = process.env.API_URL
 const SECTION_URL = `${API_URL}section/`
 const QUESTION_URL = '/question/'
+const MOVE_URL = '/move/'
 
 export default {
   actions: {
@@ -102,12 +103,45 @@ export default {
           commit('setLoading', false)
         })
     },
+    moveQuestion ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.post(SECTION_URL + payload.oldparent_section_id + QUESTION_URL + payload.questionid + MOVE_URL, payload)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              formid: payload.formid,
+              questionid: payload.questionid,
+              oldsectionid: payload.oldparent_section_id,
+              order: payload.order,
+              section: response['data']['data']
+            }
+            commit('moveQuestion', updateObj)
+          }
+        )
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
     deleteQuestion ({commit}, payload) {
       commit('setLoading', true)
       window.axios.delete(SECTION_URL + payload.sectionid + QUESTION_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteQuestion', payload)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    deleteQuestions ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.delete(SECTION_URL + payload.sectionid + QUESTION_URL)
+        .then(() => {
+          commit('setLoading', false)
+          commit('deleteQuestions', payload)
         })
         .catch(error => {
           console.log(error)

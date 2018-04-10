@@ -3,6 +3,11 @@
     <v-layout row wrap class="mb-2">
       <v-flex xs12>
         <app-invite-application :application_id="application_id"  v-if="userIsAdmin"></app-invite-application>
+        <v-btn
+          color="info"
+          @click=onBack>
+          Back
+        </v-btn>
         <v-tabs v-model="active">
           <v-tabs-bar class="primary" dark>
             <v-tabs-item
@@ -98,7 +103,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.application_role_id === 2
+        return this.getRole(this.application.application_role_id) === 'Admin'
       }
     },
     methods: {
@@ -109,7 +114,10 @@
         const role = this.roles.find((role) => {
           return role.id === roleId
         })
-        return role.name
+        return role ? role.name : 'undefined'
+      },
+      onBack () {
+        this.$router.push('/applications/show/' + this.application_id)
       }
     },
     created: function () {

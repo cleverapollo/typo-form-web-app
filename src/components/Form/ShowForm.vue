@@ -37,12 +37,16 @@
             </v-menu>
           </v-card-title>
           <v-card-text>
-            <draggable v-model="list" class="dragArea parent" :options="{group:'people', draggable:'.section'}" style="min-height: 100px" :move="checkMove" @add="checkAdd" @remove="checkRemove">
-              <div v-for="(element, index) in list" :key="'Section ' + element.id" class="section item pb-5">
-                <sections :section='element' :form_id='id' :submission_id='submission_id' :form_type='form_type'></sections>
+            <draggable v-model="list" class="parent" :options="{group:'parent', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
+              <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
+                <sections :section='element' :form_id='id' :index='index + 1' :submission_id='submission_id' :form_type='form_type'></sections>
               </div>
             </draggable>
           </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="info" @click=onBack>Back</v-btn>
+          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -69,6 +73,9 @@
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },
@@ -83,12 +90,6 @@
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
-      userIsnotAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.application.application_role_id === 3
-      },
       form () {
         return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))
       },
@@ -97,6 +98,12 @@
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
       onDeleteForm () {
         this.$store.dispatch('deleteForm', {
           applicationid: this.application_id,
@@ -107,21 +114,63 @@
       createSection () {
         this.showDialog = true
       },
-      hideDialog () {
-        this.showDialog = false
-      },
-      checkMove: function (evt) {
-        console.log('moved', evt)
-        if (evt.to.className.includes('parent') && evt.dragged.className.includes('question')) {
-          return false
+      checkEnd: function (evt) {
+        if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
+          return
         }
-        return true
+        if (evt.item.className.includes('question') && evt.to.className.includes('parent')) {
+          return
+        }
+        let newIndex = evt.newIndex
+
+        if (evt.to.className === evt.from.className && evt.newIndex > evt.oldIndex) {
+          newIndex = newIndex + 1
+        }
+
+        const elementClass = evt.item.className
+        const parentClass = evt.to.className
+        let parentSectionId = parentClass.substr(7)
+        if (parentSectionId === '') {
+          parentSectionId = null
+        } else {
+          parentSectionId = parseInt(parentSectionId)
+        }
+
+        const children = this.$store.getters.loadedChildren(this.id, parentSectionId)
+        let order = 0
+        if (children.length === 0) {
+          order = 1
+        } else if (children.length === newIndex) {
+          order = children[newIndex - 1].order + 1
+        } else {
+          order = children[newIndex].order
+        }
+
+        if (elementClass.includes('section')) {
+          const elementId = parseInt(elementClass.substr(17))
+          this.$store.dispatch('moveSection',
+            {
+              formid: this.id,
+              sectionid: elementId,
+              parent_section_id: parentSectionId,
+              order: order
+            })
+        } else {
+          const oldparentClass = evt.from.className
+          const oldparentSectionId = parseInt(oldparentClass.substr(7))
+          const elementId = parseInt(elementClass.substr(18))
+          this.$store.dispatch('moveQuestion',
+            {
+              formid: this.id,
+              questionid: elementId,
+              oldparent_section_id: oldparentSectionId,
+              parent_section_id: parentSectionId,
+              order: order
+            })
+        }
       },
-      checkAdd: function (evt) {
-        console.log('added', evt)
-      },
-      checkRemove: function (evt) {
-        console.log('removed', evt)
+      onBack () {
+        this.$router.push('/applications/' + this.application_id + '/forms')
       }
     },
     created: function () {

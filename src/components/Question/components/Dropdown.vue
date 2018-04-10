@@ -1,6 +1,6 @@
 <template>
-  <draggable v-model='answers' class='dragArea' :options='{group:"people", draggable:".item"}' style='min-height: 100px'>
-    <v-layout row v-for='(answer, index) in answers' :key='"Option " + index' :class='"item" + index'>
+  <draggable v-model='list' class='dragArea' :options='{draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
+    <v-layout row v-for='(answer, index) in list' :key='"Option " + index' class='answer' :class='"answer" + answer.id'>
       <v-flex style='max-width: 20px; min-width: 20px' class='mt-4'>
         {{index+1}}.
       </v-flex>
@@ -62,6 +62,26 @@
       },
       updateAnswer (index, value) {
         this.$emit('update-answer', [index, value])
+      },
+      checkEnd: function (evt) {
+        if (evt.newIndex === evt.oldIndex) {
+          return
+        }
+        let newIndex = evt.newIndex
+
+        if (evt.newIndex > evt.oldIndex) {
+          newIndex = newIndex + 1
+        }
+
+        let order = 1
+        if (this.answers.length === newIndex) {
+          order = this.answers[newIndex - 1].order + 1
+        } else {
+          order = this.answers[newIndex].order
+        }
+
+        const elementId = parseInt(evt.item.className.substr(24))
+        this.$emit('move-answer', [elementId, order])
       }
     },
     mounted () {
@@ -75,6 +95,16 @@
           if (!lastAnswer.parameter) {
             this.$emit('change-answer')
           }
+        }
+      }
+    },
+    computed: {
+      list: {
+        get () {
+          return this.answers.sort((a, b) => { return a.order > b.order })
+        },
+        set (value) {
+          // TODO: Drggable components
         }
       }
     }

@@ -6,70 +6,69 @@
           <v-card-text>
             <v-container>
               <h1 class="mb-4">Create Application</h1>
-              <form @submit.prevent="onCreateApplication">
-                <v-layout row>
-                  <v-flex xs12>
-                    <v-text-field
-                      name="name"
-                      label="Name"
-                      id="name"
-                      v-model="name"
-                      required></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs12>
-                    <v-container pa-0>
-                      <v-layout wrap text-xs-center>
-                        <h3>Invite Members</h3>
-                        <v-spacer></v-spacer>
-                        <v-btn dark color="primary"
-                          @click="onAddMember">
-                          <v-icon dark>add</v-icon>
-                          Add
-                        </v-btn>
+              <v-layout row>
+                <v-flex xs12>
+                  <v-text-field
+                    name="name"
+                    label="Name"
+                    id="name"
+                    v-model="name"
+                    required></v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12>
+                  <v-container pa-0>
+                    <v-layout wrap text-xs-center>
+                      <v-spacer></v-spacer>
+                      <v-btn dark color="primary"
+                        @click="onAddMember">
+                        <v-icon dark>add</v-icon>
+                        Add
+                      </v-btn>
+                    </v-layout>
+                    <template v-for='(item, index) in invitations'>
+                      <v-layout row wrap>
+                        <v-flex xs12 sm4>
+                          <v-text-field
+                            label="Email"
+                            type="email"
+                            v-model="item.email"
+                          ></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm4 offset-sm1>
+                          <v-select
+                            :items="roles"
+                            item-text="name"
+                            item-value="id"
+                            v-model="item.application_role_id"
+                            label="Role"
+                            single-line
+                          ></v-select>
+                        </v-flex>
+                        <v-flex xs12 sm1 offset-sm1 text-xs-center>
+                          <v-btn fab dark small color="error"
+                            @click="invitations.splice(index, 1)">
+                            <v-icon dark>remove</v-icon>
+                          </v-btn>
+                        </v-flex>
                       </v-layout>
-                      <template v-for='(item, index) in invitations'>
-                        <v-layout wrap>
-                          <v-flex xs12 sm4 d-flex>
-                            <v-text-field
-                              label="Email"
-                              type="email"
-                              v-model="item.email"
-                            ></v-text-field>
-                          </v-flex>
-                          <v-flex xs12 sm4 offset-sm1 d-flex>
-                            <v-select
-                              :items="roles"
-                              item-text="name"
-                              item-value="id"
-                              v-model="item.application_role_id"
-                              label="Role"
-                              single-line
-                            ></v-select>
-                          </v-flex>
-                          <v-flex xs12 sm1 offset-sm1 text-xs-center>
-                            <v-btn fab dark small color="error"
-                              @click="invitations.splice(index, 1)">
-                              <v-icon dark>remove</v-icon>
-                            </v-btn>
-                          </v-flex>
-                        </v-layout>
-                      </template>
-                    </v-container>
-                  </v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs12 text-xs-right>
-                    <v-btn
-                      class="primary"
-                      :disabled="!formIsValid"
-                      type="submit">Create Application</v-btn>
-                  </v-flex>
-                </v-layout>
-              </form>
+                    </template>
+                  </v-container>
+                </v-flex>
+              </v-layout>
             </v-container>
           </v-card-text>
+          <v-card-actions>
+            <v-btn color="info" @click=onCancel>Cancel</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              class="primary"
+              :disabled="!formIsValid"
+              @click="onCreateApplication">
+              Create
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -105,10 +104,16 @@
         return this.name !== ''
       },
       userIsSuper () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined && this.$store.getters.user.role === 1
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined && this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
       onCreateApplication () {
         if (!this.formIsValid) {
           return
@@ -127,6 +132,9 @@
           email: '',
           application_role_id: ''
         })
+      },
+      onCancel () {
+        this.$router.push('/applications')
       }
     },
     created: function () {

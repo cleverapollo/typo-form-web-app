@@ -1,11 +1,11 @@
 <template>
   <v-card active-class='active-question' class='elevation-12'>
-    <v-toolbar>
-      <v-toolbar-title>{{ 'Question ' + question.order }}</v-toolbar-title>
+    <v-toolbar class='handle'>
+      <v-toolbar-title>{{ 'Question ' + index }}</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <v-layout>
-        <v-flex xs4 class='pt-3'>
+      <v-layout row wrap justify-space-between>
+        <v-flex xs4 class='pt-3' style='min-width: 210px'>
           <v-text-field
             label='Question'
             single-line
@@ -14,7 +14,7 @@
             v-model='editedName'
           ></v-text-field>
         </v-flex>
-        <v-flex xs4 offset-xs1>
+        <v-flex xs4 style='min-width: 210px'>
           <v-select
             :items='menuItems'
             item-text='title'
@@ -51,7 +51,7 @@
       </v-layout>
 
       <v-layout>
-        <v-flex xs10>
+        <v-flex>
           <v-text-field
             label='Description'
             v-model='editedDescription'
@@ -61,7 +61,6 @@
           ></v-text-field>
         </v-flex>
       </v-layout>
-
       <v-layout>
         <v-flex xs12>
           <component
@@ -73,31 +72,45 @@
             @delete-answers='deleteAnswers'
             @change-answer='changeAnswer'
             @update-answer='updateAnswer'
+            @move-answer='moveAnswer'
           ></component>
         </v-flex>
       </v-layout>
-
-      <v-divider></v-divider>
     </v-card-text>
+    <v-divider></v-divider>
     <v-card-actions class='pa-3'>
       <v-spacer></v-spacer>
       <v-btn color='grey darken-2' flat icon @click='duplicateQuestion'><v-icon>content_copy</v-icon></v-btn>
       <v-btn color='grey darken-2' flat icon @click='deleteQuestion'><v-icon>delete</v-icon></v-btn>
-      <v-switch
+      <div class='v-divider'>&nbsp</div>
+      <v-switch style='min-width: 110px; max-width: 110px;'
+        class='switch-mandatory'
         label='Required'
         v-model='mandatory'
+        hide-details
       ></v-switch>
-      <v-checkbox
-        v-show='mandatory'
-        label='include validation'
-        v-model='hasValidation'
-      ></v-checkbox>
+      <v-menu v-if='ifRequireValidation[questionTypeString]' offset-y bottom right>
+        <v-btn icon slot='activator'>
+          <v-icon>more_vert</v-icon>
+        </v-btn>
+        <v-list>
+          <v-list-tile v-if='mandatory' @click='toggleHasValidation'>
+            <v-list-tile-title>
+              {{ hasValidation ? 'Remove Validation' : 'Include Validation' }}
+            </v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile v-else disabled>
+            <v-list-tile-title>
+              Include Validation
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
   import shortAnswer from './components/ShortAnswer'
   import paragraph from './components/Paragraph'
   import multipleChoice from './components/MultipleChoice'
@@ -111,10 +124,7 @@
   import timeComponent from './components/Time'
   import * as _ from 'lodash'
   export default {
-    props: ['question', 'form_id', 'section_id'],
-    components: {
-      draggable
-    },
+    props: ['question', 'form_id', 'section_id', 'index'],
     data () {
       return {
         editedName: this.question.question,
@@ -133,6 +143,11 @@
           'Checkbox grid': checkboxGrid,
           'Date': dateComponent,
           'Time': timeComponent
+        },
+        ifRequireValidation: {
+          'Short answer': true,
+          'Paragraph': true,
+          'Checkboxes': true
         },
         menuItems: [
           {
@@ -200,7 +215,7 @@
           if (this.questionTypes[index]) {
             return this.questionTypes[index].type
           } else {
-            return 'Short answer'
+            return 'Undefined'
           }
         },
         set: function (str) {
@@ -219,6 +234,9 @@
       }
     },
     methods: {
+      toggleHasValidation () {
+        this.hasValidation = !this.hasValidation
+      },
       setQuestionType (str) {
         this.questionTypeId = _.findIndex(this.questionTypes, type => { return type.type === str }) + 1
       },
@@ -319,7 +337,28 @@
           sectionid: this.section_id,
           id: this.question.id
         })
+      },
+      moveAnswer (args) {
+        const id = args[0]
+        const order = args[1]
+        this.$store.dispatch('moveAnswer', {
+          formid: this.form_id,
+          sectionid: this.section_id,
+          questionid: this.question.id,
+          id: id,
+          order: order
+        })
       }
     }
   }
 </script>
+<style scoped>
+  .switch-mandatory {
+    max-width: 120px;
+    margin-left: 20px;
+  }
+  .v-divider {
+    line-height: 2;
+    border-right: 1px solid #ccc;
+  }
+</style>

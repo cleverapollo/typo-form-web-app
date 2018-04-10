@@ -74,6 +74,7 @@
             </v-tabs>
           </v-card-text>
           <v-card-actions>
+            <v-btn color="info" @click=onBack>Back</v-btn>
             <v-spacer></v-spacer>
             <app-edit-team :team="team" :application_id="application_id"></app-edit-team>
             <v-btn class="error" @click=onDeleteTeam>Delete</v-btn>
@@ -101,6 +102,9 @@
               </template>
             </v-data-table>
           </v-card-text>
+          <v-card-actions>
+            <v-btn color="info" @click=onBack>Back</v-btn>
+          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -135,7 +139,7 @@
         if (!this.userIsAuthenticated || !this.team) {
           return false
         }
-        return this.team.team_role_id === 2
+        return this.getRole(this.team.team_role_id) === 'Admin'
       },
       loading () {
         return this.$store.getters.loading
@@ -147,14 +151,7 @@
         return this.$store.getters.invitedTeamUsers(parseInt(this.id))
       },
       joinURL () {
-        return window.origin + '/join/team/' + this.team.shareToken
-      }
-    },
-    watch: {
-      team (value) {
-        if (value !== null && value !== undefined && value.shareToken === undefined) {
-          this.$store.dispatch('loadTeamToken', {applicationid: this.application_id, id: this.id})
-        }
+        return window.origin + '/join/team/' + this.team.share_token
       }
     },
     methods: {
@@ -172,7 +169,10 @@
         const role = this.roles.find((role) => {
           return role.id === roleId
         })
-        return role.name
+        return role ? role.name : 'undefined'
+      },
+      onBack () {
+        this.$router.push('/applications/' + this.application_id + '/teams')
       }
     },
     created: function () {

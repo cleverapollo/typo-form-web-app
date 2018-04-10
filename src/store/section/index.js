@@ -1,6 +1,7 @@
 const API_URL = process.env.API_URL
 const FORM_URL = `${API_URL}form/`
 const SECTION_URL = '/section/'
+const MOVE_URL = '/move/'
 
 export default {
   state: {
@@ -20,6 +21,28 @@ export default {
         return section.id === payload.section.id
       })
       state.loadedSections[payload.formid].splice(index, 1, payload.section)
+    },
+    moveSection (state, payload) {
+      if (payload.section !== null) {
+        const index = state.loadedSections[payload.formid].findIndex(section => {
+          return section.id === payload.section.id
+        })
+        state.loadedSections[payload.formid].splice(index, 1, payload.section)
+      }
+      const parentsectionid = payload.section ? payload.section.id : null
+
+      const childSections = state.loadedSections[payload.formid].filter((section) => {
+        return section.parent_section_id === parentsectionid && section.order >= payload.order
+      })
+      childSections.map(function (section) {
+        section.order = section.order + 1
+      })
+
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      section.order = payload.order
+      section.parent_section_id = parentsectionid
     },
     deleteSection (state, payload) {
       state.loadedSections[payload.formid] = state.loadedSections[payload.formid].filter(e => {
@@ -67,6 +90,27 @@ export default {
       })
       section.questions.splice(index, 1, payload.question)
     },
+    moveQuestion (state, payload) {
+      const oldSection = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.oldsectionid
+      })
+      oldSection.questions = oldSection.questions.filter(e => {
+        return e.id !== payload.questionid
+      })
+
+      const index = state.loadedSections[payload.formid].findIndex(section => {
+        return section.id === payload.section.id
+      })
+      state.loadedSections[payload.formid].splice(index, 1, payload.section)
+
+      const parentsectionid = payload.section.id
+      const childSections = state.loadedSections[payload.formid].filter((section) => {
+        return section.parent_section_id === parentsectionid && section.order >= payload.order
+      })
+      childSections.map(function (section) {
+        section.order = section.order + 1
+      })
+    },
     deleteQuestion (state, payload) {
       const section = state.loadedSections[payload.formid].find((section) => {
         return section.id === payload.sectionid
@@ -74,6 +118,12 @@ export default {
       section.questions = section.questions.filter(e => {
         return e.id !== payload.id
       })
+    },
+    deleteQuestions (state, payload) {
+      const section = state.loadedSections[payload.formid].find((section) => {
+        return section.id === payload.sectionid
+      })
+      section.questions = []
     },
 
     setLoadedAnswers (state, payload) {
@@ -195,6 +245,26 @@ export default {
               section: response['data']['section']
             }
             commit('updateSection', updateObj)
+          }
+        )
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    moveSection ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.post(FORM_URL + payload.formid + SECTION_URL + payload.sectionid + MOVE_URL, payload)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              formid: payload.formid,
+              sectionid: payload.sectionid,
+              order: payload.order,
+              section: response['data']['data']
+            }
+            commit('moveSection', updateObj)
           }
         )
         .catch(error => {

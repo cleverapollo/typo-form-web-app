@@ -1,14 +1,13 @@
 <template>
-  <v-card active-class='active-section' class='elevation-12'
-          v-bind:class='{"mx-5": section.parent_section_id !== null}'>
-    <v-toolbar v-if="form_type==='questions'">
-      <v-toolbar-title>{{ 'Section ' + section.order }}</v-toolbar-title>
+  <v-card active-class='active-section' class='elevation-12' v-bind:class='{"mx-5": section.parent_section_id !== null}'>
+    <v-toolbar class='handle'>
+      <v-toolbar-title>{{ 'Section ' + index }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click.prevent='toggleExpand'>
         <v-icon v-if='expanded'>expand_less</v-icon>
         <v-icon v-else>expand_more</v-icon>
       </v-btn>
-      <v-menu offset-y bottom left>
+      <v-menu offset-y bottom left v-if="form_type==='questions'">
         <v-btn icon slot='activator'>
           <v-icon>more_vert</v-icon>
         </v-btn>
@@ -21,7 +20,7 @@
           <v-list-tile v-for='(action, key) in actions' :key="`action ${key}`" @click='action.cb'>
             <v-list-tile-title>{{ action.name }}</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile @click=''>
+          <v-list-tile v-show='!hasRepeatableQuestions' @click=''>
             <v-list-tile-title>
               <app-create-question :section_id='section.id' :form_id='form_id'></app-create-question>
             </v-list-tile-title>
@@ -30,48 +29,64 @@
       </v-menu>
     </v-toolbar>
     <v-card-title>
-      <div class='section-name'>
-        <template v-if='editMode'>
-          <v-layout row>
-            <v-flex xs12>
-              <v-text-field
-                label='Section Name'
-                v-model='editedName'
-                autofocus
-                @blur='checkUpdate'
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-        </template>
-        <template v-else>
-          <h1 @click='setEditMode'>{{ section.name }}</h1>
-        </template>
-      </div>
+      <v-flex>
+        <div class='section-name'>
+          <template v-if='editMode'>
+            <v-text-field
+              label='Section Name'
+              v-model='editedName'
+              autofocus
+              @blur='checkNameUpdate'
+            ></v-text-field>
+          </template>
+          <template v-else>
+            <h1 @click='setEditMode'>{{ section.name }}</h1>
+          </template>
+        </div>
+      </v-flex>
+      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4' v-if="form_type==='questions'">
+        <v-switch
+          label='Repeatable'
+          v-model='hasRepeatableQuestions'
+          @change='changeRepeatable($event)'
+        ></v-switch>
+      </v-flex>
     </v-card-title>
-    <v-card-text class='px-0'>
-      <draggable v-if="form_type==='questions'" v-model='list' v-show='expanded' class='dragArea'
-                 :options='{group:"people", draggable:".item"}'
-                 style='min-height: 100px'>
-        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
-             class='item pb-5' :class='{ question: !isSection(element) }'>
-          <sections :section='element' :form_id='form_id' v-if='isSection(element)' :submission_id='submission_id'
-                    :form_type="form_type"></sections>
-          <questions :question='element' :form_id='form_id' :section_id="section.id" v-else></questions>
-        </div>
-        <div slot='footer' v-if='isSectionEmpty'>
-          <v-card>
-            <v-card-title>
-              <h3>There is no questions</h3>
-            </v-card-title>
-          </v-card>
-        </div>
-      </draggable>
+    <v-card-text class='px-0' v-show='expanded'>
+      <div v-if="form_type==='questions'">
+        <question-repeatable
+          v-if='hasRepeatableQuestions'
+          :questions='section.questions'
+          @create-question='createQuestion'
+          @delete-question='deleteQuestion'
+          @update-question='updateQuestion'
+          @create-answer='createAnswer'
+          @delete-answer='deleteAnswer'
+          @update-answer='updateAnswer'
+          @move-answer='moveAnswer'
+          @move-question='moveQuestion'
+          >
+        </question-repeatable>
+        <draggable v-else v-model='list' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
+          <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
+            <sections :section='element' :form_id='form_id' v-if='isSection(element)' :index='index + 1' :form_type="form_type"></sections>
+            <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' v-else></questions>
+          </div>
+          <div slot='footer' v-if='isSectionEmpty'>
+            <v-card>
+              <v-card-title>
+                <h3>There is no questions</h3>
+              </v-card-title>
+            </v-card>
+          </div>
+        </draggable>
+      </div>
       <div v-else>
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
              class='item pb-5' :class='{ question: !isSection(element) }'>
-          <sections :section='element' :form_id='form_id' :submission_id='submission_id'
+          <sections :section='element' :form_id='form_id' :submission_id='submission_id' :index='index + 1'
                     v-if='isSection(element)'></sections>
-          <answer :question='element' :form_id='form_id' :submission_id='submission_id' :section_id="section.id"
+          <answer :question='element' :form_id='form_id' :submission_id='submission_id' :section_id="section.id"  :index='index + 1'
                   v-else></answer>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
@@ -88,16 +103,17 @@
 
 <script>
   import draggable from 'vuedraggable'
-  import questions from '../Question/Questions.vue'
-  import answer from '../Submission/Answer/Answers.vue'
-
+  import questions from '../Question/Questions'
+  import answer from '../Submission/Answer/Answers'
+  import questionRepeatable from '../Question/components/QuestionRepeatable'
   export default {
     name: 'sections',
-    props: ['section', 'form_id', 'submission_id', 'form_type'],
+    props: ['section', 'form_id', 'submission_id', 'form_type', 'index'],
     components: {
       draggable,
       questions,
-      answer
+      answer,
+      questionRepeatable
     },
     data () {
       return {
@@ -107,7 +123,13 @@
           cb: this.deleteSection.bind(this)
         }],
         expanded: true,
-        editMode: false
+        editMode: false,
+        hasRepeatableQuestions: this.section.repeatable
+      }
+    },
+    watch: {
+      repeatable (value) {
+        this.hasRepeatableQuestions = value
       }
     },
     computed: {
@@ -121,9 +143,87 @@
       },
       isSectionEmpty () {
         return !this.list.length
+      },
+      repeatable () {
+        return this.section.repeatable
       }
     },
     methods: {
+      changeRepeatable (value) {
+        this.$store.dispatch('deleteQuestions', {
+          formid: this.form_id,
+          sectionid: this.section.id
+        })
+        if (value) {
+          this.createQuestion(['Answers', 'This question contains answers', 1, true])
+        }
+        this.updateSection()
+      },
+      createQuestion (args) {
+        const qustionName = args[0]
+        const questionDescription = args[1]
+        const questionType = args[2]
+        const mandatory = args[3]
+
+        this.$store.dispatch('createQuestion', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          question: qustionName,
+          description: questionDescription,
+          question_type_id: questionType,
+          mandatory: mandatory
+        })
+      },
+      deleteQuestion (id) {
+        this.$store.dispatch('deleteQuestion', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          id: id
+        })
+      },
+      updateQuestion (args) {
+        const index = args[0]
+        const value = args[1]
+        this.$store.dispatch('updateQuestion', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          id: index,
+          question: value
+        })
+      },
+      createAnswer (args) {
+        const questionid = args[0]
+        const answer = args[1]
+        this.$store.dispatch('createAnswer', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          questionid: questionid,
+          answer: answer,
+          parameter: true
+        })
+      },
+      deleteAnswer (args) {
+        const questionid = args[0]
+        const index = args[1]
+        this.$store.dispatch('deleteAnswer', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          questionid: questionid,
+          id: index
+        })
+      },
+      updateAnswer (args) {
+        const questionid = args[0]
+        const index = args[1]
+        const answer = args[2]
+        this.$store.dispatch('updateAnswer', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          questionid: questionid,
+          id: index,
+          answer: answer
+        })
+      },
       setEditMode () {
         this.editMode = true
       },
@@ -142,7 +242,8 @@
             formid: this.form_id,
             id: this.section.id,
             parent_section_id: this.section.parent_section_id,
-            name: this.editedName
+            name: this.editedName,
+            repeatable: this.hasRepeatableQuestions
           })
       },
       deleteSection () {
@@ -151,11 +252,90 @@
           id: this.section.id
         })
       },
-      checkUpdate: function () {
+      checkNameUpdate: function () {
         if (this.editedName !== this.section.name) {
           this.updateSection()
         } else {
           this.editMode = false
+        }
+      },
+      moveAnswer (args) {
+        const questionid = args[0]
+        const id = args[1]
+        const order = args[2]
+        this.$store.dispatch('moveAnswer', {
+          formid: this.form_id,
+          sectionid: this.section.id,
+          questionid: questionid,
+          id: id,
+          order: order
+        })
+      },
+      moveQuestion (args) {
+        const id = args[0]
+        const order = args[1]
+        this.$store.dispatch('moveQuestion',
+          {
+            formid: this.form_id,
+            questionid: id,
+            oldparent_section_id: this.section.id,
+            parent_section_id: this.section.id,
+            order: order
+          })
+      },
+      checkEnd: function (evt) {
+        if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
+          return
+        }
+        if (evt.item.className.includes('question') && evt.to.className.includes('parent')) {
+          return
+        }
+        let newIndex = evt.newIndex
+
+        if (evt.to.className === evt.from.className && evt.newIndex > evt.oldIndex) {
+          newIndex = newIndex + 1
+        }
+
+        const elementClass = evt.item.className
+        const parentClass = evt.to.className
+        let parentSectionId = parentClass.substr(7)
+        if (parentSectionId === '') {
+          parentSectionId = null
+        } else {
+          parentSectionId = parseInt(parentSectionId)
+        }
+
+        const children = this.$store.getters.loadedChildren(this.form_id, parentSectionId)
+        let order = 0
+        if (children.length === 0) {
+          order = 1
+        } else if (children.length === newIndex) {
+          order = children[newIndex - 1].order + 1
+        } else {
+          order = children[newIndex].order
+        }
+
+        if (elementClass.includes('section')) {
+          const elementId = parseInt(elementClass.substr(17))
+          this.$store.dispatch('moveSection',
+            {
+              formid: this.form_id,
+              sectionid: elementId,
+              parent_section_id: parentSectionId,
+              order: order
+            })
+        } else {
+          const oldparentClass = evt.from.className
+          const oldparentSectionId = parseInt(oldparentClass.substr(7))
+          const elementId = parseInt(elementClass.substr(18))
+          this.$store.dispatch('moveQuestion',
+            {
+              formid: this.form_id,
+              questionid: elementId,
+              oldparent_section_id: oldparentSectionId,
+              parent_section_id: parentSectionId,
+              order: order
+            })
         }
       }
     }
