@@ -32,13 +32,6 @@
         }
       }
     },
-    mounted () {
-      if (this.options.length === 0) {
-        this.computedOptions = [
-          'Option 1'
-        ]
-      }
-    },
     computed: {
       computedOptions: {
         get: function () {

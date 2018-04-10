@@ -132,6 +132,9 @@
       },
       responses () {
         let submission = this.$store.getters.loadedSubmission(parseInt(this.form_id), parseInt(this.submission_id))
+        if (!submission) {
+          return []
+        }
         return submission.responses.filter((response) => {
           return response.question_id === this.question.id
         })
