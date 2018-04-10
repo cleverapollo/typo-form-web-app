@@ -1,15 +1,12 @@
 <template>
   <v-layout row wrap>
     <v-flex xs9>
-      <show-submission :application_id="application_id" :form_id="form_id" :submission_id="submission_id"
-      ></show-submission>
+      <show-submission :application_id="application_id" :form_id="form_id" :submission_id="submission_id"></show-submission>
     </v-flex>
     <v-flex xs3>
       <v-card>
         <v-toolbar color="primary" dark>
-          <v-toolbar-side-icon></v-toolbar-side-icon>
-          <v-toolbar-title>List</v-toolbar-title>
-          <v-spacer></v-spacer>
+          <v-toolbar-title>Submissions</v-toolbar-title>
         </v-toolbar>
         <v-list>
           <template v-for="(submission, index) in submissions">
@@ -31,8 +28,8 @@
 </template>
 
 <script>
-  import showSubmission from './ShowSubmission.vue'
-  import createSubmission from './CreateSubmission.vue'
+  import showSubmission from './ShowSubmission'
+  import createSubmission from './CreateSubmission'
 
   export default {
     props: ['application_id', 'form_id'],
@@ -42,11 +39,13 @@
     },
     data () {
       return {
-        submission_id: 1,
-        form_type: 1
+        submission_id: 0
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       submissions () {
         return this.$store.getters.loadedSubmissions(parseInt(this.form_id))
       },
@@ -60,10 +59,16 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.application.role === 'Admin' || this.application.role === 'Super Admin'
+        return this.getRole(this.application.role_id) === 'Admin'
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
       onSubmission (id) {
         this.submission_id = id
       },
@@ -73,16 +78,6 @@
         } else {
           alert(1)
           return submission.team.name
-        }
-      }
-    },
-    created () {
-      this.$store.dispatch('loadSubmissions', this.form_id)
-    },
-    watch: {
-      userIsAdmin (value) {
-        if (value) {
-          this.form_type = 2
         }
       }
     }

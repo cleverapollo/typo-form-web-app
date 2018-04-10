@@ -71,14 +71,11 @@
       }
     },
     mounted () {
-      if (this.answers.length !== 2) {
-        this.$emit('delete-answers')
+      if (!this.answers.length) {
         this.$emit('create-answer', ['LinearScale--1', true])
         this.$emit('create-answer', ['LinearScale--5', false])
-      } else if (this.answers[0].answer === undefined || this.answers[1].answer === undefined || this.answers[0].answer.substr(0, 11) !== 'LinearScale' || this.answers[1].answer.substr(0, 11) !== 'LinearScale') {
+      } else if (this.answers.length !== 2 || this.answers[0].answer.substr(0, 11) !== 'LinearScale' || this.answers[1].answer.substr(0, 11) !== 'LinearScale') {
         this.$emit('delete-answers')
-        this.$emit('create-answer', ['LinearScale--1', true])
-        this.$emit('create-answer', ['LinearScale--5', false])
       }
     },
     computed: {

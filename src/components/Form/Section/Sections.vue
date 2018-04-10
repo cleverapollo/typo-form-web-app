@@ -7,7 +7,7 @@
         <v-icon v-if='expanded'>expand_less</v-icon>
         <v-icon v-else>expand_more</v-icon>
       </v-btn>
-      <v-menu offset-y bottom left v-if="form_type==='questions'">
+      <v-menu offset-y bottom left v-if="submission_id === -1">
         <v-btn icon slot='activator'>
           <v-icon>more_vert</v-icon>
         </v-btn>
@@ -17,8 +17,8 @@
               <app-create-section :parent_section_id='section.id' :form_id='form_id'></app-create-section>
             </v-list-tile-title>
           </v-list-tile>
-          <v-list-tile v-for='(action, key) in actions' :key="`action ${key}`" @click='action.cb'>
-            <v-list-tile-title>{{ action.name }}</v-list-tile-title>
+          <v-list-tile @click=deleteSection>
+            <v-list-tile-title>Delete Section</v-list-tile-title>
           </v-list-tile>
           <v-list-tile v-show='!hasRepeatableQuestions' @click=''>
             <v-list-tile-title>
@@ -44,7 +44,7 @@
           </template>
         </div>
       </v-flex>
-      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4' v-if="form_type==='questions'">
+      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4' v-if="submission_id !== -1">
         <v-switch
           label='Repeatable'
           v-model='hasRepeatableQuestions'
@@ -53,9 +53,8 @@
       </v-flex>
     </v-card-title>
     <v-card-text class='px-0' v-show='expanded'>
-      <div v-if="form_type==='questions'">
+      <div v-if='hasRepeatableQuestions'>
         <question-repeatable
-          v-if='hasRepeatableQuestions'
           :questions='section.questions'
           :min-rows='section.min_rows'
           :max-rows='section.max_rows'
@@ -70,27 +69,14 @@
           @move-question='moveQuestion'
           >
         </question-repeatable>
-        <draggable v-else v-model='list' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
-          <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
-            <sections :section='element' :form_id='form_id' v-if='isSection(element)' :index='index + 1' :form_type="form_type"></sections>
-            <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' v-else></questions>
-          </div>
-          <div slot='footer' v-if='isSectionEmpty'>
-            <v-card>
-              <v-card-title>
-                <h3>There is no questions</h3>
-              </v-card-title>
-            </v-card>
-          </div>
-        </draggable>
       </div>
-      <div v-else>
-        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
-             class='item pb-5' :class='{ question: !isSection(element) }'>
-          <sections :section='element' :form_id='form_id' :submission_id='submission_id' :index='index + 1'
-                    v-if='isSection(element)'></sections>
-          <answer :question='element' :form_id='form_id' :submission_id='submission_id' :section_id="section.id"
-                  v-else></answer>
+      <draggable v-else v-model='list' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
+        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
+          <sections :section='element' :form_id='form_id' v-if='isSection(element)' :index='index + 1'></sections>
+          <div v-else>
+            <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' v-if="submission_id === -1"></questions>
+            <responses :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' :submission_id='submission_id' v-else></responses>
+          </div>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
           <v-card>
@@ -99,7 +85,7 @@
             </v-card-title>
           </v-card>
         </div>
-      </div>
+      </draggable>
     </v-card-text>
   </v-card>
 </template>
@@ -107,27 +93,25 @@
 <script>
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions'
-  import answer from '../Submission/Answer/Answers'
+  import responses from '../Response/Responses'
   import questionRepeatable from '../Question/components/QuestionRepeatable'
   export default {
     name: 'sections',
-    props: ['section', 'form_id', 'submission_id', 'form_type', 'index'],
+    props: ['section', 'form_id', 'submission_id', 'index'],
     components: {
       draggable,
       questions,
-      answer,
+      responses,
       questionRepeatable
     },
     data () {
       return {
         editedName: this.section.name,
-        actions: [{
-          name: 'Delete section',
-          cb: this.deleteSection.bind(this)
-        }],
         expanded: true,
         editMode: false,
-        hasRepeatableQuestions: this.section.repeatable
+        hasRepeatableQuestions: this.section.repeatable,
+        min_rows: this.section.min_rows,
+        max_rows: this.section.max_rows
       }
     },
     watch: {
@@ -228,7 +212,9 @@
         })
       },
       setEditMode () {
-        this.editMode = true
+        if (this.submission_id === -1) {
+          this.editMode = true
+        }
       },
       toggleExpand () {
         this.expanded = !this.expanded
@@ -246,7 +232,9 @@
             id: this.section.id,
             parent_section_id: this.section.parent_section_id,
             name: this.editedName,
-            repeatable: this.hasRepeatableQuestions
+            repeatable: this.hasRepeatableQuestions,
+            min_rows: this.min_rows,
+            max_rows: this.max_rows
           })
       },
       deleteSection () {
@@ -342,11 +330,9 @@
         }
       },
       updateRepeatableLimitation (limitation) {
-        // limitation = {min_rows: '', max_rows: ''}
-        // todo: update min_rows and max_rows
-        console.log('limitation update', limitation)
-        this.section.min_rows = limitation.min_rows || this.section.min_rows
-        this.section.max_rows = limitation.max_rows || this.section.max_rows
+        this.min_rows = limitation.min_rows || this.min_rows
+        this.max_rows = limitation.max_rows || this.max_rows
+        this.updateSection()
       }
     }
   }

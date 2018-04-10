@@ -131,10 +131,10 @@
         })
       },
       responses () {
-        let submission = this.$store.getters.loadedSubmission(parseInt(this.form_id), parseInt(this.submission_id))
-        if (!submission) {
+        if (!this.submission_id) {
           return []
         }
+        let submission = this.$store.getters.loadedSubmission(parseInt(this.form_id), parseInt(this.submission_id))
         return submission.responses.filter((response) => {
           return response.question_id === this.question.id
         })
@@ -163,10 +163,6 @@
         }
       }
     },
-    watch: {
-      mandatory (value) {
-      }
-    },
     methods: {
       setQuestionType (str) {
         this.questionTypeId = _.findIndex(this.questionTypes, type => {
@@ -174,6 +170,9 @@
         }) + 1
       },
       createResponse (args) {
+        if (!this.submission_id) {
+          return
+        }
         const answerid = args[0]
         const response = args[1]
         this.$store.dispatch('createResponse', {

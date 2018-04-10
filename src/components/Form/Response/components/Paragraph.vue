@@ -1,9 +1,14 @@
 <template>
   <v-layout row>
-    <v-flex xs6>
+    <v-flex xs12>
       <v-text-field
-        name="short-answer"
+        label="Message"
         :value="message"
+        counter
+        max="120"
+        full-width
+        multi-line
+        single-line
         @change="onSave($event)"
       ></v-text-field>
     </v-flex>
@@ -12,7 +17,7 @@
 
 <script>
   export default {
-    name: 'short-answer',
+    name: 'paragraph',
     props: ['answers', 'responses'],
     methods: {
       onSave (value) {
@@ -33,7 +38,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>

@@ -16,16 +16,13 @@ import InviteApplication from './components/Application/InviteApplication.vue'
 
 import EditTeam from './components/Team/EditTeam.vue'
 import InviteTeam from './components/Team/InviteTeam.vue'
+import EditTeamUser from './components/Team/EditTeamUser.vue'
 
 import EditUser from './components/User/EditUser.vue'
 
 import EditForm from './components/Form/EditForm.vue'
-
-import EditTeamUser from './components/Team/EditTeamUser.vue'
-
-import CreateSection from './components/Section/CreateSection.vue'
-
-import CreateQuestion from './components/Question/CreateQuestion.vue'
+import CreateSection from './components/Form/Section/CreateSection.vue'
+import CreateQuestion from './components/Form/Question/CreateQuestion.vue'
 
 import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')

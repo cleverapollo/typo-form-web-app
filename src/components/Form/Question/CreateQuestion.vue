@@ -124,8 +124,6 @@
       questionTypes () {
         return this.$store.getters.questionTypes
       }
-    },
-    created: function () {
     }
   }
 </script>

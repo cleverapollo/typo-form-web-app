@@ -24,7 +24,7 @@ import ShowApplication from '@/components/Application/ShowApplication'
 
 import Forms from '@/components/Form/Forms'
 import CreateForm from '@/components/Form/CreateForm'
-import QuestionsAndSubmissions from '@/components/Form/QuestionsAndSubmissions'
+import ShowForm from '@/components/Form/ShowForm'
 
 Vue.use(Router)
 
@@ -138,16 +138,10 @@ const router = new Router({
       component: CreateForm,
       props: true
     },
-    // {
-    //   path: '/applications/:application_id/forms/show/:id',
-    //   name: 'ShowForm',
-    //   component: ShowForm,
-    //   props: true
-    // },
     {
       path: '/applications/:application_id/forms/show/:id',
-      name: 'QuestionsAndSubmissions',
-      component: QuestionsAndSubmissions,
+      name: 'ShowForm',
+      component: ShowForm,
       props: true
     }
   ],

@@ -14,7 +14,7 @@
           </v-layout>
         </v-flex>
         <v-flex xs10>
-          <v-radio-group v-model="ex1[index]" row class="pt-0 pb-0">
+          <v-radio-group v-model="checkAnswers[index]" row class="pt-0 pb-0">
             <v-radio v-for='(column, index2) in computedColumns' :key='"column " + index2'
                      :value="column.id" @change="onSave(row.id, column.id)"></v-radio>
           </v-radio-group>
@@ -26,13 +26,12 @@
 
 
 <script>
-  //  import * as _ from 'lodash'
   export default {
     name: 'multiple-choice-grid',
     props: ['answers', 'responses'],
     data () {
       return {
-        ex1: []
+        checkAnswers: []
       }
     },
     mounted () {
@@ -47,7 +46,7 @@
           ex[i] = null
         }
       }
-      this.ex1 = ex
+      this.checkAnswers = ex
     },
     methods: {
       checked (answerid, response) {

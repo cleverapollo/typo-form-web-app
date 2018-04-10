@@ -67,6 +67,7 @@ export default {
             const updateObj = {
               formid: payload.formid,
               submissionid: payload.submissionid,
+              oldId: payload.id,
               response: response['data']['response']
             }
             commit('updateResponse', updateObj)

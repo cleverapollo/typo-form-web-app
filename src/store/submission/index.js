@@ -31,7 +31,8 @@ export default {
       const submission = state.loadedSubmissions[payload.formid].find((submission) => {
         return submission.id === payload.submissionid
       })
-      submission.responses = payload.responses
+      submission.responses = submission.responses.slice(0)
+      submission.responses.push(payload.responses)
     },
     createResponse (state, payload) {
       const submission = state.loadedSubmissions[payload.formid].find((submission) => {
@@ -44,7 +45,7 @@ export default {
         return submission.id === payload.submissionid
       })
       const index = submission.responses.findIndex(response => {
-        return response.id === payload.response.id
+        return response.id === payload.oldId
       })
       submission.responses.splice(index, 1, payload.response)
     },

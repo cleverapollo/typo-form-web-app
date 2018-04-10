@@ -82,9 +82,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .optionLabel {
-    padding-left: 9px;
-  }
-</style>

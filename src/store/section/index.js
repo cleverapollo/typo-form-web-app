@@ -60,6 +60,7 @@ export default {
       const section = state.loadedSections[payload.formid].find((section) => {
         return section.id === payload.sectionid
       })
+      section.questions = section.questions.slice(0)
       section.questions.push(payload.question)
     },
     duplicateQuestion (state, payload) {
@@ -142,6 +143,7 @@ export default {
       const question = section.questions.find((question) => {
         return question.id === payload.questionid
       })
+      question.answers = question.answers.slice(0)
       question.answers.push(payload.answer)
     },
     updateAnswer (state, payload) {

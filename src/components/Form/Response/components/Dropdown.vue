@@ -16,13 +16,14 @@
 </template>
 
 <script>
-  //  import * as _ from 'lodash'
   export default {
     name: 'dropdown',
     props: ['answers', 'responses'],
-    data: () => ({
-      selectedOption: null
-    }),
+    data () {
+      return {
+        selectedOption: null
+      }
+    },
     methods: {
       onSave (value) {
         if (this.responses.length) {

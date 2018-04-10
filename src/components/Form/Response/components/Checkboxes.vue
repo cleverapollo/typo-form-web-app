@@ -1,23 +1,22 @@
 <template>
   <div>
     <v-layout row v-for='(answer, index) in answers' :key='"Option " + index' class='"item" + index'>
-      <v-checkbox :label="answer.answer" v-model='ex1' :value="answer.id" @change="onSave(answer.id)"></v-checkbox>
+      <v-checkbox :label="answer.answer" v-model='checkAnswers' :value="answer.id" @change="onSave(answer.id)"></v-checkbox>
     </v-layout>
   </div>
 </template>
-<script>
-  //  import * as _ from 'lodash'
 
+<script>
   export default {
     name: 'checkboxes',
     props: ['answers', 'responses'],
     data () {
       return {
-        ex1: []
+        checkAnswers: []
       }
     },
     mounted () {
-      this.ex1 = this.responses.map((response) => {
+      this.checkAnswers = this.responses.map((response) => {
         return response.answer_id
       })
     },
@@ -26,11 +25,7 @@
         const index = this.responses.findIndex((response) => {
           return response.answer_id === answerid
         })
-        if (index === -1) {
-          return false
-        } else {
-          return true
-        }
+        return index !== -1
       },
       responseIdFromAnswer (answerid) {
         const response = this.responses.find((response) => {
@@ -48,10 +43,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .radio-wrapper > i {
-    margin-top: 1em;
-    margin-right: 0.3em;
-  }
-</style>

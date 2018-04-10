@@ -9,7 +9,3 @@
     name: 'fileupload'
   }
 </script>
-
-<style scoped>
-
-</style>

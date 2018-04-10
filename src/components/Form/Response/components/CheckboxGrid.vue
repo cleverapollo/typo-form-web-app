@@ -12,23 +12,19 @@
         <v-flex xs2>
           {{ row.answer }}
         </v-flex>
-        <v-checkbox v-for='(column, index2) in computedColumns' :key='"column " + index2'
-                    v-model="ex1[index]" :value="column.id" @change="onSave(row.id, column.id)"></v-checkbox>
-
+        <v-checkbox v-for='(column, index2) in computedColumns' :key='"column " + index2' v-model="checkAnswers[index]" :value="column.id" @change="onSave(row.id, column.id)"></v-checkbox>
       </v-layout>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-  //  import * as _ from 'lodash'
-
   export default {
     name: 'checkbox-grid',
     props: ['answers', 'responses'],
     data () {
       return {
-        ex1: []
+        checkAnswers: []
       }
     },
     mounted () {
@@ -41,7 +37,7 @@
           return parseInt(response.response)
         })
       }
-      this.ex1 = ex
+      this.checkAnswers = ex
     },
     computed: {
       computedRows () {
@@ -60,11 +56,7 @@
         const index = this.responses.findIndex((response) => {
           return response.answer_id === answerid && parseInt(response.response) === responseid
         })
-        if (index === -1) {
-          return false
-        } else {
-          return true
-        }
+        return index !== -1
       },
       responseIdFromAnswer (answerid, responseid) {
         const response = this.responses.find((response) => {
@@ -82,34 +74,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .radio-wrapper {
-    display: inline-block;
-  }
-
-  .radio-wrapper > i {
-    font-style: normal;
-    color: inherit;
-    margin-top: 1em;
-    margin-right: 0.3em;
-  }
-
-  .input-wrapper {
-    display: inline-block;
-    width: 70%;
-  }
-
-  .close-wrapper {
-    display: inline-block;
-    padding: 0.5em;
-  }
-
-  .actions {
-    display: flex;
-  }
-
-  .actions > .input-wrapper {
-    width: 7em;
-  }
-</style>
