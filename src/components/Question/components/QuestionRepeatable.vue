@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap justify-space-around>
     <v-flex xs5 style='min-width: 130px'>
-      <v-text-field label='Minimum rows count' @change='updateMinRows' :value='minRows'></v-text-field>
+      <v-text-field label='Minimum rows count' @change='updateRowsCount' v-model='minRowsInput' :rules='[validateMinRows]'></v-text-field>
       <h3>Rows</h3>
       <draggable v-model='computedQuestions' class='dragArea1' :options='{draggable:".repeatableItem"}' style='min-height: 100px' @end='checkEnd'>
         <v-layout row v-for='(question, index) in computedQuestions' :key='"Option " + index' class='repeatableItem' :class='"item" + question.id'>
@@ -35,7 +35,7 @@
       </draggable>
     </v-flex>
     <v-flex xs5 style='min-width: 130px'>
-      <v-text-field label='Maximum rows count' @change='updateMaxRows' :value='maxRows'></v-text-field>
+      <v-text-field label='Maximum rows count' @change='updateRowsCount' v-model='maxRowsInput' :rules='[validateMaxRows]'></v-text-field>
       <h3>Columns</h3>
       <draggable v-model='computedAnswers' class='dragArea2' :options='{draggable:".repeatableItem"}' style='min-height: 100px' @end='checkEnd'>
         <v-layout row v-for='(answer, index) in computedAnswers' :key='"Option " + index' class='repeatableItem' :class='"item" + answer.id'>
@@ -79,14 +79,20 @@
         }
       },
       'minRows': {
-        default: null
+        default: ''
       },
       'maxRows': {
-        default: null
+        default: ''
       }
     },
     components: {
       draggable
+    },
+    data () {
+      return {
+        minRowsCount: this.minRows,
+        maxRowsCount: this.maxRows
+      }
     },
     methods: {
       createQuestion () {
@@ -152,27 +158,37 @@
           this.$emit('move-answer', [questionid, elementId, order])
         }
       },
-      updateMinRows (value) {
-        const min = parseInt(value)
-        console.log('min', min)
-        if (this.maxRows && this.maxRows < min) { // validation
-          console.log('this.maxRows && this.maxRows < min', this.maxRows, this.maxRows < min)
-          // return
+      validateMinRows (value) {
+        // console.log(arguments)
+        this.minRowsInput = parseInt(value)
+        if (isNaN(this.minRowsInput)) {
+          this.minRowsInput = ''
+        }
+        // console.log('minRowsInput', this.minRowsInput)
+        if (this.maxRowsInput && this.minRowsInput > this.maxRowsInput) {
+          return 'Minimum rows count is set bigger than maximum rows count.'
         } else {
-          console.log('emit')
-          this.$emit('update-limitation', {
-            'min_rows': min
-          })
+          return true
         }
       },
-      updateMaxRows (value) {
-        const max = parseInt(value)
-        console.log('max', max)
-        if (this.minRows && this.minRows > max) { // validation
-          // return
+      validateMaxRows (value) {
+        // console.log(arguments)
+        this.maxRowsInput = parseInt(value)
+        if (isNaN(this.maxRowsInput)) {
+          this.maxRowsInput = ''
+        }
+        // console.log('maxRowsInput', this.maxRowsInput)
+        if (this.minRowsInput && this.minRowsInput > this.maxRowsInput) {
+          return 'Maximum rows count is set smaller than minimum rows count.'
         } else {
+          return true
+        }
+      },
+      updateRowsCount () {
+        if (this.validateMinRows(this.minRowsInput) === true && this.validateMaxRows(this.maxRowsInput) === true) {
           this.$emit('update-limitation', {
-            max_rows: max
+            'min_rows': this.minRowsInput,
+            'max_rows': this.maxRowsInput
           })
         }
       }
@@ -203,6 +219,22 @@
         },
         set (value) {
           // TODO: Draggable
+        }
+      },
+      minRowsInput: {
+        get: function () {
+          return this.minRowsCount
+        },
+        set: function (value) {
+          this.minRowsCount = value
+        }
+      },
+      maxRowsInput: {
+        get: function () {
+          return this.maxRowsCount
+        },
+        set: function (value) {
+          this.maxRowsCount = value
         }
       }
     }
