@@ -15,7 +15,7 @@
           <v-card-title>
             <h1 class="primary--text">{{ form.name }}</h1>
             <v-spacer></v-spacer>
-            <v-menu offset-y bottom left>
+            <v-menu v-if="form_type==='questions'" offset-y bottom left>
               <v-btn icon slot='activator'>
                 <v-icon>more_vert</v-icon>
               </v-btn>
@@ -39,7 +39,7 @@
           <v-card-text>
             <draggable v-model="list" class="parent" :options="{group:'parent', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
               <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
-                <sections :section='element' :form_id='id' :index='index + 1'></sections>
+                <sections :section='element' :form_id='id' :index='index + 1' :submission_id='submission_id' :form_type='form_type'></sections>
               </div>
             </draggable>
           </v-card-text>
@@ -56,8 +56,9 @@
 <script>
   import draggable from 'vuedraggable'
   import sections from '../Section/Sections.vue'
+
   export default {
-    props: ['application_id', 'id'],
+    props: ['application_id', 'id', 'submission_id', 'form_type'],
     components: {
       draggable,
       sections
@@ -83,30 +84,17 @@
           return this.$store.getters.loadedChildren(this.id, null)
         },
         set (value) {
-          // TODO: update
+          // TODO: draggable
         }
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsnotAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.application_role_id) === 'User'
       },
       form () {
         return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))
       },
       loading () {
         return this.$store.getters.loading
-      }
-    },
-    watch: {
-      userIsnotAdmin (value) {
-        if (value) {
-          this.$router.push('/applications/' + this.application_id + '/forms/show/' + this.id + '/submission')
-        }
       }
     },
     methods: {
@@ -125,9 +113,6 @@
       },
       createSection () {
         this.showDialog = true
-      },
-      hideDialog () {
-        this.showDialog = false
       },
       checkEnd: function (evt) {
         if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
@@ -189,10 +174,9 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadApplications')
       this.$store.dispatch('loadForms', this.application_id)
       this.$store.dispatch('loadSections', this.id)
-      this.$store.dispatch('loadQuestionTypes')
+      this.$store.dispatch('loadSubmissions', this.id)
     }
   }
 </script>
