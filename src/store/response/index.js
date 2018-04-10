@@ -28,7 +28,8 @@ export default {
     createResponse ({commit, getters}, payload) {
       const response = {
         response: payload.response,
-        answer_id: payload.answer_id
+        question_id: payload.questionid,
+        answer_id: payload.answerid
       }
       window.axios.post(SUBMISSION_URL + payload.submissionid + RESPONSE_URL, response)
         .then(
@@ -55,9 +56,10 @@ export default {
       if (payload.response) {
         updateObj.response = payload.response
       }
-      if (payload.answer_id) {
-        updateObj.answer_id = payload.answer_id
+      if (payload.answerid) {
+        updateObj.answer_id = payload.answerid
       }
+
       window.axios.put(SUBMISSION_URL + payload.submissionid + RESPONSE_URL + payload.id, updateObj)
         .then(
           response => {

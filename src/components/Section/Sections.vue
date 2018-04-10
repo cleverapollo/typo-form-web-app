@@ -7,7 +7,7 @@
         <v-icon v-if='expanded'>expand_less</v-icon>
         <v-icon v-else>expand_more</v-icon>
       </v-btn>
-      <v-menu offset-y bottom left>
+      <v-menu offset-y bottom left v-if="form_type==='questions'">
         <v-btn icon slot='activator'>
           <v-icon>more_vert</v-icon>
         </v-btn>
@@ -44,7 +44,7 @@
           </template>
         </div>
       </v-flex>
-      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4'>
+      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4' v-if="form_type==='questions'">
         <v-switch
           label='Repeatable'
           v-model='hasRepeatableQuestions'
@@ -53,26 +53,44 @@
       </v-flex>
     </v-card-title>
     <v-card-text class='px-0' v-show='expanded'>
-      <question-repeatable
-        v-if='hasRepeatableQuestions'
-        :questions='section.questions'
-        :min-rows='section.min_rows'
-        :max-rows='section.max_rows'
-        @update-limitation='updateRepeatableLimitation'
-        @create-question='createQuestion'
-        @delete-question='deleteQuestion'
-        @update-question='updateQuestion'
-        @create-answer='createAnswer'
-        @delete-answer='deleteAnswer'
-        @update-answer='updateAnswer'
-        @move-answer='moveAnswer'
-        @move-question='moveQuestion'
-        >
-      </question-repeatable>
-      <draggable v-else v-model='list' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
-        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
-          <sections :section='element' :form_id='form_id' v-if='isSection(element)' :index='index + 1'></sections>
-          <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' v-else></questions>
+      <div v-if="form_type==='questions'">
+        <question-repeatable
+          v-if='hasRepeatableQuestions'
+          :questions='section.questions'
+          :min-rows='section.min_rows'
+          :max-rows='section.max_rows'
+          @update-limitation='updateRepeatableLimitation'
+          @create-question='createQuestion'
+          @delete-question='deleteQuestion'
+          @update-question='updateQuestion'
+          @create-answer='createAnswer'
+          @delete-answer='deleteAnswer'
+          @update-answer='updateAnswer'
+          @move-answer='moveAnswer'
+          @move-question='moveQuestion'
+          >
+        </question-repeatable>
+        <draggable v-else v-model='list' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
+          <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
+            <sections :section='element' :form_id='form_id' v-if='isSection(element)' :index='index + 1' :form_type="form_type"></sections>
+            <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' v-else></questions>
+          </div>
+          <div slot='footer' v-if='isSectionEmpty'>
+            <v-card>
+              <v-card-title>
+                <h3>There is no questions</h3>
+              </v-card-title>
+            </v-card>
+          </div>
+        </draggable>
+      </div>
+      <div v-else>
+        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
+             class='item pb-5' :class='{ question: !isSection(element) }'>
+          <sections :section='element' :form_id='form_id' :submission_id='submission_id' :index='index + 1'
+                    v-if='isSection(element)'></sections>
+          <answer :question='element' :form_id='form_id' :submission_id='submission_id' :section_id="section.id"
+                  v-else></answer>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
           <v-card>
@@ -81,7 +99,7 @@
             </v-card-title>
           </v-card>
         </div>
-      </draggable>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -89,13 +107,15 @@
 <script>
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions'
+  import answer from '../Submission/Answer/Answers'
   import questionRepeatable from '../Question/components/QuestionRepeatable'
   export default {
     name: 'sections',
-    props: ['section', 'form_id', 'index'],
+    props: ['section', 'form_id', 'submission_id', 'form_type', 'index'],
     components: {
       draggable,
       questions,
+      answer,
       questionRepeatable
     },
     data () {
