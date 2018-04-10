@@ -28,15 +28,36 @@
 <script>
   export default {
     name: 'time-component',
+    props: ['answers', 'responses'],
     data () {
       return {
-        time: null,
-        menu: false
+        timeCnt: 0,
+        menu: false,
+        time: this.responses.length ? this.responses[0].response : null
+      }
+    },
+    methods: {
+      onSave (value) {
+        if (this.responses.length) {
+          this.$emit('update-response', [null, value, this.responses[0].id])
+        } else {
+          this.$emit('create-response', [null, value])
+        }
+      }
+    },
+    watch: {
+      time (value) {
+        if (this.timeCnt === 1) {
+          this.timeCnt = 0
+          if (this.responses.length) {
+            this.$emit('update-response', [null, this.time, this.responses[0].id])
+          } else {
+            this.$emit('create-response', [null, this.time])
+          }
+        } else {
+          this.timeCnt++
+        }
       }
     }
   }
 </script>
-
-<style scoped>
-
-</style>

@@ -1,24 +1,36 @@
 <template>
-    <v-radio-group row >
-      <v-radio v-for='(optionString, index) in computedOptions' :key='"Option " + index' :label="optionString" :value="'radio-1'+index" ></v-radio>
-    </v-radio-group>
+  <v-radio-group v-model="optionModel" column>
+    <v-radio class="pt-2 pb-2" v-for='(answer, index) in answers' :key='"Option " + index' :label="answer.answer"
+             :value="checked(answer.id)" @change="onSave(answer.id)"></v-radio>
+  </v-radio-group>
 </template>
 
 <script>
-//  import * as _ from 'lodash'
+  //  import * as _ from 'lodash'
   export default {
     name: 'multiple-choice',
-    props: {
-      'options': {
-        default: function () {
-          return []
-        }
-      },
-      'hasOther': {
-        default: false
+    props: ['answers', 'responses'],
+    data () {
+      return {
+        optionModel: 'checked'
       }
     },
     methods: {
+      checked (answerid) {
+        if (this.responses.length) {
+          if (this.responses[0].answer_id === answerid) {
+            return 'checked'
+          }
+        }
+        return 'unchecked'
+      },
+      onSave (answerid) {
+        if (this.responses.length) {
+          this.$emit('update-response', [answerid, null, this.responses[0].id])
+        } else {
+          this.$emit('create-response', [answerid, null])
+        }
+      }
     },
     mounted () {
       if (this.options.length === 0) {
@@ -39,27 +51,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .radio-wrapper {
-    display: inline-block;
-  }
-  .radio-wrapper > i {
-    margin-top: 1em;
-    margin-right: 0.3em;
-  }
-  .input-wrapper {
-    display: inline-block;
-    width: 70%;
-  }
-  .close-wrapper {
-    display: inline-block;
-    padding: 0.5em;
-  }
-  .actions {
-    display: flex;
-  }
-  .actions > .input-wrapper {
-    width: 6em;
-  }
-</style>
