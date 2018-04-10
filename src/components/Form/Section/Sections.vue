@@ -44,7 +44,7 @@
           </template>
         </div>
       </v-flex>
-      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4' v-if="submission_id !== -1">
+      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4' v-if="submission_id === -1">
         <v-switch
           label='Repeatable'
           v-model='hasRepeatableQuestions'
@@ -54,25 +54,29 @@
     </v-card-title>
     <v-card-text class='px-0' v-show='expanded'>
       <div v-if='hasRepeatableQuestions'>
-        <question-repeatable
-          :questions='section.questions'
-          :min-rows='section.min_rows'
-          :max-rows='section.max_rows'
-          @update-limitation='updateRepeatableLimitation'
-          @create-question='createQuestion'
-          @delete-question='deleteQuestion'
-          @update-question='updateQuestion'
-          @create-answer='createAnswer'
-          @delete-answer='deleteAnswer'
-          @update-answer='updateAnswer'
-          @move-answer='moveAnswer'
-          @move-question='moveQuestion'
-          >
-        </question-repeatable>
+        <div v-if="submission_id === -1">
+          <question-repeatable
+            :questions='section.questions'
+            :min-rows='section.min_rows'
+            :max-rows='section.max_rows'
+            @update-limitation='updateRepeatableLimitation'
+            @create-question='createQuestion'
+            @delete-question='deleteQuestion'
+            @update-question='updateQuestion'
+            @create-answer='createAnswer'
+            @delete-answer='deleteAnswer'
+            @update-answer='updateAnswer'
+            @move-answer='moveAnswer'
+            @move-question='moveQuestion'
+            >
+          </question-repeatable>
+        </div>
+        <div v-else>
+        </div>
       </div>
       <draggable v-else v-model='list' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
-          <sections :section='element' :form_id='form_id' v-if='isSection(element)' :index='index + 1'></sections>
+          <sections :section='element' :form_id='form_id' v-if='isSection(element)' :submission_id='submission_id' :index='index + 1'></sections>
           <div v-else>
             <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' v-if="submission_id === -1"></questions>
             <responses :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' :submission_id='submission_id' v-else></responses>
