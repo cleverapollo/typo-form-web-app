@@ -33,11 +33,6 @@
         return this.$store.getters.loading
       }
     },
-    created: function () {
-      this.$store.dispatch('loadApplications')
-      this.$store.dispatch('loadForms', this.application_id)
-      this.$store.dispatch('loadSections', this.id)
-    },
     methods: {
       getRole (roleId) {
         const role = this.roles.find((role) => {

@@ -172,11 +172,6 @@
       onBack () {
         this.$router.push('/applications/' + this.application_id + '/forms')
       }
-    },
-    created: function () {
-      this.$store.dispatch('loadForms', this.application_id)
-      this.$store.dispatch('loadSections', this.id)
-      this.$store.dispatch('loadSubmissions', this.id)
     }
   }
 </script>

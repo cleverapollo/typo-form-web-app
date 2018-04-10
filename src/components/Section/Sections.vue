@@ -57,6 +57,9 @@
         <question-repeatable
           v-if='hasRepeatableQuestions'
           :questions='section.questions'
+          :min-rows='section.min_rows'
+          :max-rows='section.max_rows'
+          @update-limitation='updateRepeatableLimitation'
           @create-question='createQuestion'
           @delete-question='deleteQuestion'
           @update-question='updateQuestion'
@@ -86,7 +89,7 @@
              class='item pb-5' :class='{ question: !isSection(element) }'>
           <sections :section='element' :form_id='form_id' :submission_id='submission_id' :index='index + 1'
                     v-if='isSection(element)'></sections>
-          <answer :question='element' :form_id='form_id' :submission_id='submission_id' :section_id="section.id"  :index='index + 1'
+          <answer :question='element' :form_id='form_id' :submission_id='submission_id' :section_id="section.id"
                   v-else></answer>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
@@ -337,6 +340,13 @@
               order: order
             })
         }
+      },
+      updateRepeatableLimitation (limitation) {
+        // limitation = {min_rows: '', max_rows: ''}
+        // todo: update min_rows and max_rows
+        console.log('limitation update', limitation)
+        this.section.min_rows = limitation.min_rows || this.section.min_rows
+        this.section.max_rows = limitation.max_rows || this.section.max_rows
       }
     }
   }

@@ -182,7 +182,7 @@
             title: 'Linear scale'
           },
           {
-            action: 'apps',
+            action: 'grain',
             title: 'Multiple choice grid'
           },
           {
