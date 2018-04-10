@@ -33,7 +33,7 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
         <router-link to="/" tag="span" style="cursor: pointer">{{ title }}</router-link>
-      </v-toolbar-title>      
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <template v-if="userIsAuthenticated">
         <v-btn icon>
@@ -112,3 +112,9 @@ export default {
   name: 'App'
 }
 </script>
+
+<style>
+  .break-all {
+    word-break: break-all;
+  }
+</style>
