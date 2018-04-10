@@ -1,5 +1,5 @@
 <template>
-  <v-card active-class='active-section' class='elevation-12' v-bind:class='{"mx-5": section.parent_section_id !== null}'>
+  <v-card active-class='active-section' class='elevation-12 ma-1'>
     <v-toolbar class='handle'>
       <v-toolbar-title>{{ 'Section ' + index }}</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -75,7 +75,7 @@
         </div>
       </div>
       <draggable v-else v-model='list' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
-        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-5 item'>
+        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-2 item'>
           <sections :section='element' :form_id='form_id' v-if='isSection(element)' :submission_id='submission_id' :index='index + 1'></sections>
           <div v-else>
             <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' v-if="submission_id === -1"></questions>
