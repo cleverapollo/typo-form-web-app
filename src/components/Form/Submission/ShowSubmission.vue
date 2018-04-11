@@ -1,5 +1,5 @@
 <template>
-  <form-view :form_id="form_id" :submission_id="submission_id"></form-view>
+  <form-view :application_id='application_id' :form_id="form_id" :submission_id="submission_id"></form-view>
 </template>
 
 <script>

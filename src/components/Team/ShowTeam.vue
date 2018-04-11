@@ -16,8 +16,8 @@
             <h1 class="primary--text">{{ team.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{joinURL}}</h3>
-            <h3>{{ team.description }}</h3>
+            <h3 class="break-all">{{joinURL}}</h3>
+            <h3 class="break-all">{{ team.description }}</h3>
             <app-invite-team :application_id="application_id" :team_id="id"></app-invite-team>
             <v-tabs v-model="active">
               <v-tabs-bar class="primary" dark>
@@ -74,10 +74,12 @@
             </v-tabs>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="info" @click=onBack>Back</v-btn>
-            <v-spacer></v-spacer>
-            <app-edit-team :team="team" :application_id="application_id"></app-edit-team>
-            <v-btn class="error" @click=onDeleteTeam>Delete</v-btn>
+            <v-layout row wrap>
+              <app-edit-team :team="team" :application_id="application_id" class="my-1"></app-edit-team>
+              <v-btn class="error my-1" @click=onDeleteTeam>Delete</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
+            </v-layout>
           </v-card-actions>
         </v-card>
       </v-flex>

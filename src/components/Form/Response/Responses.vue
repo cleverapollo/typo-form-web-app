@@ -1,5 +1,8 @@
 <template>
-  <v-card active-class='active-question' class='elevation-12'>
+  <v-card active-class='active-question' class='elevation-12 ma-2'>
+    <v-toolbar>
+      <v-toolbar-title>{{ 'Question ' + index }}</v-toolbar-title>
+    </v-toolbar>
     <v-card-text>
       <v-layout row>
         <v-flex xs4>
@@ -48,7 +51,7 @@
   import * as _ from 'lodash'
 
   export default {
-    props: ['question', 'form_id', 'submission_id', 'section_id'],
+    props: ['question', 'form_id', 'submission_id', 'index', 'section_id'],
     components: {
       draggable
     },
@@ -71,56 +74,6 @@
           'Date': dateComponent,
           'Time': timeComponent
         },
-        menuItems: [
-          {
-            action: 'short_text',
-            title: 'Short answer'
-          },
-          {
-            action: 'subject',
-            title: 'Paragraph'
-          },
-          {divider: true},
-          {
-            action: 'radio_button_checked',
-            title: 'Multiple choice'
-          },
-          {
-            action: 'check_box',
-            title: 'Checkboxes'
-          },
-          {
-            action: 'arrow_drop_down_circle',
-            title: 'Dropdown'
-          },
-          {divider: true},
-          {
-            action: 'cloud_upload',
-            title: 'File upload'
-          },
-          {divider: true},
-          {
-            action: 'linear_scale',
-            title: 'Linear scale'
-          },
-          {
-            action: 'apps',
-            title: 'Multiple choice grid'
-          },
-          {
-            action: 'apps',
-            title: 'Checkbox grid'
-          },
-          {divider: true},
-          {
-            action: 'event',
-            title: 'Date'
-          },
-          {
-            action: 'schedule',
-            title: 'Time'
-          }
-        ],
         hasValidation: false
       }
     },

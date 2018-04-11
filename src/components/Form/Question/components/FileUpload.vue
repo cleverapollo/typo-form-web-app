@@ -1,5 +1,5 @@
 <template>
-  <v-flex justify-space-around style='max-width: 500px'>
+  <v-flex justify-space-around style='max-width: 500px' v-show='false'>
     <v-layout row wrap class='pb-4' align-baseline>
       <v-flex>
         Allow only specific file types

@@ -11,6 +11,7 @@ import question from './question'
 import answer from './answer'
 import submission from './submission'
 import response from './response'
+import validation from './validation'
 import auth from './auth'
 import shared from './shared'
 
@@ -29,6 +30,7 @@ export const store = new Vuex.Store({
     answer: answer,
     submission: submission,
     response: response,
+    validation: validation,
     shared: shared
   }
 })
