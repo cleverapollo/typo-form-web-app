@@ -3,7 +3,7 @@
     <div slot="activator" v-if='parent_section_id !== -1'>
       Create Section
     </div>
-    <v-btn slot="activator" large block class="primary" v-else>Create Section</v-btn>
+    <v-btn slot="activator" block class="primary" v-else>Create Section</v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>

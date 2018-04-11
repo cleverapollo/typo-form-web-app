@@ -53,7 +53,7 @@
                 <v-tabs-content
                   id='questions'
                 >
-                  <form-view :form_id='id' :submission_id='-1'></form-view>
+                  <form-view :application_id='application_id' :form_id='id' :submission_id='-1'></form-view>
                 </v-tabs-content>
                 <v-tabs-content
                   id='responses'
@@ -63,10 +63,6 @@
               </v-tabs-items>
             </v-tabs>
           </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="info" @click=onBack>Back</v-btn>
-          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -123,9 +119,6 @@
           applicationid: this.application_id,
           id: this.id
         })
-        this.$router.push('/applications/' + this.application_id + '/forms')
-      },
-      onBack () {
         this.$router.push('/applications/' + this.application_id + '/forms')
       }
     },

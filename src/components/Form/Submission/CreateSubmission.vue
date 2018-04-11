@@ -6,7 +6,7 @@
       class="primary"
       @click.native.stop="createSubmission = true"
     >
-      Create Submission
+      <v-icon>add</v-icon>
     </v-btn>
     <v-dialog width="350px" persistent v-model="createSubmission">
       <v-card>

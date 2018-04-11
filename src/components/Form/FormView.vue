@@ -1,16 +1,18 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs12>
+  <v-card>
+    <v-card-text>
       <draggable v-model="list" class="parent" :options="{group:'parent', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
         <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
           <sections :section='element' :form_id='form_id' :submission_id='submission_id' :index='index + 1'></sections>
         </div>
       </draggable>
-    </v-flex>
-    <v-flex xs12 text-xs-center v-if='submission_id === -1'>
-      <app-create-section :parent_section_id='-1' :form_id='form_id'></app-create-section>
-    </v-flex>
-  </v-layout>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="info" @click=onBack>Back</v-btn>
+      <v-spacer></v-spacer>
+      <app-create-section :parent_section_id='-1' :form_id='form_id' v-if='submission_id === -1'></app-create-section>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
@@ -18,7 +20,7 @@
   import sections from './Section/Sections'
 
   export default {
-    props: ['form_id', 'submission_id'],
+    props: ['application_id', 'form_id', 'submission_id'],
     components: {
       draggable,
       sections
@@ -34,6 +36,9 @@
       }
     },
     methods: {
+      onBack () {
+        this.$router.push('/applications/' + this.application_id + '/forms')
+      },
       checkEnd: function (evt) {
         if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
           return
