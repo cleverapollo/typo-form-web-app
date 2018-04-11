@@ -1,7 +1,7 @@
 <template>
-	<div>
-		File Upload
-	</div>
+  <div>
+    File Upload
+  </div>
 </template>
 
 <script>

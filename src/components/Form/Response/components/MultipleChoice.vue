@@ -6,7 +6,6 @@
 </template>
 
 <script>
-  //  import * as _ from 'lodash'
   export default {
     name: 'multiple-choice',
     props: ['answers', 'responses'],

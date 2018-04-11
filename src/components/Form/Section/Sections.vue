@@ -1,6 +1,6 @@
 <template>
   <v-card active-class='active-section' class='elevation-12 ma-1'>
-    <v-toolbar class='handle'>
+    <v-toolbar :class='{ "handle": submission_id === -1 }'>
       <v-toolbar-title>{{ 'Section ' + index }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click.prevent='toggleExpand'>

@@ -9,7 +9,6 @@
       <v-layout row v-for='(row, index) in computedRows' :key='"row " + index'>
         <v-flex xs2>
           <v-layout row>
-            <h3>{{ index + 1 }}.</h3>
             <h3>{{row.answer}}</h3>
           </v-layout>
         </v-flex>
@@ -23,7 +22,6 @@
     </v-flex>
   </v-layout>
 </template>
-
 
 <script>
   export default {
@@ -98,34 +96,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .radio-wrapper {
-    display: inline-block;
-  }
-
-  .radio-wrapper > i {
-    font-style: normal;
-    color: inherit;
-    margin-top: 1em;
-    margin-right: 0.3em;
-  }
-
-  .input-wrapper {
-    display: inline-block;
-    width: 70%;
-  }
-
-  .close-wrapper {
-    display: inline-block;
-    padding: 0.5em;
-  }
-
-  .actions {
-    display: flex;
-  }
-
-  .actions > .input-wrapper {
-    width: 7em;
-  }
-</style>
