@@ -47,13 +47,7 @@
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-actions>
-              <v-btn
-                flat
-                class="secondary"
-                @click="onCancel"
-              >
-                Close
-              </v-btn>
+              <v-spacer></v-spacer>
               <v-btn 
                 flat 
                 class="primary" 
@@ -65,6 +59,13 @@
                 <span slot="loader" class="custom-loader">
                   <v-icon light>cached</v-icon>
                 </span>
+              </v-btn>
+              <v-btn
+                flat
+                class="secondary"
+                @click="onCancel"
+              >
+                Close
               </v-btn>
             </v-card-actions>
           </v-flex>

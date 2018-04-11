@@ -6,6 +6,8 @@
           <sections :section='element' :form_id='form_id' :submission_id='submission_id' :index='index + 1'></sections>
         </div>
       </draggable>
+    </v-flex>
+    <v-flex xs12 text-xs-center v-if='submission_id === -1'>
       <app-create-section :parent_section_id='-1' :form_id='form_id'></app-create-section>
     </v-flex>
   </v-layout>

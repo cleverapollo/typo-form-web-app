@@ -1,8 +1,9 @@
 <template>
   <v-dialog width="350px" persistent v-model="createSection">
-    <div slot="activator">
+    <div slot="activator" v-if='parent_section_id !== -1'>
       Create Section
     </div>
+    <v-btn slot="activator" large block class="primary" v-else>Create Section</v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
@@ -29,13 +30,7 @@
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-actions>
-              <v-btn
-                flat
-                class="secondary"
-                @click="onCancel"
-              >
-                Close
-              </v-btn>
+              <v-spacer></v-spacer>
               <v-btn 
                 flat 
                 class="primary" 
@@ -47,6 +42,13 @@
                 <span slot="loader" class="custom-loader">
                   <v-icon light>cached</v-icon>
                 </span>
+              </v-btn>
+              <v-btn
+                flat
+                class="secondary"
+                @click="onCancel"
+              >
+                Close
               </v-btn>
             </v-card-actions>
           </v-flex>
