@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex xs9>
-      <show-submission :application_id="application_id" :form_id="form_id" :submission_id="submission_id"></show-submission>
+      <show-submission v-if="submissions.length" :application_id="application_id" :form_id="form_id" :submission_id="submissions[0].id"></show-submission>
     </v-flex>
     <v-flex xs3>
       <v-card>
