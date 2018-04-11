@@ -49,6 +49,9 @@
       submissions () {
         return this.$store.getters.loadedSubmissions(parseInt(this.form_id))
       },
+      submissionTeams () {
+        return this.$store.getters.loadedSubmissionTeams(parseInt(this.application_id), parseInt(this.form_id))
+      },
       application () {
         return this.$store.getters.loadedApplication(parseInt(this.application_id))
       },

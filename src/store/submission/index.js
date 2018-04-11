@@ -167,6 +167,24 @@ export default {
           return submission.id === submissionid
         })
       }
+    },
+    loadedSubmissionTeams (state, getters, rootState) {
+      return (applicationid, formid) => {
+        console.log(state.loadedSubmissions)
+        if (!rootState.team.loadedTeams[applicationid]) {
+          return []
+        }
+        const teams = rootState.team.loadedTeams[applicationid]
+        if (!state.loadedSubmissions[formid]) {
+          return teams
+        }
+        return teams.filter((team) => {
+          const index = state.loadedSubmissions[formid].find((submission) => {
+            return submission.team && submission.team.id === team.id
+          })
+          return index === -1
+        })
+      }
     }
   }
 }

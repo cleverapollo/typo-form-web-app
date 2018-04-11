@@ -58,7 +58,7 @@
                 <v-tabs-content
                   id='responses'
                 >
-                  <responses :form_id='id'></responses>
+                  <responses :application_id='application_id' :form_id='id'></responses>
                 </v-tabs-content>
               </v-tabs-items>
             </v-tabs>
@@ -131,6 +131,7 @@
     },
     created: function () {
       this.$store.dispatch('loadApplications')
+      this.$store.dispatch('loadTeams', this.application_id)
       this.$store.dispatch('loadForms', this.application_id)
       this.$store.dispatch('loadSections', this.id)
       this.$store.dispatch('loadSubmissions', this.id)
