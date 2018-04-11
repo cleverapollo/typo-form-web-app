@@ -31,6 +31,9 @@ export default {
         question_id: payload.questionid,
         answer_id: payload.answerid
       }
+      if (payload.order) {
+        response.order = payload.order
+      }
       window.axios.post(SUBMISSION_URL + payload.submissionid + RESPONSE_URL, response)
         .then(
           response => {
@@ -58,6 +61,12 @@ export default {
       }
       if (payload.answerid) {
         updateObj.answer_id = payload.answerid
+      }
+      if (payload.questionid) {
+        updateObj.question_id = payload.questionid
+      }
+      if (payload.order) {
+        updateObj.order = payload.order
       }
 
       window.axios.put(SUBMISSION_URL + payload.submissionid + RESPONSE_URL + payload.id, updateObj)

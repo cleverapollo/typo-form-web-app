@@ -1,8 +1,8 @@
 <template>
-  <v-layout row wrap justify-space-around>
+  <v-layout row wrap class='pl-3 pr-3'>
     <v-flex xs10 offset-xs2 class="pb-3">
       <v-layout row>
-        <v-flex v-for='(column, index) in computedAnswers' :key='"ColumnString " + index'>
+        <v-flex class='pl-2' v-for='(column, index) in computedAnswers' :key='"ColumnString " + index'>
           {{ column.answer }}
         </v-flex>
       </v-layout>
@@ -15,16 +15,26 @@
             v-model="selectedOptions[index]"
             item-text="question"
             item-value="id"
-            @change="onChangedRow(index)"
+            @change="onChangedRow(index, row.order, $event)"
             label="Select"
             single-line
             bottom
           ></v-select>
         </v-flex>
-        <v-text-field v-for='(column, index2) in computedAnswers' :key='"column " + index2'
-                      :value="getResponseValue(index, column.id)"
-                      @change="onChangedColumn(index, column.id, $event)"></v-text-field>
+        <v-flex v-for='(column, index2) in computedAnswers' :key='"column " + index2'>
+          <v-text-field class="pl-2" :value="getResponseValue(index, column.id, row.order)"
+                        @change="onChangedColumn(index, column.id, row.order, $event)"></v-text-field>
+        </v-flex>
       </v-layout>
+    </v-flex>
+    <v-flex>
+      <v-btn
+        dark
+        class="primary"
+        @click="createResponse"
+      >
+        <v-icon>add</v-icon>
+      </v-btn>
     </v-flex>
   </v-layout>
 </template>
@@ -58,40 +68,53 @@
       }
     },
     methods: {
-      getResponseValue (rowindex, answerid) {
+      getResponseValue (rowindex, answerid, order) {
         const $this = this
         let response = this.responses.find((response) => {
-          return response.question_id === $this.selectedOptions[rowindex] && response.answerid === answerid
+          return response.question_id === $this.selectedOptions[rowindex] && response.answer_id === answerid && response.order === order
         })
         if (response) {
           return response.response
         }
         return ''
       },
-      onChangedRow (rowindex) {
+      orderByResponses () {
+        const length = this.computedResponses.length
+        if (length) {
+          return this.computedResponses[length - 1].order + 1
+        } else {
+          return 1
+        }
+      },
+      createResponse () {
+        this.$emit('create-response', [this.computedAnswers[0].id, '', this.computedQuestions[0].id, this.orderByResponses()])
+        this.selectedOptions.push(this.computedQuestions[0].id)
+      },
+      onChangedRow (rowindex, order, value) {
         const $this = this
         let responses = this.responses.filter((response) => {
-          return response.question_id === $this.selectedOptions[rowindex]
+          return response.question_id === $this.selectedOptions[rowindex] && response.order === order
         })
         responses.forEach((response) => {
-          $this.$emit('update-response', [response.answer_id, response.response, response.id, $this.selectedOptions[rowindex]])
+          $this.$emit('update-response', [response.answer_id, response.response, response.id, value, order])
         })
       },
-      onChangedColumn (rowindex, answerid, value) {
+      onChangedColumn (rowindex, answerid, order, value) {
         const $this = this
-        let response = this.response.find((response) => {
-          return response.question_id === $this.selectedOptions[rowindex] && response.answer_id === answerid
+        let response = this.responses.find((response) => {
+          return response.question_id === $this.selectedOptions[rowindex] && response.answer_id === answerid && response.order === order
         })
+
         if (response) {
-          this.$emit('update-response', [response.answer_id, response.response, response.id, this.selectedOptions[rowindex]])
+          this.$emit('update-response', [response.answer_id, value, response.id, this.selectedOptions[rowindex], order])
         } else {
-          this.$emit('create-response', [answerid, value, this.selectedOptions[rowindex]])
+          this.$emit('create-response', [answerid, value, this.selectedOptions[rowindex], this.computedResponses[rowindex].order])
         }
       }
     },
     mounted () {
       if (!this.responses.length) {
-        this.$emit('create-response', [this.computedAnswers[0].id, '', this.computedQuestions[0].id])
+        this.createResponse()
       }
       let options = []
       if (this.computedResponses.length) {

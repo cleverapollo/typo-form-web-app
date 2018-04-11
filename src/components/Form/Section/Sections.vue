@@ -161,7 +161,6 @@
         if (!this.submission_id) {
           return []
         }
-
         let submission = this.$store.getters.loadedSubmission(parseInt(this.form_id), parseInt(this.submission_id))
         let responses = submission.responses.filter((response) => {
           const questions = this.section.questions.filter((question) => {
@@ -261,26 +260,30 @@
         const answerid = args[0]
         const response = args[1]
         const questionid = args[2]
+        const order = args[3]
         this.$store.dispatch('createResponse', {
           submissionid: this.submission_id,
           questionid: questionid,
           formid: this.form_id,
           answerid: answerid,
-          response: response
+          response: response,
+          order: order
         })
       },
       updateResponse (args) {
         const answerid = args[0]
         const response = args[1]
         const id = args[2]
-        const questionid = args[4]
+        const questionid = args[3]
+        const order = args[4]
         this.$store.dispatch('updateResponse', {
           submissionid: this.submission_id,
           questionid: questionid,
           formid: this.form_id,
           answerid: answerid,
           response: response,
-          id: id
+          id: id,
+          order: order
         })
       },
       setEditMode () {
