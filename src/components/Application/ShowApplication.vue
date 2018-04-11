@@ -16,7 +16,7 @@
             <h1 class="primary--text">{{ application.name }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3 v-if=userIsAdmin>{{joinURL}}</h3>
+            <h3 class="break-all" v-if=userIsAdmin>{{joinURL}}</h3>
             <v-list>
               <v-list-tile v-for="item in items" :key="item.title" @click="onList(item.type)" v-if="showUsersToAdmin(item.type)">
                 <v-list-tile-content>
@@ -26,10 +26,15 @@
             </v-list>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
-            <v-btn color="info" @click=onBack>Back</v-btn>
-            <v-spacer></v-spacer>
-            <app-edit-application :application="application"></app-edit-application>
-            <v-btn class="error" @click=onDeleteApplication>Delete</v-btn>
+            <v-layout column>
+              <v-layout row py-1>
+                <app-edit-application :application="application"></app-edit-application>
+                <v-btn class="error" @click=onDeleteApplication>Delete</v-btn>
+              </v-layout>
+              <v-layout row py-1>
+                <v-btn color="info" @click=onBack>Back</v-btn>
+              </v-layout>
+            </v-layout>
           </v-card-actions>
         </v-card>
       </v-flex>

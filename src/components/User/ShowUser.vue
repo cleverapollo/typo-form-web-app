@@ -13,16 +13,21 @@
       <v-flex xs12>
         <v-card v-if="user">
           <v-card-title>
-            <h1 class="primary--text">{{ user.email }}</h1>
+            <h1 class="primary--text ellipsis">{{ user.email }}</h1>
           </v-card-title>
           <v-card-text>
-            <h3>{{ user.first_name }} {{ user.last_name }} - {{ getRole(user.application_role_id) }}</h3>
+            <h3 class="break-all">{{ user.first_name }} {{ user.last_name }} - {{ getRole(user.application_role_id) }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
-            <v-btn color="info" @click=onBack>Back</v-btn>
-            <v-spacer></v-spacer>
-            <app-edit-user :user="user" :application_id="application_id"></app-edit-user>
-            <v-btn class="error" @click=onDeleteUser>Delete</v-btn>
+            <v-layout column>
+              <v-layout row py-1>
+                <app-edit-user :user="user" :application_id="application_id"></app-edit-user>
+                <v-btn class="error" @click=onDeleteUser>Delete</v-btn>
+              </v-layout>
+              <v-layout row py-1>
+                <v-btn color="info" @click=onBack>Back</v-btn>
+              </v-layout>
+            </v-layout>
           </v-card-actions>
         </v-card>
       </v-flex>
