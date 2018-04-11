@@ -74,14 +74,11 @@
             </v-tabs>
           </v-card-text>
           <v-card-actions>
-            <v-layout column>
-              <v-layout row py-1>
-                <app-edit-team :team="team" :application_id="application_id"></app-edit-team>
-                <v-btn class="error" @click=onDeleteTeam>Delete</v-btn>
-              </v-layout>
-              <v-layout row py-1>
-                <v-btn color="info" @click=onBack>Back</v-btn>
-              </v-layout>
+            <v-layout row wrap>
+              <app-edit-team :team="team" :application_id="application_id" class="my-1"></app-edit-team>
+              <v-btn class="error my-1" @click=onDeleteTeam>Delete</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
             </v-layout>
           </v-card-actions>
         </v-card>

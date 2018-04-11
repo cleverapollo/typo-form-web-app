@@ -1,69 +1,63 @@
 <template>
-  <v-container>
-    <v-layout row wrap class="mb-2">
-      <v-flex xs12>
-        <app-invite-application :application_id="application_id"  v-if="userIsAdmin"></app-invite-application>
-        <v-btn
-          color="info"
-          @click=onBack>
-          Back
-        </v-btn>
-        <v-tabs v-model="active">
-          <v-tabs-bar class="primary" dark>
-            <v-tabs-item
-              :href="'#member'"
-              ripple
+  <v-layout row wrap>
+    <app-invite-application :application_id="application_id"  v-if="userIsAdmin"></app-invite-application>
+    <v-spacer></v-spacer>
+    <v-btn color="info" @click=onBack>Back</v-btn>
+    <v-flex xs12>
+      <v-tabs v-model="active">
+        <v-tabs-bar class="primary" dark>
+          <v-tabs-item
+            :href="'#member'"
+            ripple
+          >
+            Members
+          </v-tabs-item>
+          <v-tabs-item
+            :href="'#invite'"
+            ripple
+          >
+            Invites
+          </v-tabs-item>
+        </v-tabs-bar>
+        <v-tabs-items>
+          <v-tabs-content
+            :id="'member'"
+          >
+            <v-data-table
+              :headers="headers"
+              :items="users"
+              hide-actions
+              class="elevation-1"
             >
-              Members
-            </v-tabs-item>
-            <v-tabs-item
-              :href="'#invite'"
-              ripple
+              <template slot="items" slot-scope="props">
+                <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
+                <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
+                <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
+                <td @click=onLoadUser(props.item.id)>{{ getRole(props.item.application_role_id) }}</td>
+              </template>
+            </v-data-table>
+          </v-tabs-content>
+          <v-tabs-content
+            :id="'invite'"
+          >
+            <v-data-table
+              :headers="headers.slice(0, 3)"
+              :items="invitedUsers"
+              hide-actions
+              class="elevation-1"
+              no-data-text="No invites"
             >
-              Invites
-            </v-tabs-item>
-          </v-tabs-bar>
-          <v-tabs-items>
-            <v-tabs-content
-              :id="'member'"
-            >
-              <v-data-table
-                :headers="headers"
-                :items="users"
-                hide-actions
-                class="elevation-1"
-              >
-                <template slot="items" slot-scope="props">
-                  <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
-                  <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
-                  <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
-                  <td @click=onLoadUser(props.item.id)>{{ getRole(props.item.application_role_id) }}</td>
-                </template>
-              </v-data-table>
-            </v-tabs-content>
-            <v-tabs-content
-              :id="'invite'"
-            >
-              <v-data-table
-                :headers="headers.slice(0, 3)"
-                :items="invitedUsers"
-                hide-actions
-                class="elevation-1"
-                no-data-text="No invites"
-              >
-                <template slot="items" slot-scope="props">
-                  <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
-                  <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
-                  <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
-                </template>
-              </v-data-table>
-            </v-tabs-content>
-          </v-tabs-items>
-        </v-tabs>
-      </v-flex>
-    </v-layout>
-    
-  </v-container>
+              <template slot="items" slot-scope="props">
+                <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
+                <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
+                <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
+              </template>
+            </v-data-table>
+          </v-tabs-content>
+        </v-tabs-items>
+      </v-tabs>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>

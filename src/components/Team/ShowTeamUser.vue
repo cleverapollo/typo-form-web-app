@@ -19,14 +19,11 @@
             <h3 class="break-all">{{ user.first_name }} {{ user.last_name }} - {{ getRole(user.team_role_id) }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
-            <v-layout column>
-              <v-layout row py-1>
-                <app-edit-teamuser :user="user" :application_id="application_id" :team_id="team_id"></app-edit-teamuser>
-                <v-btn class="error" @click=onDeleteTeamUser>Delete</v-btn>
-              </v-layout>
-              <v-layout row py-1>
-                <v-btn color="info" @click=onBack>Back</v-btn>
-              </v-layout>
+            <v-layout row wrap>
+              <app-edit-teamuser :user="user" :application_id="application_id" :team_id="team_id" class="my-1"></app-edit-teamuser>
+              <v-btn class="error my-1" @click=onDeleteTeamUser>Delete</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
             </v-layout>
           </v-card-actions>
         </v-card>
