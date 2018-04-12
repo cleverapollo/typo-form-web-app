@@ -54,7 +54,7 @@
     </v-card-title>
     <v-card-text class='px-0' v-show='expanded'>
       <div v-if='hasRepeatableQuestions'>
-        <div v-if="submission_id === -1">
+        <div v-if="submission_id === -1000">
           <question-repeatable
             :questions='section.questions'
             :min-rows='section.min_rows'
@@ -68,18 +68,34 @@
             @update-answer='updateAnswer'
             @move-answer='moveAnswer'
             @move-question='moveQuestion'
-            >
+          >
           </question-repeatable>
         </div>
-        <div v-else>
+        <div v-if="submission_id > 0">
+          <response-repeatable
+            :questions='section.questions'
+            :min-rows='section.min_rows'
+            :max-rows='section.max_rows'
+            :responses='responses'
+            @create-response='createResponse'
+            @update-response='updateResponse'
+            @delete-response='deleteResponse'
+          >
+          </response-repeatable>
         </div>
       </div>
-      <draggable v-else v-model='list' :class="'section' + section.id" :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px' @end="checkEnd">
-        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id' :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-2 item'>
-          <sections :section='element' :form_id='form_id' v-if='isSection(element)' :submission_id='submission_id' :index='index + 1'></sections>
+      <draggable v-else v-model='list' :class="'section' + section.id"
+                 :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px'
+                 @end="checkEnd">
+        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
+             :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-2 item'>
+          <sections :section='element' :form_id='form_id' v-if='isSection(element)' :submission_id='submission_id'
+                    :index='index + 1'></sections>
           <div v-else>
-            <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' v-if="submission_id === -1"></questions>
-            <responses :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1' :submission_id='submission_id' v-else></responses>
+            <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1'
+                       v-if="submission_id === -1"></questions>
+            <responses :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1'
+                       :submission_id='submission_id' v-else></responses>
           </div>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
@@ -99,6 +115,9 @@
   import questions from '../Question/Questions'
   import responses from '../Response/Responses'
   import questionRepeatable from '../Question/components/QuestionRepeatable'
+  import ResponseRepeatable from '../Response/components/ResponseRepeatable'
+  import * as _ from 'lodash'
+
   export default {
     name: 'sections',
     props: ['section', 'form_id', 'submission_id', 'index'],
@@ -106,7 +125,8 @@
       draggable,
       questions,
       responses,
-      questionRepeatable
+      questionRepeatable,
+      ResponseRepeatable
     },
     data () {
       return {
@@ -137,6 +157,25 @@
       },
       repeatable () {
         return this.section.repeatable
+      },
+      responses () {
+        if (!this.submission_id) {
+          return []
+        }
+        let submission = this.$store.getters.loadedSubmission(parseInt(this.form_id), parseInt(this.submission_id))
+        let responses = submission.responses.filter((response) => {
+          const questions = this.section.questions.filter((question) => {
+            return question.id === response.question_id
+          })
+          if (questions.length) {
+            return true
+          }
+          return false
+        })
+
+        return _.sortBy(responses, element => {
+          return element.order
+        })
       }
     },
     methods: {
@@ -213,6 +252,47 @@
           questionid: questionid,
           id: index,
           answer: answer
+        })
+      },
+      createResponse (args) {
+        if (this.submission_id < 0) {
+          return
+        }
+        const answerid = args[0]
+        const response = args[1]
+        const questionid = args[2]
+        const order = args[3]
+        this.$store.dispatch('createResponse', {
+          submissionid: this.submission_id,
+          questionid: questionid,
+          formid: this.form_id,
+          answerid: answerid,
+          response: response,
+          order: order
+        })
+      },
+      updateResponse (args) {
+        const answerid = args[0]
+        const response = args[1]
+        const id = args[2]
+        const questionid = args[3]
+        const order = args[4]
+        this.$store.dispatch('updateResponse', {
+          submissionid: this.submission_id,
+          questionid: questionid,
+          formid: this.form_id,
+          answerid: answerid,
+          response: response,
+          id: id,
+          order: order
+        })
+      },
+      deleteResponse (args) {
+        this.$store.dispatch('deleteResponse', {
+          submissionid: this.submission_id,
+          questionid: args[1],
+          formid: this.form_id,
+          id: args[0]
         })
       },
       setEditMode () {
