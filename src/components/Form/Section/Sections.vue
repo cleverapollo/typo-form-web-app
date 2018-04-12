@@ -54,7 +54,7 @@
     </v-card-title>
     <v-card-text class='px-0' v-show='expanded'>
       <div v-if='hasRepeatableQuestions'>
-        <div v-if="submission_id === -1">
+        <div v-if="submission_id === -1000">
           <question-repeatable
             :questions='section.questions'
             :min-rows='section.min_rows'
@@ -71,7 +71,7 @@
           >
           </question-repeatable>
         </div>
-        <div v-else>
+        <div v-if="submission_id > 0">
           <response-repeatable
             :questions='section.questions'
             :min-rows='section.min_rows'
@@ -79,6 +79,7 @@
             :responses='responses'
             @create-response='createResponse'
             @update-response='updateResponse'
+            @delete-response='deleteResponse'
           >
           </response-repeatable>
         </div>
@@ -284,6 +285,14 @@
           response: response,
           id: id,
           order: order
+        })
+      },
+      deleteResponse (args) {
+        this.$store.dispatch('deleteResponse', {
+          submissionid: this.submission_id,
+          questionid: args[1],
+          formid: this.form_id,
+          id: args[0]
         })
       },
       setEditMode () {
