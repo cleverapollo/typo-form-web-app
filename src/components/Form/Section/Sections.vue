@@ -54,7 +54,7 @@
     </v-card-title>
     <v-card-text class='px-0' v-show='expanded'>
       <div v-if='hasRepeatableQuestions'>
-        <div v-if="submission_id === -1000">
+        <div v-if="submission_id === -1">
           <question-repeatable
             :questions='section.questions'
             :min-rows='section.min_rows'
@@ -71,7 +71,7 @@
           >
           </question-repeatable>
         </div>
-        <div v-if="submission_id > 0">
+        <div v-else>
           <response-repeatable
             :questions='section.questions'
             :min-rows='section.min_rows'
@@ -255,7 +255,7 @@
         })
       },
       createResponse (args) {
-        if (this.submission_id < 0) {
+        if (this.submission_id <= 0) {
           return
         }
         const answerid = args[0]

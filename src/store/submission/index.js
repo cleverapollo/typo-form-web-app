@@ -31,13 +31,13 @@ export default {
       const submission = state.loadedSubmissions[payload.formid].find((submission) => {
         return submission.id === payload.submissionid
       })
-      submission.responses = submission.responses.slice(0)
-      submission.responses.push(payload.responses)
+      submission.responses = payload.responses
     },
     createResponse (state, payload) {
       const submission = state.loadedSubmissions[payload.formid].find((submission) => {
         return submission.id === payload.submissionid
       })
+      submission.responses = submission.responses.slice(0)
       submission.responses.push(payload.response)
     },
     updateResponse (state, payload) {

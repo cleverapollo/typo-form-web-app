@@ -2,7 +2,7 @@
 
   <v-layout row wrap pa-1>
     <v-flex xs9 d-flex>
-      <show-submission v-if="submissions.length" :application_id="application_id" :form_id="form_id" :submission_id="submissions[0].id"></show-submission>
+      <show-submission :application_id="application_id" :form_id="form_id" :submission_id="submission_id"></show-submission>
     </v-flex>
     <v-flex xs3 d-flex>
       <v-card>
@@ -64,6 +64,13 @@
           return false
         }
         return this.getRole(this.application.role_id) === 'Admin'
+      }
+    },
+    watch: {
+      submissions (value) {
+        if (value.length) {
+          this.submission_id = value[0].id
+        }
       }
     },
     methods: {
