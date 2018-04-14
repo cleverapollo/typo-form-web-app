@@ -65,14 +65,20 @@
         <v-flex xs12>
           <component
             :is='questionComponent'
+            :question-id='question.id'
             :answers='answers'
             :has-validation='mandatory && hasValidation'
+            :validation-data='_validationData'
+            :validation-type='_validationType'
             @create-answer='createAnswer'
             @delete-answer='deleteAnswer'
             @delete-answers='deleteAnswers'
             @change-answer='changeAnswer'
             @update-answer='updateAnswer'
             @move-answer='moveAnswer'
+            @create-validation='createValidation'
+            @update-validation='updateValidation'
+            @remove-validation='removeValidation'
           ></component>
         </v-flex>
       </v-layout>
@@ -94,7 +100,7 @@
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
-          <v-list-tile v-if='mandatory' @click='toggleHasValidation'>
+          <v-list-tile v-if='mandatory' @click='createRemoveValidation'>
             <v-list-tile-title>
               {{ hasValidation ? 'Remove Validation' : 'Include Validation' }}
             </v-list-tile-title>
@@ -199,7 +205,10 @@
             title: 'Time'
           }
         ],
-        hasValidation: false
+        validationTypes: this.$store.getters.validationTypes,
+        validations: this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id),
+        validationData: '',
+        validationType: ''
       }
     },
     computed: {
@@ -208,6 +217,39 @@
       },
       questionTypes () {
         return this.$store.getters.questionTypes
+      },
+      _validationData () {
+        console.log('computed - validationData call')
+        const validations = this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id)
+        this.validations = validations
+        if (validations && validations.length && validations.length === 1) {
+          this.validationData = validations[0].validation_data
+          return validations[0].validation_data
+        } else {
+          this.validationData = ''
+          return ''
+        }
+      },
+      _validationType () {
+        console.log('computed - validationType call')
+        const validations = this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id)
+        const validationTypes = this.$store.getters.validationTypes
+        this.validationTypes = validationTypes
+        if (validations && validations.length && validations.length === 1 && validationTypes && validationTypes.length > 0) {
+          const index = _.findIndex(validationTypes, type => { return validations[0].validation_type_id === type.id })
+          if (index > -1) {
+            this.validationType = validationTypes[index].type
+            return validationTypes[index].type
+          } else {
+            this.validationType = ''
+            return ''
+          }
+        }
+      },
+      hasValidation () {
+        console.log('computed - hasValidation call')
+        const validations = this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id)
+        return !!(validations && validations.length && validations.length === 1)
       },
       questionTypeString: {
         get: function () {
@@ -231,11 +273,21 @@
     watch: {
       mandatory (value) {
         this.updateQuestion()
+      },
+      validationTypes (value) {
+        console.log('watch - validationTypes call', value)
+      },
+      validations (value) {
+        console.log('watch - validations call', value)
       }
     },
     methods: {
-      toggleHasValidation () {
-        this.hasValidation = !this.hasValidation
+      createRemoveValidation () {
+        if (this.hasValidation) {
+          window.Vue.$emit('validation-remove', this.question.id)
+        } else {
+          window.Vue.$emit('validation-create', this.question.id)
+        }
       },
       setQuestionType (str) {
         this.questionTypeId = _.findIndex(this.questionTypes, type => { return type.type === str }) + 1
@@ -347,6 +399,36 @@
           questionid: this.question.id,
           id: id,
           order: order
+        })
+      },
+      createValidation (...args) {
+        const name = args[0]
+        const validationTypeId = _.find(this.validationTypes, type => { return name === type.type }).id
+        this.$store.dispatch('createValidation', {
+          formid: this.form_id,
+          question_id: this.question.id,
+          validation_type_id: validationTypeId,
+          validation_data: `${args[1]},${args[2]}`
+        })
+      },
+      updateValidation (...args) {
+        const name = args[0]
+        const validationTypeId = _.find(this.validationTypes, type => { return name === type.type }).id
+        const validationId = this.validations[0].id
+        this.$store.dispatch('updateValidation', {
+          id: validationId,
+          formid: this.form_id,
+          question_id: this.question.id,
+          validation_type_id: validationTypeId,
+          validation_data: `${args[1]},${args[2]}`
+        })
+      },
+      removeValidation () {
+        console.log('this.validations[0]', this.validations[0])
+        const validationId = this.validations[0].id
+        this.$store.dispatch('deleteValidation', {
+          id: validationId,
+          formid: this.form_id
         })
       }
     }
