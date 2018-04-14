@@ -4,6 +4,7 @@ const JOIN_URL = `${API_URL}join/`
 const QUESTION_TYPE_URL = `${API_URL}question-type/`
 const ROLE_URL = `${API_URL}role/`
 const PERIOD_URL = `${API_URL}period/`
+const STATUS_URL = `${API_URL}status/`
 const VALIDATION_TYPE_URL = `${API_URL}validation-type/`
 
 export default {
@@ -13,7 +14,8 @@ export default {
     questionTypes: [],
     validationTypes: [],
     periods: [],
-    roles: []
+    roles: [],
+    statuses: []
   },
   mutations: {
     setLoading (state, payload) {
@@ -36,6 +38,9 @@ export default {
     },
     setPeriods (state, payload) {
       state.periods = payload
+    },
+    setStatuses (state, payload) {
+      state.statuses = payload
     }
   },
   actions: {
@@ -135,6 +140,22 @@ export default {
             console.log(error)
           }
         )
+    },
+    loadStatuses ({commit}) {
+      commit('setLoading', true)
+      window.axios.get(STATUS_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setStatuses', response['data']['statuses'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
     }
   },
   getters: {
@@ -163,6 +184,9 @@ export default {
     },
     roles (state) {
       return state.roles
+    },
+    statuses (state) {
+      return state.statuses
     }
   }
 }

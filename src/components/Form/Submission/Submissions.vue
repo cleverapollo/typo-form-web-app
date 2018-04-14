@@ -1,26 +1,28 @@
 <template>
-
   <v-layout row wrap pa-1>
     <v-flex xs9 d-flex>
       <show-submission v-if="submissions.length" :application_id="application_id" :form_id="form_id" :submission_id="submissions[0].id"></show-submission>
     </v-flex>
+
     <v-flex xs3 d-flex>
       <v-card>
         <v-toolbar color="primary" dark>
           <v-toolbar-title>Submission List</v-toolbar-title>
         </v-toolbar>
+
         <v-card-text>
           <v-list>
             <template v-for="(submission, index) in submissions">
               <v-list-tile @click="onSubmission(submission.id)">
                 <v-list-tile-content>
-                  <v-list-tile-title
-                    v-html="getSubmissionName(submission)"></v-list-tile-title>
+                  <v-list-tile-title v-html="getSubmissionName(submission)"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
+
               <v-divider v-if="index + 1 < submissions.length"></v-divider>
             </template>
           </v-list>
+
           <create-submission style='margin: 0 auto' :application_id="application_id" :form_id="form_id" v-if="!userIsAdmin"></create-submission>
         </v-card-text>
       </v-card>

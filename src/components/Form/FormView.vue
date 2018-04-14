@@ -7,10 +7,13 @@
         </div>
       </draggable>
     </v-card-text>
+
     <v-card-actions>
       <v-btn color="info" @click=onBack>Back</v-btn>
       <v-spacer></v-spacer>
       <app-create-section :parent_section_id='-1' :form_id='form_id' v-if='submission_id === -1'></app-create-section>
+      <v-btn color="error" @click=deleteSubmission v-if='removable'>Delete</v-btn>
+      <v-btn color="primary" @click=sendSubmission v-if='sendAble'>Send</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -18,6 +21,7 @@
 <script>
   import draggable from 'vuedraggable'
   import sections from './Section/Sections'
+  import * as _ from 'lodash'
 
   export default {
     props: ['application_id', 'form_id', 'submission_id'],
@@ -33,6 +37,41 @@
         set (value) {
           // TODO: draggable
         }
+      },
+      statuses () {
+        return this.$store.getters.statuses
+      },
+      sendAble () {
+        if (this.submission_id <= 0) {
+          return false
+        }
+
+        const submission = this.$store.getters.loadedSubmission(this.form_id, this.submission_id)
+
+        if (this.statuses) {
+          const statusIndex = _.findIndex(this.statuses, status => { return status.id === submission.status_id })
+          if (statusIndex > 0 && this.statuses[statusIndex].status !== 'opened') {
+            return false
+          }
+        }
+
+        return true
+      },
+      removable () {
+        if (this.submission_id <= 0) {
+          return false
+        }
+
+        const submission = this.$store.getters.loadedSubmission(this.form_id, this.submission_id)
+
+        if (this.statuses) {
+          const statusIndex = _.findIndex(this.statuses, status => { return status.id === submission.status_id })
+          if (statusIndex > 0 && (this.statuses[statusIndex].status !== 'opened' && this.statuses[statusIndex].status !== 'closed')) {
+            return false
+          }
+        }
+
+        return true
       }
     },
     methods: {
@@ -93,6 +132,25 @@
               order: order
             })
         }
+      },
+      deleteSubmission: function () {
+        this.$store.dispatch('deleteSubmission',
+          {
+            formid: this.form_id,
+            id: this.submission_id
+          }
+        )
+      },
+      sendSubmission: function () {
+        const statusIndex = _.findIndex(this.statuses, status => { return status.status === 'closed' })
+
+        this.$store.dispatch('updateSubmission',
+          {
+            formid: this.form_id,
+            id: this.submission_id,
+            status_id: this.statuses[statusIndex].id
+          }
+        )
       }
     }
   }

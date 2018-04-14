@@ -100,6 +100,7 @@ export default {
         this.$store.dispatch('loadQuestionTypes')
         this.$store.dispatch('loadRoles')
         this.$store.dispatch('loadPeriods')
+        this.$store.dispatch('loadStatuses')
       }
     }
   },
