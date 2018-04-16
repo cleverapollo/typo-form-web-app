@@ -31,21 +31,27 @@
         <v-btn flat color="primary" @click='setHasOther' class='mx-0'>add "other"</v-btn>
       </v-flex>
     </v-layout>
-    <v-layout v-if='hasValidation'>
+    <v-layout v-if='hasValidation' row>
       <v-flex xs4>
         <v-text-field
           name='min-answer-count'
           label='Minimum answer count'
-          v-model='minAnswerCount'
+          v-model='minInput'
+          :value='minValue'
           mask='###'
+          @change='updateMinCount'
+          :rules='[validateMinInput]'
         ></v-text-field>
       </v-flex>
-      <v-flex xs3 offset-xs1>
+      <v-flex xs4 offset-xs1>
         <v-text-field
           name='max-answer-count'
           label='Maximum answer count'
-          v-model='maxAnswerCount'
+          v-model='maxInput'
+          :value='maxValue'
           mask='###'
+          @change='updateMaxCount'
+          :rules='[validateMaxInput]'
         ></v-text-field>
       </v-flex>
     </v-layout>
@@ -54,17 +60,18 @@
 
 <script>
   import draggable from 'vuedraggable'
+  import validationMixin from '../QuestionValiationMixin'
+
   export default {
     name: 'checkboxes',
+    mixins: [
+      validationMixin
+    ],
     props: {
       'answers': {
         default: function () {
           return []
         }
-      },
-      'hasValidation': {
-        type: Boolean,
-        default: false
       }
     },
     components: {
@@ -72,8 +79,9 @@
     },
     data () {
       return {
-        minAnswerCount: 0,
-        maxAnswerCount: 0
+        validationTypes: [
+          'Checkbox'
+        ]
       }
     },
     methods: {
@@ -125,6 +133,8 @@
           this.$emit('change-answer')
         }
       }
+      window.Vue.$on('validation-create', this.eventsAdapter['validation-create'])
+      window.Vue.$on('validation-remove', this.eventsAdapter['validation-remove'])
     },
     computed: {
       list: {
@@ -147,6 +157,10 @@
         }
         return this.answers.length
       }
+    },
+    beforeDestroy () {
+      window.Vue.$off('validation-create', this.eventsAdapter['validation-create'])
+      window.Vue.$off('validation-remove', this.eventsAdapter['validation-remove'])
     }
   }
 </script>

@@ -66,10 +66,9 @@
           <component
             :is='questionComponent'
             :question-id='question.id'
+            :form-id='form_id'
             :answers='answers'
             :has-validation='mandatory && hasValidation'
-            :validation-data='_validationData'
-            :validation-type='_validationType'
             @create-answer='createAnswer'
             @delete-answer='deleteAnswer'
             @delete-answers='deleteAnswers'
@@ -218,38 +217,10 @@
       questionTypes () {
         return this.$store.getters.questionTypes
       },
-      _validationData () {
-        console.log('computed - validationData call')
-        const validations = this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id)
-        this.validations = validations
-        if (validations && validations.length && validations.length === 1) {
-          this.validationData = validations[0].validation_data
-          return validations[0].validation_data
-        } else {
-          this.validationData = ''
-          return ''
-        }
-      },
-      _validationType () {
-        console.log('computed - validationType call')
-        const validations = this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id)
-        const validationTypes = this.$store.getters.validationTypes
-        this.validationTypes = validationTypes
-        if (validations && validations.length && validations.length === 1 && validationTypes && validationTypes.length > 0) {
-          const index = _.findIndex(validationTypes, type => { return validations[0].validation_type_id === type.id })
-          if (index > -1) {
-            this.validationType = validationTypes[index].type
-            return validationTypes[index].type
-          } else {
-            this.validationType = ''
-            return ''
-          }
-        }
-      },
       hasValidation () {
-        console.log('computed - hasValidation call')
-        const validations = this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id)
-        return !!(validations && validations.length && validations.length === 1)
+        this.validationTypes = this.$store.getters.validationTypes
+        this.validations = this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id)
+        return !!(this.validations && this.validations.length && this.validations.length === 1)
       },
       questionTypeString: {
         get: function () {
@@ -273,20 +244,16 @@
     watch: {
       mandatory (value) {
         this.updateQuestion()
-      },
-      validationTypes (value) {
-        console.log('watch - validationTypes call', value)
-      },
-      validations (value) {
-        console.log('watch - validations call', value)
       }
     },
     methods: {
       createRemoveValidation () {
         if (this.hasValidation) {
           window.Vue.$emit('validation-remove', this.question.id)
+          console.log('validation-remove', this.question.id)
         } else {
           window.Vue.$emit('validation-create', this.question.id)
+          console.log('validation-create', this.question.id)
         }
       },
       setQuestionType (str) {
@@ -375,6 +342,7 @@
             question_type_id: this.questionTypeId,
             mandatory: this.mandatory
           })
+        this.removeValidation()
       },
       duplicateQuestion () {
         this.$store.dispatch('duplicateQuestion', {
@@ -415,6 +383,7 @@
         const name = args[0]
         const validationTypeId = _.find(this.validationTypes, type => { return name === type.type }).id
         const validationId = this.validations[0].id
+        console.log('update validation', args, 'validationTypeId', validationTypeId, 'validationId', validationId)
         this.$store.dispatch('updateValidation', {
           id: validationId,
           formid: this.form_id,
@@ -424,7 +393,6 @@
         })
       },
       removeValidation () {
-        console.log('this.validations[0]', this.validations[0])
         const validationId = this.validations[0].id
         this.$store.dispatch('deleteValidation', {
           id: validationId,
