@@ -250,10 +250,8 @@
       createRemoveValidation () {
         if (this.hasValidation) {
           window.Vue.$emit('validation-remove', this.question.id)
-          console.log('validation-remove', this.question.id)
         } else {
           window.Vue.$emit('validation-create', this.question.id)
-          console.log('validation-create', this.question.id)
         }
       },
       setQuestionType (str) {
@@ -383,7 +381,6 @@
         const name = args[0]
         const validationTypeId = _.find(this.validationTypes, type => { return name === type.type }).id
         const validationId = this.validations[0].id
-        console.log('update validation', args, 'validationTypeId', validationTypeId, 'validationId', validationId)
         this.$store.dispatch('updateValidation', {
           id: validationId,
           formid: this.form_id,

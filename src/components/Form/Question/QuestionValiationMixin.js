@@ -33,7 +33,6 @@ export default {
       const vType = validationType || this.activeValidationType
       const min = minInput || 0
       const max = maxInput || 0
-      console.log('update validation', vType, min, max)
       this.$emit('update-validation', vType, min, max)
     },
     updateMinCount (value) {
@@ -96,7 +95,6 @@ export default {
         return validationType || this.validationTypes[0]
       },
       set: function (value) {
-        console.log('update', value, this.minInput, this.maxInput)
         this.updateActiveValidationType(value)
       }
     },
@@ -109,7 +107,6 @@ export default {
       } else {
         minVal = 0
       }
-      console.log('get min value', minVal)
       if (this.minInput === null) {
         this.minInput = minVal
       }
@@ -124,7 +121,6 @@ export default {
       } else {
         maxVal = 0
       }
-      console.log('get max value', maxVal)
       if (this.maxInput === null) {
         this.maxInput = maxVal
       }
