@@ -105,12 +105,30 @@ export default {
   },
   getters: {
     loadedValidations (state) {
-      return state.loadedValidations
+      return (formid) => {
+        if (!state.loadedValidations[formid]) {
+          return []
+        }
+        return state.loadedValidations[formid]
+      }
     },
     loadedValidation (state) {
-      return (validationid) => {
-        return state.loadedValidations.find((validation) => {
+      return (formid, validationid) => {
+        if (!state.loadedValidations[formid]) {
+          return null
+        }
+        return state.loadedValidations[formid].find((validation) => {
           return validation.id === validationid
+        })
+      }
+    },
+    loadedQuestionValidation (state) {
+      return (formid, questionid) => {
+        if (!state.loadedValidations[formid]) {
+          return []
+        }
+        return state.loadedValidations[formid].filter((validation) => {
+          return validation.question_id === questionid
         })
       }
     }
