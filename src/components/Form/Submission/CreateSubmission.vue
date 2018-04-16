@@ -8,6 +8,7 @@
     >
       <v-icon>add</v-icon>
     </v-btn>
+
     <v-dialog width="350px" persistent v-model="createSubmission">
       <v-card>
         <v-container>
@@ -18,7 +19,9 @@
               </v-card-title>
             </v-flex>
           </v-layout>
+
           <v-divider></v-divider>
+
           <v-layout row wrap>
             <v-flex xs12>
               <v-card-text>
@@ -33,7 +36,9 @@
               </v-card-text>
             </v-flex>
           </v-layout>
+
           <v-divider></v-divider>
+
           <v-layout row wrap>
             <v-flex xs12>
               <v-card-actions>
@@ -44,6 +49,7 @@
                 >
                   Close
                 </v-btn>
+
                 <v-btn
                   flat
                   class="primary"
@@ -53,8 +59,8 @@
                 >
                   Save
                   <span slot="loader" class="custom-loader">
-                  <v-icon light>cached</v-icon>
-                </span>
+                    <v-icon light>cached</v-icon>
+                  </span>
                 </v-btn>
               </v-card-actions>
             </v-flex>
@@ -81,12 +87,14 @@
         let submissionData = {
           formid: this.form_id
         }
-        if (this.submissionType !== 0) {
+
+        if (this.submissionType !== 1) {
           submissionData = {
             formid: this.form_id,
             team_id: this.submissionType
           }
         }
+
         this.$store.dispatch('createSubmission', submissionData)
       },
       onCancel () {
@@ -105,8 +113,10 @@
         return this.$store.getters.loadedTeams(parseInt(this.application_id))
       },
       submissionTypes () {
-        let items = []
-        items[0] = {name: 'Your Self', id: 0}
+        let items = [
+          {id: 1, name: 'Your Self'},
+          {id: 2, name: 'Team'}
+        ]
 
         return items
       }

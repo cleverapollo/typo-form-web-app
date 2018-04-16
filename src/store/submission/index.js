@@ -120,6 +120,9 @@ export default {
       if (payload.period_end) {
         submission.period_end = payload.period_end
       }
+      if (payload.status_id) {
+        submission.status_id = payload.status_id
+      }
       window.axios.put(FORM_URL + payload.formid + SUBMISSION_URL + payload.id, submission)
         .then(
           response => {
