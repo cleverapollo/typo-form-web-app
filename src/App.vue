@@ -98,6 +98,7 @@ export default {
           {icon: 'apps', title: 'Applications', link: '/applications'}
         ]
         this.$store.dispatch('loadQuestionTypes')
+        this.$store.dispatch('loadValidationTypes')
         this.$store.dispatch('loadRoles')
         this.$store.dispatch('loadPeriods')
       }

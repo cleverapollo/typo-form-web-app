@@ -21,16 +21,22 @@
         <v-text-field
           name='min-char-count'
           label='Minimum character count'
-          v-model='minCharCount'
+          v-model='minInput'
+          :value='minValue'
           mask='###'
+          @change='updateMinCount'
+          :rules='[validateMinInput]'
         ></v-text-field>
       </v-flex>
       <v-flex v-if='"Text" === activeValidationType' xs3 offset-xs1>
         <v-text-field
           name='max-char-count'
           label='Maximum character count'
-          v-model='maxCharCount'
+          v-model='maxInput'
+          :value='maxValue'
           mask='###'
+          @change='updateMaxCount'
+          :rules='[validateMaxInput]'
         ></v-text-field>
       </v-flex>
     </v-layout>
@@ -38,33 +44,37 @@
 </template>
 
 <script>
+  import validationMixin from '../QuestionValiationMixin'
+
   export default {
     name: 'short-answer',
+    mixins: [
+      validationMixin
+    ],
     props: {
       'answers': {
         default: function () {
           return []
         }
-      },
-      'hasValidation': {
-        type: Boolean,
-        default: true
       }
     },
     data () {
       return {
-        activeValidationType: 'Number',
         validationTypes: [
           'Number', 'Text', 'Email'
-        ],
-        minCharCount: 0,
-        maxCharCount: 0
+        ]
       }
     },
     mounted () {
       if (this.answers.length) {
         this.$emit('delete-answers')
       }
+      window.Vue.$on('validation-create', this.eventsAdapter['validation-create'])
+      window.Vue.$on('validation-remove', this.eventsAdapter['validation-remove'])
+    },
+    beforeDestroy () {
+      window.Vue.$off('validation-create', this.eventsAdapter['validation-create'])
+      window.Vue.$off('validation-remove', this.eventsAdapter['validation-remove'])
     }
   }
 </script>

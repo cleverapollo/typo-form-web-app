@@ -159,12 +159,10 @@
         }
       },
       validateMinRows (value) {
-        // console.log(arguments)
         this.minRowsInput = parseInt(value)
         if (isNaN(this.minRowsInput)) {
           this.minRowsInput = ''
         }
-        // console.log('minRowsInput', this.minRowsInput)
         if (this.maxRowsInput && this.minRowsInput > this.maxRowsInput) {
           return 'Minimum rows count is set bigger than maximum rows count.'
         } else {
@@ -172,12 +170,10 @@
         }
       },
       validateMaxRows (value) {
-        // console.log(arguments)
         this.maxRowsInput = parseInt(value)
         if (isNaN(this.maxRowsInput)) {
           this.maxRowsInput = ''
         }
-        // console.log('maxRowsInput', this.maxRowsInput)
         if (this.minRowsInput && this.minRowsInput > this.maxRowsInput) {
           return 'Maximum rows count is set smaller than minimum rows count.'
         } else {

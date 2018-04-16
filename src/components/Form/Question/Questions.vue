@@ -65,6 +65,8 @@
         <v-flex xs12>
           <component
             :is='questionComponent'
+            :question-id='question.id'
+            :form-id='form_id'
             :answers='answers'
             :has-validation='mandatory && hasValidation'
             @create-answer='createAnswer'
@@ -73,6 +75,9 @@
             @change-answer='changeAnswer'
             @update-answer='updateAnswer'
             @move-answer='moveAnswer'
+            @create-validation='createValidation'
+            @update-validation='updateValidation'
+            @remove-validation='removeValidation'
           ></component>
         </v-flex>
       </v-layout>
@@ -94,7 +99,7 @@
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
-          <v-list-tile v-if='mandatory' @click='toggleHasValidation'>
+          <v-list-tile v-if='mandatory' @click='createRemoveValidation'>
             <v-list-tile-title>
               {{ hasValidation ? 'Remove Validation' : 'Include Validation' }}
             </v-list-tile-title>
@@ -199,7 +204,10 @@
             title: 'Time'
           }
         ],
-        hasValidation: false
+        validationTypes: this.$store.getters.validationTypes,
+        validations: this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id),
+        validationData: '',
+        validationType: ''
       }
     },
     computed: {
@@ -208,6 +216,11 @@
       },
       questionTypes () {
         return this.$store.getters.questionTypes
+      },
+      hasValidation () {
+        this.validationTypes = this.$store.getters.validationTypes
+        this.validations = this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id)
+        return !!(this.validations && this.validations.length && this.validations.length === 1)
       },
       questionTypeString: {
         get: function () {
@@ -234,8 +247,12 @@
       }
     },
     methods: {
-      toggleHasValidation () {
-        this.hasValidation = !this.hasValidation
+      createRemoveValidation () {
+        if (this.hasValidation) {
+          window.Vue.$emit('validation-remove', this.question.id)
+        } else {
+          window.Vue.$emit('validation-create', this.question.id)
+        }
       },
       setQuestionType (str) {
         this.questionTypeId = _.findIndex(this.questionTypes, type => { return type.type === str }) + 1
@@ -323,6 +340,7 @@
             question_type_id: this.questionTypeId,
             mandatory: this.mandatory
           })
+        this.removeValidation()
       },
       duplicateQuestion () {
         this.$store.dispatch('duplicateQuestion', {
@@ -347,6 +365,35 @@
           questionid: this.question.id,
           id: id,
           order: order
+        })
+      },
+      createValidation (...args) {
+        const name = args[0]
+        const validationTypeId = _.find(this.validationTypes, type => { return name === type.type }).id
+        this.$store.dispatch('createValidation', {
+          formid: this.form_id,
+          question_id: this.question.id,
+          validation_type_id: validationTypeId,
+          validation_data: `${args[1]},${args[2]}`
+        })
+      },
+      updateValidation (...args) {
+        const name = args[0]
+        const validationTypeId = _.find(this.validationTypes, type => { return name === type.type }).id
+        const validationId = this.validations[0].id
+        this.$store.dispatch('updateValidation', {
+          id: validationId,
+          formid: this.form_id,
+          question_id: this.question.id,
+          validation_type_id: validationTypeId,
+          validation_data: `${args[1]},${args[2]}`
+        })
+      },
+      removeValidation () {
+        const validationId = this.validations[0].id
+        this.$store.dispatch('deleteValidation', {
+          id: validationId,
+          formid: this.form_id
         })
       }
     }

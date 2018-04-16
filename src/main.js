@@ -55,5 +55,10 @@ new Vue({
       window.axios.defaults.headers.common['api_token'] = localStorage.getItem('token')
       this.$store.dispatch('autoSignIn')
     }
+  },
+  // Attach the Vue instance to the window,
+  // so it's available globally.
+  created: function () {
+    window.Vue = this
   }
 })

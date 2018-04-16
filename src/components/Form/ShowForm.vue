@@ -128,6 +128,7 @@
       this.$store.dispatch('loadForms', this.application_id)
       this.$store.dispatch('loadSections', this.id)
       this.$store.dispatch('loadSubmissions', this.id)
+      this.$store.dispatch('loadValidations', this.id)
     }
   }
 </script>
