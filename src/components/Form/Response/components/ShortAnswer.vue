@@ -5,14 +5,18 @@
         name="short-answer"
         :value="message"
         @change="onSave($event)"
+        :rules="[validate]"
       ></v-text-field>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
+  import validationMixin from '../ResponseValidationMixin'
+
   export default {
     name: 'short-answer',
+    mixins: [validationMixin],
     props: ['answers', 'responses'],
     methods: {
       onSave (value) {

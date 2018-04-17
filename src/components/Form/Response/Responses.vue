@@ -24,7 +24,8 @@
             :is='questionComponent'
             :answers='answers'
             :responses='responses'
-            :has-validation='mandatory && hasValidation'
+            :question-id='question.id'
+            :form-id='form_id'
             @create-response="createResponse"
             @update-response="updateResponse"
             @delete-response="deleteResponse"
@@ -160,3 +161,9 @@
     }
   }
 </script>
+
+<style scoped>
+  .error {
+    color: red;
+  }
+</style>
