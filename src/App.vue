@@ -2,15 +2,19 @@
   <v-app>
     <v-navigation-drawer
       fixed
-      :clipped="$vuetify.breakpoint.lgAndUp"
       app
       v-model="drawer"
+      disable-route-watcher
+      temporary
+      hide-overlay
     >
       <v-list dense>
         <template v-for="item in menuItems">
           <v-list-tile
             :to="item.link"
-            :key="item.title">
+            :key="item.title"
+            @click='drawer = false'
+            >
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>

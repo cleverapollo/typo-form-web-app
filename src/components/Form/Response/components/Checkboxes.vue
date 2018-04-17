@@ -3,12 +3,18 @@
     <v-layout row v-for='(answer, index) in answers' :key='"Option " + index' class='"item" + index'>
       <v-checkbox :label="answer.answer" v-model='checkAnswers' :value="answer.id" @change="onSave(answer.id)"></v-checkbox>
     </v-layout>
+    <v-flex xs12 class='error' v-show='validate() !== true'>
+      {{ validate() }}
+    </v-flex>
   </div>
 </template>
 
 <script>
+  import validationMixin from '../ResponseValidationMixin'
+
   export default {
     name: 'checkboxes',
+    mixins: [validationMixin],
     props: ['answers', 'responses'],
     data () {
       return {
