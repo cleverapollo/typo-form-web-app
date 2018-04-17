@@ -11,8 +11,8 @@ export default {
           response => {
             commit('setLoading', false)
             const createObj = {
-              formid: payload.formid,
-              submissionid: payload.submissionid,
+              formId: payload.formid,
+              submissionId: payload.submissionid,
               responses: response['data']['responses']
             }
             commit('setLoadedResponses', createObj)
@@ -31,16 +31,18 @@ export default {
         question_id: payload.questionid,
         answer_id: payload.answerid
       }
+
       if (payload.order) {
         response.order = payload.order
       }
+
       window.axios.post(SUBMISSION_URL + payload.submissionid + RESPONSE_URL, response)
         .then(
           response => {
             commit('setLoading', false)
             const createdObj = {
-              formid: payload.formid,
-              submissionid: payload.submissionid,
+              formId: payload.formid,
+              submissionId: payload.submissionid,
               response: response['data']['response']
             }
             commit('createResponse', createdObj)
@@ -74,8 +76,8 @@ export default {
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formid: payload.formid,
-              submissionid: payload.submissionid,
+              formId: payload.formid,
+              submissionId: payload.submissionid,
               oldId: payload.id,
               response: response['data']['response']
             }
@@ -102,13 +104,15 @@ export default {
   },
   getters: {
     loadedResponses (state, getters, rootState) {
-      return (formid, submissionid) => {
-        if (!rootState.submission.loadedSubmissions[formid]) {
+      return (formId, submissionId) => {
+        if (!rootState.submission.loadedSubmissions[formId]) {
           return []
         }
-        const submission = rootState.submission.loadedSubmissions[formid].find((submission) => {
-          return submission.id === submissionid
+
+        const submission = rootState.submission.loadedSubmissions[formId].find((submission) => {
+          return submission.id === submissionId
         })
+
         if (!submission) {
           return []
         }
@@ -116,18 +120,20 @@ export default {
       }
     },
     loadedResponse (state, getters, rootState) {
-      return (formid, submissionid, responseid) => {
-        if (!rootState.submission.loadedSubmissions[formid]) {
+      return (formId, submissionId, responseId) => {
+        if (!rootState.submission.loadedSubmissions[formId]) {
           return null
         }
-        const submission = rootState.submission.loadedSubmissions[formid].find((submission) => {
-          return submission.id === submissionid
+
+        const submission = rootState.submission.loadedSubmissions[formId].find((submission) => {
+          return submission.id === submissionId
         })
+
         if (!submission) {
           return null
         }
         return submission.responses.find((response) => {
-          return response.id === responseid
+          return response.id === responseId
         })
       }
     }

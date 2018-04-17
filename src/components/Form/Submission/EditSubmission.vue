@@ -2,20 +2,19 @@
   <div>
     <v-btn
       block
-      dark
-      class="primary"
-      @click.native.stop="createSubmission = true"
+      white
+      @click.native.stop="editSubmission = true"
     >
-      <v-icon>add</v-icon>
+      <v-icon>edit</v-icon>
     </v-btn>
 
-    <v-dialog width="350px" persistent v-model="createSubmission">
+    <v-dialog width="350px" persistent v-model="editSubmission">
       <v-card>
         <v-container>
           <v-layout row wrap>
             <v-flex xs12>
               <v-card-title>
-                <h2>Create Submission</h2>
+                <h2>Edit Submission</h2>
               </v-card-title>
             </v-flex>
           </v-layout>
@@ -23,34 +22,6 @@
           <v-divider></v-divider>
 
           <v-layout row wrap>
-            <v-flex xs12>
-              <v-card-text>
-                <v-select
-                  :items="submissionTypes"
-                  item-value="id"
-                  item-text="name"
-                  v-model="submissionType"
-                  label="Submission Type"
-                ></v-select>
-              </v-card-text>
-            </v-flex>
-
-            <v-spacer></v-spacer>
-
-            <v-flex xs12 v-if="submissionType === 2">
-              <v-card-text>
-                <v-select
-                  :items="teams"
-                  item-value="id"
-                  item-text="name"
-                  v-model="teamId"
-                  label="Team"
-                ></v-select>
-              </v-card-text>
-            </v-flex>
-
-            <v-spacer></v-spacer>
-
             <v-flex xs12>
               <v-menu
                 class="px-3"
@@ -132,7 +103,7 @@
                 <v-btn
                   flat
                   class="primary"
-                  @click="onCreate"
+                  @click="onEdit"
                   :disabled="loading"
                   :loading="loading"
                 >
@@ -152,61 +123,38 @@
 
 <script>
   export default {
-    props: ['application_id', 'form_id'],
+    props: ['submission', 'form_id'],
     data () {
       return {
-        createSubmission: false,
-        submissionType: 1,
+        id: this.submission.id,
+        editSubmission: false,
         startMenu: false,
-        periodStart: null,
+        periodStart: this.submission.period_start ? this.submission.period_start.substring(0, 10) : null,
         endMenu: false,
-        periodEnd: null,
-        teamId: null
+        periodEnd: this.submission.period_end ? this.submission.period_end.substring(0, 10) : null
       }
     },
     methods: {
-      onCreate () {
-        this.createSubmission = false
+      onEdit () {
+        this.editSubmission = false
 
         let submissionData = {
+          id: this.id,
           formId: this.form_id,
           periodStart: this.periodStart,
           periodEnd: this.periodEnd
         }
 
-        if (this.submissionType !== 1) {
-          submissionData.teamId = this.teamId
-        }
-
-        this.$store.dispatch('createSubmission', submissionData)
+        this.$store.dispatch('updateSubmission', submissionData)
       },
       onCancel () {
         this.questionType = 1
-        this.createSubmission = false
+        this.editSubmission = false
       }
     },
     computed: {
       loading () {
         return this.$store.getters.loading
-      },
-      submissions () {
-        return this.$store.getters.loadedSubmissions(parseInt(this.form_id))
-      },
-      teams () {
-        return this.$store.getters.loadedTeams(parseInt(this.application_id))
-      },
-      submissionTypes () {
-        let types = [
-          {id: 1, name: 'Your Self'}
-        ]
-
-        if (this.teams && this.teams.length > 0) {
-          types.push([
-            {id: 2, name: 'Team'}
-          ])
-        }
-
-        return types
       }
     }
   }

@@ -136,7 +136,7 @@
       deleteSubmission: function () {
         this.$store.dispatch('deleteSubmission',
           {
-            formid: this.form_id,
+            formId: this.form_id,
             id: this.submission_id
           }
         )
@@ -146,9 +146,9 @@
 
         this.$store.dispatch('updateSubmission',
           {
-            formid: this.form_id,
+            formId: this.form_id,
             id: this.submission_id,
-            status_id: this.statuses[statusIndex].id
+            statusId: this.statuses[statusIndex].id
           }
         )
       }
