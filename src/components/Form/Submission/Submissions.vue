@@ -11,19 +11,31 @@
         </v-toolbar>
 
         <v-card-text>
-          <v-list>
+          <v-layout row wrap>
             <template v-for="(submission, index) in submissions">
-              <v-list-tile @click="onSubmission(submission.id)">
-                <v-list-tile-content>
-                  <v-list-tile-title v-html="getSubmissionName(submission)"></v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+              <v-flex xs12>
+                <v-card color="blue-grey darken-2" class="white--text" @click="onSubmission(submission.id)">
+                  <v-card-title primary-title>
+                    <div class="headline">{{getSubmissionName(submission)}}</div>
+                    <div>
+                      <span>Period Start: {{getPeriodStart(submission)}}</span>
+                      <br/>
+                      <span>Period End: {{getPeriodEnd(submission)}}</span>
+                    </div>
+                  </v-card-title>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <edit-submission :submission="submission" :form_id="form_id" v-if="!userIsAdmin"></edit-submission>
+                  </v-card-actions>
+                </v-card>
+              </v-flex>
 
               <v-divider v-if="index + 1 < submissions.length"></v-divider>
             </template>
-          </v-list>
+          </v-layout>
 
-          <create-submission style='margin: 0 auto' :application_id="application_id" :form_id="form_id" v-if="!userIsAdmin"></create-submission>
+          <create-submission style="margin: 0 auto" :application_id="application_id" :form_id="form_id" v-if="!userIsAdmin"></create-submission>
         </v-card-text>
       </v-card>
     </v-flex>
@@ -33,12 +45,14 @@
 <script>
   import showSubmission from './ShowSubmission'
   import createSubmission from './CreateSubmission'
+  import editSubmission from './EditSubmission'
 
   export default {
     props: ['application_id', 'form_id'],
     components: {
       showSubmission,
-      createSubmission
+      createSubmission,
+      editSubmission
     },
     data () {
       return {
@@ -92,6 +106,12 @@
           alert(1)
           return submission.team.name
         }
+      },
+      getPeriodStart (submission) {
+        return submission.period_start ? submission.period_start.substring(0, 10) : ''
+      },
+      getPeriodEnd (submission) {
+        return submission.period_end ? submission.period_end.substring(0, 10) : ''
       }
     }
   }

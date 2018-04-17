@@ -38,6 +38,7 @@
         const role = this.roles.find((role) => {
           return role.id === roleId
         })
+
         return role ? role.name : 'undefined'
       }
     }

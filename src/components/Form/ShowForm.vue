@@ -50,14 +50,10 @@
                 <v-tabs-slider color='white'></v-tabs-slider>
               </v-tabs-bar>
               <v-tabs-items>
-                <v-tabs-content
-                  id='questions'
-                >
+                <v-tabs-content id='questions'>
                   <form-view :application_id='application_id' :form_id='id' :submission_id='-1'></form-view>
                 </v-tabs-content>
-                <v-tabs-content
-                  id='responses'
-                >
+                <v-tabs-content id='responses'>
                   <responses :application_id='application_id' :form_id='id'></responses>
                 </v-tabs-content>
               </v-tabs-items>
@@ -116,7 +112,7 @@
       },
       onDeleteForm () {
         this.$store.dispatch('deleteForm', {
-          applicationid: this.application_id,
+          applicationId: this.application_id,
           id: this.id
         })
         this.$router.push('/applications/' + this.application_id + '/forms')
