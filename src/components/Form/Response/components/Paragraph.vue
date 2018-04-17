@@ -16,8 +16,11 @@
 </template>
 
 <script>
+  import validationMixin from '../ResponseValidationMixin'
+
   export default {
     name: 'paragraph',
+    mixins: [validationMixin],
     props: ['answers', 'responses'],
     methods: {
       onSave (value) {
