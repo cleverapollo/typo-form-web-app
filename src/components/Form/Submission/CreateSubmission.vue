@@ -113,12 +113,10 @@
         return this.$store.getters.loadedTeams(parseInt(this.application_id))
       },
       submissionTypes () {
-        let items = [
+        return [
           {id: 1, name: 'Your Self'},
           {id: 2, name: 'Team'}
         ]
-
-        return items
       }
     }
   }
