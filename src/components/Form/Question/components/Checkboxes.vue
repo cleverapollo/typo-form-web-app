@@ -120,6 +120,36 @@
 
         const elementId = parseInt(evt.item.className.substr(24))
         this.$emit('move-answer', [elementId, order])
+      },
+      validateMinInput (value) {
+        if (parseInt(value) > parseInt(this.maxInput)) {
+          return 'Minimum count is set bigger than maximum count.'
+        } else if (parseInt(value) > this.answers.length) {
+          return 'Minimum count is set bigger than maximum answers count.'
+        } else {
+          this.minInput = value
+          return true
+        }
+      },
+      validateMaxInput (value) {
+        if (parseInt(value) < parseInt(this.minInput)) {
+          return 'Maximum count is set smaller than minimum count.'
+        } else if (parseInt(value) > this.answers.length) {
+          return 'Maximum count is set bigger than maximum answers count.'
+        } else {
+          this.maxInput = value
+          return true
+        }
+      },
+      updateMinCount (value) {
+        if (parseInt(value) < parseInt(this.maxInput) && parseInt(value) <= this.answers.length) {
+          this.updateValidation('', value, this.maxInput)
+        }
+      },
+      updateMaxCount (value) {
+        if (parseInt(value) > parseInt(this.minInput) && parseInt(value) <= this.answers.length) {
+          this.updateValidation('', this.minInput, value)
+        }
       }
     },
     mounted () {
