@@ -10,16 +10,16 @@ export default {
   mutations: {
     setLoadedUsers (state, payload) {
       let users = Object.assign({}, state.loadedUsers)
-      users[payload.applicationid] = payload.users
+      users[payload.applicationName] = payload.users
       state.loadedUsers = users
     },
     setInvitedUsers (state, payload) {
       let users = Object.assign({}, state.invitedUsers)
-      users[payload.applicationid] = payload.users
+      users[payload.applicationName] = payload.users
       state.invitedUsers = users
     },
     updateUser (state, payload) {
-      const user = state.loadedUsers[payload.applicationid].find(user => {
+      const user = state.loadedUsers[payload.applicationName].find(user => {
         return user.id === payload.user.user_id
       })
       if (payload.user.application_role_id) {
@@ -27,26 +27,26 @@ export default {
       }
     },
     deleteUser (state, payload) {
-      state.loadedUsers[payload.applicationid] = state.loadedUsers[payload.applicationid].filter(e => {
+      state.loadedUsers[payload.applicationName] = state.loadedUsers[payload.applicationName].filter(e => {
         return e.id !== payload.id
       })
     }
   },
   actions: {
-    loadUsers ({commit}, applicationid) {
+    loadUsers ({commit}, applicationName) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + applicationid + USER_URL)
+      window.axios.get(APPLICATION_URL + applicationName + USER_URL)
         .then(
           response => {
             commit('setLoading', false)
             const updateLoadedObj = {
-              applicationid: applicationid,
+              applicationName: applicationName,
               users: response['data']['users']['current']
             }
             commit('setLoadedUsers', updateLoadedObj)
 
             const updateInvitedObj = {
-              applicationid: applicationid,
+              applicationName: applicationName,
               users: response['data']['users']['unaccepted']
             }
             commit('setInvitedUsers', updateInvitedObj)
@@ -65,12 +65,12 @@ export default {
       if (payload.application_role_id) {
         updateObj.application_role_id = payload.application_role_id
       }
-      window.axios.put(APPLICATION_URL + payload.applicationid + USER_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.applicationName + USER_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              applicationid: payload.applicationid,
+              applicationName: payload.applicationName,
               user: response['data']['user']
             }
             commit('updateUser', updateObj)
@@ -83,7 +83,7 @@ export default {
     },
     deleteUser ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.applicationid + USER_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.applicationName + USER_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteUser', payload)
@@ -96,31 +96,31 @@ export default {
   },
   getters: {
     loadedUsers (state) {
-      return (applicationid) => {
-        if (!state.loadedUsers[applicationid]) {
+      return (applicationName) => {
+        if (!state.loadedUsers[applicationName]) {
           return []
         }
-        return state.loadedUsers[applicationid].sort((userA, userB) => {
+        return state.loadedUsers[applicationName].sort((userA, userB) => {
           return userA.id > userB.id
         })
       }
     },
     invitedUsers (state) {
-      return (applicationid) => {
-        if (!state.invitedUsers[applicationid]) {
+      return (applicationName) => {
+        if (!state.invitedUsers[applicationName]) {
           return []
         }
-        return state.invitedUsers[applicationid].sort((userA, userB) => {
+        return state.invitedUsers[applicationName].sort((userA, userB) => {
           return userA.id > userB.id
         })
       }
     },
     loadedUser (state) {
-      return (applicationid, userid) => {
-        if (!state.loadedUsers[applicationid]) {
+      return (applicationName, userid) => {
+        if (!state.loadedUsers[applicationName]) {
           return null
         }
-        return state.loadedUsers[applicationid].find((user) => {
+        return state.loadedUsers[applicationName].find((user) => {
           return user.id === userid
         })
       }

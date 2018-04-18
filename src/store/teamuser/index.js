@@ -36,7 +36,7 @@ export default {
   actions: {
     loadTeamUsers ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.teamid + USER_URL)
+      window.axios.get(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.teamid + USER_URL)
         .then(
           response => {
             commit('setLoading', false)
@@ -66,7 +66,7 @@ export default {
       if (payload.team_role_id) {
         updateObj.team_role_id = payload.team_role_id
       }
-      window.axios.put(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.teamid + USER_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.teamid + USER_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -84,7 +84,7 @@ export default {
     },
     deleteTeamUser ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.teamid + USER_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.teamid + USER_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteTeamUser', payload)

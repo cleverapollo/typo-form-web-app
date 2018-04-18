@@ -174,13 +174,13 @@ export default {
       }
     },
     loadedSubmissionTeams (state, getters, rootState) {
-      return (applicationId, formId) => {
+      return (applicationName, formId) => {
         console.log(state.loadedSubmissions)
-        if (!rootState.team.loadedTeams[applicationId]) {
+        if (!rootState.team.loadedTeams[applicationName]) {
           return []
         }
 
-        const teams = rootState.team.loadedTeams[applicationId]
+        const teams = rootState.team.loadedTeams[applicationName]
         if (!state.loadedSubmissions[formId]) {
           return teams
         }

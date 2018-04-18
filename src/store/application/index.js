@@ -115,9 +115,9 @@ export default {
       })
     },
     loadedApplication (state) {
-      return (applicationid) => {
+      return (applicationName) => {
         return state.loadedApplications.find((application) => {
-          return application.id === applicationid
+          return application.name === applicationName
         })
       }
     }

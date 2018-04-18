@@ -10,14 +10,14 @@ export default {
     setLoadedForms (state, payload) {
       state.loadedForms = payload
       let forms = Object.assign({}, state.loadedForms)
-      forms[payload.applicationId] = payload.forms
+      forms[payload.applicationName] = payload.forms
       state.loadedForms = forms
     },
     createForm (state, payload) {
-      state.loadedForms[payload.applicationId].push(payload.form)
+      state.loadedForms[payload.applicationName].push(payload.form)
     },
     updateForm (state, payload) {
-      const form = state.loadedForms[payload.applicationId].find(form => {
+      const form = state.loadedForms[payload.applicationName].find(form => {
         return form.id === payload.form.id
       })
 
@@ -27,20 +27,20 @@ export default {
       form.period_id = payload.form.period_id
     },
     deleteForm (state, payload) {
-      state.loadedForms[payload.applicationId] = state.loadedForms[payload.applicationId].filter(e => {
+      state.loadedForms[payload.applicationName] = state.loadedForms[payload.applicationName].filter(e => {
         return e.id !== parseInt(payload.id)
       })
     }
   },
   actions: {
-    loadForms ({commit}, applicationId) {
+    loadForms ({commit}, applicationName) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + applicationId + FORM_URL)
+      window.axios.get(APPLICATION_URL + applicationName + FORM_URL)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              applicationId: applicationId,
+              applicationName: applicationName,
               forms: response['data']['forms']
             }
             commit('setLoadedForms', updateObj)
@@ -62,12 +62,12 @@ export default {
         show_progress: true
       }
 
-      window.axios.post(APPLICATION_URL + payload.applicationId + FORM_URL, form)
+      window.axios.post(APPLICATION_URL + payload.applicationName + FORM_URL, form)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              applicationId: payload.applicationId,
+              applicationName: payload.applicationName,
               form: response['data']['form']
             }
             commit('createForm', createObj)
@@ -83,7 +83,7 @@ export default {
     updateForm ({commit}, payload) {
       commit('setLoading', true)
 
-      window.axios.put(APPLICATION_URL + payload.applicationId + FORM_URL + payload.id, {
+      window.axios.put(APPLICATION_URL + payload.applicationName + FORM_URL + payload.id, {
         name: payload.name,
         period_start: payload.periodStart,
         period_end: payload.periodEnd,
@@ -93,7 +93,7 @@ export default {
           response => {
             commit('setLoading', false)
             const updateObj = {
-              applicationId: payload.applicationId,
+              applicationName: payload.applicationName,
               form: response['data']['form']
             }
             commit('updateForm', updateObj)
@@ -106,7 +106,7 @@ export default {
     },
     deleteForm ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.applicationId + FORM_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.applicationName + FORM_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteForm', payload)
@@ -119,21 +119,21 @@ export default {
   },
   getters: {
     loadedForms (state) {
-      return (applicationId) => {
-        if (!state.loadedForms[applicationId]) {
+      return (applicationName) => {
+        if (!state.loadedForms[applicationName]) {
           return []
         }
-        return state.loadedForms[applicationId].sort((formA, formB) => {
+        return state.loadedForms[applicationName].sort((formA, formB) => {
           return formA.id > formB.id
         })
       }
     },
     loadedForm (state) {
-      return (applicationId, formId) => {
-        if (!state.loadedForms[applicationId]) {
+      return (applicationName, formId) => {
+        if (!state.loadedForms[applicationName]) {
           return null
         }
-        return state.loadedForms[applicationId].find((form) => {
+        return state.loadedForms[applicationName].find((form) => {
           return form.id === formId
         })
       }

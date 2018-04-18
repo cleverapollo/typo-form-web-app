@@ -9,14 +9,14 @@ export default {
   mutations: {
     setLoadedTeams (state, payload) {
       let teams = Object.assign({}, state.loadedTeams)
-      teams[payload.applicationid] = payload.teams
+      teams[payload.applicationName] = payload.teams
       state.loadedTeams = teams
     },
     createTeam (state, payload) {
-      state.loadedTeams[payload.applicationid].push(payload.team)
+      state.loadedTeams[payload.applicationName].push(payload.team)
     },
     updateTeam (state, payload) {
-      const team = state.loadedTeams[payload.applicationid].find(team => {
+      const team = state.loadedTeams[payload.applicationName].find(team => {
         return team.id === payload.team.id
       })
       if (payload.team.name) {
@@ -27,20 +27,20 @@ export default {
       }
     },
     deleteTeam (state, payload) {
-      state.loadedTeams[payload.applicationid] = state.loadedTeams[payload.applicationid].filter(e => {
+      state.loadedTeams[payload.applicationName] = state.loadedTeams[payload.applicationName].filter(e => {
         return e.id !== payload.id
       })
     }
   },
   actions: {
-    loadTeams ({commit}, applicationid) {
+    loadTeams ({commit}, applicationName) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + applicationid + TEAM_URL)
+      window.axios.get(APPLICATION_URL + applicationName + TEAM_URL)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              applicationid: applicationid,
+              applicationName: applicationName,
               teams: response['data']['teams']
             }
             commit('setLoadedTeams', updateObj)
@@ -59,12 +59,12 @@ export default {
         description: payload.description,
         invitations: payload.invitations
       }
-      window.axios.post(APPLICATION_URL + payload.applicationid + TEAM_URL, team)
+      window.axios.post(APPLICATION_URL + payload.applicationName + TEAM_URL, team)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              applicationid: payload.applicationid,
+              applicationName: payload.applicationName,
               team: response['data']['team']
             }
             commit('createTeam', createObj)
@@ -81,7 +81,7 @@ export default {
       const team = {
         invitations: payload.invitations
       }
-      window.axios.post(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id + '/invite', team)
+      window.axios.post(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.id + '/invite', team)
         .then(
           response => {
             commit('setLoading', false)
@@ -103,12 +103,12 @@ export default {
       if (payload.description) {
         updateObj.description = payload.description
       }
-      window.axios.put(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              applicationid: payload.applicationid,
+              applicationName: payload.applicationName,
               team: response['data']['team']
             }
             commit('updateTeam', updateObj)
@@ -121,7 +121,7 @@ export default {
     },
     deleteTeam ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.applicationid + TEAM_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteTeam', payload)
@@ -134,21 +134,21 @@ export default {
   },
   getters: {
     loadedTeams (state) {
-      return (applicationid) => {
-        if (!state.loadedTeams[applicationid]) {
+      return (applicationName) => {
+        if (!state.loadedTeams[applicationName]) {
           return []
         }
-        return state.loadedTeams[applicationid].sort((teamA, teamB) => {
+        return state.loadedTeams[applicationName].sort((teamA, teamB) => {
           return teamA.id > teamB.id
         })
       }
     },
     loadedTeam (state) {
-      return (applicationid, teamid) => {
-        if (!state.loadedTeams[applicationid]) {
+      return (applicationName, teamid) => {
+        if (!state.loadedTeams[applicationName]) {
           return null
         }
-        return state.loadedTeams[applicationid].find((team) => {
+        return state.loadedTeams[applicationName].find((team) => {
           return team.id === teamid
         })
       }
