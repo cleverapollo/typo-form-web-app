@@ -1,6 +1,6 @@
 <template>
   <v-dialog width="350px" persistent v-model="createSection">
-    <div slot="activator" v-if='parent_section_id !== -1'>
+    <div slot="activator" v-if='parentSectionId !== -1'>
       Create Section
     </div>
     <v-btn slot="activator" block class="primary" v-else>Create Section</v-btn>
@@ -60,7 +60,7 @@
 
 <script>
   export default {
-    props: ['parent_section_id', 'form_id'],
+    props: ['parentSectionId', 'formId'],
     data () {
       return {
         createSection: false,
@@ -75,8 +75,8 @@
         this.createSection = false
         this.$store.dispatch('createSection',
           {
-            formid: this.form_id,
-            parent_section_id: this.parent_section_id,
+            formId: this.formId,
+            parentSectionId: this.parentSectionId,
             name: this.editedName
           })
         this.editedName = ''

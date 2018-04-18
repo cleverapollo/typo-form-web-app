@@ -22,7 +22,7 @@
               <v-list>
                 <v-list-tile @click=''>
                   <v-list-tile-title>
-                    <app-edit-form :form='form' :application_id='application_id'></app-edit-form>
+                    <app-edit-form :form='form' :applicationName='applicationName'></app-edit-form>
                   </v-list-tile-title>
                 </v-list-tile>
                 <v-list-tile @click=onDeleteForm>
@@ -51,10 +51,10 @@
               </v-tabs-bar>
               <v-tabs-items>
                 <v-tabs-content id='questions'>
-                  <form-view :application_id='application_id' :form_id='id' :submission_id='-1'></form-view>
+                  <form-view :applicationName='applicationName' :formId='id' :submissionId='-1'></form-view>
                 </v-tabs-content>
                 <v-tabs-content id='responses'>
-                  <responses :application_id='application_id' :form_id='id'></responses>
+                  <responses :applicationName='applicationName' :formId='id'></responses>
                 </v-tabs-content>
               </v-tabs-items>
             </v-tabs>
@@ -70,7 +70,7 @@
   import responses from './Submission/Submissions'
 
   export default {
-    props: ['application_id', 'id'],
+    props: ['applicationName', 'id'],
     components: {
       formView,
       responses
@@ -85,7 +85,7 @@
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(parseInt(this.application_id))
+        return this.$store.getters.loadedApplication(this.applicationName)
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -97,7 +97,7 @@
         return this.getRole(this.application.application_role_id) === 'Admin'
       },
       form () {
-        return this.$store.getters.loadedForm(parseInt(this.application_id), parseInt(this.id))
+        return this.$store.getters.loadedForm(this.applicationName, parseInt(this.id))
       },
       loading () {
         return this.$store.getters.loading
@@ -112,16 +112,16 @@
       },
       onDeleteForm () {
         this.$store.dispatch('deleteForm', {
-          applicationId: this.application_id,
+          applicationName: this.applicationName,
           id: this.id
         })
-        this.$router.push('/applications/' + this.application_id + '/forms')
+        this.$router.push('/' + this.applicationName + '/forms')
       }
     },
     created: function () {
       this.$store.dispatch('loadApplications')
-      this.$store.dispatch('loadTeams', this.application_id)
-      this.$store.dispatch('loadForms', this.application_id)
+      this.$store.dispatch('loadTeams', this.applicationName)
+      this.$store.dispatch('loadForms', this.applicationName)
       this.$store.dispatch('loadSections', this.id)
       this.$store.dispatch('loadSubmissions', this.id)
       this.$store.dispatch('loadValidations', this.id)

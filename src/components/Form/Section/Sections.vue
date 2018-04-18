@@ -1,20 +1,20 @@
 <template>
   <v-card active-class='active-section' class='elevation-12 ma-1'>
-    <v-toolbar :class='{ "handle": submission_id === -1 }'>
+    <v-toolbar :class='{ "handle": submissionId === -1 }'>
       <v-toolbar-title>{{ 'Section ' + index }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click.prevent='toggleExpand'>
         <v-icon v-if='expanded'>expand_less</v-icon>
         <v-icon v-else>expand_more</v-icon>
       </v-btn>
-      <v-menu offset-y bottom left v-if="submission_id === -1">
+      <v-menu offset-y bottom left v-if="submissionId === -1">
         <v-btn icon slot='activator'>
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
           <v-list-tile @click=''>
             <v-list-tile-title>
-              <app-create-section :parent_section_id='section.id' :form_id='form_id'></app-create-section>
+              <app-create-section :parentSectionId='section.id' :formId='formId'></app-create-section>
             </v-list-tile-title>
           </v-list-tile>
           <v-list-tile @click=deleteSection>
@@ -22,7 +22,7 @@
           </v-list-tile>
           <v-list-tile v-show='!hasRepeatableQuestions' @click=''>
             <v-list-tile-title>
-              <app-create-question :section_id='section.id' :form_id='form_id'></app-create-question>
+              <app-create-question :sectionId='section.id' :formId='formId'></app-create-question>
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -44,7 +44,7 @@
           </template>
         </div>
       </v-flex>
-      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4' v-if="submission_id === -1">
+      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4' v-if="submissionId === -1">
         <v-switch
           label='Repeatable'
           v-model='hasRepeatableQuestions'
@@ -54,7 +54,7 @@
     </v-card-title>
     <v-card-text class='px-0' v-show='expanded'>
       <div v-if='hasRepeatableQuestions'>
-        <div v-if="submission_id === -1">
+        <div v-if="submissionId === -1">
           <question-repeatable
             :questions='section.questions'
             :min-rows='section.min_rows'
@@ -89,13 +89,13 @@
                  @end="checkEnd">
         <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
              :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-2 item'>
-          <sections :section='element' :form_id='form_id' v-if='isSection(element)' :submission_id='submission_id'
+          <sections :section='element' :formId='formId' v-if='isSection(element)' :submissionId='submissionId'
                     :index='index + 1'></sections>
           <div v-else>
-            <questions :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1'
-                       v-if="submission_id === -1"></questions>
-            <responses :question='element' :form_id='form_id' :section_id="section.id" :index='index + 1'
-                       :submission_id='submission_id' v-else></responses>
+            <questions :question='element' :formId='formId' :sectionId="section.id" :index='index + 1'
+                       v-if="submissionId === -1"></questions>
+            <responses :question='element' :formId='formId' :sectionId="section.id" :index='index + 1'
+                       :submissionId='submissionId' v-else></responses>
           </div>
         </div>
         <div slot='footer' v-if='isSectionEmpty'>
@@ -120,7 +120,7 @@
 
   export default {
     name: 'sections',
-    props: ['section', 'form_id', 'submission_id', 'index'],
+    props: ['section', 'formId', 'submissionId', 'index'],
     components: {
       draggable,
       questions,
@@ -146,7 +146,7 @@
     computed: {
       list: {
         get () {
-          return this.$store.getters.loadedChildren(this.form_id, this.section.id)
+          return this.$store.getters.loadedChildren(this.formId, this.section.id)
         },
         set (value) {
           // TODO: Drggable components
@@ -159,10 +159,10 @@
         return this.section.repeatable
       },
       responses () {
-        if (!this.submission_id) {
+        if (!this.submissionId) {
           return []
         }
-        let submission = this.$store.getters.loadedSubmission(parseInt(this.form_id), parseInt(this.submission_id))
+        let submission = this.$store.getters.loadedSubmission(parseInt(this.formId), parseInt(this.submissionId))
         let responses = submission.responses.filter((response) => {
           const questions = this.section.questions.filter((question) => {
             return question.id === response.question_id
@@ -181,8 +181,8 @@
     methods: {
       changeRepeatable (value) {
         this.$store.dispatch('deleteQuestions', {
-          formid: this.form_id,
-          sectionid: this.section.id
+          formId: this.formId,
+          sectionId: this.section.id
         })
         if (value) {
           this.createQuestion(['Answers', 'This question contains answers', 1, true])
@@ -196,18 +196,18 @@
         const mandatory = args[3]
 
         this.$store.dispatch('createQuestion', {
-          formid: this.form_id,
-          sectionid: this.section.id,
+          formId: this.formId,
+          sectionId: this.section.id,
           question: qustionName,
           description: questionDescription,
-          question_type_id: questionType,
+          questionTypeId: questionType,
           mandatory: mandatory
         })
       },
       deleteQuestion (id) {
         this.$store.dispatch('deleteQuestion', {
-          formid: this.form_id,
-          sectionid: this.section.id,
+          formId: this.formId,
+          sectionId: this.section.id,
           id: id
         })
       },
@@ -215,73 +215,73 @@
         const index = args[0]
         const value = args[1]
         this.$store.dispatch('updateQuestion', {
-          formid: this.form_id,
-          sectionid: this.section.id,
+          formId: this.formId,
+          sectionId: this.section.id,
           id: index,
           question: value
         })
       },
       createAnswer (args) {
-        const questionid = args[0]
+        const questionId = args[0]
         const answer = args[1]
         this.$store.dispatch('createAnswer', {
-          formid: this.form_id,
-          sectionid: this.section.id,
-          questionid: questionid,
+          formId: this.formId,
+          sectionId: this.section.id,
+          questionId: questionId,
           answer: answer,
           parameter: true
         })
       },
       deleteAnswer (args) {
-        const questionid = args[0]
+        const questionId = args[0]
         const index = args[1]
         this.$store.dispatch('deleteAnswer', {
-          formid: this.form_id,
-          sectionid: this.section.id,
-          questionid: questionid,
+          formId: this.formId,
+          sectionId: this.section.id,
+          questionId: questionId,
           id: index
         })
       },
       updateAnswer (args) {
-        const questionid = args[0]
+        const questionId = args[0]
         const index = args[1]
         const answer = args[2]
         this.$store.dispatch('updateAnswer', {
-          formid: this.form_id,
-          sectionid: this.section.id,
-          questionid: questionid,
+          formId: this.formId,
+          sectionId: this.section.id,
+          questionId: questionId,
           id: index,
           answer: answer
         })
       },
       createResponse (args) {
-        if (this.submission_id <= 0) {
+        if (this.submissionId <= 0) {
           return
         }
-        const answerid = args[0]
+        const answerId = args[0]
         const response = args[1]
-        const questionid = args[2]
+        const questionId = args[2]
         const order = args[3]
         this.$store.dispatch('createResponse', {
-          submissionid: this.submission_id,
-          questionid: questionid,
-          formid: this.form_id,
-          answerid: answerid,
+          submissionId: this.submissionId,
+          questionId: questionId,
+          formId: this.formId,
+          answerId: answerId,
           response: response,
           order: order
         })
       },
       updateResponse (args) {
-        const answerid = args[0]
+        const answerId = args[0]
         const response = args[1]
         const id = args[2]
-        const questionid = args[3]
+        const questionId = args[3]
         const order = args[4]
         this.$store.dispatch('updateResponse', {
-          submissionid: this.submission_id,
-          questionid: questionid,
-          formid: this.form_id,
-          answerid: answerid,
+          submissionId: this.submissionId,
+          questionId: questionId,
+          formId: this.formId,
+          answerId: answerId,
           response: response,
           id: id,
           order: order
@@ -289,14 +289,14 @@
       },
       deleteResponse (args) {
         this.$store.dispatch('deleteResponse', {
-          submissionid: this.submission_id,
-          questionid: args[1],
-          formid: this.form_id,
+          submissionId: this.submissionId,
+          questionId: args[1],
+          formId: this.formId,
           id: args[0]
         })
       },
       setEditMode () {
-        if (this.submission_id === -1) {
+        if (this.submissionId === -1) {
           this.editMode = true
         }
       },
@@ -312,9 +312,9 @@
         }
         this.$store.dispatch('updateSection',
           {
-            formid: this.form_id,
+            formId: this.formId,
             id: this.section.id,
-            parent_section_id: this.section.parent_section_id,
+            parentSectionId: this.section.parentSectionId,
             name: this.editedName,
             repeatable: this.hasRepeatableQuestions,
             min_rows: this.min_rows,
@@ -323,7 +323,7 @@
       },
       deleteSection () {
         this.$store.dispatch('deleteSection', {
-          formid: this.form_id,
+          formId: this.formId,
           id: this.section.id
         })
       },
@@ -335,13 +335,13 @@
         }
       },
       moveAnswer (args) {
-        const questionid = args[0]
+        const questionId = args[0]
         const id = args[1]
         const order = args[2]
         this.$store.dispatch('moveAnswer', {
-          formid: this.form_id,
-          sectionid: this.section.id,
-          questionid: questionid,
+          formId: this.formId,
+          sectionId: this.section.id,
+          questionId: questionId,
           id: id,
           order: order
         })
@@ -351,10 +351,10 @@
         const order = args[1]
         this.$store.dispatch('moveQuestion',
           {
-            formid: this.form_id,
-            questionid: id,
-            oldparent_section_id: this.section.id,
-            parent_section_id: this.section.id,
+            formId: this.formId,
+            questionId: id,
+            oldparentSectionId: this.section.id,
+            parentSectionId: this.section.id,
             order: order
           })
       },
@@ -380,7 +380,7 @@
           parentSectionId = parseInt(parentSectionId)
         }
 
-        const children = this.$store.getters.loadedChildren(this.form_id, parentSectionId)
+        const children = this.$store.getters.loadedChildren(this.formId, parentSectionId)
         let order = 0
         if (children.length === 0) {
           order = 1
@@ -394,9 +394,9 @@
           const elementId = parseInt(elementClass.substr(17))
           this.$store.dispatch('moveSection',
             {
-              formid: this.form_id,
-              sectionid: elementId,
-              parent_section_id: parentSectionId,
+              formId: this.formId,
+              sectionId: elementId,
+              parentSectionId: parentSectionId,
               order: order
             })
         } else {
@@ -405,10 +405,10 @@
           const elementId = parseInt(elementClass.substr(18))
           this.$store.dispatch('moveQuestion',
             {
-              formid: this.form_id,
-              questionid: elementId,
-              oldparent_section_id: oldparentSectionId,
-              parent_section_id: parentSectionId,
+              formId: this.formId,
+              questionId: elementId,
+              oldparentSectionId: oldparentSectionId,
+              parentSectionId: parentSectionId,
               order: order
             })
         }

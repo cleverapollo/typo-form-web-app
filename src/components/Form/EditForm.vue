@@ -146,7 +146,7 @@
 
 <script>
   export default {
-    props: ['form', 'application_id'],
+    props: ['form', 'applicationName'],
     data () {
       return {
         id: this.form.id,
@@ -169,7 +169,7 @@
         this.editForm = false
 
         this.$store.dispatch('updateForm', {
-          applicationId: this.application_id,
+          applicationName: this.applicationName,
           id: this.id,
           name: this.editedName,
           periodStart: this.periodStart,

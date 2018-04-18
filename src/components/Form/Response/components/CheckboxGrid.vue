@@ -52,23 +52,23 @@
       }
     },
     methods: {
-      checkAble (answerid, responseid) {
+      checkAble (answerId, responseId) {
         const index = this.responses.findIndex((response) => {
-          return response.answer_id === answerid && parseInt(response.response) === responseid
+          return response.answer_id === answerId && parseInt(response.response) === responseId
         })
         return index !== -1
       },
-      responseIdFromAnswer (answerid, responseid) {
+      responseIdFromAnswer (answerId, responseId) {
         const response = this.responses.find((response) => {
-          return response.answer_id === answerid && parseInt(response.response) === responseid
+          return response.answer_id === answerId && parseInt(response.response) === responseId
         })
         return response.id
       },
-      onSave (answerid, response) {
-        if (!this.checkAble(answerid, response)) {
-          this.$emit('create-response', [answerid, response])
+      onSave (answerId, responseId) {
+        if (!this.checkAble(answerId, responseId)) {
+          this.$emit('create-response', [answerId, responseId])
         } else {
-          this.$emit('delete-response', this.responseIdFromAnswer(answerid, response))
+          this.$emit('delete-response', this.responseIdFromAnswer(answerId, responseId))
         }
       }
     }

@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <app-invite-application :application_id="application_id"  v-if="userIsAdmin"></app-invite-application>
+    <app-invite-application :applicationName="applicationName"  v-if="userIsAdmin"></app-invite-application>
     <v-spacer></v-spacer>
     <v-btn color="info" @click=onBack>Back</v-btn>
     <v-flex xs12>
@@ -62,7 +62,7 @@
 
 <script>
   export default {
-    props: ['application_id'],
+    props: ['applicationName'],
     data () {
       return {
         active: null,
@@ -79,13 +79,13 @@
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(parseInt(this.application_id))
+        return this.$store.getters.loadedApplication(this.applicationName)
       },
       users () {
-        return this.$store.getters.loadedUsers(parseInt(this.application_id))
+        return this.$store.getters.loadedUsers(this.applicationName)
       },
       invitedUsers () {
-        return this.$store.getters.invitedUsers(parseInt(this.application_id))
+        return this.$store.getters.invitedUsers(this.applicationName)
       },
       loading () {
         return this.$store.getters.loading
@@ -102,7 +102,7 @@
     },
     methods: {
       onLoadUser (id) {
-        this.$router.push('/applications/' + this.application_id + '/users/show/' + id)
+        this.$router.push('/' + this.applicationName + '/users/show/' + id)
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -111,12 +111,12 @@
         return role ? role.name : 'undefined'
       },
       onBack () {
-        this.$router.push('/applications/show/' + this.application_id)
+        this.$router.push('/' + this.applicationName)
       }
     },
     created: function () {
       this.$store.dispatch('loadApplications')
-      this.$store.dispatch('loadUsers', this.application_id)
+      this.$store.dispatch('loadUsers', this.applicationName)
     }
   }
 </script>

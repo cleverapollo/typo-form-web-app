@@ -62,7 +62,7 @@
 
 <script>
   export default {
-    props: ['team', 'application_id'],
+    props: ['team', 'application_name'],
     data () {
       return {
         id: this.team.id,
@@ -79,7 +79,7 @@
         this.editTeam = false
         this.$store.dispatch('updateTeam',
           {
-            applicationid: this.application_id,
+            applicationName: this.application_name,
             id: this.id,
             name: this.editedName,
             description: this.editedDescription

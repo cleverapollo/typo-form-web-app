@@ -20,7 +20,7 @@
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-layout row wrap>
-              <app-edit-user :user="user" :application_id="application_id" class="my-1"></app-edit-user>
+              <app-edit-user :user="user" :applicationName="applicationName" class="my-1"></app-edit-user>
               <v-btn class="error my-1" @click=onDeleteUser>Delete</v-btn>
               <v-spacer></v-spacer>
               <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
@@ -34,19 +34,18 @@
 
 <script>
   export default {
-    props: ['application_id', 'id'],
+    props: ['applicationName', 'id'],
     computed: {
       roles () {
         console.log('roles')
         return this.$store.getters.roles
       },
       application () {
-        console.log('application')
-        return this.$store.getters.loadedApplication(parseInt(this.application_id))
+        return this.$store.getters.loadedApplication(this.applicationName)
       },
       user () {
         console.log('user')
-        return this.$store.getters.loadedUser(parseInt(this.application_id), parseInt(this.id))
+        return this.$store.getters.loadedUser(this.applicationName, parseInt(this.id))
       },
       userIsAuthenticated () {
         console.log('userIsAuthenticated')
@@ -67,10 +66,10 @@
     methods: {
       onDeleteUser () {
         this.$store.dispatch('deleteUser', {
-          applicationid: this.application_id,
+          applicationName: this.applicationName,
           id: this.user.id
         })
-        this.$router.push('/applications/' + this.application_id + '/users')
+        this.$router.push('/' + this.applicationName + '/users')
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -79,12 +78,12 @@
         return role ? role.name : 'undefined'
       },
       onBack () {
-        this.$router.push('/applications/' + this.application_id + '/users')
+        this.$router.push('/' + this.applicationName + '/users')
       }
     },
     created: function () {
       this.$store.dispatch('loadApplications')
-      this.$store.dispatch('loadUsers', this.application_id)
+      this.$store.dispatch('loadUsers', this.applicationName)
     }
   }
 </script>

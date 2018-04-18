@@ -123,7 +123,7 @@
 
 <script>
   export default {
-    props: ['submission', 'form_id'],
+    props: ['submission', 'formId'],
     data () {
       return {
         id: this.submission.id,
@@ -140,7 +140,7 @@
 
         let submissionData = {
           id: this.id,
-          formId: this.form_id,
+          formId: this.formId,
           periodStart: this.periodStart,
           periodEnd: this.periodEnd
         }

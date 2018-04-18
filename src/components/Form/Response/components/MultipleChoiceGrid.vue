@@ -47,10 +47,10 @@
       this.checkAnswers = ex
     },
     methods: {
-      checked (answerid, response) {
+      checked (answerId, response) {
         if (this.responses.length) {
           const objs = this.responses.filter((obj) => {
-            return parseInt(obj.response) === response && obj.answer_id === answerid
+            return parseInt(obj.response) === response && obj.answer_id === answerId
           })
           if (objs.length) {
             return 'check'
@@ -58,9 +58,9 @@
         }
         return 'unchecked'
       },
-      isNew (answerid) {
+      isNew (answerId) {
         const index = this.responses.findIndex((response) => {
-          return response.answer_id === answerid
+          return response.answer_id === answerId
         })
         if (index === -1) {
           return false
@@ -68,17 +68,17 @@
           return true
         }
       },
-      responseIdFromAnswer (answerid) {
+      responseIdFromAnswer (answerId) {
         const response = this.responses.find((response) => {
-          return response.answer_id === answerid
+          return response.answer_id === answerId
         })
         return response.id
       },
-      onSave (answerid, response) {
-        if (!this.isNew(answerid)) {
-          this.$emit('create-response', [answerid, response])
+      onSave (answerId, response) {
+        if (!this.isNew(answerId)) {
+          this.$emit('create-response', [answerId, response])
         } else {
-          this.$emit('update-response', [answerid, response, this.responseIdFromAnswer(answerid)])
+          this.$emit('update-response', [answerId, response, this.responseIdFromAnswer(answerId)])
         }
       }
     },

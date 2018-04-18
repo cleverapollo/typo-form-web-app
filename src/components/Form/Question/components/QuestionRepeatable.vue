@@ -107,22 +107,22 @@
       },
       createAnswer () {
         const answer = `Column ${this.computedAnswers.length + 1}`
-        const questionid = this.questions.find((question) => {
+        const questionId = this.questions.find((question) => {
           return question.question === 'Answers'
         }).id
-        this.$emit('create-answer', [questionid, answer])
+        this.$emit('create-answer', [questionId, answer])
       },
       deleteAnswer (index) {
-        const questionid = this.questions.find((question) => {
+        const questionId = this.questions.find((question) => {
           return question.question === 'Answers'
         }).id
-        this.$emit('delete-answer', [questionid, index])
+        this.$emit('delete-answer', [questionId, index])
       },
       updateAnswer (index, value) {
-        const questionid = this.questions.find((question) => {
+        const questionId = this.questions.find((question) => {
           return question.question === 'Answers'
         }).id
-        this.$emit('update-answer', [questionid, index, value])
+        this.$emit('update-answer', [questionId, index, value])
       },
       checkEnd: function (evt) {
         if (evt.to.className !== evt.from.className) {
@@ -152,10 +152,10 @@
           } else {
             order = this.computedAnswers[newIndex].order
           }
-          const questionid = this.questions.find((question) => {
+          const questionId = this.questions.find((question) => {
             return question.question === 'Answers'
           }).id
-          this.$emit('move-answer', [questionid, elementId, order])
+          this.$emit('move-answer', [questionId, elementId, order])
         }
       },
       validateMinRows (value) {

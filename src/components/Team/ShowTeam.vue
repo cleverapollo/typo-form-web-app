@@ -18,7 +18,7 @@
           <v-card-text>
             <h3 class="break-all">{{joinURL}}</h3>
             <h3 class="break-all">{{ team.description }}</h3>
-            <app-invite-team :application_id="application_id" :team_id="id"></app-invite-team>
+            <app-invite-team :applicationName="applicationName" :teamId="id"></app-invite-team>
             <v-tabs v-model="active">
               <v-tabs-bar class="primary" dark>
                 <v-tabs-item
@@ -75,7 +75,7 @@
           </v-card-text>
           <v-card-actions>
             <v-layout row wrap>
-              <app-edit-team :team="team" :application_id="application_id" class="my-1"></app-edit-team>
+              <app-edit-team :team="team" :applicationName="applicationName" class="my-1"></app-edit-team>
               <v-btn class="error my-1" @click=onDeleteTeam>Delete</v-btn>
               <v-spacer></v-spacer>
               <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
@@ -115,7 +115,7 @@
 
 <script>
   export default {
-    props: ['application_id', 'id'],
+    props: ['applicationName', 'id'],
     data () {
       return {
         active: null,
@@ -132,7 +132,7 @@
         return this.$store.getters.roles
       },
       team () {
-        return this.$store.getters.loadedTeam(parseInt(this.application_id), parseInt(this.id))
+        return this.$store.getters.loadedTeam(this.applicationName, parseInt(this.id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -159,13 +159,13 @@
     methods: {
       onDeleteTeam () {
         this.$store.dispatch('deleteTeam', {
-          applicationid: this.application_id,
+          applicationName: this.applicationName,
           id: this.team.id
         })
-        this.$router.push('/applications/' + this.application_id + '/teams')
+        this.$router.push('/' + this.applicationName + '/teams')
       },
       onLoadTeamUser (id) {
-        this.$router.push('/applications/' + this.application_id + '/teams/' + this.id + '/users/' + id)
+        this.$router.push('/' + this.applicationName + '/teams/' + this.id + '/users/' + id)
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -174,12 +174,12 @@
         return role ? role.name : 'undefined'
       },
       onBack () {
-        this.$router.push('/applications/' + this.application_id + '/teams')
+        this.$router.push('/' + this.applicationName + '/teams')
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.application_id)
-      this.$store.dispatch('loadTeamUsers', {applicationid: this.application_id, teamid: this.id})
+      this.$store.dispatch('loadTeams', this.applicationName)
+      this.$store.dispatch('loadTeamUsers', {applicationName: this.applicationName, teamId: this.id})
     }
   }
 </script>
