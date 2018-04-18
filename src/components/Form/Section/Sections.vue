@@ -353,7 +353,7 @@
           {
             formId: this.formId,
             questionId: id,
-            oldparentSectionId: this.section.id,
+            oldParentSectionId: this.section.id,
             parentSectionId: this.section.id,
             order: order
           })
@@ -401,13 +401,13 @@
             })
         } else {
           const oldparentClass = evt.from.className
-          const oldparentSectionId = parseInt(oldparentClass.substr(7))
+          const oldParentSectionId = parseInt(oldparentClass.substr(7))
           const elementId = parseInt(elementClass.substr(18))
           this.$store.dispatch('moveQuestion',
             {
               formId: this.formId,
               questionId: elementId,
-              oldparentSectionId: oldparentSectionId,
+              oldParentSectionId: oldParentSectionId,
               parentSectionId: parentSectionId,
               order: order
             })

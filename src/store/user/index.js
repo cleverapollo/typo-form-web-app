@@ -19,17 +19,19 @@ export default {
       state.invitedUsers = users
     },
     updateUser (state, payload) {
-      const user = state.loadedUsers[payload.applicationName].find(user => {
-        return user.id === payload.user.user_id
+      let users = Object.assign({}, state.loadedUsers)
+      const index = users[payload.applicationName].findIndex(user => {
+        return user.id === payload.user.id
       })
-      if (payload.user.application_role_id) {
-        user.application_role_id = payload.user.application_role_id
-      }
+      users[payload.applicationName].splice(index, 1, payload.user)
+      state.loadedUsers = users
     },
     deleteUser (state, payload) {
-      state.loadedUsers[payload.applicationName] = state.loadedUsers[payload.applicationName].filter(e => {
+      let users = Object.assign({}, state.loadedUsers)
+      users[payload.applicationName] = users[payload.applicationName].filter(e => {
         return e.id !== payload.id
       })
+      state.loadedUsers = users
     }
   },
   actions: {
@@ -62,8 +64,8 @@ export default {
     updateUser ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
-      if (payload.application_role_id) {
-        updateObj.application_role_id = payload.application_role_id
+      if (payload.applicationRoleId) {
+        updateObj.application_role_id = payload.applicationRoleId
       }
       window.axios.put(APPLICATION_URL + payload.applicationName + USER_URL + payload.id, updateObj)
         .then(
@@ -116,12 +118,12 @@ export default {
       }
     },
     loadedUser (state) {
-      return (applicationName, userid) => {
+      return (applicationName, userId) => {
         if (!state.loadedUsers[applicationName]) {
           return null
         }
         return state.loadedUsers[applicationName].find((user) => {
-          return user.id === userid
+          return user.id === userId
         })
       }
     }

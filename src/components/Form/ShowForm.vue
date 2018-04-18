@@ -113,7 +113,7 @@
       onDeleteForm () {
         this.$store.dispatch('deleteForm', {
           applicationName: this.applicationName,
-          id: this.id
+          id: this.form.id
         })
         this.$router.push('/' + this.applicationName + '/forms')
       }

@@ -10,68 +10,77 @@ export default {
   mutations: {
     setLoadedSections (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      sections[payload.formid] = payload.sections
+      sections[payload.formId] = payload.sections
       state.loadedSections = sections
     },
     createSection (state, payload) {
-      state.loadedSections[payload.formid].push(payload.section)
+      let sections = Object.assign({}, state.loadedSections)
+      sections[payload.formId].push(payload.section)
+      state.loadedSections = sections
     },
     updateSection (state, payload) {
-      const index = state.loadedSections[payload.formid].findIndex(section => {
+      let sections = Object.assign({}, state.loadedSections)
+      const index = sections[payload.formId].findIndex(section => {
         return section.id === payload.section.id
       })
-      state.loadedSections[payload.formid].splice(index, 1, payload.section)
+      sections[payload.formId].splice(index, 1, payload.section)
+      state.loadedSections = sections
     },
     moveSection (state, payload) {
+      const parentSectionId = payload.section ? payload.section.id : null
       if (payload.section !== null) {
-        const index = state.loadedSections[payload.formid].findIndex(section => {
-          return section.id === payload.section.id
+        const index = state.loadedSections[payload.formId].findIndex(section => {
+          return section.id === parentSectionId
         })
-        state.loadedSections[payload.formid].splice(index, 1, payload.section)
+        state.loadedSections[payload.formId].splice(index, 1, payload.section)
       }
-      const parentsectionid = payload.section ? payload.section.id : null
 
-      const childSections = state.loadedSections[payload.formid].filter((section) => {
-        return section.parent_section_id === parentsectionid && section.order >= payload.order
+      const childSections = state.loadedSections[payload.formId].filter((section) => {
+        return section.parent_section_id === parentSectionId && section.order >= payload.order
       })
       childSections.map(function (section) {
         section.order = section.order + 1
       })
 
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      const section = state.loadedSections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       section.order = payload.order
-      section.parent_section_id = parentsectionid
+      section.parent_section_id = parentSectionId
     },
     deleteSection (state, payload) {
-      state.loadedSections[payload.formid] = state.loadedSections[payload.formid].filter(e => {
+      let sections = Object.assign({}, state.loadedSections)
+      sections[payload.formId] = sections[payload.formId].filter(e => {
         return e.id !== payload.id
       })
+      state.loadedSections = sections
     },
 
     setLoadedQuestions (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       section.questions = payload.questions
+      state.loadedSections = sections
     },
     createQuestion (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
-      section.questions = section.questions.slice(0)
       section.questions.push(payload.question)
+      state.loadedSections = sections
     },
     duplicateQuestion (state, payload) {
-      const childSections = state.loadedSections[payload.formid].filter((section) => {
-        return section.parent_section_id === payload.sectionid && section.order >= payload.question.order
+      const childSections = state.loadedSections[payload.formId].filter((section) => {
+        return section.parent_section_id === payload.sectionId && section.order >= payload.question.order
       })
       childSections.map(function (section) {
         section.order = section.order + 1
       })
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      const section = state.loadedSections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       if (section) {
         section.questions.map(function (question) {
@@ -83,122 +92,139 @@ export default {
       section.questions.push(payload.question)
     },
     updateQuestion (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       const index = section.questions.findIndex(question => {
         return question.id === payload.question.id
       })
       section.questions.splice(index, 1, payload.question)
+      state.loadedSections = sections
     },
     moveQuestion (state, payload) {
-      const oldSection = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.oldsectionid
+      const oldSection = state.loadedSections[payload.formId].find((section) => {
+        return section.id === payload.oldSectionId
       })
       oldSection.questions = oldSection.questions.filter(e => {
-        return e.id !== payload.questionid
+        return e.id !== payload.questionId
       })
 
-      const index = state.loadedSections[payload.formid].findIndex(section => {
+      const index = state.loadedSections[payload.formId].findIndex(section => {
         return section.id === payload.section.id
       })
-      state.loadedSections[payload.formid].splice(index, 1, payload.section)
+      state.loadedSections[payload.formId].splice(index, 1, payload.section)
 
-      const parentsectionid = payload.section.id
-      const childSections = state.loadedSections[payload.formid].filter((section) => {
-        return section.parent_section_id === parentsectionid && section.order >= payload.order
+      const parentSectionId = payload.section.id
+      const childSections = state.loadedSections[payload.formId].filter((section) => {
+        return section.parent_section_id === parentSectionId && section.order >= payload.order
       })
       childSections.map(function (section) {
         section.order = section.order + 1
       })
     },
     deleteQuestion (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       section.questions = section.questions.filter(e => {
         return e.id !== payload.id
       })
+      state.loadedSections = sections
     },
     deleteQuestions (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       section.questions = []
+      state.loadedSections = sections
     },
 
     setLoadedAnswers (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
-        return question.id === payload.questionid
+        return question.id === payload.questionId
       })
       question.answers = payload.answers
+      state.loadedSections = sections
     },
     createAnswer (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
-        return question.id === payload.questionid
+        return question.id === payload.questionId
       })
-      question.answers = question.answers.slice(0)
       question.answers.push(payload.answer)
+      state.loadedSections = sections
     },
     updateAnswer (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
-        return question.id === payload.questionid
+        return question.id === payload.questionId
       })
       const index = question.answers.findIndex(answer => {
         return answer.id === payload.answer.id
       })
       question.answers.splice(index, 1, payload.answer)
+      state.loadedSections = sections
     },
     deleteAnswer (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
-        return question.id === payload.questionid
+        return question.id === payload.questionId
       })
       question.answers = question.answers.filter(e => {
         return e.id !== payload.id
       })
+      state.loadedSections = sections
     },
     deleteAnswers (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
-        return question.id === payload.questionid
+        return question.id === payload.questionId
       })
       question.answers = []
+      state.loadedSections = sections
     },
     changeAnswers (state, payload) {
-      const section = state.loadedSections[payload.formid].find((section) => {
-        return section.id === payload.sectionid
+      let sections = Object.assign({}, state.loadedSections)
+      const section = sections[payload.formId].find((section) => {
+        return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
-        return question.id === payload.questionid
+        return question.id === payload.questionId
       })
       question.answers = question.answers.filter(e => {
         return e.parameter === 1
       })
+      state.loadedSections = sections
     }
   },
   actions: {
-    loadSections ({commit}, formid) {
+    loadSections ({commit}, formId) {
       commit('setLoading', true)
-      window.axios.get(FORM_URL + formid + SECTION_URL)
+      window.axios.get(FORM_URL + formId + SECTION_URL)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formid: formid,
+              formId: formId,
               sections: response['data']['sections']
             }
             commit('setLoadedSections', updateObj)
@@ -215,15 +241,15 @@ export default {
       let section = {
         name: payload.name
       }
-      if (payload.parent_section_id !== -1) {
-        section.parent_section_id = payload.parent_section_id
+      if (payload.parentSectionId !== -1) {
+        section.parent_section_id = payload.parentSectionId
       }
-      window.axios.post(FORM_URL + payload.formid + SECTION_URL, section)
+      window.axios.post(FORM_URL + payload.formId + SECTION_URL, section)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              formid: payload.formid,
+              formId: payload.formId,
               section: response['data']['section']
             }
             commit('createSection', createObj)
@@ -238,12 +264,19 @@ export default {
     },
     updateSection ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.put(FORM_URL + payload.formid + SECTION_URL + payload.id, payload)
+      const updateObj = {}
+      if (payload.name) {
+        updateObj.name = payload.name
+      }
+      if (payload.parentSectionId !== -1) {
+        updateObj.parent_section_id = payload.parentSectionId
+      }
+      window.axios.put(FORM_URL + payload.formId + SECTION_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formid: payload.formid,
+              formId: payload.formId,
               section: response['data']['section']
             }
             commit('updateSection', updateObj)
@@ -256,13 +289,17 @@ export default {
     },
     moveSection ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.post(FORM_URL + payload.formid + SECTION_URL + payload.sectionid + MOVE_URL, payload)
+      const moveObj = {
+        parent_section_id: payload.parentSectionId,
+        order: payload.order
+      }
+      window.axios.post(FORM_URL + payload.formId + SECTION_URL + payload.sectionId + MOVE_URL, moveObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formid: payload.formid,
-              sectionid: payload.sectionid,
+              formId: payload.formId,
+              sectionId: payload.sectionId,
               order: payload.order,
               section: response['data']['data']
             }
@@ -276,7 +313,7 @@ export default {
     },
     deleteSection ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + payload.formid + SECTION_URL + payload.id)
+      window.axios.delete(FORM_URL + payload.formId + SECTION_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteSection', payload)
@@ -289,35 +326,35 @@ export default {
   },
   getters: {
     loadedSections (state) {
-      return (formid) => {
-        if (!state.loadedSections[formid]) {
+      return (formId) => {
+        if (!state.loadedSections[formId]) {
           return []
         }
-        return state.loadedSections[formid].sort((sectionA, sectionB) => {
+        return state.loadedSections[formId].sort((sectionA, sectionB) => {
           return sectionA.order > sectionB.order
         })
       }
     },
     loadedSection (state) {
-      return (formid, sectionid) => {
-        if (!state.loadedSections[formid]) {
+      return (formId, sectionId) => {
+        if (!state.loadedSections[formId]) {
           return null
         }
-        return state.loadedSections[formid].find((section) => {
-          return section.id === sectionid
+        return state.loadedSections[formId].find((section) => {
+          return section.id === sectionId
         })
       }
     },
     loadedChildren (state) {
-      return (formid, parentsectionid) => {
-        if (!state.loadedSections[formid]) {
+      return (formId, parentSectionId) => {
+        if (!state.loadedSections[formId]) {
           return []
         }
-        const childSections = state.loadedSections[formid].filter((section) => {
-          return section.parent_section_id === parentsectionid
+        const childSections = state.loadedSections[formId].filter((section) => {
+          return section.parent_section_id === parentSectionId
         })
-        const section = state.loadedSections[formid].find((section) => {
-          return section.id === parentsectionid
+        const section = state.loadedSections[formId].find((section) => {
+          return section.id === parentSectionId
         })
         let childQuestions = []
         if (section) {

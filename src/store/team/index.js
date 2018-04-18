@@ -13,23 +13,24 @@ export default {
       state.loadedTeams = teams
     },
     createTeam (state, payload) {
-      state.loadedTeams[payload.applicationName].push(payload.team)
+      let teams = Object.assign({}, state.loadedTeams)
+      teams[payload.applicationName].push(payload.team)
+      state.loadedTeams = teams
     },
     updateTeam (state, payload) {
-      const team = state.loadedTeams[payload.applicationName].find(team => {
+      let teams = Object.assign({}, state.loadedTeams)
+      const index = teams[payload.applicationName].findIndex(team => {
         return team.id === payload.team.id
       })
-      if (payload.team.name) {
-        team.name = payload.team.name
-      }
-      if (payload.team.description) {
-        team.description = payload.team.description
-      }
+      teams[payload.applicationName].splice(index, 1, payload.team)
+      state.loadedTeams = teams
     },
     deleteTeam (state, payload) {
-      state.loadedTeams[payload.applicationName] = state.loadedTeams[payload.applicationName].filter(e => {
+      let teams = Object.assign({}, state.loadedTeams)
+      teams[payload.applicationName] = teams[payload.applicationName].filter(e => {
         return e.id !== payload.id
       })
+      state.loadedTeams = teams
     }
   },
   actions: {
@@ -144,12 +145,12 @@ export default {
       }
     },
     loadedTeam (state) {
-      return (applicationName, teamid) => {
+      return (applicationName, teamId) => {
         if (!state.loadedTeams[applicationName]) {
           return null
         }
         return state.loadedTeams[applicationName].find((team) => {
-          return team.id === teamid
+          return team.id === teamId
         })
       }
     }

@@ -13,12 +13,10 @@ export default {
       state.loadedApplications.push(payload)
     },
     updateApplication (state, payload) {
-      const application = state.loadedApplications.find(application => {
+      const index = state.loadedApplications.findIndex(application => {
         return application.id === payload.id
       })
-      if (payload.name) {
-        application.name = payload.name
-      }
+      state.loadedApplications.splice(index, 1, payload)
     },
     deleteApplication (state, payload) {
       state.loadedApplications = state.loadedApplications.filter(e => {
@@ -66,7 +64,7 @@ export default {
       const application = {
         invitations: payload.invitations
       }
-      window.axios.post(APPLICATION_URL + payload.name + '/invite', application)
+      window.axios.post(APPLICATION_URL + payload.id + '/invite', application)
         .then(
           response => {
             commit('setLoading', false)
@@ -115,9 +113,9 @@ export default {
       })
     },
     loadedApplication (state) {
-      return (applicationid) => {
+      return (applicationName) => {
         return state.loadedApplications.find((application) => {
-          return application.id === applicationid
+          return application.name === applicationName
         })
       }
     }

@@ -13,48 +13,61 @@ export default {
       state.loadedSubmissions = submissions
     },
     createSubmission (state, payload) {
-      state.loadedSubmissions[payload.formId].push(payload.submission)
+      let submissions = Object.assign({}, state.loadedSubmissions)
+      submissions[payload.formId].push(payload.submission)
+      state.loadedSubmissions = submissions
     },
     updateSubmission (state, payload) {
-      const index = state.loadedSubmissions[payload.formId].findIndex(submission => {
+      let submissions = Object.assign({}, state.loadedSubmissions)
+      const index = submissions[payload.formId].findIndex(submission => {
         return submission.id === payload.submission.id
       })
-      state.loadedSubmissions[payload.formId].splice(index, 1, payload.submission)
+      submissions[payload.formId].splice(index, 1, payload.submission)
+      state.loadedSubmissions = submissions
     },
     deleteSubmission (state, payload) {
-      state.loadedSubmissions[payload.formId] = state.loadedSubmissions[payload.formId].filter(e => {
+      let submissions = Object.assign({}, state.loadedSubmissions)
+      submissions[payload.formId] = submissions[payload.formId].filter(e => {
         return e.id !== payload.id
       })
+      state.loadedSubmissions = submissions
     },
     setLoadedResponses (state, payload) {
-      const submission = state.loadedSubmissions[payload.formId].find((submission) => {
+      let submissions = Object.assign({}, state.loadedSubmissions)
+      const submission = submissions[payload.formId].find((submission) => {
         return submission.id === payload.submissionId
       })
       submission.responses = payload.responses
+      state.loadedSubmissions = submissions
     },
     createResponse (state, payload) {
-      const submission = state.loadedSubmissions[payload.formId].find((submission) => {
+      let submissions = Object.assign({}, state.loadedSubmissions)
+      const submission = submissions[payload.formId].find((submission) => {
         return submission.id === payload.submissionId
       })
-      submission.responses = submission.responses.slice(0)
       submission.responses.push(payload.response)
+      state.loadedSubmissions = submissions
     },
     updateResponse (state, payload) {
-      const submission = state.loadedSubmissions[payload.formId].find((submission) => {
+      let submissions = Object.assign({}, state.loadedSubmissions)
+      const submission = submissions[payload.formId].find((submission) => {
         return submission.id === payload.submissionId
       })
       const index = submission.responses.findIndex(response => {
         return response.id === payload.oldId
       })
       submission.responses.splice(index, 1, payload.response)
+      state.loadedSubmissions = submissions
     },
     deleteResponse (state, payload) {
-      const submission = state.loadedSubmissions[payload.formId].find((submission) => {
+      let submissions = Object.assign({}, state.loadedSubmissions)
+      const submission = submissions[payload.formId].find((submission) => {
         return submission.id === payload.submissionId
       })
       submission.responses = submission.responses.filter(e => {
         return e.id !== payload.id
       })
+      state.loadedSubmissions = submissions
     }
   },
   actions: {

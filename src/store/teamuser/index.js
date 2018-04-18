@@ -11,43 +11,45 @@ export default {
   mutations: {
     setLoadedTeamUsers (state, payload) {
       let users = Object.assign({}, state.loadedTeamUsers)
-      users[payload.teamid] = payload.users
+      users[payload.teamId] = payload.users
       state.loadedTeamUsers = users
     },
     setInvitedTeamUsers (state, payload) {
       let users = Object.assign({}, state.invitedTeamUsers)
-      users[payload.teamid] = payload.users
+      users[payload.teamId] = payload.users
       state.invitedTeamUsers = users
     },
     updateTeamUser (state, payload) {
-      const user = state.loadedTeamUsers[payload.teamid].find(user => {
+      let users = Object.assign({}, state.loadedTeamUsers)
+      const index = users[payload.teamId].findIndex(user => {
         return user.id === payload.user.user_id
       })
-      if (payload.user.team_role_id) {
-        user.team_role_id = payload.user.team_role_id
-      }
+      users[payload.teamId].splice(index, 1, payload.user)
+      state.loadedTeamUsers = users
     },
     deleteTeamUser (state, payload) {
-      state.loadedTeamUsers[payload.teamid] = state.loadedTeamUsers[payload.teamid].filter(e => {
+      let users = Object.assign({}, state.loadedTeamUsers)
+      users[payload.teamId] = users[payload.teamId].filter(e => {
         return e.id !== payload.id
       })
+      state.loadedTeamUsers = users
     }
   },
   actions: {
     loadTeamUsers ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.teamid + USER_URL)
+      window.axios.get(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.teamId + USER_URL)
         .then(
           response => {
             commit('setLoading', false)
             const updateLoadedObj = {
-              teamid: payload.teamid,
+              teamId: payload.teamId,
               users: response['data']['users']['current']
             }
             commit('setLoadedTeamUsers', updateLoadedObj)
 
             const updateInvitedObj = {
-              teamid: payload.teamid,
+              teamId: payload.teamId,
               users: response['data']['users']['unaccepted']
             }
             commit('setInvitedTeamUsers', updateInvitedObj)
@@ -63,15 +65,15 @@ export default {
     updateTeamUser ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
-      if (payload.team_role_id) {
-        updateObj.team_role_id = payload.team_role_id
+      if (payload.teamRoleId) {
+        updateObj.team_role_id = payload.teamRoleId
       }
-      window.axios.put(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.teamid + USER_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.teamId + USER_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              teamid: payload.teamid,
+              teamId: payload.teamId,
               user: response['data']['user']
             }
             commit('updateTeamUser', updateObj)
@@ -84,7 +86,7 @@ export default {
     },
     deleteTeamUser ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.teamid + USER_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.applicationName + TEAM_URL + payload.teamId + USER_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteTeamUser', payload)
@@ -97,32 +99,32 @@ export default {
   },
   getters: {
     loadedTeamUsers (state) {
-      return (teamid) => {
-        if (!state.loadedTeamUsers[teamid]) {
+      return (teamId) => {
+        if (!state.loadedTeamUsers[teamId]) {
           return []
         }
-        return state.loadedTeamUsers[teamid].sort((userA, userB) => {
+        return state.loadedTeamUsers[teamId].sort((userA, userB) => {
           return userA.id > userB.id
         })
       }
     },
     invitedTeamUsers (state) {
-      return (teamid) => {
-        if (!state.invitedTeamUsers[teamid]) {
+      return (teamId) => {
+        if (!state.invitedTeamUsers[teamId]) {
           return []
         }
-        return state.invitedTeamUsers[teamid].sort((userA, userB) => {
+        return state.invitedTeamUsers[teamId].sort((userA, userB) => {
           return userA.id > userB.id
         })
       }
     },
     loadedTeamUser (state) {
-      return (teamid, userid) => {
-        if (!state.loadedTeamUsers[teamid]) {
+      return (teamId, userId) => {
+        if (!state.loadedTeamUsers[teamId]) {
           return null
         }
-        return state.loadedTeamUsers[teamid].find((user) => {
-          return user.id === userid
+        return state.loadedTeamUsers[teamId].find((user) => {
+          return user.id === userId
         })
       }
     }

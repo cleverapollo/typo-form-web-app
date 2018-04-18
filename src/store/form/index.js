@@ -8,28 +8,29 @@ export default {
   },
   mutations: {
     setLoadedForms (state, payload) {
-      state.loadedForms = payload
       let forms = Object.assign({}, state.loadedForms)
       forms[payload.applicationName] = payload.forms
       state.loadedForms = forms
     },
     createForm (state, payload) {
-      state.loadedForms[payload.applicationName].push(payload.form)
+      let forms = Object.assign({}, state.loadedForms)
+      forms[payload.applicationName].push(payload.form)
+      state.loadedForms = forms
     },
     updateForm (state, payload) {
-      const form = state.loadedForms[payload.applicationName].find(form => {
+      let forms = Object.assign({}, state.loadedForms)
+      const index = forms[payload.applicationName].findIndex(form => {
         return form.id === payload.form.id
       })
-
-      form.name = payload.form.name
-      form.period_start = payload.form.period_start
-      form.period_end = payload.form.period_end
-      form.period_id = payload.form.period_id
+      forms[payload.applicationName].splice(index, 1, payload.form)
+      state.loadedForms = forms
     },
     deleteForm (state, payload) {
-      state.loadedForms[payload.applicationName] = state.loadedForms[payload.applicationName].filter(e => {
-        return e.id !== parseInt(payload.id)
+      let forms = Object.assign({}, state.loadedForms)
+      forms[payload.applicationName] = forms[payload.applicationName].filter(e => {
+        return e.id !== payload.id
       })
+      state.loadedForms = forms
     }
   },
   actions: {
@@ -82,13 +83,21 @@ export default {
     },
     updateForm ({commit}, payload) {
       commit('setLoading', true)
+      const updateObj = {}
+      if (payload.name) {
+        updateObj.name = payload.name
+      }
+      if (payload.periodStart) {
+        updateObj.period_start = payload.periodStart
+      }
+      if (payload.periodEnd) {
+        updateObj.period_end = payload.periodEnd
+      }
+      if (payload.periodId) {
+        updateObj.period_id = payload.periodId
+      }
 
-      window.axios.put(APPLICATION_URL + payload.applicationName + FORM_URL + payload.id, {
-        name: payload.name,
-        period_start: payload.periodStart,
-        period_end: payload.periodEnd,
-        period_id: payload.periodId
-      })
+      window.axios.put(APPLICATION_URL + payload.applicationName + FORM_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)

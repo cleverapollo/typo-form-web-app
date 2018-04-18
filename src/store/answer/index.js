@@ -8,14 +8,14 @@ export default {
   actions: {
     loadAnswers ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.get(QUESTION_URL + payload.questionid + ANSWER_URL)
+      window.axios.get(QUESTION_URL + payload.questionId + ANSWER_URL)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              formid: payload.formid,
-              sectionid: payload.sectionid,
-              questionid: payload.questionid,
+              formId: payload.formId,
+              sectionId: payload.sectionId,
+              questionId: payload.questionId,
               answers: response['data']['answers']
             }
             commit('setLoadedAnswers', createObj)
@@ -33,14 +33,14 @@ export default {
         answer: payload.answer,
         parameter: payload.parameter
       }
-      window.axios.post(QUESTION_URL + payload.questionid + ANSWER_URL, answer)
+      window.axios.post(QUESTION_URL + payload.questionId + ANSWER_URL, answer)
         .then(
           response => {
             commit('setLoading', false)
             const createdObj = {
-              formid: payload.formid,
-              sectionid: payload.sectionid,
-              questionid: payload.questionid,
+              formId: payload.formId,
+              sectionId: payload.sectionId,
+              questionId: payload.questionId,
               answer: response['data']['answer']
             }
             commit('createAnswer', createdObj)
@@ -59,14 +59,14 @@ export default {
       if (payload.answer) {
         updateObj.answer = payload.answer
       }
-      window.axios.put(QUESTION_URL + payload.questionid + ANSWER_URL + payload.id, updateObj)
+      window.axios.put(QUESTION_URL + payload.questionId + ANSWER_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formid: payload.formid,
-              sectionid: payload.sectionid,
-              questionid: payload.questionid,
+              formId: payload.formId,
+              sectionId: payload.sectionId,
+              questionId: payload.questionId,
               answer: response['data']['answer']
             }
             commit('updateAnswer', updateObj)
@@ -83,13 +83,13 @@ export default {
       if (payload.order) {
         updateObj.order = payload.order
       }
-      window.axios.post(QUESTION_URL + payload.questionid + ANSWER_URL + payload.id + MOVE_URL, updateObj)
+      window.axios.post(QUESTION_URL + payload.questionId + ANSWER_URL + payload.id + MOVE_URL, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formid: payload.formid,
-              sectionid: payload.sectionid,
+              formId: payload.formId,
+              sectionId: payload.sectionId,
               question: response['data']['data']
             }
             commit('updateQuestion', updateObj)
@@ -102,7 +102,7 @@ export default {
     },
     deleteAnswer ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(QUESTION_URL + payload.questionid + ANSWER_URL + payload.id)
+      window.axios.delete(QUESTION_URL + payload.questionId + ANSWER_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteAnswer', payload)
@@ -114,7 +114,7 @@ export default {
     },
     deleteAnswers ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(QUESTION_URL + payload.questionid + ANSWER_URL)
+      window.axios.delete(QUESTION_URL + payload.questionId + ANSWER_URL)
         .then(() => {
           commit('setLoading', false)
           commit('deleteAnswers', payload)
@@ -126,7 +126,7 @@ export default {
     },
     changeAnswers ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(QUESTION_URL + payload.questionid + ANSWER_URL + CHANGE_URL)
+      window.axios.delete(QUESTION_URL + payload.questionId + ANSWER_URL + CHANGE_URL)
         .then(() => {
           commit('setLoading', false)
           commit('changeAnswers', payload)
@@ -139,18 +139,18 @@ export default {
   },
   getters: {
     loadedAnswers (state, getters, rootState) {
-      return (formid, sectionid, questionid) => {
-        if (!rootState.section.loadedSections[formid]) {
+      return (formId, sectionId, questionId) => {
+        if (!rootState.section.loadedSections[formId]) {
           return []
         }
-        const section = rootState.section.loadedSections[formid].find((section) => {
-          return section.id === sectionid
+        const section = rootState.section.loadedSections[formId].find((section) => {
+          return section.id === sectionId
         })
         if (!section) {
           return []
         }
         const question = section.questions.find((question) => {
-          return question.id === questionid
+          return question.id === questionId
         })
         if (!question) {
           return []
@@ -159,24 +159,24 @@ export default {
       }
     },
     loadedAnswer (state, getters, rootState) {
-      return (formid, sectionid, questionid, answerid) => {
-        if (!rootState.section.loadedSections[formid]) {
+      return (formId, sectionId, questionId, answerId) => {
+        if (!rootState.section.loadedSections[formId]) {
           return null
         }
-        const section = rootState.section.loadedSections[formid].find((section) => {
-          return section.id === sectionid
+        const section = rootState.section.loadedSections[formId].find((section) => {
+          return section.id === sectionId
         })
         if (!section) {
           return null
         }
         const question = section.questions.find((question) => {
-          return question.id === questionid
+          return question.id === questionId
         })
         if (!question) {
           return null
         }
         return question.answers.find((answer) => {
-          return answer.id === answerid
+          return answer.id === answerId
         })
       }
     }

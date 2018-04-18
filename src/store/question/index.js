@@ -7,13 +7,13 @@ export default {
   actions: {
     loadQuestions ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.get(SECTION_URL + payload.sectionid + QUESTION_URL)
+      window.axios.get(SECTION_URL + payload.sectionId + QUESTION_URL)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              formid: payload.formid,
-              sectionid: payload.sectionid,
+              formId: payload.formId,
+              sectionId: payload.sectionId,
               questions: response['data']['questions']
             }
             commit('setLoadedQuestions', createObj)
@@ -31,15 +31,15 @@ export default {
         question: payload.question,
         description: payload.description,
         mandatory: payload.mandatory,
-        question_type_id: payload.question_type_id
+        question_type_id: payload.questionTypeId
       }
-      window.axios.post(SECTION_URL + payload.sectionid + QUESTION_URL, question)
+      window.axios.post(SECTION_URL + payload.sectionId + QUESTION_URL, question)
         .then(
           response => {
             commit('setLoading', false)
             const createdObj = {
-              formid: payload.formid,
-              sectionid: payload.sectionid,
+              formId: payload.formId,
+              sectionId: payload.sectionId,
               question: response['data']['question']
             }
             commit('createQuestion', createdObj)
@@ -61,19 +61,19 @@ export default {
       if (payload.description) {
         updateObj.description = payload.description
       }
-      if (payload.question_type_id) {
-        updateObj.question_type_id = payload.question_type_id
+      if (payload.questionTypeId) {
+        updateObj.question_type_id = payload.questionTypeId
       }
       if (payload.mandatory !== undefined) {
         updateObj.mandatory = payload.mandatory
       }
-      window.axios.put(SECTION_URL + payload.sectionid + QUESTION_URL + payload.id, updateObj)
+      window.axios.put(SECTION_URL + payload.sectionId + QUESTION_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formid: payload.formid,
-              sectionid: payload.sectionid,
+              formId: payload.formId,
+              sectionId: payload.sectionId,
               question: response['data']['question']
             }
             commit('updateQuestion', updateObj)
@@ -86,13 +86,13 @@ export default {
     },
     duplicateQuestion ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.post(SECTION_URL + payload.sectionid + QUESTION_URL + payload.id)
+      window.axios.post(SECTION_URL + payload.sectionId + QUESTION_URL + payload.id)
         .then(
           response => {
             commit('setLoading', false)
             const createdObj = {
-              formid: payload.formid,
-              sectionid: payload.sectionid,
+              formId: payload.formId,
+              sectionId: payload.sectionId,
               question: response['data']['question']
             }
             commit('duplicateQuestion', createdObj)
@@ -105,14 +105,18 @@ export default {
     },
     moveQuestion ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.post(SECTION_URL + payload.oldparent_section_id + QUESTION_URL + payload.questionid + MOVE_URL, payload)
+      const moveObj = {
+        parent_section_id: payload.parentSectionId,
+        order: payload.order
+      }
+      window.axios.post(SECTION_URL + payload.oldParentSectionId + QUESTION_URL + payload.questionId + MOVE_URL, moveObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formid: payload.formid,
-              questionid: payload.questionid,
-              oldsectionid: payload.oldparent_section_id,
+              formId: payload.formId,
+              questionId: payload.questionId,
+              oldSectionId: payload.oldParentSectionId,
               order: payload.order,
               section: response['data']['data']
             }
@@ -126,7 +130,7 @@ export default {
     },
     deleteQuestion ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(SECTION_URL + payload.sectionid + QUESTION_URL + payload.id)
+      window.axios.delete(SECTION_URL + payload.sectionId + QUESTION_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteQuestion', payload)
@@ -138,7 +142,7 @@ export default {
     },
     deleteQuestions ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(SECTION_URL + payload.sectionid + QUESTION_URL)
+      window.axios.delete(SECTION_URL + payload.sectionId + QUESTION_URL)
         .then(() => {
           commit('setLoading', false)
           commit('deleteQuestions', payload)
@@ -151,12 +155,12 @@ export default {
   },
   getters: {
     loadedQuestions (state, getters, rootState) {
-      return (formid, sectionid) => {
-        if (!rootState.section.loadedSections[formid]) {
+      return (formId, sectionId) => {
+        if (!rootState.section.loadedSections[formId]) {
           return []
         }
-        const section = rootState.section.loadedSections[formid].find((section) => {
-          return section.id === sectionid
+        const section = rootState.section.loadedSections[formId].find((section) => {
+          return section.id === sectionId
         })
         if (!section) {
           return []
@@ -167,18 +171,18 @@ export default {
       }
     },
     loadedQuestion (state, getters, rootState) {
-      return (formid, sectionid, questionid) => {
-        if (!rootState.section.loadedSections[formid]) {
+      return (formId, sectionId, questionId) => {
+        if (!rootState.section.loadedSections[formId]) {
           return null
         }
-        const section = rootState.section.loadedSections[formid].find((section) => {
-          return section.id === sectionid
+        const section = rootState.section.loadedSections[formId].find((section) => {
+          return section.id === sectionId
         })
         if (!section) {
           return null
         }
         return section.questions.find((question) => {
-          return question.id === questionid
+          return question.id === questionId
         })
       }
     }

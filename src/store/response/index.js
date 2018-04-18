@@ -6,13 +6,13 @@ export default {
   actions: {
     loadResponses ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.get(SUBMISSION_URL + payload.submissionid + RESPONSE_URL)
+      window.axios.get(SUBMISSION_URL + payload.submissionId + RESPONSE_URL)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              formId: payload.formid,
-              submissionId: payload.submissionid,
+              formId: payload.formId,
+              submissionId: payload.submissionId,
               responses: response['data']['responses']
             }
             commit('setLoadedResponses', createObj)
@@ -28,21 +28,21 @@ export default {
     createResponse ({commit, getters}, payload) {
       const response = {
         response: payload.response,
-        question_id: payload.questionid,
-        answer_id: payload.answerid
+        question_id: payload.questionId,
+        answer_id: payload.answerId
       }
 
       if (payload.order) {
         response.order = payload.order
       }
 
-      window.axios.post(SUBMISSION_URL + payload.submissionid + RESPONSE_URL, response)
+      window.axios.post(SUBMISSION_URL + payload.submissionId + RESPONSE_URL, response)
         .then(
           response => {
             commit('setLoading', false)
             const createdObj = {
-              formId: payload.formid,
-              submissionId: payload.submissionid,
+              formId: payload.formId,
+              submissionId: payload.submissionId,
               response: response['data']['response']
             }
             commit('createResponse', createdObj)
@@ -61,23 +61,23 @@ export default {
       if (payload.response) {
         updateObj.response = payload.response
       }
-      if (payload.answerid) {
-        updateObj.answer_id = payload.answerid
+      if (payload.answerId) {
+        updateObj.answer_id = payload.answerId
       }
-      if (payload.questionid) {
-        updateObj.question_id = payload.questionid
+      if (payload.questionId) {
+        updateObj.question_id = payload.questionId
       }
       if (payload.order) {
         updateObj.order = payload.order
       }
 
-      window.axios.put(SUBMISSION_URL + payload.submissionid + RESPONSE_URL + payload.id, updateObj)
+      window.axios.put(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formId: payload.formid,
-              submissionId: payload.submissionid,
+              formId: payload.formId,
+              submissionId: payload.submissionId,
               oldId: payload.id,
               response: response['data']['response']
             }
@@ -91,7 +91,7 @@ export default {
     },
     deleteResponse ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(SUBMISSION_URL + payload.submissionid + RESPONSE_URL + payload.id)
+      window.axios.delete(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteResponse', payload)
