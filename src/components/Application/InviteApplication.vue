@@ -84,7 +84,7 @@
 
 <script>
   export default {
-    props: ['application_id'],
+    props: ['applicationName'],
     data () {
       return {
         inviteApplication: false,
@@ -113,7 +113,7 @@
           return
         }
         this.inviteApplication = false
-        this.$store.dispatch('inviteApplication', {invitations: invitations, id: this.application_id})
+        this.$store.dispatch('inviteApplication', {invitations: invitations, name: this.applicationName})
       },
       onCancel () {
         this.invitations = [

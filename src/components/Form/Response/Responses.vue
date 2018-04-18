@@ -25,7 +25,7 @@
             :answers='answers'
             :responses='responses'
             :question-id='question.id'
-            :form-id='form_id'
+            :form-id='formId'
             @create-response="createResponse"
             @update-response="updateResponse"
             @delete-response="deleteResponse"
@@ -52,7 +52,7 @@
   import * as _ from 'lodash'
 
   export default {
-    props: ['question', 'form_id', 'submission_id', 'index', 'section_id'],
+    props: ['question', 'formId', 'submissionId', 'index', 'sectionId'],
     components: {
       draggable
     },
@@ -85,10 +85,10 @@
         })
       },
       responses () {
-        if (!this.submission_id) {
+        if (!this.submissionId) {
           return []
         }
-        let submission = this.$store.getters.loadedSubmission(parseInt(this.form_id), parseInt(this.submission_id))
+        let submission = this.$store.getters.loadedSubmission(parseInt(this.formId), parseInt(this.submissionId))
         return submission.responses.filter((response) => {
           return response.question_id === this.question.id
         })
@@ -124,37 +124,37 @@
         }) + 1
       },
       createResponse (args) {
-        if (!this.submission_id) {
+        if (!this.submissionId) {
           return
         }
-        const answerid = args[0]
+        const answerId = args[0]
         const response = args[1]
         this.$store.dispatch('createResponse', {
-          submissionid: this.submission_id,
-          questionid: this.question.id,
-          formid: this.form_id,
-          answerid: answerid,
+          submissionId: this.submissionId,
+          questionId: this.question.id,
+          formId: this.formId,
+          answerId: answerId,
           response: response
         })
       },
       updateResponse (args) {
-        const answerid = args[0]
+        const answerId = args[0]
         const response = args[1]
         const id = args[2]
         this.$store.dispatch('updateResponse', {
-          submissionid: this.submission_id,
-          questionid: this.question.id,
-          formid: this.form_id,
-          answerid: answerid,
+          submissionId: this.submissionId,
+          questionId: this.question.id,
+          formId: this.formId,
+          answerId: answerId,
           response: response,
           id: id
         })
       },
       deleteResponse (id) {
         this.$store.dispatch('deleteResponse', {
-          submissionid: this.submission_id,
-          questionid: this.question.id,
-          formid: this.form_id,
+          submissionId: this.submissionId,
+          questionId: this.question.id,
+          formId: this.formId,
           id: id
         })
       }

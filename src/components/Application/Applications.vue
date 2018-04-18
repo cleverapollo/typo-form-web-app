@@ -22,7 +22,7 @@
           class="elevation-1"
         >
           <template slot="items" slot-scope="props">
-            <td @click=onLoadApplication(props.item.id)>{{ props.item.name }}</td>
+            <td @click=onLoadApplication(props.item.name)>{{ props.item.name }}</td>
           </template>
         </v-data-table>
       </v-flex>
@@ -60,8 +60,8 @@
         })
         return role ? role.name : 'undefined'
       },
-      onLoadApplication (id) {
-        this.$router.push('/applications/show/' + id)
+      onLoadApplication (name) {
+        this.$router.push('/' + name)
       }
     },
     created: function () {

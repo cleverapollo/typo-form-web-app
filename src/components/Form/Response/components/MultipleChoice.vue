@@ -15,19 +15,19 @@
       }
     },
     methods: {
-      checked (answerid) {
+      checked (answerId) {
         if (this.responses.length) {
-          if (this.responses[0].answer_id === answerid) {
+          if (this.responses[0].answer_id === answerId) {
             return 'checked'
           }
         }
         return 'unchecked'
       },
-      onSave (answerid) {
+      onSave (answerId) {
         if (this.responses.length) {
-          this.$emit('update-response', [answerid, null, this.responses[0].id])
+          this.$emit('update-response', [answerId, null, this.responses[0].id])
         } else {
-          this.$emit('create-response', [answerid, null])
+          this.$emit('create-response', [answerId, null])
         }
       }
     },

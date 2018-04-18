@@ -152,7 +152,7 @@
 
 <script>
   export default {
-    props: ['application_id', 'form_id'],
+    props: ['applicationName', 'formId'],
     data () {
       return {
         createSubmission: false,
@@ -169,7 +169,7 @@
         this.createSubmission = false
 
         let submissionData = {
-          formId: this.form_id,
+          formId: this.formId,
           periodStart: this.periodStart,
           periodEnd: this.periodEnd
         }
@@ -190,10 +190,10 @@
         return this.$store.getters.loading
       },
       submissions () {
-        return this.$store.getters.loadedSubmissions(parseInt(this.form_id))
+        return this.$store.getters.loadedSubmissions(parseInt(this.formId))
       },
       teams () {
-        return this.$store.getters.loadedTeams(parseInt(this.application_id))
+        return this.$store.getters.loadedTeams(this.applicationName)
       },
       submissionTypes () {
         let types = [

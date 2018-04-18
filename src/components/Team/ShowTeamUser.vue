@@ -20,7 +20,7 @@
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-layout row wrap>
-              <app-edit-teamuser :user="user" :application_id="application_id" :team_id="team_id" class="my-1"></app-edit-teamuser>
+              <app-edit-teamuser :user="user" :applicationName="applicationName" :teamId="teamId" class="my-1"></app-edit-teamuser>
               <v-btn class="error my-1" @click=onDeleteTeamUser>Delete</v-btn>
               <v-spacer></v-spacer>
               <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
@@ -34,16 +34,16 @@
 
 <script>
   export default {
-    props: ['application_id', 'team_id', 'id'],
+    props: ['applicationName', 'teamId', 'id'],
     computed: {
       roles () {
         return this.$store.getters.roles
       },
       team () {
-        return this.$store.getters.loadedTeam(parseInt(this.application_id), parseInt(this.team_id))
+        return this.$store.getters.loadedTeam(this.applicationName, parseInt(this.teamId))
       },
       user () {
-        return this.$store.getters.loadedTeamUser(parseInt(this.team_id), parseInt(this.id))
+        return this.$store.getters.loadedTeamUser(parseInt(this.teamId), parseInt(this.id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -61,11 +61,11 @@
     methods: {
       onDeleteTeamUser () {
         this.$store.dispatch('deleteTeamUser', {
-          applicationid: this.application_id,
-          teamid: this.team_id,
+          applicationName: this.applicationName,
+          teamId: this.teamId,
           id: this.user.id
         })
-        this.$router.push('/applications/' + this.application_id + '/teams/show/' + this.team_id)
+        this.$router.push('/' + this.applicationName + '/teams/show/' + this.teamId)
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -74,14 +74,14 @@
         return role ? role.name : 'undefined'
       },
       onBack () {
-        this.$router.push('/applications/' + this.application_id + '/teams/show/' + this.team_id)
+        this.$router.push('/' + this.applicationName + '/teams/show/' + this.teamId)
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.application_id)
+      this.$store.dispatch('loadTeams', this.applicationName)
       this.$store.dispatch('loadTeamUsers', {
-        applicationid: this.application_id,
-        teamid: this.team_id
+        applicationName: this.applicationName,
+        teamId: this.teamId
       })
     }
   }

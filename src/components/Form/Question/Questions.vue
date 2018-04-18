@@ -66,7 +66,7 @@
           <component
             :is='questionComponent'
             :question-id='question.id'
-            :form-id='form_id'
+            :form-id='formId'
             :answers='answers'
             :has-validation='mandatory && hasValidation'
             @create-answer='createAnswer'
@@ -129,7 +129,7 @@
   import timeComponent from './components/Time'
   import * as _ from 'lodash'
   export default {
-    props: ['question', 'form_id', 'section_id', 'index'],
+    props: ['question', 'formId', 'sectionId', 'index'],
     data () {
       return {
         editedName: this.question.question,
@@ -205,7 +205,7 @@
           }
         ],
         validationTypes: this.$store.getters.validationTypes,
-        validations: this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id),
+        validations: this.$store.getters.loadedQuestionValidation(this.formId, this.question.id),
         validationData: '',
         validationType: ''
       }
@@ -219,7 +219,7 @@
       },
       hasValidation () {
         this.validationTypes = this.$store.getters.validationTypes
-        this.validations = this.$store.getters.loadedQuestionValidation(this.form_id, this.question.id)
+        this.validations = this.$store.getters.loadedQuestionValidation(this.formId, this.question.id)
         return !!(this.validations && this.validations.length && this.validations.length === 1)
       },
       questionTypeString: {
@@ -272,9 +272,9 @@
         const parameter = args[1]
         this.$store.dispatch('createAnswer',
           {
-            formid: this.form_id,
-            sectionid: this.section_id,
-            questionid: this.question.id,
+            formId: this.formId,
+            sectionId: this.sectionId,
+            questionId: this.question.id,
             answer: answer,
             parameter: parameter
           })
@@ -284,33 +284,33 @@
         const answer = args[1]
         this.$store.dispatch('updateAnswer',
           {
-            formid: this.form_id,
-            sectionid: this.section_id,
-            questionid: this.question.id,
+            formId: this.formId,
+            sectionId: this.sectionId,
+            questionId: this.question.id,
             id: id,
             answer: answer
           })
       },
       deleteAnswer: function (id) {
         this.$store.dispatch('deleteAnswer', {
-          formid: this.form_id,
-          sectionid: this.section_id,
-          questionid: this.question.id,
+          formId: this.formId,
+          sectionId: this.sectionId,
+          questionId: this.question.id,
           id: id
         })
       },
       deleteAnswers: function () {
         this.$store.dispatch('deleteAnswers', {
-          formid: this.form_id,
-          sectionid: this.section_id,
-          questionid: this.question.id
+          formId: this.formId,
+          sectionId: this.sectionId,
+          questionId: this.question.id
         })
       },
       changeAnswer: function () {
         this.$store.dispatch('changeAnswers', {
-          formid: this.form_id,
-          sectionid: this.section_id,
-          questionid: this.question.id
+          formId: this.formId,
+          sectionId: this.sectionId,
+          questionId: this.question.id
         })
       },
       updateQuestionType (value) {
@@ -332,27 +332,27 @@
         }
         this.$store.dispatch('updateQuestion',
           {
-            formid: this.form_id,
-            sectionid: this.section_id,
+            formId: this.formId,
+            sectionId: this.sectionId,
             id: this.question.id,
             question: this.editedName,
             description: this.editedDescription,
-            question_type_id: this.questionTypeId,
+            questionTypeId: this.questionTypeId,
             mandatory: this.mandatory
           })
         this.removeValidation()
       },
       duplicateQuestion () {
         this.$store.dispatch('duplicateQuestion', {
-          formid: this.form_id,
-          sectionid: this.section_id,
+          formId: this.formId,
+          sectionId: this.sectionId,
           id: this.question.id
         })
       },
       deleteQuestion () {
         this.$store.dispatch('deleteQuestion', {
-          formid: this.form_id,
-          sectionid: this.section_id,
+          formId: this.formId,
+          sectionId: this.sectionId,
           id: this.question.id
         })
       },
@@ -360,9 +360,9 @@
         const id = args[0]
         const order = args[1]
         this.$store.dispatch('moveAnswer', {
-          formid: this.form_id,
-          sectionid: this.section_id,
-          questionid: this.question.id,
+          formId: this.formId,
+          sectionId: this.sectionId,
+          questionId: this.question.id,
           id: id,
           order: order
         })
@@ -371,10 +371,10 @@
         const name = args[0]
         const validationTypeId = _.find(this.validationTypes, type => { return name === type.type }).id
         this.$store.dispatch('createValidation', {
-          formid: this.form_id,
-          question_id: this.question.id,
-          validation_type_id: validationTypeId,
-          validation_data: `${args[1]},${args[2]}`
+          formId: this.formId,
+          questionId: this.question.id,
+          validationTypeId: validationTypeId,
+          validationData: `${args[1]},${args[2]}`
         })
       },
       updateValidation (...args) {
@@ -383,17 +383,17 @@
         const validationId = this.validations[0].id
         this.$store.dispatch('updateValidation', {
           id: validationId,
-          formid: this.form_id,
-          question_id: this.question.id,
-          validation_type_id: validationTypeId,
-          validation_data: `${args[1]},${args[2]}`
+          formId: this.formId,
+          questionId: this.question.id,
+          validationTypeId: validationTypeId,
+          validationData: `${args[1]},${args[2]}`
         })
       },
       removeValidation () {
         const validationId = this.validations[0].id
         this.$store.dispatch('deleteValidation', {
           id: validationId,
-          formid: this.form_id
+          formId: this.formId
         })
       }
     }

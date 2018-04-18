@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap pa-1>
     <v-flex xs9 d-flex>
-      <show-submission :application_id="application_id" :form_id="form_id" :submission_id="submission_id"></show-submission>
+      <show-submission :applicationName="applicationName" :formId="formId" :submissionId="submissionId"></show-submission>
     </v-flex>
 
     <v-flex xs3 d-flex>
@@ -26,7 +26,7 @@
 
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <edit-submission :submission="submission" :form_id="form_id" v-if="!userIsAdmin"></edit-submission>
+                    <edit-submission :submission="submission" :formId="formId" v-if="!userIsAdmin"></edit-submission>
                   </v-card-actions>
                 </v-card>
               </v-flex>
@@ -35,7 +35,7 @@
             </template>
           </v-layout>
 
-          <create-submission style="margin: 0 auto" :application_id="application_id" :form_id="form_id" v-if="!userIsAdmin"></create-submission>
+          <create-submission style="margin: 0 auto" :applicationName="applicationName" :formId="formId" v-if="!userIsAdmin"></create-submission>
         </v-card-text>
       </v-card>
     </v-flex>
@@ -48,7 +48,7 @@
   import editSubmission from './EditSubmission'
 
   export default {
-    props: ['application_id', 'form_id'],
+    props: ['applicationName', 'formId'],
     components: {
       showSubmission,
       createSubmission,
@@ -56,7 +56,7 @@
     },
     data () {
       return {
-        submission_id: 0
+        submissionId: 0
       }
     },
     computed: {
@@ -64,13 +64,13 @@
         return this.$store.getters.roles
       },
       submissions () {
-        return this.$store.getters.loadedSubmissions(parseInt(this.form_id))
+        return this.$store.getters.loadedSubmissions(parseInt(this.formId))
       },
       submissionTeams () {
-        return this.$store.getters.loadedSubmissionTeams(parseInt(this.application_id), parseInt(this.form_id))
+        return this.$store.getters.loadedSubmissionTeams(this.applicationName, parseInt(this.formId))
       },
       application () {
-        return this.$store.getters.loadedApplication(parseInt(this.application_id))
+        return this.$store.getters.loadedApplication(this.applicationName)
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -85,7 +85,7 @@
     watch: {
       submissions (value) {
         if (value.length) {
-          this.submission_id = value[0].id
+          this.submissionId = value[0].id
         }
       }
     },
@@ -97,7 +97,7 @@
         return role ? role.name : 'undefined'
       },
       onSubmission (id) {
-        this.submission_id = id
+        this.submissionId = id
       },
       getSubmissionName (submission) {
         if (submission.team == null) {

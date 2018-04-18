@@ -27,23 +27,23 @@
       })
     },
     methods: {
-      checkAble (answerid) {
+      checkAble (answerId) {
         const index = this.responses.findIndex((response) => {
-          return response.answer_id === answerid
+          return response.answer_id === answerId
         })
         return index !== -1
       },
-      responseIdFromAnswer (answerid) {
+      responseIdFromAnswer (answerId) {
         const response = this.responses.find((response) => {
-          return response.answer_id === answerid
+          return response.answer_id === answerId
         })
         return response.id
       },
-      onSave (answerid) {
-        if (!this.checkAble(answerid)) {
-          this.$emit('create-response', [answerid, null])
+      onSave (answerId) {
+        if (!this.checkAble(answerId)) {
+          this.$emit('create-response', [answerId, null])
         } else {
-          this.$emit('delete-response', this.responseIdFromAnswer(answerid))
+          this.$emit('delete-response', this.responseIdFromAnswer(answerId))
         }
       }
     }

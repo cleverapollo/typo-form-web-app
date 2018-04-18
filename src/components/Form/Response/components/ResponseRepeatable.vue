@@ -80,10 +80,10 @@
       }
     },
     methods: {
-      getResponseValue (rowindex, answerid, order) {
+      getResponseValue (rowindex, answerId, order) {
         const $this = this
         let response = this.responses.find((response) => {
-          return response.question_id === $this.selectedOptions[rowindex] && response.answer_id === answerid && response.order === order
+          return response.question_id === $this.selectedOptions[rowindex] && response.answer_id === answerId && response.order === order
         })
         if (response) {
           return response.response
@@ -120,16 +120,16 @@
           $this.$emit('update-response', [response.answer_id, response.response, response.id, value, order])
         })
       },
-      onChangedColumn (rowindex, answerid, order, value) {
+      onChangedColumn (rowindex, answerId, order, value) {
         const $this = this
         let response = this.responses.find((response) => {
-          return response.question_id === $this.selectedOptions[rowindex] && response.answer_id === answerid && response.order === order
+          return response.question_id === $this.selectedOptions[rowindex] && response.answer_id === answerId && response.order === order
         })
 
         if (response) {
           this.$emit('update-response', [response.answer_id, value, response.id, this.selectedOptions[rowindex], order])
         } else {
-          this.$emit('create-response', [answerid, value, this.selectedOptions[rowindex], this.computedResponses[rowindex].order])
+          this.$emit('create-response', [answerId, value, this.selectedOptions[rowindex], this.computedResponses[rowindex].order])
         }
       }
     },

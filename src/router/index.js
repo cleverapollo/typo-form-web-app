@@ -85,61 +85,61 @@ const router = new Router({
       component: CreateApplication
     },
     {
-      path: '/applications/show/:id',
+      path: '/:applicationName',
       name: 'ShowApplication',
       component: ShowApplication,
       props: true
     },
     {
-      path: '/applications/:application_id/teams',
+      path: '/:applicationName/teams',
       name: 'Teams',
       component: Teams,
       props: true
     },
     {
-      path: '/applications/:application_id/teams/new',
+      path: '/:applicationName/teams/new',
       name: 'CreateTeam',
       component: CreateTeam,
       props: true
     },
     {
-      path: '/applications/:application_id/teams/show/:id',
+      path: '/:applicationName/teams/show/:id',
       name: 'ShowTeam',
       component: ShowTeam,
       props: true
     },
     {
-      path: '/applications/:application_id/teams/:team_id/users/:id',
+      path: '/:applicationName/teams/:teamId/users/:id',
       name: 'ShowTeamUser',
       component: ShowTeamUser,
       props: true
     },
     {
-      path: '/applications/:application_id/users',
+      path: '/:applicationName/users',
       name: 'Users',
       component: Users,
       props: true
     },
     {
-      path: '/applications/:application_id/users/show/:id',
+      path: '/:applicationName/users/show/:id',
       name: 'ShowUser',
       component: ShowUser,
       props: true
     },
     {
-      path: '/applications/:application_id/forms',
+      path: '/:applicationName/forms',
       name: 'Forms',
       component: Forms,
       props: true
     },
     {
-      path: '/applications/:application_id/forms/new',
+      path: '/:applicationName/forms/new',
       name: 'CreateForm',
       component: CreateForm,
       props: true
     },
     {
-      path: '/applications/:application_id/forms/show/:id',
+      path: '/:applicationName/forms/show/:id',
       name: 'ShowForm',
       component: ShowForm,
       props: true
@@ -158,6 +158,7 @@ router.beforeEach((to, from, next) => {
     localStorage.removeItem('previous')
     next(previous)
   } else {
+    console.log(to.path)
     next()
   }
 })
