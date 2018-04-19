@@ -18,6 +18,16 @@
               </v-layout>
               <v-layout row>
                 <v-flex xs12>
+                  <v-text-field
+                    name="css"
+                    label="CSS"
+                    id="css"
+                    v-model="css"
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12>
                   <v-container pa-0>
                     <v-layout wrap text-xs-center>
                       <v-spacer></v-spacer>
@@ -80,6 +90,7 @@
     data () {
       return {
         name: '',
+        css: '',
         invitations: [
           {
             email: '',
@@ -120,6 +131,7 @@
         }
         const applicationData = {
           name: this.name,
+          css: this.css,
           invitations: this.invitations.filter(function (item) {
             return item.email.trim() !== ''
           })
