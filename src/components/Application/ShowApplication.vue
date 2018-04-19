@@ -41,7 +41,7 @@
 
 <script>
   export default {
-    props: ['application_name'],
+    props: ['applicationName'],
     data () {
       return {
         items: [
@@ -56,7 +56,7 @@
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(this.application_name)
+        return this.$store.getters.loadedApplication(this.applicationName)
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -88,7 +88,7 @@
         this.$router.push('/applications')
       },
       onList (type) {
-        this.$router.push('/' + this.application_name + '/' + type)
+        this.$router.push('/' + this.applicationName + '/' + type)
       },
       showUsersToAdmin (type) {
         return type !== 'users' || this.userIsAdmin
