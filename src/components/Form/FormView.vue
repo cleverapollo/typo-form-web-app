@@ -1,12 +1,12 @@
 <template>
   <v-card>
-    <v-card-text>
+    <!--<v-card-text>-->
       <draggable v-model="list" class="parent" :options="{group:'parent', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
         <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
           <sections :section='element' :formId='formId' :submissionId='submissionId' :index='index + 1'></sections>
         </div>
       </draggable>
-    </v-card-text>
+    <!--</v-card-text>-->
 
     <v-card-actions>
       <v-btn color="info" @click=onBack>Back</v-btn>
@@ -49,7 +49,9 @@
         const submission = this.$store.getters.loadedSubmission(this.formId, this.submissionId)
 
         if (this.statuses) {
-          const statusIndex = _.findIndex(this.statuses, status => { return status.id === submission.status_id })
+          const statusIndex = _.findIndex(this.statuses, status => {
+            return status.id === submission.status_id
+          })
           if (statusIndex > 0 && this.statuses[statusIndex].status !== 'opened') {
             return false
           }
@@ -65,7 +67,9 @@
         const submission = this.$store.getters.loadedSubmission(this.formId, this.submissionId)
 
         if (this.statuses) {
-          const statusIndex = _.findIndex(this.statuses, status => { return status.id === submission.status_id })
+          const statusIndex = _.findIndex(this.statuses, status => {
+            return status.id === submission.status_id
+          })
           if (statusIndex > 0 && (this.statuses[statusIndex].status !== 'opened' && this.statuses[statusIndex].status !== 'closed')) {
             return false
           }
@@ -142,7 +146,9 @@
         )
       },
       sendSubmission: function () {
-        const statusIndex = _.findIndex(this.statuses, status => { return status.status === 'closed' })
+        const statusIndex = _.findIndex(this.statuses, status => {
+          return status.status === 'closed'
+        })
 
         this.$store.dispatch('updateSubmission',
           {

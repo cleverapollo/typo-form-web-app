@@ -1,14 +1,15 @@
 <template>
-  <v-layout column wrap class='pl-3 pr-3'>
+  <v-layout column wrap class="pl-3 pr-3">
     <v-flex xs8 offset-xs2 class="pb-3">
       <v-layout row>
-        <v-flex class='pl-2' v-for='(column, index) in computedAnswers' :key='"ColumnString " + index'>
+        <v-flex class="pl-2" v-for="(column, index) in computedAnswers" :key="'ColumnString ' + index">
           {{ column.answer }}
         </v-flex>
       </v-layout>
     </v-flex>
+
     <v-flex xs12>
-      <v-layout row v-for='(row, index) in computedResponses' :key='"row " + index'>
+      <v-layout row v-for="(row, index) in computedResponses" :key="'row ' + index">
         <v-flex xs2>
           <v-select
             v-bind:items="computedQuestions"
@@ -21,30 +22,26 @@
             bottom
           ></v-select>
         </v-flex>
+
         <v-flex xs8>
           <v-layout row wrap>
-              <v-flex v-for='(column, index2) in computedAnswers' :key='"column " + index2'>
-                <v-text-field style="width: 70px" class="pl-2" :value="getResponseValue(index, column.id, row.order)"
-                              @change="onChangedColumn(index, column.id, row.order, $event)"></v-text-field>
-              </v-flex>
+            <v-flex v-for="(column, index2) in computedAnswers" :key="'column ' + index2">
+              <v-text-field style="width: 70px" class="pl-2" :value="getResponseValue(index, column.id, row.order)"
+                            @change="onChangedColumn(index, column.id, row.order, $event)"></v-text-field>
+            </v-flex>
           </v-layout>
         </v-flex>
+
         <v-flex xs2>
-          <v-btn fab dark small
-                 color="error"
-                 @click="removeResponse(index, row.order)"
-          >
+          <v-btn fab dark small color="error" @click="removeResponse(index, row.order)">
             <v-icon dark>remove</v-icon>
           </v-btn>
         </v-flex>
       </v-layout>
     </v-flex>
+
     <v-flex xs12>
-      <v-btn
-        dark
-        class="primary"
-        @click="createResponse"
-      >
+      <v-btn dark class="primary" @click="createResponse">
         <v-icon>add</v-icon>
       </v-btn>
     </v-flex>
