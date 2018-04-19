@@ -113,7 +113,7 @@
           return
         }
         this.inviteApplication = false
-        this.$store.dispatch('inviteApplication', {invitations: invitations, id: this.application.id})
+        this.$store.dispatch('inviteApplication', {invitations: invitations, applicationName: this.applicationName})
       },
       onCancel () {
         this.invitations = [
@@ -140,9 +140,6 @@
       }
     },
     computed: {
-      application () {
-        return this.$store.getters.loadedApplication(this.applicationName)
-      },
       roles () {
         return this.$store.getters.roles
       },

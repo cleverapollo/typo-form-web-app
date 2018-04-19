@@ -64,7 +64,7 @@ export default {
       const application = {
         invitations: payload.invitations
       }
-      window.axios.post(APPLICATION_URL + payload.id + '/invite', application)
+      window.axios.post(APPLICATION_URL + payload.applicationName + '/invite', application)
         .then(
           response => {
             commit('setLoading', false)
