@@ -149,6 +149,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  document.title = to.params['applicationName'] || 'Informed 365'
   const expireDate = localStorage.getItem('expire_date')
   const previous = localStorage.getItem('previous')
   if ((expireDate === null || Date.now() - expireDate > 86400000) && (to.name !== 'Signin') && (to.name !== 'Signup')) {
