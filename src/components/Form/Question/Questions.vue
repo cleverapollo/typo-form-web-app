@@ -1,8 +1,8 @@
 <template>
-  <div class="ma-2 active-question gray-border">
-    <!--<v-toolbar class="handle">-->
-      <!--<v-toolbar-title>{{ "Question " + index }}</v-toolbar-title>-->
-    <!--</v-toolbar>-->
+  <v-card active-class="active-question" class="elevation-12 ma-2">
+    <v-toolbar class="handle">
+      <v-toolbar-title>{{ "Question " + index }}</v-toolbar-title>
+    </v-toolbar>
 
     <v-card-text>
       <v-layout row wrap justify-space-between>
@@ -130,7 +130,7 @@
         </v-list>
       </v-menu>
     </v-card-actions>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -438,9 +438,5 @@
   .v-divider {
     line-height: 2;
     border-right: 1px solid #ccc;
-  }
-
-  .gray-border {
-    border: 1px solid gray;
   }
 </style>

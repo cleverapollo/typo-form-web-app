@@ -1,8 +1,8 @@
 <template>
-  <div class="ma-2 active-question gray-border">
-    <!--<v-toolbar>-->
-    <!--<v-toolbar-title>{{ "Question " + index }}</v-toolbar-title>-->
-    <!--</v-toolbar>-->
+  <v-card active-class="active-question" class="elevation-12 ma-2">
+    <v-toolbar>
+      <v-toolbar-title>{{ "Question " + index }}</v-toolbar-title>
+    </v-toolbar>
 
     <v-card-text>
       <v-layout row>
@@ -36,7 +36,7 @@
         </v-flex>
       </v-layout>
     </v-card-text>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -168,9 +168,5 @@
 <style scoped>
   .error {
     color: red;
-  }
-
-  .gray-border {
-    border: 1px solid gray;
   }
 </style>

@@ -1,18 +1,18 @@
 <template>
-  <div class="ma-1 active-section">
-    <!--<v-toolbar :class="{ "handle": submissionId === -1 }">-->
-      <!--<v-toolbar-title>{{ "Section " + index }}</v-toolbar-title>-->
+  <v-card active-class="active-section" class="elevation-12 ma-1">
+    <v-toolbar :class="{ 'handle': submissionId === -1 }">
+      <v-toolbar-title>{{ "Section " + index }}</v-toolbar-title>
 
-      <!--<v-spacer></v-spacer>-->
+      <v-spacer></v-spacer>
 
-      <!--<v-btn icon @click.prevent="toggleExpand">-->
-        <!--<v-icon v-if="expanded">expand_less</v-icon>-->
-        <!--<v-icon v-else>expand_more</v-icon>-->
-      <!--</v-btn>-->
+      <v-btn icon @click.prevent="toggleExpand">
+        <v-icon v-if="expanded">expand_less</v-icon>
+        <v-icon v-else>expand_more</v-icon>
+      </v-btn>
 
-      <v-menu offset-y bottom v-if="submissionId === -1">
-        <v-btn slot="activator">
-          Action
+      <v-menu offset-y bottom left v-if="submissionId === -1">
+        <v-btn icon slot="activator">
+          <v-icon>more_vert</v-icon>
         </v-btn>
 
         <v-list>
@@ -33,7 +33,7 @@
           </v-list-tile>
         </v-list>
       </v-menu>
-    <!--</v-toolbar>-->
+    </v-toolbar>
 
     <v-card-title>
       <v-flex>
@@ -62,7 +62,7 @@
       </v-flex>
     </v-card-title>
 
-    <!--<v-card-text class="px-0" v-show="expanded">-->
+    <v-card-text class="px-0" v-show="expanded">
       <div v-if="hasRepeatableQuestions">
         <div v-if="submissionId === -1">
           <question-repeatable
@@ -116,8 +116,8 @@
           </v-card>
         </div>
       </draggable>
-    <!--</v-card-text>-->
-  </div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

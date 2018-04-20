@@ -6,60 +6,71 @@
           indeterminate
           class="primary--text"
           :width="7"
-          :size="70"></v-progress-circular>
+          :size="70"
+        ></v-progress-circular>
       </v-flex>
     </v-layout>
+
     <v-layout row wrap v-else>
       <v-flex xs12>
-        <v-card v-if="form">
+        <div v-if="form">
           <v-card-title>
             <h1 class="primary--text">{{ form.name }}</h1>
+
             <v-spacer></v-spacer>
-            <v-menu offset-y bottom left v-if='userIsAdmin'>
-              <v-btn icon slot='activator'>
+
+            <v-menu offset-y bottom left v-if="userIsAdmin">
+              <v-btn icon slot="activator">
                 <v-icon>more_vert</v-icon>
               </v-btn>
+
               <v-list>
-                <v-list-tile @click=''>
+                <v-list-tile @click="">
                   <v-list-tile-title>
-                    <app-edit-form :form='form' :applicationName='applicationName'></app-edit-form>
+                    <app-edit-form :form="form" :applicationName="applicationName"></app-edit-form>
                   </v-list-tile-title>
                 </v-list-tile>
+
                 <v-list-tile @click=onDeleteForm>
                   <v-list-tile-title>Delete Form</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
           </v-card-title>
+
           <v-card-text>
             <v-tabs v-model="active">
               <v-tabs-bar class="primary" dark>
                 <v-tabs-item
-                  href='#questions'
-                  v-if='userIsAdmin'
+                  href="#questions"
+                  v-if="userIsAdmin"
                   ripple
                 >
                   Questions
                 </v-tabs-item>
+
                 <v-tabs-item
-                  href='#responses'
+                  href="#responses"
                   ripple
                 >
                   Responses
                 </v-tabs-item>
-                <v-tabs-slider color='white'></v-tabs-slider>
+
+                <v-tabs-slider color="white"></v-tabs-slider>
               </v-tabs-bar>
+
               <v-tabs-items>
-                <v-tabs-content id='questions'>
-                  <form-view :applicationName='applicationName' :formId='id' :submissionId='-1'></form-view>
+                <v-tabs-content id="questions">
+                  <form-view :applicationName="applicationName" :formId="id" :submissionId="-1"></form-view>
                 </v-tabs-content>
-                <v-tabs-content id='responses'>
-                  <responses :applicationName='applicationName' :formId='id'></responses>
+
+                <v-tabs-content id="responses">
+                  <responses :applicationName="applicationName" :formId="id"></responses>
                 </v-tabs-content>
               </v-tabs-items>
             </v-tabs>
           </v-card-text>
-        </v-card>
+        </div>
       </v-flex>
     </v-layout>
   </div>
