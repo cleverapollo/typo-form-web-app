@@ -1,5 +1,5 @@
 <template>
-  <div class="elevation-12 ma-1 active-section">
+  <div class="ma-1 active-section">
     <!--<v-toolbar :class="{ "handle": submissionId === -1 }">-->
       <!--<v-toolbar-title>{{ "Section " + index }}</v-toolbar-title>-->
 
@@ -10,9 +10,9 @@
         <!--<v-icon v-else>expand_more</v-icon>-->
       <!--</v-btn>-->
 
-      <v-menu offset-y bottom left v-if="submissionId === -1">
-        <v-btn icon slot="activator">
-          <v-icon>more_vert</v-icon>
+      <v-menu offset-y bottom v-if="submissionId === -1">
+        <v-btn slot="activator">
+          Action
         </v-btn>
 
         <v-list>

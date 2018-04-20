@@ -1,21 +1,21 @@
 <template>
-  <v-card>
-    <!--<v-card-text>-->
-      <draggable v-model="list" class="parent" :options="{group:'parent', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
-        <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
-          <sections :section='element' :formId='formId' :submissionId='submissionId' :index='index + 1'></sections>
-        </div>
-      </draggable>
-    <!--</v-card-text>-->
+  <div>
+    <draggable v-model="list" class="parent" :options="{group:'parent', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
+      <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
+        <sections :section='element' :formId='formId' :submissionId='submissionId' :index='index + 1'></sections>
+      </div>
+    </draggable>
 
-    <v-card-actions>
+    <v-layout row wrap justify-space-between>
       <v-btn color="info" @click=onBack>Back</v-btn>
-      <v-spacer></v-spacer>
-      <app-create-section :parentSectionId='-1' :formId='formId' v-if='submissionId === -1'></app-create-section>
-      <v-btn color="error" @click=deleteSubmission v-if='removable'>Delete</v-btn>
-      <v-btn color="primary" @click=sendSubmission v-if='sendAble'>Send</v-btn>
-    </v-card-actions>
-  </v-card>
+
+      <div>
+        <app-create-section :parentSectionId='-1' :formId='formId' v-if='submissionId === -1'></app-create-section>
+        <v-btn color="error" @click=deleteSubmission v-if='removable'>Delete</v-btn>
+        <v-btn color="primary" @click=sendSubmission v-if='sendAble'>Send</v-btn>
+      </div>
+    </v-layout>
+  </div>
 </template>
 
 <script>
