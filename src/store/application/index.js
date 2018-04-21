@@ -44,6 +44,7 @@ export default {
     createApplication ({commit, getters}, payload) {
       const application = {
         name: payload.name,
+        css: payload.css,
         invitations: payload.invitations
       }
       window.axios.post(APPLICATION_URL, application)
@@ -82,6 +83,7 @@ export default {
       const updateObj = {}
       if (payload.name) {
         updateObj.name = payload.name
+        updateObj.css = payload.css
       }
       window.axios.put(APPLICATION_URL + payload.id, updateObj)
         .then(response => {

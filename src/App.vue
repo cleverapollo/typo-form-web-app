@@ -107,6 +107,9 @@ export default {
         this.$store.dispatch('loadPeriods')
         this.$store.dispatch('loadStatuses')
       }
+    },
+    '$route.params.applicationName': function (value) {
+      this.title = value || 'Informed 365'
     }
   },
   methods: {
