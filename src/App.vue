@@ -106,6 +106,11 @@ export default {
         this.$store.dispatch('loadRoles')
         this.$store.dispatch('loadPeriods')
         this.$store.dispatch('loadStatuses')
+      } else {
+        this.menuItems = [
+          {icon: 'face', title: 'Sign up', link: '/signup'},
+          {icon: 'lock_open', title: 'Sign in', link: '/signin'}
+        ]
       }
     }
   },

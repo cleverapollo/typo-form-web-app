@@ -148,19 +148,4 @@ const router = new Router({
   mode: 'history'
 })
 
-router.beforeEach((to, from, next) => {
-  const expireDate = localStorage.getItem('expire_date')
-  const previous = localStorage.getItem('previous')
-  if ((expireDate === null || Date.now() - expireDate > 86400000) && (to.name !== 'Signin') && (to.name !== 'Signup')) {
-    localStorage.setItem('previous', to.path)
-    next('/signin')
-  } else if ((expireDate !== null && Date.now() - expireDate < 86400000) && previous) {
-    localStorage.removeItem('previous')
-    next(previous)
-  } else {
-    console.log(to.path)
-    next()
-  }
-})
-
 export default router

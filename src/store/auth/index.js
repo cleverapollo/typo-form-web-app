@@ -36,6 +36,7 @@ export default {
             .catch(
               error => {
                 commit('setLoading', false)
+                commit('setUser', null)
                 commit('setError', error.response.data)
                 console.log(error.response.data)
               }
@@ -66,6 +67,7 @@ export default {
         .catch(
           error => {
             commit('setLoading', false)
+            commit('setUser', null)
             commit('setError', error.response.data)
             console.log(error.response.data)
           }
@@ -84,6 +86,7 @@ export default {
         .catch(
           error => {
             commit('setLoading', false)
+            commit('setUser', null)
             console.log(error.response.data)
           }
         )
