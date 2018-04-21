@@ -31,7 +31,7 @@
                   </v-flex>
                   <v-flex xs12 sm4 offset-sm1 d-flex>
                     <v-select
-                      :items="roles"
+                      :items="invitationRoles"
                       item-text="name"
                       item-value="id"
                       v-model="item.team_role_id"
@@ -142,6 +142,11 @@
     computed: {
       roles () {
         return this.$store.getters.roles
+      },
+      invitationRoles () {
+        return this.roles.filter((role) => {
+          return role.name !== 'Super Admin'
+        })
       },
       error () {
         return this.$store.getters.error

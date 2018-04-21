@@ -111,7 +111,7 @@
         return role ? role.name : 'undefined'
       },
       onBack () {
-        this.$router.push('/' + this.applicationName)
+        this.$router.push('/' + this.applicationName + '/show')
       }
     },
     created: function () {

@@ -112,6 +112,9 @@ export default {
           {icon: 'lock_open', title: 'Sign in', link: '/signin'}
         ]
       }
+    },
+    '$route.params.applicationName': function (value) {
+      this.title = value || 'Informed 365'
     }
   },
   methods: {

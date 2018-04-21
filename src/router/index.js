@@ -18,6 +18,7 @@ import ShowTeamUser from '@/components/Team/ShowTeamUser'
 import Users from '@/components/User/Users'
 import ShowUser from '@/components/User/ShowUser'
 
+import Application from '@/components/Application/Application'
 import Applications from '@/components/Application/Applications'
 import CreateApplication from '@/components/Application/CreateApplication'
 import ShowApplication from '@/components/Application/ShowApplication'
@@ -44,13 +45,15 @@ const router = new Router({
       path: '/reset-password',
       name: 'ResetPassword',
       component: ResetPassword,
-      props: true
+      props: true,
+      meta: { requireAuth: false }
     },
     {
       path: '/reset-password/:token',
       name: 'NewPassword',
       component: NewPassword,
-      props: true
+      props: true,
+      meta: { requireAuth: false }
     },
     {
       path: '/profile',
@@ -86,6 +89,12 @@ const router = new Router({
     },
     {
       path: '/:applicationName',
+      name: 'Application',
+      component: Application,
+      props: true
+    },
+    {
+      path: '/:applicationName/show',
       name: 'ShowApplication',
       component: ShowApplication,
       props: true
@@ -146,6 +155,24 @@ const router = new Router({
     }
   ],
   mode: 'history'
+})
+
+router.beforeEach((to, from, next) => {
+  document.title = to.params['applicationName'] || 'Informed 365'
+  const expireDate = localStorage.getItem('expire_date')
+  const previous = localStorage.getItem('previous')
+  if (to.meta && to.meta.requireAuth === false) {
+    next()
+  } else if ((expireDate === null || Date.now() - expireDate > 86400000) && (to.name !== 'Signin') && (to.name !== 'Signup')) {
+    localStorage.setItem('previous', to.path)
+    next('/signin')
+  } else if ((expireDate !== null && Date.now() - expireDate < 86400000) && previous) {
+    localStorage.removeItem('previous')
+    next(previous)
+  } else {
+    console.log(to.path)
+    next()
+  }
 })
 
 export default router
