@@ -41,6 +41,7 @@
 
 <script>
   import draggable from 'vuedraggable'
+  import * as _ from 'lodash'
   import shortAnswer from './components/ShortAnswer'
   import paragraph from './components/Paragraph'
   import multipleChoice from './components/MultipleChoice'
@@ -52,7 +53,6 @@
   import checkboxGrid from './components/CheckboxGrid'
   import dateComponent from './components/Date'
   import timeComponent from './components/Time'
-  import * as _ from 'lodash'
 
   export default {
     props: ['question', 'formId', 'submissionId', 'index', 'sectionId'],

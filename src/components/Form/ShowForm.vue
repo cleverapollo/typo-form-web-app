@@ -39,36 +39,16 @@
           </v-card-title>
 
           <v-card-text>
-            <v-tabs v-model="active">
-              <v-tabs-bar class="primary" dark>
-                <v-tabs-item
-                  href="#questions"
-                  v-if="userIsAdmin"
-                  ripple
-                >
-                  Questions
-                </v-tabs-item>
-
-                <v-tabs-item
-                  href="#responses"
-                  ripple
-                >
-                  Responses
-                </v-tabs-item>
-
-                <v-tabs-slider color="white"></v-tabs-slider>
-              </v-tabs-bar>
-
-              <v-tabs-items>
-                <v-tabs-content id="questions">
-                  <form-view :applicationName="applicationName" :formId="id" :submissionId="-1"></form-view>
-                </v-tabs-content>
-
-                <v-tabs-content id="responses">
-                  <responses :applicationName="applicationName" :formId="id"></responses>
-                </v-tabs-content>
-              </v-tabs-items>
-            </v-tabs>
+            <v-data-table
+              :items="menu"
+              hide-actions
+              hide-headers
+              class="elevation-1"
+            >
+              <template slot="items" slot-scope="props">
+                <td @click=navigate(props.item)>{{ props.item }}</td>
+              </template>
+            </v-data-table>
           </v-card-text>
         </div>
       </v-flex>
@@ -110,6 +90,13 @@
       form () {
         return this.$store.getters.loadedForm(this.applicationName, parseInt(this.id))
       },
+      menu () {
+        if (this.userIsAdmin) {
+          return ['Questions', 'Responses']
+        } else {
+          return ['Responses']
+        }
+      },
       loading () {
         return this.$store.getters.loading
       }
@@ -127,6 +114,9 @@
           id: this.form.id
         })
         this.$router.push('/' + this.applicationName + '/forms')
+      },
+      navigate (item) {
+        this.$router.push('/' + this.applicationName + '/forms/show/' + this.id + '/' + item.toLowerCase())
       }
     },
     created: function () {
