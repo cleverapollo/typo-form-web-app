@@ -1,23 +1,21 @@
 <template>
-  <v-card>
-    <v-card-text>
-      <draggable v-model="list" class="parent" :options="{group:'parent', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
-        <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
-          <sections :section='element' :formId='formId' :submissionId='submissionId' :index='index + 1'></sections>
-        </div>
-      </draggable>
-    </v-card-text>
+  <div>
+    <draggable v-model="list" class="parent" :options="{group: 'parent', draggable: '.item', handle: '.handle'}" style="min-height: 100px" @end="checkEnd">
+      <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
+        <sections :section="element" :formId="formId" :submissionId="submissionId" :index="index + 1"></sections>
+      </div>
+    </draggable>
 
     <v-card-actions>
       <v-btn color="info" @click=onBack>Back</v-btn>
 
       <v-spacer></v-spacer>
 
-      <app-create-section :parentSectionId='-1' :formId='formId' v-if='submissionId === -1'></app-create-section>
-      <v-btn color="error" @click=deleteSubmission v-if='removable'>Delete</v-btn>
-      <v-btn color="primary" @click=sendSubmission v-if='sendAble'>Send</v-btn>
+      <app-create-section :parentSectionId="-1" :formId="formId" v-if="submissionId === -1"></app-create-section>
+      <v-btn color="error" @click=deleteSubmission v-if="removable">Delete</v-btn>
+      <v-btn color="primary" @click=sendSubmission v-if="sendAble">Send</v-btn>
     </v-card-actions>
-  </v-card>
+  </div>
 </template>
 
 <script>
@@ -44,6 +42,7 @@
         return this.$store.getters.statuses
       },
       sendAble () {
+        console.log(this.submissionId)
         if (this.submissionId <= 0) {
           return false
         }
@@ -82,7 +81,7 @@
     },
     methods: {
       onBack () {
-        this.$router.push('/' + this.applicationName + '/forms')
+        this.$router.push('/' + this.applicationName + '/forms/show/' + this.formId)
       },
       checkEnd: function (evt) {
         if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {

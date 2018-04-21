@@ -19,6 +19,10 @@
 
             <v-spacer></v-spacer>
 
+            <v-btn color="info" @click=onBack>
+              Back
+            </v-btn>
+
             <v-menu offset-y bottom left v-if="userIsAdmin">
               <v-btn icon slot="activator">
                 <v-icon>more_vert</v-icon>
@@ -43,7 +47,6 @@
               :items="menu"
               hide-actions
               hide-headers
-              class="elevation-1"
             >
               <template slot="items" slot-scope="props">
                 <td @click=navigate(props.item)>{{ props.item }}</td>
@@ -102,6 +105,9 @@
       }
     },
     methods: {
+      onBack () {
+        this.$router.push('/' + this.applicationName + '/forms')
+      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId

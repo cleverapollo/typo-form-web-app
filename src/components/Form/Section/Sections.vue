@@ -1,5 +1,5 @@
 <template>
-  <v-card active-class="active-section" class="elevation-12 ma-1">
+  <v-card active-class="active-section" class="ma-1">
     <v-toolbar :class="{ 'handle': submissionId === -1 }">
       <v-toolbar-title>{{ "Section " + index }}</v-toolbar-title>
 

@@ -1,9 +1,5 @@
 <template>
-  <v-layout row wrap pa-1>
-    <v-flex xs9 d-flex>
-      <show-submission :applicationName="applicationName" :formId="formId" :submissionId="submissionId"></show-submission>
-    </v-flex>
-
+  <v-layout row wrap>
     <v-flex xs3 d-flex>
       <v-card>
         <v-toolbar color="primary" dark>
@@ -14,13 +10,13 @@
           <v-layout row wrap>
             <template v-for="(submission, index) in submissions">
               <v-flex xs12>
-                <v-card color="blue-grey darken-2" class="white--text" @click="onSubmission(submission.id)">
-                  <v-card-title primary-title>
-                    <div class="headline">{{getSubmissionName(submission)}}</div>
+                <v-card color="blue-grey darken-2" class="white--text" @click="onSubmission(submission.id)" style="cursor: pointer;">
+                  <v-card-title primary-title class="flex-column">
+                    <v-flex xs-12 class="headline">{{getSubmissionName(submission)}}</v-flex>
                     <div>
-                      <span>Period Start: {{getPeriodStart(submission)}}</span>
+                      <span>Start: {{getPeriodStart(submission)}}</span>
                       <br/>
-                      <span>Period End: {{getPeriodEnd(submission)}}</span>
+                      <span>End  : {{getPeriodEnd(submission)}}</span>
                     </div>
                   </v-card-title>
 
@@ -38,6 +34,10 @@
           <create-submission style="margin: 0 auto" :applicationName="applicationName" :formId="formId" v-if="!userIsAdmin"></create-submission>
         </v-card-text>
       </v-card>
+    </v-flex>
+
+    <v-flex xs9 d-flex>
+      <show-submission :applicationName="applicationName" :formId="formId" :submissionId="submissionId"></show-submission>
     </v-flex>
   </v-layout>
 </template>
@@ -97,6 +97,7 @@
         return role ? role.name : 'undefined'
       },
       onSubmission (id) {
+        console.log(id)
         this.submissionId = id
       },
       getSubmissionName (submission) {

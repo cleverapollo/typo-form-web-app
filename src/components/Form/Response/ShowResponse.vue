@@ -1,14 +1,14 @@
 <template>
-  <responses :applicationName="applicationName" :formId="id"></responses>
+  <submissions :applicationName="applicationName" :formId="id"></submissions>
 </template>
 
 <script>
-  import responses from '../Submission/Submissions'
+  import submissions from '../Submission/Submissions'
 
   export default {
     props: ['applicationName', 'id'],
     components: {
-      responses
+      submissions
     }
   }
 </script>
