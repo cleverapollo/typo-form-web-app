@@ -29,6 +29,13 @@ import ShowForm from '@/components/Form/ShowForm'
 
 Vue.use(Router)
 
+const auth = {
+  loggedIn () {
+    const expireDate = localStorage.getItem('expire_date')
+    return expireDate !== null && Date.now() - expireDate < 86400000
+  }
+}
+
 const router = new Router({
   routes: [
     {
@@ -56,114 +63,116 @@ const router = new Router({
     {
       path: '/profile',
       name: 'Profile',
-      component: Profile
+      component: Profile,
+      meta: { requiresAuth: true }
     },
     {
       path: '/invitation/:type/:token',
       name: 'AcceptInvitation',
       component: AcceptInvitation,
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: '/join/:type/:token',
       name: 'AcceptJoin',
       component: AcceptJoin,
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: '/',
       name: 'Home',
       component: Home,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/applications',
       name: 'Applications',
       component: Applications,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/applications/new',
       name: 'CreateApplication',
       component: CreateApplication,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName',
       name: 'Application',
       component: Application,
-      props: true,
-      meta: { requireAuth: true }
+      props: true
     },
     {
       path: '/:applicationName/show',
       name: 'ShowApplication',
       component: ShowApplication,
       props: true,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/teams',
       name: 'Teams',
       component: Teams,
       props: true,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/teams/new',
       name: 'CreateTeam',
       component: CreateTeam,
       props: true,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/teams/show/:id',
       name: 'ShowTeam',
       component: ShowTeam,
       props: true,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/teams/:teamId/users/:id',
       name: 'ShowTeamUser',
       component: ShowTeamUser,
       props: true,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/users',
       name: 'Users',
       component: Users,
       props: true,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/users/show/:id',
       name: 'ShowUser',
       component: ShowUser,
       props: true,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/forms',
       name: 'Forms',
       component: Forms,
       props: true,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/forms/new',
       name: 'CreateForm',
       component: CreateForm,
       props: true,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/forms/show/:id',
       name: 'ShowForm',
       component: ShowForm,
       props: true,
-      meta: { requireAuth: true }
+      meta: { requiresAuth: true }
     }
   ],
   mode: 'history'
@@ -171,17 +180,19 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   document.title = to.params['applicationName'] || 'Informed 365'
-  const expireDate = localStorage.getItem('expire_date')
-  const previous = localStorage.getItem('previous')
   console.log(to.path)
-  if (!to.meta || !to.meta.requireAuth) {
-    next()
-  } else if ((expireDate === null || Date.now() - expireDate > 86400000) && (to.name !== 'Signin') && (to.name !== 'Signup')) {
-    localStorage.setItem('previous', to.path)
-    next('/signin')
-  } else if ((expireDate !== null && Date.now() - expireDate < 86400000) && previous) {
-    localStorage.removeItem('previous')
-    next(previous)
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    console.log('requiresAuth')
+    if (!auth.loggedIn()) {
+      next({
+        path: '/signin',
+        query: { redirect: to.fullPath }
+      })
+    } else {
+      next()
+    }
   } else {
     next()
   }

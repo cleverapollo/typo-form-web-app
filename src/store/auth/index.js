@@ -174,16 +174,20 @@ export default {
       if (payload.token) {
         token = payload.token
       }
-      window.axios.post(PASSWORD_RESET_URL + token, obj)
-        .then(response => {
-          commit('setLoading', false)
-          commit('clearError')
-        })
-        .catch(error => {
-          console.log(error.response.data)
-          commit('setLoading', false)
-          commit('setError', error.response.data)
-        })
+      return new Promise((resolve, reject) => {
+        window.axios.post(PASSWORD_RESET_URL + token, obj)
+          .then(response => {
+            commit('setLoading', false)
+            commit('clearError')
+            resolve(response)
+          })
+          .catch(error => {
+            console.log(error.response.data)
+            commit('setLoading', false)
+            commit('setError', error.response.data)
+            reject(error)
+          })
+      })
     },
     destroyUser ({commit}) {
       commit('clearError')
