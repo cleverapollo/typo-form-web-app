@@ -45,15 +45,13 @@ const router = new Router({
       path: '/reset-password',
       name: 'ResetPassword',
       component: ResetPassword,
-      props: true,
-      meta: { requireAuth: false }
+      props: true
     },
     {
       path: '/reset-password/:token',
       name: 'NewPassword',
       component: NewPassword,
-      props: true,
-      meta: { requireAuth: false }
+      props: true
     },
     {
       path: '/profile',
@@ -75,83 +73,97 @@ const router = new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Home,
+      meta: { requireAuth: true }
     },
     {
       path: '/applications',
       name: 'Applications',
-      component: Applications
+      component: Applications,
+      meta: { requireAuth: true }
     },
     {
       path: '/applications/new',
       name: 'CreateApplication',
-      component: CreateApplication
+      component: CreateApplication,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName',
       name: 'Application',
       component: Application,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName/show',
       name: 'ShowApplication',
       component: ShowApplication,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName/teams',
       name: 'Teams',
       component: Teams,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName/teams/new',
       name: 'CreateTeam',
       component: CreateTeam,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName/teams/show/:id',
       name: 'ShowTeam',
       component: ShowTeam,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName/teams/:teamId/users/:id',
       name: 'ShowTeamUser',
       component: ShowTeamUser,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName/users',
       name: 'Users',
       component: Users,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName/users/show/:id',
       name: 'ShowUser',
       component: ShowUser,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName/forms',
       name: 'Forms',
       component: Forms,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName/forms/new',
       name: 'CreateForm',
       component: CreateForm,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     },
     {
       path: '/:applicationName/forms/show/:id',
       name: 'ShowForm',
       component: ShowForm,
-      props: true
+      props: true,
+      meta: { requireAuth: true }
     }
   ],
   mode: 'history'
@@ -161,7 +173,8 @@ router.beforeEach((to, from, next) => {
   document.title = to.params['applicationName'] || 'Informed 365'
   const expireDate = localStorage.getItem('expire_date')
   const previous = localStorage.getItem('previous')
-  if (to.meta && to.meta.requireAuth === false) {
+  console.log(to.path)
+  if (!to.meta || !to.meta.requireAuth) {
     next()
   } else if ((expireDate === null || Date.now() - expireDate > 86400000) && (to.name !== 'Signin') && (to.name !== 'Signup')) {
     localStorage.setItem('previous', to.path)
@@ -170,7 +183,6 @@ router.beforeEach((to, from, next) => {
     localStorage.removeItem('previous')
     next(previous)
   } else {
-    console.log(to.path)
     next()
   }
 })
