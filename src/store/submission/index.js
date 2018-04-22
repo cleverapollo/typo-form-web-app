@@ -188,7 +188,6 @@ export default {
     },
     loadedSubmissionTeams (state, getters, rootState) {
       return (applicationName, formId) => {
-        console.log(state.loadedSubmissions)
         if (!rootState.team.loadedTeams[applicationName]) {
           return []
         }

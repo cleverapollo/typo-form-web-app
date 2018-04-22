@@ -1,10 +1,18 @@
 <template>
   <div>
-    <draggable v-model="list" class="parent" :options="{group: 'parent', draggable: '.item', handle: '.handle'}" style="min-height: 100px" @end="checkEnd">
-      <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
-        <sections :section="element" :formId="formId" :submissionId="submissionId" :index="index + 1"></sections>
-      </div>
-    </draggable>
+    <v-layout row wrap>
+      <v-flex xs3 d-flex v-if="submissionId > 0">
+        <form-tree :formId="formId" :list="list"></form-tree>
+      </v-flex>
+
+      <v-flex d-flex>
+        <draggable v-model="list" class="parent" :options="{group: 'parent', draggable: '.item', handle: '.handle'}" style="min-height: 100px" @end="checkEnd">
+          <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item">
+            <sections :section="element" :formId="formId" :submissionId="submissionId" :index="index + 1"></sections>
+          </div>
+        </draggable>
+      </v-flex>
+    </v-layout>
 
     <v-card-actions>
       <v-btn color="info" @click=onBack>Back</v-btn>
@@ -20,18 +28,21 @@
 
 <script>
   import draggable from 'vuedraggable'
-  import sections from './Section/Sections'
   import * as _ from 'lodash'
+  import sections from './Section/Sections'
+  import FormTree from './FormTree'
 
   export default {
     props: ['applicationName', 'formId', 'submissionId'],
     components: {
       draggable,
-      sections
+      sections,
+      FormTree
     },
     computed: {
       list: {
         get () {
+          console.log(this.$store.getters.loadedChildren(this.formId, null))
           return this.$store.getters.loadedChildren(this.formId, null)
         },
         set (value) {
@@ -42,16 +53,13 @@
         return this.$store.getters.statuses
       },
       sendAble () {
-        console.log(this.submissionId)
         if (this.submissionId <= 0) {
           return false
         }
 
-        const submission = this.$store.getters.loadedSubmission(this.formId, this.submissionId)
-
         if (this.statuses) {
           const statusIndex = _.findIndex(this.statuses, status => {
-            return status.id === submission.status_id
+            return status.id === this.submission.status_id
           })
           if (statusIndex > 0 && this.statuses[statusIndex].status !== 'opened') {
             return false
@@ -65,11 +73,9 @@
           return false
         }
 
-        const submission = this.$store.getters.loadedSubmission(this.formId, this.submissionId)
-
         if (this.statuses) {
           const statusIndex = _.findIndex(this.statuses, status => {
-            return status.id === submission.status_id
+            return status.id === this.submission.status_id
           })
           if (statusIndex > 0 && (this.statuses[statusIndex].status !== 'opened' && this.statuses[statusIndex].status !== 'closed')) {
             return false
@@ -77,6 +83,9 @@
         }
 
         return true
+      },
+      submission () {
+        return this.$store.getters.loadedSubmission(this.formId, this.submissionId)
       }
     },
     methods: {

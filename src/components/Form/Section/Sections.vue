@@ -16,17 +16,17 @@
         </v-btn>
 
         <v-list>
-          <v-list-tile @click="">
+          <v-list-tile @click="" v-if="includeSection || !includeQuestion">
             <v-list-tile-title>
               <app-create-section :parentSectionId="section.id" :formId="formId"></app-create-section>
             </v-list-tile-title>
           </v-list-tile>
 
-          <v-list-tile @click=deleteSection>
+          <v-list-tile @click="deleteSection" v-if="includeSection">
             <v-list-tile-title>Delete Section</v-list-tile-title>
           </v-list-tile>
 
-          <v-list-tile v-show="!hasRepeatableQuestions" @click="">
+          <v-list-tile v-show="!hasRepeatableQuestions" @click="" v-if="!includeSection || includeQuestion">
             <v-list-tile-title>
               <app-create-question :sectionId="section.id" :formId="formId"></app-create-question>
             </v-list-tile-title>
@@ -186,6 +186,24 @@
         return _.sortBy(responses, element => {
           return element.order
         })
+      },
+      includeSection () {
+        var includeSection = false
+        this.list.forEach(function (item) {
+          if (item.questions) {
+            includeSection = true
+          }
+        })
+        return includeSection
+      },
+      includeQuestion () {
+        var includeQuestion = false
+        this.list.forEach(function (item) {
+          if (item.answers) {
+            includeQuestion = true
+          }
+        })
+        return includeQuestion
       }
     },
     methods: {

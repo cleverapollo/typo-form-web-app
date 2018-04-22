@@ -10,20 +10,22 @@
           <v-layout row wrap>
             <template v-for="(submission, index) in submissions">
               <v-flex xs12>
-                <v-card color="blue-grey darken-2" class="white--text" @click="onSubmission(submission.id)" style="cursor: pointer;">
-                  <v-card-title primary-title class="flex-column">
-                    <v-flex xs-12 class="headline">{{getSubmissionName(submission)}}</v-flex>
-                    <div>
-                      <span>Start: {{getPeriodStart(submission)}}</span>
-                      <br/>
-                      <span>End  : {{getPeriodEnd(submission)}}</span>
-                    </div>
-                  </v-card-title>
+                <v-card color="blue-grey darken-2" class="white--text" style="cursor: pointer;">
+                  <div @click="onSubmission(submission.id)">
+                    <v-card-title primary-title class="flex-column">
+                      <v-flex xs-12 class="headline">{{getSubmissionName(submission)}}</v-flex>
+                      <div>
+                        <span>Start: {{getPeriodStart(submission)}}</span>
+                        <br/>
+                        <span>End  : {{getPeriodEnd(submission)}}</span>
+                      </div>
+                    </v-card-title>
 
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <edit-submission :submission="submission" :formId="formId" v-if="!userIsAdmin"></edit-submission>
-                  </v-card-actions>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <edit-submission :submission="submission" :formId="formId" v-if="!userIsAdmin"></edit-submission>
+                    </v-card-actions>
+                  </div>
                 </v-card>
               </v-flex>
 
@@ -43,16 +45,16 @@
 </template>
 
 <script>
-  import showSubmission from './ShowSubmission'
-  import createSubmission from './CreateSubmission'
-  import editSubmission from './EditSubmission'
+  import ShowSubmission from './ShowSubmission'
+  import CreateSubmission from './CreateSubmission'
+  import EditSubmission from './EditSubmission'
 
   export default {
     props: ['applicationName', 'formId'],
     components: {
-      showSubmission,
-      createSubmission,
-      editSubmission
+      ShowSubmission,
+      CreateSubmission,
+      EditSubmission
     },
     data () {
       return {
@@ -97,7 +99,6 @@
         return role ? role.name : 'undefined'
       },
       onSubmission (id) {
-        console.log(id)
         this.submissionId = id
       },
       getSubmissionName (submission) {

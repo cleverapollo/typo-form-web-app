@@ -47,6 +47,7 @@
               :items="menu"
               hide-actions
               hide-headers
+              class="elevation-1"
             >
               <template slot="items" slot-scope="props">
                 <td @click=navigate(props.item)>{{ props.item }}</td>
@@ -60,15 +61,8 @@
 </template>
 
 <script>
-  import formView from './FormView'
-  import responses from './Submission/Submissions'
-
   export default {
     props: ['applicationName', 'id'],
-    components: {
-      formView,
-      responses
-    },
     data () {
       return {
         active: null

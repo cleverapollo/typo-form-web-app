@@ -1,9 +1,5 @@
 <template>
   <v-layout row wrap class="pl-3">
-    <v-flex xs3 d-flex v-if="submissionId > 0">
-      <submissionDrawer :applicationName="applicationName" :formId="formId" :submissionId="submissionId"></submissionDrawer>
-    </v-flex>
-
     <v-flex d-flex>
       <form-view :applicationName="applicationName" :formId="formId" :submissionId="submissionId"></form-view>
     </v-flex>
@@ -11,14 +7,12 @@
 </template>
 
 <script>
-  import formView from '../FormView'
-  import submissionDrawer from './SubmissionDrawer'
+  import FormView from '../FormView'
 
   export default {
     props: ['applicationName', 'formId', 'submissionId'],
     components: {
-      formView,
-      submissionDrawer
+      FormView
     },
     computed: {
       roles () {

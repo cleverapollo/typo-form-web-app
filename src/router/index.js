@@ -172,7 +172,6 @@ router.beforeEach((to, from, next) => {
     localStorage.removeItem('previous')
     next(previous)
   } else {
-    console.log(to.path)
     next()
   }
 })

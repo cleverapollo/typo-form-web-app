@@ -3,12 +3,12 @@
 </template>
 
 <script>
-  import formView from '../FormView'
+  import FormView from '../FormView'
 
   export default {
     props: ['applicationName', 'id'],
     components: {
-      formView
+      FormView
     }
   }
 </script>
