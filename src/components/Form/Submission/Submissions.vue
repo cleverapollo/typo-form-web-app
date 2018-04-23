@@ -105,7 +105,6 @@
         if (submission.team == null) {
           return submission.user.first_name + ' ' + submission.user.last_name
         } else {
-          alert(1)
           return submission.team.name
         }
       },

@@ -201,9 +201,9 @@
         ]
 
         if (this.teams && this.teams.length > 0) {
-          types.push([
+          types.push(
             {id: 2, name: 'Team'}
-          ])
+          )
         }
 
         return types
