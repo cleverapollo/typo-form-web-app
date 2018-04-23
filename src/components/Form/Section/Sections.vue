@@ -1,7 +1,7 @@
 <template>
   <v-card active-class="active-section" class="ma-1">
     <v-toolbar :class="{ 'handle': submissionId === -1 }">
-      <v-toolbar-title>{{ "Section " + index }}</v-toolbar-title>
+      <v-toolbar-title>Section</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -96,16 +96,22 @@
         </div>
       </div>
 
-      <draggable v-else v-model="list" :class="'section' + section.id"
-                 :options="{group: 'parent', draggable: '.item', handle: '.handle'}" style="min-height: 100px" @end="checkEnd">
-        <div v-for="(element, index) in list" :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id"
-             :class="(isSection(element)  ? 'section' : 'question') + element.id" class="pb-2 item">
-          <sections :section="element" :formId="formId" v-if="isSection(element)" :submissionId="submissionId" :index="index + 1"></sections>
-
-          <div v-else>
-            <questions :question="element" :formId="formId" :sectionId="section.id" :index="index + 1" v-if="submissionId === -1"></questions>
-            <responses :question="element" :formId="formId" :sectionId="section.id" :index="index + 1" :submissionId="submissionId" v-else></responses>
-          </div>
+      <draggable
+        v-else
+        v-model="list"
+        :class="'section' + section.id"
+        :options="{group: 'parent', draggable: '.item', handle: '.handle'}"
+        @end="checkEnd"
+        style="min-height: 100px"
+      >
+        <div
+          v-for="(element, index) in list"
+          :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id"
+          :class="(isSection(element)  ? 'section' : 'question') + element.id"
+          class="pb-2 item"
+        >
+          <questions :question="element" :formId="formId" :sectionId="section.id" :index="index + 1" v-if="submissionId === -1"></questions>
+          <responses :question="element" :formId="formId" :sectionId="section.id" :index="index + 1" :submissionId="submissionId" v-else></responses>
         </div>
 
         <div slot="footer" v-if="isSectionEmpty">
@@ -130,7 +136,7 @@
 
   export default {
     name: 'sections',
-    props: ['section', 'formId', 'submissionId', 'index'],
+    props: ['section', 'formId', 'submissionId'],
     components: {
       draggable,
       questions,

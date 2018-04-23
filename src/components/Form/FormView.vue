@@ -2,15 +2,11 @@
   <div>
     <v-layout row wrap>
       <v-flex xs3 d-flex v-if="submissionId > 0">
-        <form-tree :formId="formId" :list="list"></form-tree>
+        <form-tree :formId="formId" :list="list" @section-clicked="sectionClicked"></form-tree>
       </v-flex>
 
       <v-flex d-flex>
-        <draggable v-model="list" class="parent" :options="{group: 'parent', draggable: '.item', handle: '.handle'}" style="min-height: 100px" @end="checkEnd">
-          <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item">
-            <sections :section="element" :formId="formId" :submissionId="submissionId" :index="index + 1"></sections>
-          </div>
-        </draggable>
+        <sections :section="section" :formId="formId" :submissionId="submissionId" v-if="section"></sections>
       </v-flex>
     </v-layout>
 
@@ -39,10 +35,14 @@
       sections,
       FormTree
     },
+    data () {
+      return {
+        section: null
+      }
+    },
     computed: {
       list: {
         get () {
-          console.log(this.$store.getters.loadedChildren(this.formId, null))
           return this.$store.getters.loadedChildren(this.formId, null)
         },
         set (value) {
@@ -167,7 +167,16 @@
             statusId: this.statuses[statusIndex].id
           }
         )
+      },
+      sectionClicked: function (item) {
+        this.section = item
       }
     }
   }
 </script>
+
+<style>
+  .expansion-panel .card__text {
+    padding-right: 0 !important;
+  }
+</style>

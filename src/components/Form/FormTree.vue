@@ -5,11 +5,11 @@
       :key="item.id"
       :hide-actions="repeatable(item)"
     >
-      <div slot="header">{{ item.name }}</div>
+      <div slot="header" @click="clickSection(item)">{{ item.name }}</div>
 
-      <v-card>
+      <v-card v-if="!repeatable(item)">
         <v-card-text>
-          <form-tree :formId="formId" :list="children(item)"></form-tree>
+          <form-tree :formId="formId" :list="children(item)" @section-clicked="sectionClicked"></form-tree>
         </v-card-text>
       </v-card>
     </v-expansion-panel-content>
@@ -31,6 +31,15 @@
         repeatable (item) {
           const items = this.children(item)
           return (items.length === 0)
+        },
+        clickSection (item) {
+          const children = this.children(item)
+          if (children.length === 0) {
+            this.$emit('section-clicked', item)
+          }
+        },
+        sectionClicked (item) {
+          this.$emit('section-clicked', item)
         }
       }
     }
