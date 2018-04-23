@@ -1,6 +1,7 @@
 <template>
   <v-dialog width="350px" persistent v-model="editApplication">
-    <v-btn class="primary" slot="activator">Edit</v-btn>
+    <v-btn class="primary" slot="activator" v-if="btnRect">Edit</v-btn>
+    <v-btn class="primary" slot="activator" v-if="btnCircle">Edit</v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
@@ -34,9 +35,9 @@
               >
                 Close
               </v-btn>
-              <v-btn 
-                flat 
-                class="primary" 
+              <v-btn
+                flat
+                class="primary"
                 @click="onSaveChanges"
                 :disabled="loading"
                 :loading="loading"
@@ -56,7 +57,19 @@
 
 <script>
   export default {
-    props: ['application'],
+    props: {
+      application: {
+        type: Object
+      },
+      btnRect: {
+        type: Boolean,
+        default: true
+      },
+      btnCircle: {
+        type: Boolean,
+        default: false
+      },
+    },
     data () {
       return {
         id: this.application.id,
