@@ -1,14 +1,18 @@
 <template>
-  <form-view :applicationName='applicationName' :formId="formId" :submissionId="submissionId"></form-view>
+  <v-layout row wrap class="pl-3">
+    <v-flex d-flex>
+      <form-view :applicationName="applicationName" :formId="formId" :submissionId="submissionId"></form-view>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
-  import formView from '../FormView'
+  import FormView from '../FormView'
 
   export default {
     props: ['applicationName', 'formId', 'submissionId'],
     components: {
-      formView
+      FormView
     },
     computed: {
       roles () {

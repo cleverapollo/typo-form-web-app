@@ -1,9 +1,5 @@
 <template>
-  <v-layout row wrap pa-1>
-    <v-flex xs9 d-flex>
-      <show-submission :applicationName="applicationName" :formId="formId" :submissionId="submissionId"></show-submission>
-    </v-flex>
-
+  <v-layout row wrap>
     <v-flex xs3 d-flex>
       <v-card>
         <v-toolbar color="primary" dark>
@@ -14,20 +10,22 @@
           <v-layout row wrap>
             <template v-for="(submission, index) in submissions">
               <v-flex xs12>
-                <v-card color="blue-grey darken-2" class="white--text" @click="onSubmission(submission.id)">
-                  <v-card-title primary-title>
-                    <div class="headline">{{getSubmissionName(submission)}}</div>
-                    <div>
-                      <span>Period Start: {{getPeriodStart(submission)}}</span>
-                      <br/>
-                      <span>Period End: {{getPeriodEnd(submission)}}</span>
-                    </div>
-                  </v-card-title>
+                <v-card color="blue-grey darken-2" class="white--text" style="cursor: pointer;">
+                  <div @click="onSubmission(submission.id)">
+                    <v-card-title primary-title class="flex-column">
+                      <v-flex xs-12 class="headline">{{getSubmissionName(submission)}}</v-flex>
+                      <div>
+                        <span>Start: {{getPeriodStart(submission)}}</span>
+                        <br/>
+                        <span>End  : {{getPeriodEnd(submission)}}</span>
+                      </div>
+                    </v-card-title>
 
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <edit-submission :submission="submission" :formId="formId" v-if="!userIsAdmin"></edit-submission>
-                  </v-card-actions>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <edit-submission :submission="submission" :formId="formId" v-if="!userIsAdmin"></edit-submission>
+                    </v-card-actions>
+                  </div>
                 </v-card>
               </v-flex>
 
@@ -39,20 +37,24 @@
         </v-card-text>
       </v-card>
     </v-flex>
+
+    <v-flex xs9 d-flex>
+      <show-submission :applicationName="applicationName" :formId="formId" :submissionId="submissionId"></show-submission>
+    </v-flex>
   </v-layout>
 </template>
 
 <script>
-  import showSubmission from './ShowSubmission'
-  import createSubmission from './CreateSubmission'
-  import editSubmission from './EditSubmission'
+  import ShowSubmission from './ShowSubmission'
+  import CreateSubmission from './CreateSubmission'
+  import EditSubmission from './EditSubmission'
 
   export default {
     props: ['applicationName', 'formId'],
     components: {
-      showSubmission,
-      createSubmission,
-      editSubmission
+      ShowSubmission,
+      CreateSubmission,
+      EditSubmission
     },
     data () {
       return {
@@ -103,7 +105,6 @@
         if (submission.team == null) {
           return submission.user.first_name + ' ' + submission.user.last_name
         } else {
-          alert(1)
           return submission.team.name
         }
       },

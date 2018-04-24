@@ -1,8 +1,9 @@
 <template>
-  <v-card active-class='active-question' class='elevation-12 ma-2'>
+  <v-card active-class="active-question" class="ma-2">
     <v-toolbar>
-      <v-toolbar-title>{{ 'Question ' + index }}</v-toolbar-title>
+      <v-toolbar-title>{{ "Question " + index }}</v-toolbar-title>
     </v-toolbar>
+
     <v-card-text>
       <v-layout row>
         <v-flex xs4>
@@ -11,6 +12,7 @@
           </h2>
         </v-flex>
       </v-layout>
+
       <v-layout>
         <v-flex>
           <p>
@@ -18,14 +20,15 @@
           </p>
         </v-flex>
       </v-layout>
+
       <v-layout>
         <v-flex xs12>
           <component
-            :is='questionComponent'
-            :answers='answers'
-            :responses='responses'
-            :question-id='question.id'
-            :form-id='formId'
+            :is="questionComponent"
+            :answers="answers"
+            :responses="responses"
+            :question-id="question.id"
+            :form-id="formId"
             @create-response="createResponse"
             @update-response="updateResponse"
             @delete-response="deleteResponse"
@@ -38,6 +41,7 @@
 
 <script>
   import draggable from 'vuedraggable'
+  import * as _ from 'lodash'
   import shortAnswer from './components/ShortAnswer'
   import paragraph from './components/Paragraph'
   import multipleChoice from './components/MultipleChoice'
@@ -49,7 +53,6 @@
   import checkboxGrid from './components/CheckboxGrid'
   import dateComponent from './components/Date'
   import timeComponent from './components/Time'
-  import * as _ from 'lodash'
 
   export default {
     props: ['question', 'formId', 'submissionId', 'index', 'sectionId'],

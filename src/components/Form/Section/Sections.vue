@@ -1,104 +1,120 @@
 <template>
-  <v-card active-class='active-section' class='elevation-12 ma-1'>
-    <v-toolbar :class='{ "handle": submissionId === -1 }'>
-      <v-toolbar-title>{{ 'Section ' + index }}</v-toolbar-title>
+  <v-card active-class="active-section" class="ma-1">
+    <v-toolbar :class="{ 'handle': submissionId === -1 }">
+      <v-toolbar-title>Section</v-toolbar-title>
+
       <v-spacer></v-spacer>
-      <v-btn icon @click.prevent='toggleExpand'>
-        <v-icon v-if='expanded'>expand_less</v-icon>
+
+      <v-btn icon @click.prevent="toggleExpand">
+        <v-icon v-if="expanded">expand_less</v-icon>
         <v-icon v-else>expand_more</v-icon>
       </v-btn>
+
       <v-menu offset-y bottom left v-if="submissionId === -1">
-        <v-btn icon slot='activator'>
+        <v-btn icon slot="activator">
           <v-icon>more_vert</v-icon>
         </v-btn>
+
         <v-list>
-          <v-list-tile @click=''>
+          <v-list-tile @click="" v-if="includeSection || !includeQuestion">
             <v-list-tile-title>
-              <app-create-section :parentSectionId='section.id' :formId='formId'></app-create-section>
+              <app-create-section :parentSectionId="section.id" :formId="formId"></app-create-section>
             </v-list-tile-title>
           </v-list-tile>
-          <v-list-tile @click=deleteSection>
+
+          <v-list-tile @click="deleteSection" v-if="includeSection">
             <v-list-tile-title>Delete Section</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile v-show='!hasRepeatableQuestions' @click=''>
+
+          <v-list-tile v-show="!hasRepeatableQuestions" @click="" v-if="!includeSection || includeQuestion">
             <v-list-tile-title>
-              <app-create-question :sectionId='section.id' :formId='formId'></app-create-question>
+              <app-create-question :sectionId="section.id" :formId="formId"></app-create-question>
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-menu>
     </v-toolbar>
+
     <v-card-title>
       <v-flex>
-        <div class='section-name'>
-          <template v-if='editMode'>
+        <div class="section-name">
+          <template v-if="editMode">
             <v-text-field
-              label='Section Name'
-              v-model='editedName'
+              label="Section Name"
+              v-model="editedName"
               autofocus
-              @blur='checkNameUpdate'
+              @blur="checkNameUpdate"
             ></v-text-field>
           </template>
+
           <template v-else>
-            <h1 @click='setEditMode'>{{ section.name }}</h1>
+            <h1 @click="setEditMode">{{ section.name }}</h1>
           </template>
         </div>
       </v-flex>
-      <v-flex style='min-width: 130px; max-width: 130px;' class='mt-4' v-if="submissionId === -1">
+
+      <v-flex style="min-width: 130px; max-width: 130px;" class="mt-4" v-if="submissionId === -1">
         <v-switch
-          label='Repeatable'
-          v-model='hasRepeatableQuestions'
-          @change='changeRepeatable($event)'
+          label="Repeatable"
+          v-model="hasRepeatableQuestions"
+          @change="changeRepeatable($event)"
         ></v-switch>
       </v-flex>
     </v-card-title>
-    <v-card-text class='px-0' v-show='expanded'>
-      <div v-if='hasRepeatableQuestions'>
+
+    <v-card-text class="px-0" v-show="expanded">
+      <div v-if="hasRepeatableQuestions">
         <div v-if="submissionId === -1">
           <question-repeatable
-            :questions='section.questions'
-            :min-rows='section.min_rows'
-            :max-rows='section.max_rows'
-            @update-limitation='updateRepeatableLimitation'
-            @create-question='createQuestion'
-            @delete-question='deleteQuestion'
-            @update-question='updateQuestion'
-            @create-answer='createAnswer'
-            @delete-answer='deleteAnswer'
-            @update-answer='updateAnswer'
-            @move-answer='moveAnswer'
-            @move-question='moveQuestion'
+            :questions="section.questions"
+            :min-rows="section.min_rows"
+            :max-rows="section.max_rows"
+            @update-limitation="updateRepeatableLimitation"
+            @create-question="createQuestion"
+            @delete-question="deleteQuestion"
+            @update-question="updateQuestion"
+            @create-answer="createAnswer"
+            @delete-answer="deleteAnswer"
+            @update-answer="updateAnswer"
+            @move-answer="moveAnswer"
+            @move-question="moveQuestion"
           >
           </question-repeatable>
         </div>
+
         <div v-else>
           <response-repeatable
-            :questions='section.questions'
-            :min-rows='section.min_rows'
-            :max-rows='section.max_rows'
-            :responses='responses'
-            @create-response='createResponse'
-            @update-response='updateResponse'
-            @delete-response='deleteResponse'
+            :questions="section.questions"
+            :min-rows="section.min_rows"
+            :max-rows="section.max_rows"
+            :responses="responses"
+            @create-response="createResponse"
+            @update-response="updateResponse"
+            @delete-response="deleteResponse"
           >
           </response-repeatable>
         </div>
       </div>
-      <draggable v-else v-model='list' :class="'section' + section.id"
-                 :options='{group:"parent", draggable:".item", handle:".handle"}' style='min-height: 100px'
-                 @end="checkEnd">
-        <div v-for='(element, index) in list' :key='(isSection(element)  ? "Section " : "Question ") + element.id'
-             :class='(isSection(element)  ? "section" : "question") + element.id' class='pb-2 item'>
-          <sections :section='element' :formId='formId' v-if='isSection(element)' :submissionId='submissionId'
-                    :index='index + 1'></sections>
-          <div v-else>
-            <questions :question='element' :formId='formId' :sectionId="section.id" :index='index + 1'
-                       v-if="submissionId === -1"></questions>
-            <responses :question='element' :formId='formId' :sectionId="section.id" :index='index + 1'
-                       :submissionId='submissionId' v-else></responses>
-          </div>
+
+      <draggable
+        v-else
+        v-model="list"
+        :class="'section' + section.id"
+        :options="{group: 'parent', draggable: '.item', handle: '.handle'}"
+        @end="checkEnd"
+        style="min-height: 100px"
+      >
+        <div
+          v-for="(element, index) in list"
+          :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id"
+          :class="(isSection(element)  ? 'section' : 'question') + element.id"
+          class="pb-2 item"
+        >
+          <questions :question="element" :formId="formId" :sectionId="section.id" :index="index + 1" v-if="submissionId === -1"></questions>
+          <responses :question="element" :formId="formId" :sectionId="section.id" :index="index + 1" :submissionId="submissionId" v-else></responses>
         </div>
-        <div slot='footer' v-if='isSectionEmpty'>
+
+        <div slot="footer" v-if="isSectionEmpty">
           <v-card>
             <v-card-title>
               <h3>There is no questions</h3>
@@ -120,7 +136,7 @@
 
   export default {
     name: 'sections',
-    props: ['section', 'formId', 'submissionId', 'index'],
+    props: ['section', 'formId', 'submissionId'],
     components: {
       draggable,
       questions,
@@ -176,6 +192,24 @@
         return _.sortBy(responses, element => {
           return element.order
         })
+      },
+      includeSection () {
+        var includeSection = false
+        this.list.forEach(function (item) {
+          if (item.questions) {
+            includeSection = true
+          }
+        })
+        return includeSection
+      },
+      includeQuestion () {
+        var includeQuestion = false
+        this.list.forEach(function (item) {
+          if (item.answers) {
+            includeQuestion = true
+          }
+        })
+        return includeQuestion
       }
     },
     methods: {

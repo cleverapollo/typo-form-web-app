@@ -1,33 +1,44 @@
 <template>
-  <v-card>
-    <v-card-text>
-      <draggable v-model="list" class="parent" :options="{group:'parent', draggable:'.item', handle:'.handle'}" style="min-height: 100px" @end="checkEnd">
-        <div v-for="(element, index) in list" :key="'Section ' + element.id" :class="'section' + element.id" class="item pb-5">
-          <sections :section='element' :formId='formId' :submissionId='submissionId' :index='index + 1'></sections>
-        </div>
-      </draggable>
-    </v-card-text>
+  <div>
+    <v-layout row wrap>
+      <v-flex xs3 d-flex v-if="submissionId > 0">
+        <form-tree :formId="formId" :list="list" @section-clicked="sectionClicked"></form-tree>
+      </v-flex>
+
+      <v-flex d-flex>
+        <sections :section="section" :formId="formId" :submissionId="submissionId" v-if="section"></sections>
+      </v-flex>
+    </v-layout>
 
     <v-card-actions>
       <v-btn color="info" @click=onBack>Back</v-btn>
+
       <v-spacer></v-spacer>
-      <app-create-section :parentSectionId='-1' :formId='formId' v-if='submissionId === -1'></app-create-section>
-      <v-btn color="error" @click=deleteSubmission v-if='removable'>Delete</v-btn>
-      <v-btn color="primary" @click=sendSubmission v-if='sendAble'>Send</v-btn>
+
+      <app-create-section :parentSectionId="-1" :formId="formId" v-if="submissionId === -1"></app-create-section>
+      <v-btn color="error" @click=deleteSubmission v-if="removable">Delete</v-btn>
+      <v-btn color="primary" @click=sendSubmission v-if="sendAble">Send</v-btn>
     </v-card-actions>
-  </v-card>
+  </div>
 </template>
 
 <script>
   import draggable from 'vuedraggable'
-  import sections from './Section/Sections'
   import * as _ from 'lodash'
+  import sections from './Section/Sections'
+  import FormTree from './FormTree'
 
   export default {
     props: ['applicationName', 'formId', 'submissionId'],
     components: {
       draggable,
-      sections
+      sections,
+      FormTree
+    },
+    data () {
+      return {
+        section: null
+      }
     },
     computed: {
       list: {
@@ -46,10 +57,10 @@
           return false
         }
 
-        const submission = this.$store.getters.loadedSubmission(this.formId, this.submissionId)
-
         if (this.statuses) {
-          const statusIndex = _.findIndex(this.statuses, status => { return status.id === submission.status_id })
+          const statusIndex = _.findIndex(this.statuses, status => {
+            return status.id === this.submission.status_id
+          })
           if (statusIndex > 0 && this.statuses[statusIndex].status !== 'opened') {
             return false
           }
@@ -62,21 +73,24 @@
           return false
         }
 
-        const submission = this.$store.getters.loadedSubmission(this.formId, this.submissionId)
-
         if (this.statuses) {
-          const statusIndex = _.findIndex(this.statuses, status => { return status.id === submission.status_id })
+          const statusIndex = _.findIndex(this.statuses, status => {
+            return status.id === this.submission.status_id
+          })
           if (statusIndex > 0 && (this.statuses[statusIndex].status !== 'opened' && this.statuses[statusIndex].status !== 'closed')) {
             return false
           }
         }
 
         return true
+      },
+      submission () {
+        return this.$store.getters.loadedSubmission(this.formId, this.submissionId)
       }
     },
     methods: {
       onBack () {
-        this.$router.push('/' + this.applicationName + '/forms')
+        this.$router.push('/' + this.applicationName + '/forms/show/' + this.formId)
       },
       checkEnd: function (evt) {
         if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
@@ -142,7 +156,9 @@
         )
       },
       sendSubmission: function () {
-        const statusIndex = _.findIndex(this.statuses, status => { return status.status === 'closed' })
+        const statusIndex = _.findIndex(this.statuses, status => {
+          return status.status === 'closed'
+        })
 
         this.$store.dispatch('updateSubmission',
           {
@@ -151,7 +167,16 @@
             statusId: this.statuses[statusIndex].id
           }
         )
+      },
+      sectionClicked: function (item) {
+        this.section = item
       }
     }
   }
 </script>
+
+<style>
+  .expansion-panel .card__text {
+    padding-right: 0 !important;
+  }
+</style>
