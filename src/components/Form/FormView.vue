@@ -1,5 +1,15 @@
 <template>
   <div>
+    <v-card class="mb-3" v-if="submissionId > 0">
+      <v-toolbar color="primary" dark>
+        <v-toolbar-title>Submission Progress</v-toolbar-title>
+      </v-toolbar>
+
+      <v-card-text>
+        <v-progress-linear v-model="progress"></v-progress-linear>
+      </v-card-text>
+    </v-card>
+
     <v-layout row wrap>
       <v-flex xs3 d-flex v-if="submissionId > 0">
         <form-tree :formId="formId" :list="list" @section-clicked="sectionClicked"></form-tree>
@@ -66,7 +76,7 @@
           }
         }
 
-        return true
+        return (this.progress === 100)
       },
       removable () {
         if (this.submissionId <= 0) {
@@ -86,6 +96,23 @@
       },
       submission () {
         return this.$store.getters.loadedSubmission(this.formId, this.submissionId)
+      },
+      progress () {
+        if (this.submissionId > 0) {
+          const sections = this.$store.getters.loadedSections(this.formId)
+          let questionCount = 0
+          let responseCount = 0
+          sections.forEach(function (section) {
+            let questions = this.$store.getters.loadedQuestions(this.formId, section.id).filter(question => question.mandatory)
+            questionCount += questions.length
+            questions.forEach(function (question) {
+              let responses = this.$store.getters.loadedResponses(this.formId, this.submissionId).filter(response => response.question_id === question.id)
+              responseCount += responses.length
+            }, this)
+          }, this)
+
+          return responseCount * 100 / questionCount
+        }
       }
     },
     methods: {

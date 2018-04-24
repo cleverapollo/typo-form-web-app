@@ -9,8 +9,8 @@
         <v-card-text>
           <v-layout row wrap>
             <template v-for="(submission, index) in submissions">
-              <v-flex xs12>
-                <v-card color="blue-grey darken-2" class="white--text" style="cursor: pointer;">
+              <v-flex xs12 style="margin-bottom: 16px">
+                <v-card color="blue-grey darken-2" class="white--text" :class="active(submission.id)" style="cursor: pointer;">
                   <div @click="onSubmission(submission.id)">
                     <v-card-title primary-title class="flex-column">
                       <v-flex xs-12 class="headline">{{getSubmissionName(submission)}}</v-flex>
@@ -113,7 +113,16 @@
       },
       getPeriodEnd (submission) {
         return submission.period_end ? submission.period_end.substring(0, 10) : ''
+      },
+      active (submissionId) {
+        return (this.submissionId === submissionId) ? 'active' : ''
       }
     }
   }
 </script>
+
+<style scoped>
+  .active {
+    background-color: #1976D2 !important;
+  }
+</style>
