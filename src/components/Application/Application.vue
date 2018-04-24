@@ -2,20 +2,7 @@
   <v-container>
     <v-layout row>
       <v-flex xs12>
-        <!--<v-btn-->
-          <!--absolute-->
-          <!--bottom-->
-          <!--right-->
-          <!--dark-->
-          <!--fab-->
-          <!--router-->
-          <!--to="/applications/edit"-->
-          <!--class="primary"-->
-          <!--v-if=userIsSuper-->
-        <!--&gt;-->
-          <!--<v-icon>edit</v-icon>-->
-        <!--</v-btn>-->
-        <app-edit-application v-if="userIsAdmin" :application="application"></app-edit-application>
+        <app-edit-application v-if="userIsAdmin" :application="application" :btn-rect="false"></app-edit-application>
       </v-flex>
     </v-layout>
   </v-container>

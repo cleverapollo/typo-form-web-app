@@ -1,7 +1,23 @@
 <template>
   <v-dialog width="350px" persistent v-model="editApplication">
-    <v-btn class="primary" slot="activator" v-if="btnRect">Edit</v-btn>
-    <v-btn class="primary" slot="activator" v-if="btnCircle">Edit</v-btn>
+    <v-btn
+      v-if="btnRect"
+      class="primary"
+      slot="activator"
+    >Edit</v-btn>
+    <v-btn
+      v-else
+      class="primary"
+      slot="activator"
+      fab
+      absolute
+      bottom
+      right
+      dark>
+      <v-icon>
+        edit
+      </v-icon>
+    </v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
@@ -64,11 +80,7 @@
       btnRect: {
         type: Boolean,
         default: true
-      },
-      btnCircle: {
-        type: Boolean,
-        default: false
-      },
+      }
     },
     data () {
       return {
