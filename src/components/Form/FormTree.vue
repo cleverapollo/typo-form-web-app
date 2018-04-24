@@ -42,7 +42,7 @@
           this.$emit('section-clicked', item)
         },
         active (item) {
-          return (item.id === this.section.id) ? 'active' : ''
+          return (this.section && item.id === this.section.id) ? 'active' : ''
         }
       }
     }
