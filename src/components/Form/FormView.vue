@@ -12,7 +12,7 @@
 
     <v-layout row wrap>
       <v-flex xs3 d-flex v-if="submissionId > 0">
-        <form-tree :formId="formId" :list="list" @section-clicked="sectionClicked"></form-tree>
+        <form-tree :formId="formId" :section="section" :list="list" @section-clicked="sectionClicked"></form-tree>
       </v-flex>
 
       <v-flex d-flex>

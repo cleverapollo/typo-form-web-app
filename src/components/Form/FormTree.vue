@@ -5,11 +5,11 @@
       :key="item.id"
       :hide-actions="repeatable(item)"
     >
-      <div slot="header" @click="clickSection(item)">{{ item.name }}</div>
+      <div slot="header" @click="clickSection(item)" :class="active(item)">{{ item.name }}</div>
 
       <v-card v-if="!repeatable(item)">
         <v-card-text>
-          <form-tree :formId="formId" :list="children(item)" @section-clicked="sectionClicked"></form-tree>
+          <form-tree :formId="formId" :section="section" :list="children(item)" @section-clicked="sectionClicked"></form-tree>
         </v-card-text>
       </v-card>
     </v-expansion-panel-content>
@@ -19,7 +19,7 @@
 <script>
     export default {
       name: 'form-tree',
-      props: ['formId', 'list'],
+      props: ['formId', 'list', 'section'],
       methods: {
         children (item) {
           const children = this.$store.getters.loadedChildren(this.formId, item.id)
@@ -40,6 +40,9 @@
         },
         sectionClicked (item) {
           this.$emit('section-clicked', item)
+        },
+        active (item) {
+          return (item.id === this.section.id) ? 'active' : ''
         }
       }
     }
@@ -48,5 +51,9 @@
 <style scoped>
   .list--group .list__tile {
     padding-left: 15px !important;
+  }
+
+  .expansion-panel__header .active {
+    color: #1976D2 !important;
   }
 </style>
