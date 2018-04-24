@@ -90,7 +90,11 @@
     watch: {
       user (value) {
         if (value !== null && value !== undefined) {
-          this.$router.push('/')
+          if (this.$route.query.redirect) {
+            this.$router.push(this.$route.query.redirect)
+          } else {
+            this.$router.push('/')
+          }
         }
       }
     },
