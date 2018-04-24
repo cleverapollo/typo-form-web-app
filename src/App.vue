@@ -79,7 +79,6 @@ export default {
   data () {
     return {
       drawer: null,
-      title: 'Informed 365',
       menuItems: [
         {icon: 'face', title: 'Sign up', link: '/signup'},
         {icon: 'lock_open', title: 'Sign in', link: '/signin'}
@@ -92,6 +91,9 @@ export default {
     },
     userIsAuthenticated () {
       return this.user !== null && this.user !== undefined
+    },
+    title () {
+      return this.$route.params['applicationName'] || 'Informed 365'
     }
   },
   watch: {
@@ -103,9 +105,13 @@ export default {
         ]
         this.$store.dispatch('loadQuestionTypes')
         this.$store.dispatch('loadValidationTypes')
-        this.$store.dispatch('loadRoles')
         this.$store.dispatch('loadPeriods')
         this.$store.dispatch('loadStatuses')
+      } else {
+        this.menuItems = [
+          {icon: 'face', title: 'Sign up', link: '/signup'},
+          {icon: 'lock_open', title: 'Sign in', link: '/signin'}
+        ]
       }
     }
   },
@@ -114,6 +120,9 @@ export default {
       this.$store.dispatch('logout')
       this.$router.push('/signin')
     }
+  },
+  mounted () {
+    this.$store.dispatch('loadRoles')
   },
   name: 'App'
 }

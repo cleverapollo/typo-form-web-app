@@ -22,7 +22,7 @@
                 type="email"
                 disabled></v-text-field>
               <v-select
-                :items="roles"
+                :items="invitationRoles"
                 item-text="name"
                 item-value="id"
                 v-model="editedRole"
@@ -97,6 +97,11 @@
     computed: {
       roles () {
         return this.$store.getters.roles
+      },
+      invitationRoles () {
+        return this.roles.filter((role) => {
+          return role.name !== 'Super Admin'
+        })
       },
       error () {
         return this.$store.getters.error

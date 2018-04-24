@@ -82,7 +82,7 @@
         this.$router.push('/' + this.applicationName + '/forms/new')
       },
       onBack () {
-        this.$router.push('/' + this.applicationName)
+        this.$router.push('/' + this.applicationName + '/show')
       }
     },
     created: function () {

@@ -13,7 +13,18 @@
                     label="Name"
                     id="name"
                     v-model="name"
+                    :rules="[validate]"
                     required></v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12>
+                  <v-text-field
+                    name="css"
+                    label="CSS"
+                    id="css"
+                    v-model="css"
+                  ></v-text-field>
                 </v-flex>
               </v-layout>
               <v-layout row>
@@ -38,7 +49,7 @@
                         </v-flex>
                         <v-flex xs12 sm4 offset-sm1>
                           <v-select
-                            :items="roles"
+                            :items="invitationRoles"
                             item-text="name"
                             item-value="id"
                             v-model="item.application_role_id"
@@ -80,6 +91,7 @@
     data () {
       return {
         name: '',
+        css: '',
         invitations: [
           {
             email: '',
@@ -100,6 +112,11 @@
       roles () {
         return this.$store.getters.roles
       },
+      invitationRoles () {
+        return this.roles.filter((role) => {
+          return role.name !== 'Super Admin'
+        })
+      },
       formIsValid () {
         return this.name !== ''
       },
@@ -108,6 +125,9 @@
       }
     },
     methods: {
+      validate (value) {
+        return /^[a-z0-9]+$/.test(value) || 'Dont input symbols'
+      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId
@@ -120,6 +140,7 @@
         }
         const applicationData = {
           name: this.name,
+          css: this.css,
           invitations: this.invitations.filter(function (item) {
             return item.email.trim() !== ''
           })

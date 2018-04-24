@@ -21,13 +21,14 @@
                 label="Name"
                 id="name"
                 v-model="editedName"
+                :rules="[(value) => value.length > 0 || 'Please input name.']"
                 required></v-text-field>
               <v-text-field
                 name="description"
                 label="Description"
                 id="description"
                 v-model="editedDescription"
-                required></v-text-field>
+              ></v-text-field>
               <v-select
                 :items="questionTypes"
                 item-text="type"
@@ -48,9 +49,9 @@
           <v-flex xs12>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn 
-                flat 
-                class="primary" 
+              <v-btn
+                flat
+                class="primary"
                 @click="onSaveChanges"
                 :disabled="loading"
                 :loading="loading"
@@ -89,7 +90,7 @@
     },
     methods: {
       onSaveChanges () {
-        if (this.editedName.trim() === '' || this.editedDescription.trim() === '') {
+        if (this.editedName.trim() === '') {
           return
         }
         this.createQuestion = false
