@@ -144,19 +144,22 @@ const router = new Router({
       path: '/:applicationName/forms/show/:id',
       name: 'ShowForm',
       component: ShowForm,
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/forms/show/:id/questions',
       name: 'ShowQuestion',
       component: ShowQuestion,
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: '/:applicationName/forms/show/:id/responses',
       name: 'ShowResponses',
       component: ShowResponse,
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     }
   ],
   mode: 'history'
