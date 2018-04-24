@@ -1,7 +1,14 @@
 <template>
   <div>
+    <v-card-actions>
+      <app-create-section :parentSectionId="-1" :formId="formId" v-if="submissionId === -1"></app-create-section>
+      <v-btn color="error" @click=deleteSubmission v-if="removable">Delete</v-btn>
+      <v-btn color="primary" @click=sendSubmission v-if="sendAble">Send</v-btn>
+      <v-spacer></v-spacer>
+      <v-btn color="info" @click=onBack>Back</v-btn>
+    </v-card-actions>
     <v-layout row wrap>
-      <v-flex xs3 d-flex v-if="submissionId > 0">
+      <v-flex xs3>
         <form-tree :formId="formId" :list="list" @section-clicked="sectionClicked"></form-tree>
       </v-flex>
 
@@ -9,16 +16,6 @@
         <sections :section="section" :formId="formId" :submissionId="submissionId" v-if="section"></sections>
       </v-flex>
     </v-layout>
-
-    <v-card-actions>
-      <v-btn color="info" @click=onBack>Back</v-btn>
-
-      <v-spacer></v-spacer>
-
-      <app-create-section :parentSectionId="-1" :formId="formId" v-if="submissionId === -1"></app-create-section>
-      <v-btn color="error" @click=deleteSubmission v-if="removable">Delete</v-btn>
-      <v-btn color="primary" @click=sendSubmission v-if="sendAble">Send</v-btn>
-    </v-card-actions>
   </div>
 </template>
 
