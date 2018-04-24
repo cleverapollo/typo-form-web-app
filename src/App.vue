@@ -107,6 +107,7 @@ export default {
         this.$store.dispatch('loadValidationTypes')
         this.$store.dispatch('loadPeriods')
         this.$store.dispatch('loadStatuses')
+        this.$store.dispatch('loadRoles')
       } else {
         this.menuItems = [
           {icon: 'face', title: 'Sign up', link: '/signup'},
@@ -120,9 +121,6 @@ export default {
       this.$store.dispatch('logout')
       this.$router.push('/signin')
     }
-  },
-  mounted () {
-    this.$store.dispatch('loadRoles')
   },
   name: 'App'
 }

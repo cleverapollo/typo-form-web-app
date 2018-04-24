@@ -57,7 +57,7 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadApplications')
+      this.$store.dispatch('loadApplication', this.applicationName)
     },
     mounted () {
       console.log('applicationName', this.applicationName)

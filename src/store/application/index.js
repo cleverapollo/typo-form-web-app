@@ -6,6 +6,16 @@ export default {
     loadedApplications: []
   },
   mutations: {
+    setLoadedApplication (state, payload) {
+      const index = state.loadedApplications.findIndex(application => {
+        return application.id === payload.id
+      })
+      if (index !== -1) {
+        state.loadedApplications.splice(index, 1, payload)
+      } else {
+        state.loadedApplications.push(payload)
+      }
+    },
     setLoadedApplications (state, payload) {
       state.loadedApplications = payload
     },
@@ -25,6 +35,22 @@ export default {
     }
   },
   actions: {
+    loadApplication ({commit}, applicationName) {
+      commit('setLoading', true)
+      window.axios.get(APPLICATION_URL + applicationName)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setLoadedApplication', response['data']['application'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
     loadApplications ({commit}) {
       commit('setLoading', true)
       window.axios.get(APPLICATION_URL)

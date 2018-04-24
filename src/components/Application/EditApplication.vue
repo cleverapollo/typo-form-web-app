@@ -10,7 +10,7 @@
       class="primary"
       slot="activator"
       fab
-      absolute
+      fixed
       bottom
       right
       dark>
