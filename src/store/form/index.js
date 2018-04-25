@@ -60,7 +60,7 @@ export default {
         period_start: payload.periodStart,
         period_end: payload.periodEnd,
         period_id: payload.periodId,
-        show_progress: true
+        show_progress: payload.showProgress
       }
 
       window.axios.post(APPLICATION_URL + payload.applicationName + FORM_URL, form)
@@ -95,6 +95,9 @@ export default {
       }
       if (payload.periodId) {
         updateObj.period_id = payload.periodId
+      }
+      if (payload.showProgress) {
+        updateObj.show_progress = payload.showProgress
       }
 
       window.axios.put(APPLICATION_URL + payload.applicationName + FORM_URL + payload.id, updateObj)

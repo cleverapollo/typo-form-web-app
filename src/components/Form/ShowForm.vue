@@ -19,9 +19,7 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn color="info" @click=onBack>
-              Back
-            </v-btn>
+            <v-btn color="info" @click=onBack>Back</v-btn>
 
             <v-menu offset-y bottom left v-if="userIsAdmin">
               <v-btn icon slot="activator">
@@ -42,18 +40,22 @@
             </v-menu>
           </v-card-title>
 
-          <v-card-text>
-            <v-data-table
-              :items="menu"
-              hide-actions
-              hide-headers
-              class="elevation-1"
-            >
-              <template slot="items" slot-scope="props">
-                <td @click=navigate(props.item)>{{ props.item }}</td>
-              </template>
-            </v-data-table>
-          </v-card-text>
+          <form-view
+            :applicationName="applicationName"
+            :formId="id"
+            :submissionId="-1"
+            :isAdmin="userIsAdmin"
+            @change-view="changeView"
+            v-if="view === 'questions' && userIsAdmin"
+          ></form-view>
+
+          <submissions
+            :applicationName="applicationName"
+            :formId="id"
+            :isAdmin="userIsAdmin"
+            @change-view="changeView"
+            v-else
+          ></submissions>
         </div>
       </v-flex>
     </v-layout>
@@ -61,11 +63,19 @@
 </template>
 
 <script>
+  import FormView from './FormView'
+  import Submissions from './Submission/Submissions'
+
   export default {
+    components: {
+      Submissions,
+      FormView
+    },
     props: ['applicationName', 'id'],
     data () {
       return {
-        active: null
+        active: null,
+        view: 'questions'
       }
     },
     computed: {
@@ -86,13 +96,6 @@
       },
       form () {
         return this.$store.getters.loadedForm(this.applicationName, parseInt(this.id))
-      },
-      menu () {
-        if (this.userIsAdmin) {
-          return ['Questions', 'Responses']
-        } else {
-          return ['Responses']
-        }
       },
       loading () {
         return this.$store.getters.loading
@@ -115,8 +118,8 @@
         })
         this.$router.push('/' + this.applicationName + '/forms')
       },
-      navigate (item) {
-        this.$router.push('/' + this.applicationName + '/forms/show/' + this.id + '/' + item.toLowerCase())
+      changeView (view) {
+        this.view = view
       }
     },
     created: function () {

@@ -13,10 +13,10 @@
         </v-layout>
 
         <v-divider></v-divider>
+        <v-card-text>
 
-        <v-layout row wrap>
-          <v-flex xs12>
-            <v-card-text>
+          <v-layout row wrap>
+            <v-flex xs12>
               <v-text-field
                 name="name"
                 label="Name"
@@ -24,88 +24,43 @@
                 v-model="editedName"
                 required
               ></v-text-field>
-            </v-card-text>
-          </v-flex>
+            </v-flex>
+          </v-layout>
 
-          <v-flex xs12>
-            <v-card-text>
-              <v-select
-                :items="periodTypes"
-                item-value="id"
-                item-text="name"
-                v-model="periodType"
-                label="Period Type"
-              ></v-select>
-            </v-card-text>
-          </v-flex>
+          <v-layout row wrap pt-2>
+            <v-flex xs12>
+              <v-menu
+                lazy
+                :close-on-content-click="false"
+                v-model="startMenu"
+                transition="scale-transition"
+                offset-y
+                full-width
+                :nudge-right="40"
+              >
+                <v-text-field
+                  slot="activator"
+                  label="Period Start"
+                  v-model="periodStart"
+                  prepend-icon="event"
+                  readonly
+                ></v-text-field>
 
-          <v-spacer></v-spacer>
+                <v-date-picker v-model="periodStart" no-title scrollable actions>
+                  <template slot-scope="{ save, cancel }">
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
+                      <v-btn flat color="primary" @click="save">OK</v-btn>
+                    </v-card-actions>
+                  </template>
+                </v-date-picker>
+              </v-menu>
+            </v-flex>
+          </v-layout>
 
-          <v-flex xs12>
-            <v-menu
-              class="px-3"
-              lazy
-              :close-on-content-click="false"
-              v-model="startMenu"
-              transition="scale-transition"
-              offset-y
-              full-width
-              :nudge-right="40"
-            >
-              <v-text-field
-                slot="activator"
-                label="Period Start"
-                v-model="periodStart"
-                prepend-icon="event"
-                readonly
-              ></v-text-field>
-
-              <v-date-picker v-model="periodStart" no-title scrollable actions>
-                <template slot-scope="{ save, cancel }">
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                    <v-btn flat color="primary" @click="save">OK</v-btn>
-                  </v-card-actions>
-                </template>
-              </v-date-picker>
-            </v-menu>
-          </v-flex>
-
-          <v-spacer></v-spacer>
-
-          <v-flex xs12>
-            <v-menu
-              class="px-3"
-              lazy
-              :close-on-content-click="false"
-              v-model="endMenu"
-              transition="scale-transition"
-              offset-y
-              full-width
-              :nudge-right="40"
-              v-if="periodType === 2"
-            >
-              <v-text-field
-                slot="activator"
-                label="Period End"
-                v-model="periodEnd"
-                prepend-icon="event"
-                readonly
-              ></v-text-field>
-
-              <v-date-picker v-model="periodEnd" no-title scrollable actions>
-                <template slot-scope="{ save, cancel }">
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                    <v-btn flat color="primary" @click="save">OK</v-btn>
-                  </v-card-actions>
-                </template>
-              </v-date-picker>
-            </v-menu>
-
-            <v-card-text v-if="periodType === 1">
+          <v-layout row wrap pt-2>
+            <v-flex xs12>
               <v-select
                 :items="periodDurations"
                 item-value="id"
@@ -113,9 +68,47 @@
                 v-model="periodDuration"
                 label="Period Duration"
               ></v-select>
-            </v-card-text>
-          </v-flex>
-        </v-layout>
+            </v-flex>
+          </v-layout>
+
+          <v-layout row wrap pt-2>
+            <v-flex xs12 v-if="periodDuration === 5">
+              <v-menu
+                lazy
+                :close-on-content-click="false"
+                v-model="endMenu"
+                transition="scale-transition"
+                offset-y
+                full-width
+                :nudge-right="40"
+              >
+                <v-text-field
+                  slot="activator"
+                  label="Period End"
+                  v-model="periodEnd"
+                  prepend-icon="event"
+                  readonly
+                ></v-text-field>
+
+                <v-date-picker v-model="periodEnd" no-title scrollable actions>
+                  <template slot-scope="{ save, cancel }">
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
+                      <v-btn flat color="primary" @click="save">OK</v-btn>
+                    </v-card-actions>
+                  </template>
+                </v-date-picker>
+              </v-menu>
+            </v-flex>
+          </v-layout>
+
+          <v-layout row wrap pt-4>
+            <v-flex xs12>
+              <v-checkbox label="Show Progress" v-model="showProgress" light></v-checkbox>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
 
         <v-divider></v-divider>
 
@@ -152,12 +145,12 @@
         id: this.form.id,
         editForm: false,
         editedName: this.form.name,
-        periodType: this.period_end ? 2 : 1,
+        periodDuration: this.form.period_end ? 5 : 1,
         startMenu: false,
         periodStart: this.form.period_start ? this.form.period_start.substring(0, 10) : null,
         endMenu: false,
         periodEnd: this.form.period_end ? this.form.period_end.substring(0, 10) : null,
-        periodDuration: this.form.period_id || 1
+        showProgress: this.form.show_progress
       }
     },
     methods: {
@@ -173,8 +166,9 @@
           id: this.id,
           name: this.editedName,
           periodStart: this.periodStart,
-          periodEnd: this.periodType === 2 ? this.periodEnd : null,
-          periodId: this.periodType === 1 ? this.periodDuration : null
+          periodEnd: this.periodDuration === 5 ? this.periodEnd : null,
+          periodId: this.periodDuration !== 5 ? this.periodDuration : null,
+          showProgress: this.showProgress
         })
       },
       onCancel () {
@@ -196,7 +190,11 @@
         ]
       },
       periodDurations () {
-        return this.$store.getters.periods
+        var options = this.$store.getters.periods
+        options.push({
+          id: 5,
+          period: 'Custom'})
+        return options
       }
     }
   }

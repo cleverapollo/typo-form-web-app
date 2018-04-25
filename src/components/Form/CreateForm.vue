@@ -16,20 +16,11 @@
                     v-model="name"
                     required></v-text-field>
                 </v-flex>
+              </v-layout>
 
-                <v-flex xs12 class="pt-3">
-                  <v-select
-                    :items="periodTypes"
-                    item-value="id"
-                    item-text="name"
-                    v-model="periodType"
-                    label="Period Type"
-                  ></v-select>
-                </v-flex>
+              <v-layout row wrap pt-4>
 
-                <v-spacer></v-spacer>
-
-                <v-flex xs12 class="pt-3">
+                <v-flex xs3>
                   <v-menu
                     lazy
                     :close-on-content-click="false"
@@ -59,9 +50,17 @@
                   </v-menu>
                 </v-flex>
 
-                <v-spacer></v-spacer>
+                <v-flex offset-xs1 xs3>
+                  <v-select
+                    :items="periodDurations"
+                    item-value="id"
+                    item-text="period"
+                    v-model="periodDuration"
+                    label="Period Duration"
+                  ></v-select>
+                </v-flex>
 
-                <v-flex xs12 class="pt-3">
+                <v-flex offset-xs1 xs3 v-if="periodDuration === 5">
                   <v-menu
                     lazy
                     :close-on-content-click="false"
@@ -70,7 +69,6 @@
                     offset-y
                     full-width
                     :nudge-right="40"
-                    v-if="periodType === 2"
                   >
                     <v-text-field
                       slot="activator"
@@ -90,15 +88,12 @@
                       </template>
                     </v-date-picker>
                   </v-menu>
+                </v-flex>
+              </v-layout>
 
-                  <v-select
-                    :items="periodDurations"
-                    item-value="id"
-                    item-text="period"
-                    v-model="periodDuration"
-                    label="Period Duration"
-                    v-if="periodType === 1"
-                  ></v-select>
+              <v-layout pt-4>
+                <v-flex xs3>
+                  <v-checkbox label="Show Progress" v-model="showProgress" light></v-checkbox>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -124,12 +119,12 @@
     data () {
       return {
         name: '',
-        periodType: 1,
         startMenu: false,
         periodStart: null,
         endMenu: false,
         periodEnd: null,
-        periodDuration: 1
+        periodDuration: 1,
+        showProgress: true
       }
     },
     computed: {
@@ -151,14 +146,12 @@
       formIsValid () {
         return this.name !== ''
       },
-      periodTypes () {
-        return [
-          {id: 1, name: 'Set Period Duration'},
-          {id: 2, name: 'Set Period End'}
-        ]
-      },
       periodDurations () {
-        return this.$store.getters.periods
+        var options = this.$store.getters.periods
+        options.push({
+          id: 5,
+          period: 'Custom'})
+        return options
       }
     },
     watch: {
@@ -184,8 +177,9 @@
           applicationName: this.applicationName,
           name: this.name,
           periodStart: this.periodStart,
-          periodEnd: this.periodType === 2 ? this.periodEnd : null,
-          periodId: this.periodType === 1 ? this.periodDuration : null
+          periodEnd: this.periodDuration === 5 ? this.periodEnd : null,
+          periodId: this.periodDuration !== 5 ? this.periodDuration : null,
+          showProgress: this.showProgress
         }
 
         this.$store.dispatch('createForm', formData)
@@ -208,9 +202,5 @@
 
   .menu__content {
     min-width: unset !important;
-  }
-
-  .pt-3 {
-    padding-top: 16px;
   }
 </style>

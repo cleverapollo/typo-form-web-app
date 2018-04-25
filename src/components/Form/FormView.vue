@@ -1,5 +1,49 @@
 <template>
   <div>
+    <v-card-actions>
+      <app-create-section
+        :parentSectionId="-1"
+        :formId="formId"
+        v-if="submissionId === -1"
+      ></app-create-section>
+
+      <v-flex v-if="isAdmin">
+        <v-btn
+          color="primary"
+          @click="changeView('responses')"
+          v-if="submissionId === -1"
+        >
+          View Responses
+        </v-btn>
+
+        <v-btn
+          color="primary"
+          @click="changeView('questions')"
+          v-else
+        >
+          View Questions
+        </v-btn>
+      </v-flex>
+
+      <v-spacer></v-spacer>
+
+      <v-btn
+        color="error"
+        @click="deleteSubmission"
+        v-if="removable"
+      >
+        Delete
+      </v-btn>
+
+      <v-btn
+        color="primary"
+        @click="sendSubmission"
+        v-if="sendAble"
+      >
+        Send
+      </v-btn>
+    </v-card-actions>
+
     <v-card class="mb-3" v-if="submissionId > 0">
       <v-toolbar color="primary" dark>
         <v-toolbar-title>Submission Progress</v-toolbar-title>
@@ -11,37 +55,35 @@
     </v-card>
 
     <v-layout row wrap>
-      <v-flex xs3 d-flex v-if="submissionId > 0">
-        <form-tree :formId="formId" :section="section" :list="list" @section-clicked="sectionClicked"></form-tree>
+      <v-flex xs3>
+        <form-tree
+          :formId="formId"
+          :section="section"
+          :list="list"
+          @section-clicked="sectionClicked"
+        ></form-tree>
       </v-flex>
 
-      <v-flex d-flex>
-        <sections :section="section" :formId="formId" :submissionId="submissionId" v-if="section"></sections>
+      <v-flex>
+        <sections
+          :section="section"
+          :formId="formId"
+          :submissionId="submissionId"
+          v-if="section"
+        ></sections>
       </v-flex>
     </v-layout>
-
-    <v-card-actions>
-      <v-btn color="info" @click=onBack>Back</v-btn>
-
-      <v-spacer></v-spacer>
-
-      <app-create-section :parentSectionId="-1" :formId="formId" v-if="submissionId === -1"></app-create-section>
-      <v-btn color="error" @click=deleteSubmission v-if="removable">Delete</v-btn>
-      <v-btn color="primary" @click=sendSubmission v-if="sendAble">Send</v-btn>
-    </v-card-actions>
   </div>
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
   import * as _ from 'lodash'
   import sections from './Section/Sections'
   import FormTree from './FormTree'
 
   export default {
-    props: ['applicationName', 'formId', 'submissionId'],
+    props: ['applicationName', 'formId', 'submissionId', 'isAdmin'],
     components: {
-      draggable,
       sections,
       FormTree
     },
@@ -116,9 +158,6 @@
       }
     },
     methods: {
-      onBack () {
-        this.$router.push('/' + this.applicationName + '/forms/show/' + this.formId)
-      },
       checkEnd: function (evt) {
         if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
           return
@@ -197,6 +236,9 @@
       },
       sectionClicked: function (item) {
         this.section = item
+      },
+      changeView (view) {
+        this.$emit('change-view', view)
       }
     }
   }
