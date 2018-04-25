@@ -27,6 +27,8 @@ import Forms from '@/components/Form/Forms'
 import CreateForm from '@/components/Form/CreateForm'
 import ShowForm from '@/components/Form/ShowForm'
 
+import { store } from '@/store'
+
 Vue.use(Router)
 
 const auth = {
@@ -180,19 +182,23 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   document.title = to.params['applicationName'] || 'Informed 365'
-  console.log(to.path)
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    console.log('requiresAuth')
     if (!auth.loggedIn()) {
       next({
         path: '/signin',
         query: { redirect: to.fullPath }
       })
-    } else {
-      next()
+      return
     }
+  }
+  if (to.matched.some(record => record.path.includes(':applicationName'))) {
+    store.dispatch('loadApplication', to.params['applicationName'])
+      .then(() => next())
+      .catch(() => next({
+        path: '/applications'
+      }))
   } else {
     next()
   }

@@ -3,7 +3,7 @@
     <v-layout row wrap class="mb-2">
       <v-flex xs12 style="position: relative">
         <v-btn
-          absolute
+          fixed
           bottom
           right
           dark

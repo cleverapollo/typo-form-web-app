@@ -44,21 +44,24 @@ Vue.component('app-create-section', CreateSection)
 Vue.component('app-create-question', CreateQuestion)
 
 /* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  store,
-  components: { App },
-  template: '<App/>',
-  beforeCreate () {
-    if (localStorage.getItem('token')) {
-      window.axios.defaults.headers.common['api_token'] = localStorage.getItem('token')
-      this.$store.dispatch('autoSignIn')
+function createApp () {
+  new Vue({
+    el: '#app',
+    router,
+    store,
+    components: { App },
+    template: '<App/>',
+    // Attach the Vue instance to the window,
+    // so it's available globally.
+    created: function () {
+      window.Vue = this
     }
-  },
-  // Attach the Vue instance to the window,
-  // so it's available globally.
-  created: function () {
-    window.Vue = this
-  }
-})
+  })
+}
+
+if (localStorage.getItem('token')) {
+  window.axios.defaults.headers.common['api_token'] = localStorage.getItem('token')
+  store.dispatch('autoSignIn').finally(() => createApp())
+} else {
+  createApp()
+}
