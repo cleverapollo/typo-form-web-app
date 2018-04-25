@@ -60,6 +60,7 @@
           :formId="formId"
           :section="section"
           :list="list"
+          :view="view"
           @section-clicked="sectionClicked"
         ></form-tree>
       </v-flex>
@@ -82,7 +83,7 @@
   import FormTree from './FormTree'
 
   export default {
-    props: ['applicationName', 'formId', 'submissionId', 'isAdmin'],
+    props: ['applicationName', 'formId', 'submissionId', 'isAdmin', 'view'],
     components: {
       sections,
       FormTree

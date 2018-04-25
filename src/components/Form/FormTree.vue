@@ -3,7 +3,7 @@
     <v-expansion-panel-content
       v-for="item in list"
       :key="item.id"
-      :hide-actions="repeatable(item)"
+      :hide-actions="hasChildren(item)"
     >
       <div
         slot="header"
@@ -13,12 +13,13 @@
         {{ item.name }}
       </div>
 
-      <v-card v-if="!repeatable(item)">
+      <v-card v-if="!hasChildren(item)">
         <v-card-text>
           <form-tree
             :formId="formId"
             :section="section"
             :list="children(item)"
+            :view="view"
             @section-clicked="sectionClicked"
           ></form-tree>
         </v-card-text>
@@ -30,7 +31,7 @@
 <script>
     export default {
       name: 'form-tree',
-      props: ['formId', 'list', 'section'],
+      props: ['formId', 'list', 'section', 'view'],
       methods: {
         children (item) {
           const children = this.$store.getters.loadedChildren(this.formId, item.id)
@@ -39,13 +40,13 @@
             return false
           })
         },
-        repeatable (item) {
+        hasChildren (item) {
           const items = this.children(item)
           return (items.length === 0)
         },
         clickSection (item) {
           const children = this.children(item)
-          if (children.length === 0) {
+          if (this.view === 'questions' || children.length === 0) {
             this.$emit('section-clicked', item)
           }
         },

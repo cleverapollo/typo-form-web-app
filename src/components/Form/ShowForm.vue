@@ -45,6 +45,7 @@
             :formId="id"
             :submissionId="-1"
             :isAdmin="userIsAdmin"
+            :view="view"
             @change-view="changeView"
             v-if="view === 'questions' && userIsAdmin"
           ></form-view>

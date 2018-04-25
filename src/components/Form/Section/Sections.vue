@@ -110,8 +110,31 @@
           :class="(isSection(element)  ? 'section' : 'question') + element.id"
           class="pb-2 item"
         >
-          <questions :question="element" :formId="formId" :sectionId="section.id" :index="index + 1" v-if="submissionId === -1"></questions>
-          <responses :question="element" :formId="formId" :sectionId="section.id" :index="index + 1" :submissionId="submissionId" v-else></responses>
+          <v-flex v-if="submissionId === -1">
+            <sections
+              :section="element"
+              :formId="formId"
+              :submissionId="submissionId"
+              v-if="element.questions"
+            ></sections>
+
+            <questions
+              :question="element"
+              :formId="formId"
+              :sectionId="section.id"
+              :index="index + 1"
+              v-if="element.answers"
+            ></questions>
+          </v-flex>
+
+          <responses
+            :question="element"
+            :formId="formId"
+            :sectionId="section.id"
+            :index="index + 1"
+            :submissionId="submissionId"
+            v-else
+          ></responses>
         </div>
 
         <div slot="footer" v-if="isSectionEmpty">
