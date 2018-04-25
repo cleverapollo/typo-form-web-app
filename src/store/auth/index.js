@@ -76,20 +76,24 @@ export default {
     autoSignIn ({commit}) {
       commit('setLoading', true)
       commit('clearError')
-      window.axios.get(USER_URL)
-        .then(
-          response => {
-            commit('setLoading', false)
-            commit('setUser', response['data']['user'])
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            commit('setUser', null)
-            console.log(error.response.data)
-          }
-        )
+      return new Promise((resolve, reject) => {
+        window.axios.get(USER_URL)
+          .then(
+            response => {
+              commit('setLoading', false)
+              commit('setUser', response['data']['user'])
+              resolve(response)
+            }
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              commit('setUser', null)
+              reject(error)
+              console.log(error.response.data)
+            }
+          )
+      })
     },
     logout ({commit}) {
       commit('clearError')

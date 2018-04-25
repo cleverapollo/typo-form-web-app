@@ -96,24 +96,26 @@ export default {
       return this.$route.params['applicationName'] || 'Informed 365'
     }
   },
-  watch: {
-    user (value) {
-      if (value !== null && value !== undefined) {
-        this.menuItems = [
-          {icon: 'account_circle', title: 'My account', link: '/profile'},
-          {icon: 'apps', title: 'Applications', link: '/applications'}
-        ]
-        this.$store.dispatch('loadQuestionTypes')
-        this.$store.dispatch('loadValidationTypes')
-        this.$store.dispatch('loadPeriods')
-        this.$store.dispatch('loadStatuses')
-        this.$store.dispatch('loadRoles')
-      } else {
-        this.menuItems = [
-          {icon: 'face', title: 'Sign up', link: '/signup'},
-          {icon: 'lock_open', title: 'Sign in', link: '/signin'}
-        ]
-      }
+  created () {
+    if (this.userIsAuthenticated) {
+      this.$store.dispatch('loadQuestionTypes')
+      this.$store.dispatch('loadValidationTypes')
+      this.$store.dispatch('loadPeriods')
+      this.$store.dispatch('loadStatuses')
+      this.$store.dispatch('loadRoles')
+    }
+  },
+  mounted () {
+    if (this.userIsAuthenticated) {
+      this.menuItems = [
+        {icon: 'account_circle', title: 'My account', link: '/profile'},
+        {icon: 'apps', title: 'Applications', link: '/applications'}
+      ]
+    } else {
+      this.menuItems = [
+        {icon: 'face', title: 'Sign up', link: '/signup'},
+        {icon: 'lock_open', title: 'Sign in', link: '/signin'}
+      ]
     }
   },
   methods: {

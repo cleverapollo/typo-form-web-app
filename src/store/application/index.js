@@ -37,19 +37,23 @@ export default {
   actions: {
     loadApplication ({commit}, applicationName) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + applicationName)
-        .then(
-          response => {
-            commit('setLoading', false)
-            commit('setLoadedApplication', response['data']['application'])
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+      return new Promise((resolve, reject) => {
+        window.axios.get(APPLICATION_URL + applicationName)
+          .then(
+            response => {
+              commit('setLoading', false)
+              commit('setLoadedApplication', response['data']['application'])
+              resolve(response)
+            }
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              reject(error)
+              console.log(error)
+            }
+          )
+      })
     },
     loadApplications ({commit}) {
       commit('setLoading', true)
