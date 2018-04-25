@@ -1,34 +1,99 @@
 <template>
   <div>
     <v-card-actions>
-      <app-create-section :parentSectionId="-1" :formId="formId" v-if="submissionId === -1"></app-create-section>
-      <v-btn color="error" @click=deleteSubmission v-if="removable">Delete</v-btn>
-      <v-btn color="primary" @click=sendSubmission v-if="sendAble">Send</v-btn>
-      <v-spacer></v-spacer>
-      <v-btn color="info" @click=onBack>Back</v-btn>
-    </v-card-actions>
-    <v-layout row wrap>
-      <v-flex xs3>
-        <form-tree :formId="formId" :list="list" @section-clicked="sectionClicked"></form-tree>
+      <app-create-section
+        :parentSectionId="-1"
+        :formId="formId"
+        v-if="submissionId === -1"
+      ></app-create-section>
+
+      <v-flex v-if="isAdmin">
+        <v-btn
+          color="primary"
+          @click="changeView('responses')"
+          v-if="submissionId === -1"
+        >
+          View Responses
+        </v-btn>
+
+        <v-btn
+          color="primary"
+          @click="changeView('questions')"
+          v-else
+        >
+          View Questions
+        </v-btn>
       </v-flex>
 
-      <v-flex d-flex>
-        <sections :section="section" :formId="formId" :submissionId="submissionId" v-if="section"></sections>
+      <v-spacer></v-spacer>
+
+      <v-btn
+        color="error"
+        @click="deleteSubmission"
+        v-if="removable"
+      >
+        Delete
+      </v-btn>
+
+      <v-btn
+        color="primary"
+        @click="sendSubmission"
+        v-if="sendAble"
+      >
+        Send
+      </v-btn>
+    </v-card-actions>
+
+    <v-card class="mb-3" v-if="submissionId > 0">
+      <v-layout row wrap class="pa-3">
+        <v-toolbar-title  class="d-flex align-center">Submission Progress</v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        <v-progress-circular
+          xs4
+          :size="100"
+          :width="15"
+          :rotate="-90"
+          :value="progress"
+          color="primary"
+        >
+          {{ progress.toFixed(2) }}
+        </v-progress-circular>
+      </v-layout>
+    </v-card>
+
+    <v-layout row wrap>
+      <v-flex xs3>
+        <form-tree
+          :formId="formId"
+          :section="section"
+          :list="list"
+          :view="view"
+          @section-clicked="sectionClicked"
+        ></form-tree>
+      </v-flex>
+
+      <v-flex>
+        <sections
+          :section="section"
+          :formId="formId"
+          :submissionId="submissionId"
+          v-if="section"
+        ></sections>
       </v-flex>
     </v-layout>
   </div>
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
   import * as _ from 'lodash'
   import sections from './Section/Sections'
   import FormTree from './FormTree'
 
   export default {
-    props: ['applicationName', 'formId', 'submissionId'],
+    props: ['applicationName', 'formId', 'submissionId', 'isAdmin', 'view'],
     components: {
-      draggable,
       sections,
       FormTree
     },
@@ -63,7 +128,7 @@
           }
         }
 
-        return true
+        return (this.progress === 100)
       },
       removable () {
         if (this.submissionId <= 0) {
@@ -83,12 +148,26 @@
       },
       submission () {
         return this.$store.getters.loadedSubmission(this.formId, this.submissionId)
+      },
+      progress () {
+        if (this.submissionId > 0) {
+          const sections = this.$store.getters.loadedSections(this.formId)
+          let questionCount = 0
+          let responseCount = 0
+          sections.forEach(function (section) {
+            let questions = this.$store.getters.loadedQuestions(this.formId, section.id).filter(question => question.mandatory)
+            questionCount += questions.length
+            questions.forEach(function (question) {
+              let responses = this.$store.getters.loadedResponses(this.formId, this.submissionId).filter(response => response.question_id === question.id)
+              responseCount += responses.length
+            }, this)
+          }, this)
+
+          return responseCount * 100 / questionCount
+        }
       }
     },
     methods: {
-      onBack () {
-        this.$router.push('/' + this.applicationName + '/forms/show/' + this.formId)
-      },
       checkEnd: function (evt) {
         if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
           return
@@ -167,6 +246,9 @@
       },
       sectionClicked: function (item) {
         this.section = item
+      },
+      changeView (view) {
+        this.$emit('change-view', view)
       }
     }
   }

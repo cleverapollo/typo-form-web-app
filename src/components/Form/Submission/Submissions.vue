@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs3 d-flex>
+    <v-flex xs3>
       <v-card>
         <v-toolbar color="primary" dark>
           <v-toolbar-title>Submission List</v-toolbar-title>
@@ -9,11 +9,19 @@
         <v-card-text>
           <v-layout row wrap>
             <template v-for="(submission, index) in submissions">
-              <v-flex xs12>
-                <v-card color="blue-grey darken-2" class="white--text" style="cursor: pointer;">
+              <v-flex xs12 style="margin-bottom: 16px">
+                <v-card
+                  class="white--text"
+                  :class="active(submission.id)"
+                  color="blue-grey darken-2"
+                  style="cursor: pointer;"
+                >
                   <div @click="onSubmission(submission.id)">
                     <v-card-title primary-title class="flex-column">
-                      <v-flex xs-12 class="headline">{{getSubmissionName(submission)}}</v-flex>
+                      <v-flex xs-12 class="headline">
+                        {{getSubmissionName(submission)}}
+                      </v-flex>
+
                       <div>
                         <span>Start: {{getPeriodStart(submission)}}</span>
                         <br/>
@@ -23,7 +31,11 @@
 
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <edit-submission :submission="submission" :formId="formId" v-if="!userIsAdmin"></edit-submission>
+                      <edit-submission
+                        :submission="submission"
+                        :formId="formId"
+                        v-if="!isAdmin"
+                      ></edit-submission>
                     </v-card-actions>
                   </div>
                 </v-card>
@@ -33,13 +45,24 @@
             </template>
           </v-layout>
 
-          <create-submission style="margin: 0 auto" :applicationName="applicationName" :formId="formId" v-if="!userIsAdmin"></create-submission>
+          <create-submission
+            :applicationName="applicationName"
+            :formId="formId"
+            v-if="isAdmin"
+            style="margin: 0 auto"
+          ></create-submission>
         </v-card-text>
       </v-card>
     </v-flex>
 
-    <v-flex xs9 d-flex>
-      <show-submission :applicationName="applicationName" :formId="formId" :submissionId="submissionId"></show-submission>
+    <v-flex xs9>
+      <show-submission
+        :applicationName="applicationName"
+        :formId="formId"
+        :submissionId="submissionId"
+        :isAdmin="isAdmin"
+        @change-view="changeView"
+      ></show-submission>
     </v-flex>
   </v-layout>
 </template>
@@ -50,7 +73,7 @@
   import EditSubmission from './EditSubmission'
 
   export default {
-    props: ['applicationName', 'formId'],
+    props: ['applicationName', 'formId', 'isAdmin'],
     components: {
       ShowSubmission,
       CreateSubmission,
@@ -70,18 +93,6 @@
       },
       submissionTeams () {
         return this.$store.getters.loadedSubmissionTeams(this.applicationName, parseInt(this.formId))
-      },
-      application () {
-        return this.$store.getters.loadedApplication(this.applicationName)
-      },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.role_id) === 'Admin'
       }
     },
     watch: {
@@ -113,7 +124,19 @@
       },
       getPeriodEnd (submission) {
         return submission.period_end ? submission.period_end.substring(0, 10) : ''
+      },
+      active (submissionId) {
+        return (this.submissionId === submissionId) ? 'active' : ''
+      },
+      changeView (view) {
+        this.$emit('change-view', view)
       }
     }
   }
 </script>
+
+<style scoped>
+  .active {
+    background-color: #1976D2 !important;
+  }
+</style>

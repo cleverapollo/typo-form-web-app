@@ -26,8 +26,6 @@ import ShowApplication from '@/components/Application/ShowApplication'
 import Forms from '@/components/Form/Forms'
 import CreateForm from '@/components/Form/CreateForm'
 import ShowForm from '@/components/Form/ShowForm'
-import ShowQuestion from '@/components/Form/Question/ShowQuestion'
-import ShowResponse from '@/components/Form/Response/ShowResponse'
 
 Vue.use(Router)
 
@@ -173,20 +171,6 @@ const router = new Router({
       path: '/:applicationName/forms/show/:id',
       name: 'ShowForm',
       component: ShowForm,
-      props: true,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/:applicationName/forms/show/:id/questions',
-      name: 'ShowQuestion',
-      component: ShowQuestion,
-      props: true,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/:applicationName/forms/show/:id/responses',
-      name: 'ShowResponses',
-      component: ShowResponse,
       props: true,
       meta: { requiresAuth: true }
     }

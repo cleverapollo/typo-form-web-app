@@ -3,13 +3,25 @@
     <v-expansion-panel-content
       v-for="item in list"
       :key="item.id"
-      :hide-actions="repeatable(item)"
+      :hide-actions="hasChildren(item)"
     >
-      <div slot="header" @click="clickSection(item)">{{ item.name }}</div>
+      <div
+        slot="header"
+        @click="clickSection(item)"
+        :class="active(item)"
+      >
+        {{ item.name }}
+      </div>
 
-      <v-card v-if="!repeatable(item)">
+      <v-card v-if="!hasChildren(item)">
         <v-card-text>
-          <form-tree :formId="formId" :list="children(item)" @section-clicked="sectionClicked"></form-tree>
+          <form-tree
+            :formId="formId"
+            :section="section"
+            :list="children(item)"
+            :view="view"
+            @section-clicked="sectionClicked"
+          ></form-tree>
         </v-card-text>
       </v-card>
     </v-expansion-panel-content>
@@ -19,7 +31,7 @@
 <script>
     export default {
       name: 'form-tree',
-      props: ['formId', 'list'],
+      props: ['formId', 'list', 'section', 'view'],
       methods: {
         children (item) {
           const children = this.$store.getters.loadedChildren(this.formId, item.id)
@@ -28,18 +40,21 @@
             return false
           })
         },
-        repeatable (item) {
+        hasChildren (item) {
           const items = this.children(item)
           return (items.length === 0)
         },
         clickSection (item) {
           const children = this.children(item)
-          if (children.length === 0) {
+          if (this.view === 'questions' || children.length === 0) {
             this.$emit('section-clicked', item)
           }
         },
         sectionClicked (item) {
           this.$emit('section-clicked', item)
+        },
+        active (item) {
+          return (this.section && item.id === this.section.id) ? 'active' : ''
         }
       }
     }
@@ -48,5 +63,13 @@
 <style scoped>
   .list--group .list__tile {
     padding-left: 15px !important;
+  }
+
+  .expansion-panel__header {
+    border-bottom: 1px solid rgba(0, 0, 0, .12);
+  }
+
+  .expansion-panel__header .active {
+    color: #1976D2 !important;
   }
 </style>
