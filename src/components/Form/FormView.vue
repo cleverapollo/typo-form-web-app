@@ -45,13 +45,22 @@
     </v-card-actions>
 
     <v-card class="mb-3" v-if="submissionId > 0">
-      <v-toolbar color="primary" dark>
-        <v-toolbar-title>Submission Progress</v-toolbar-title>
-      </v-toolbar>
+      <v-layout row wrap class="pa-3">
+        <v-toolbar-title  class="d-flex align-center">Submission Progress</v-toolbar-title>
 
-      <v-card-text>
-        <v-progress-linear v-model="progress"></v-progress-linear>
-      </v-card-text>
+        <v-spacer></v-spacer>
+
+        <v-progress-circular
+          xs4
+          :size="100"
+          :width="15"
+          :rotate="-90"
+          :value="progress"
+          color="primary"
+        >
+          {{ progress.toFixed(2) }}
+        </v-progress-circular>
+      </v-layout>
     </v-card>
 
     <v-layout row wrap>

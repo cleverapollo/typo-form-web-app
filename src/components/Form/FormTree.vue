@@ -65,6 +65,10 @@
     padding-left: 15px !important;
   }
 
+  .expansion-panel__header {
+    border-bottom: 1px solid rgba(0, 0, 0, .12);
+  }
+
   .expansion-panel__header .active {
     color: #1976D2 !important;
   }
