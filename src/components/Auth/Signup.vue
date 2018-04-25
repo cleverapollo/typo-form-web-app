@@ -124,12 +124,15 @@
     },
     watch: {
       user (value) {
-        if (value !== null && value !== undefined) {
-          this.$router.push('/')
-        }
+        this.onValidate(value)
       }
     },
     methods: {
+      onValidate (value) {
+        if (value !== null && value !== undefined) {
+          this.$router.push('/')
+        }
+      },
       onSignup () {
         this.$store.dispatch('signUserUp', {first_name: this.firstname, last_name: this.lastname, email: this.email, password: this.password})
       },
@@ -139,6 +142,7 @@
     },
     created: function () {
       this.onDismissed()
+      this.onValidate(this.user)
     }
   }
 </script>

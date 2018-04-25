@@ -31,13 +31,6 @@ import { store } from '@/store'
 
 Vue.use(Router)
 
-const auth = {
-  loggedIn () {
-    const expireDate = localStorage.getItem('expire_date')
-    return expireDate !== null && Date.now() - expireDate < 86400000
-  }
-}
-
 const router = new Router({
   routes: [
     {
@@ -85,8 +78,7 @@ const router = new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home,
-      meta: { requiresAuth: true }
+      component: Home
     },
     {
       path: '/applications',
@@ -176,29 +168,26 @@ const router = new Router({
       props: true,
       meta: { requiresAuth: true }
     }
+    /* {
+      path: '*',
+      component: { template: '<div>404 page</div>' }
+    } */
   ],
   mode: 'history'
 })
 
 router.beforeEach((to, from, next) => {
   document.title = to.params['applicationName'] || 'Informed 365'
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    // this route requires auth, check if logged in
-    // if not, redirect to login page.
-    if (!auth.loggedIn()) {
-      next({
-        path: '/signin',
-        query: { redirect: to.fullPath }
-      })
-      return
-    }
+  if (to.matched.some(record => record.meta.requiresAuth) && store.getters.user === null) {
+    next({
+      path: '/signin',
+      query: { redirect: to.fullPath }
+    })
   }
   if (to.matched.some(record => record.path.includes(':applicationName'))) {
     store.dispatch('loadApplication', to.params['applicationName'])
       .then(() => next())
-      .catch(() => next({
-        path: '/applications'
-      }))
+      .catch(() => next({ path: '/' }))
   } else {
     next()
   }

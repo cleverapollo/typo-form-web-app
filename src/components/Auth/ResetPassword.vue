@@ -64,14 +64,12 @@
         return this.$store.getters.loading
       }
     },
-    watch: {
-      user (value) {
+    methods: {
+      onValidate (value) {
         if (value !== null && value !== undefined) {
           this.$router.push('/')
         }
-      }
-    },
-    methods: {
+      },
       onResetPassword () {
         this.$store.dispatch('resetPassword', {email: this.email})
       },
@@ -81,6 +79,7 @@
     },
     created: function () {
       this.onDismissed()
+      this.onValidate(this.user)
     }
   }
 </script>

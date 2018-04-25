@@ -36,10 +36,32 @@
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
-        <router-link to="/" tag="span" style="cursor: pointer">{{ title }}</router-link>
+        <router-link :to="titleLink" tag="span" style="cursor: pointer">{{ title }}</router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <template v-if="userIsAuthenticated">
+        <v-menu offset-y left>
+          <v-btn
+            icon
+            slot="activator">
+            <v-avatar size="32px" tile>
+              <v-icon>apps</v-icon>
+            </v-avatar>
+          </v-btn>
+          <v-list>
+            <template v-for="(application, index) in applications">
+              <v-list-tile
+                avatar
+                ripple
+                :key="application.id"
+                :to="'/'+application.name">
+                <v-list-tile-content>
+                  {{application.name}}
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
+          </v-list>
+        </v-menu>
         <v-btn icon>
           <v-icon>notifications</v-icon>
         </v-btn>
@@ -78,11 +100,7 @@
 export default {
   data () {
     return {
-      drawer: null,
-      menuItems: [
-        {icon: 'face', title: 'Sign up', link: '/signup'},
-        {icon: 'lock_open', title: 'Sign in', link: '/signin'}
-      ]
+      drawer: null
     }
   },
   computed: {
@@ -94,6 +112,28 @@ export default {
     },
     title () {
       return this.$route.params['applicationName'] || 'Informed 365'
+    },
+    titleLink () {
+      if (this.$route.params['applicationName']) {
+        return '/' + this.$route.params['applicationName']
+      }
+      return '/'
+    },
+    applications () {
+      return this.$store.getters.loadedApplications
+    },
+    menuItems () {
+      if (this.userIsAuthenticated) {
+        return [
+          {icon: 'account_circle', title: 'My account', link: '/profile'},
+          {icon: 'apps', title: 'Applications', link: '/applications'}
+        ]
+      } else {
+        return [
+          {icon: 'face', title: 'Sign up', link: '/signup'},
+          {icon: 'lock_open', title: 'Sign in', link: '/signin'}
+        ]
+      }
     }
   },
   created () {
@@ -103,19 +143,7 @@ export default {
       this.$store.dispatch('loadPeriods')
       this.$store.dispatch('loadStatuses')
       this.$store.dispatch('loadRoles')
-    }
-  },
-  mounted () {
-    if (this.userIsAuthenticated) {
-      this.menuItems = [
-        {icon: 'account_circle', title: 'My account', link: '/profile'},
-        {icon: 'apps', title: 'Applications', link: '/applications'}
-      ]
-    } else {
-      this.menuItems = [
-        {icon: 'face', title: 'Sign up', link: '/signup'},
-        {icon: 'lock_open', title: 'Sign in', link: '/signin'}
-      ]
+      this.$store.dispatch('loadApplications')
     }
   },
   methods: {

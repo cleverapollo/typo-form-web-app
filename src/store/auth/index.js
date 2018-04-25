@@ -28,7 +28,6 @@ export default {
                 commit('setLoading', false)
                 const user = response['data']['user']
                 localStorage.setItem('token', user['api_token'])
-                localStorage.setItem('expire_date', Date.now())
                 window.axios.defaults.headers.common['api_token'] = user['api_token']
                 commit('setUser', user)
               }
@@ -59,7 +58,6 @@ export default {
             commit('setLoading', false)
             const user = response['data']['user']
             localStorage.setItem('token', user['api_token'])
-            localStorage.setItem('expire_date', Date.now())
             window.axios.defaults.headers.common['api_token'] = user['api_token']
             commit('setUser', user)
           }
@@ -100,7 +98,6 @@ export default {
       window.axios.post(SIGNOUT_URL)
       commit('setUser', null)
       localStorage.removeItem('token')
-      localStorage.removeItem('expire_date')
     },
     updateAuth ({commit}, payload) {
       commit('setLoading', true)
@@ -201,7 +198,6 @@ export default {
       window.axios.delete(USER_URL)
       commit('setUser', null)
       localStorage.removeItem('token')
-      localStorage.removeItem('expire_date')
     }
   },
   getters: {

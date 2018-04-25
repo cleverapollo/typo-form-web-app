@@ -1,6 +1,16 @@
 <template>
   <v-container>
-    <v-layout row wrap class="mb-2">
+    <v-layout row wrap v-if="loading">
+      <v-flex xs12 class="text-xs-center">
+        <v-progress-circular
+          indeterminate
+          class="primary--text"
+          :width="7"
+          :size="70"
+        ></v-progress-circular>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap class="mb-2" v-else>
       <v-flex xs12>
         {{messageString}}
       </v-flex>
@@ -22,6 +32,9 @@
       },
       user () {
         return this.$store.getters.user
+      },
+      loading () {
+        return this.$store.getters.loading
       }
     },
     watch: {
@@ -29,12 +42,12 @@
         if (value) {
           this.messageString = value.message
         }
-      },
-      user (value) {
-        if (this.token.trim() !== '' && value !== null && value !== undefined) {
-          this.$store.dispatch('acceptJoin', {type: this.type, token: this.token})
-          this.messageString = 'Thanks to join the ' + this.type
-        }
+      }
+    },
+    created: function () {
+      if (this.token.trim() !== '' && this.user !== null && this.user !== undefined) {
+        this.$store.dispatch('acceptJoin', {type: this.type, token: this.token})
+        this.messageString = 'Thanks to join the ' + this.type
       }
     }
   }

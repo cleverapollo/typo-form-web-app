@@ -89,16 +89,25 @@
     },
     watch: {
       user (value) {
+        this.onValidate(value)
+      }
+    },
+    methods: {
+      onValidate (value) {
         if (value !== null && value !== undefined) {
+          this.$store.dispatch('loadQuestionTypes')
+          this.$store.dispatch('loadValidationTypes')
+          this.$store.dispatch('loadPeriods')
+          this.$store.dispatch('loadStatuses')
+          this.$store.dispatch('loadRoles')
+          this.$store.dispatch('loadApplications')
           if (this.$route.query.redirect) {
             this.$router.push(this.$route.query.redirect)
           } else {
             this.$router.push('/')
           }
         }
-      }
-    },
-    methods: {
+      },
       onSignin () {
         this.$store.dispatch('signUserIn', {email: this.email, password: this.password})
       },
@@ -108,6 +117,7 @@
     },
     created: function () {
       this.onDismissed()
+      this.onValidate(this.user)
     }
   }
 </script>

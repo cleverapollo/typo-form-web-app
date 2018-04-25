@@ -138,15 +138,6 @@
         return this.user !== null && this.user !== undefined
       }
     },
-    watch: {
-      user (value) {
-        if (value !== null && value !== undefined) {
-          this.firstname = value.first_name
-          this.lastname = value.last_name
-          this.email = value.email
-        }
-      }
-    },
     methods: {
       onUpdateUser () {
         if (this.firstname.trim() === '' ||

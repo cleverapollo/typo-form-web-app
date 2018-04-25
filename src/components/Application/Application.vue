@@ -9,7 +9,6 @@
 </template>
 
 <script>
-  import * as _ from 'lodash'
   export default {
     name: 'application', // todo: redirect to first page if getting application fails
     props: {
@@ -17,31 +16,17 @@
         type: String
       }
     },
-    data () {
-      return {
-        exist: null
-      }
-    },
     methods: {
-      checkExist () { // check if application with applicationName exists on DB
-        return true
-      },
       getRole (roleId) {
-        if (_.isArray(this.roles)) {
-          const role = this.roles.find((role) => {
-            return role.id === roleId
-          })
-          return role ? role.name : 'undefined'
-        }
-        return 'undefined'
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
       }
     },
     computed: {
       roles () {
         return this.$store.getters.roles
-      },
-      userIsSuper () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined && this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       application () {
         return this.$store.getters.loadedApplication(this.applicationName)
@@ -56,16 +41,10 @@
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       }
     },
-    created: function () {
-      this.$store.dispatch('loadApplication', this.applicationName)
-    },
-    mounted () {
-      console.log('applicationName', this.applicationName)
-      console.log('$route', this.$route)
+    mounted: function () {
+      if (this.application.application_role_id) {
+        this.$router.push('/' + this.applicationName + '/show')
+      }
     }
   }
 </script>
-
-<style scoped>
-
-</style>
