@@ -232,7 +232,7 @@
     computed: {
       answers () {
         return _.sortBy(this.question.answers, element => {
-          return 1000000 * (1 - element.parameter) + element.order
+          return 1000000 * (element.parameter ? 0 : 1) + element.order
         })
       },
       questionTypes () {

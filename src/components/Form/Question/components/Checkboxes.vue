@@ -169,7 +169,7 @@
     computed: {
       list: {
         get () {
-          return this.answers.sort((a, b) => { return a.order > b.order })
+          return this.answers
         },
         set (value) {
           // TODO: Drggable components
