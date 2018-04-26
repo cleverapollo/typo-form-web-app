@@ -350,9 +350,10 @@
 
         this.questionTypeString = value
         this.updateQuestion()
+        this.removeValidation()
       },
       updateQuestion () {
-        if (this.editedName.trim() === '' || this.editedDescription.trim() === '') {
+        if (this.editedName.trim() === '') {
           return
         }
         this.$store.dispatch('updateQuestion',
@@ -365,7 +366,6 @@
             questionTypeId: this.questionTypeId,
             mandatory: this.mandatory
           })
-        this.removeValidation()
       },
       duplicateQuestion () {
         this.$store.dispatch('duplicateQuestion', {
@@ -419,6 +419,9 @@
         })
       },
       removeValidation () {
+        if (!this.validations.length) {
+          return
+        }
         const validationId = this.validations[0].id
         this.$store.dispatch('deleteValidation', {
           id: validationId,

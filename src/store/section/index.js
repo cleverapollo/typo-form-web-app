@@ -271,6 +271,15 @@ export default {
       if (payload.parentSectionId !== -1) {
         updateObj.parent_section_id = payload.parentSectionId
       }
+      if (payload.repeatable) {
+        updateObj.repeatable = payload.repeatable
+      }
+      if (payload.min_rows) {
+        updateObj.min_rows = payload.min_rows
+      }
+      if (payload.max_rows) {
+        updateObj.max_rows = payload.max_rows
+      }
       window.axios.put(FORM_URL + payload.formId + SECTION_URL + payload.id, updateObj)
         .then(
           response => {
