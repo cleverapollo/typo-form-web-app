@@ -97,11 +97,6 @@
       sections,
       FormTree
     },
-    data () {
-      return {
-        section: null
-      }
-    },
     computed: {
       list: {
         get () {
@@ -165,6 +160,31 @@
 
           return responseCount * 100 / questionCount
         }
+      },
+      section () {
+        let rtSection = this.$store.getters.loadSelectedSection()
+        if (!rtSection) {
+          if (this.view === 'questions') {
+            const sections = this.$store.getters.loadedChildren(this.formId, null)
+            if (sections.length === 0) {
+              rtSection = null
+            } else {
+              rtSection = sections[0]
+            }
+          } else {
+            rtSection = this.getChildSection(this.list)
+          }
+          this.$store.dispatch('selectSection', rtSection)
+        } else {
+          if (this.view === 'responses') {
+            const children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
+            if (children.length > 0 && children[0].questions) {
+              rtSection = this.getChildSection(rtSection)
+              this.$store.dispatch('selectSection', rtSection)
+            }
+          }
+        }
+        return rtSection
       }
     },
     methods: {
@@ -245,10 +265,29 @@
         )
       },
       sectionClicked: function (item) {
-        this.section = item
+        this.$store.dispatch('selectSection', item)
       },
       changeView (view) {
         this.$emit('change-view', view)
+      },
+      getChildSection (rtSection) {
+        let repeat = true
+        let ptSection = rtSection
+
+        while (repeat) {
+          let children = this.$store.getters.loadedChildren(this.formId, ptSection.id)
+          if (children.length > 0) {
+            if (children[0].answers) {
+              repeat = false
+            } else {
+              ptSection = children[0]
+            }
+          } else {
+            repeat = false
+          }
+        }
+
+        return ptSection
       }
     }
   }

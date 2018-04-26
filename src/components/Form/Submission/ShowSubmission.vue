@@ -6,6 +6,7 @@
         :formId="formId"
         :submissionId="submissionId"
         :isAdmin="isAdmin"
+        :view="view"
         @change-view="changeView"
       ></form-view>
     </v-flex>
@@ -16,7 +17,7 @@
   import FormView from '../FormView'
 
   export default {
-    props: ['applicationName', 'formId', 'submissionId', 'isAdmin'],
+    props: ['applicationName', 'formId', 'submissionId', 'isAdmin', 'view'],
     components: {
       FormView
     },
