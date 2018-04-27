@@ -1,9 +1,9 @@
 <template>
   <v-dialog width="350px" persistent v-model="createSection">
-    <div slot="activator" v-if='parentSectionId !== -1'>
+    <div slot="activator">
       Create Section
     </div>
-    <v-btn slot="activator" block class="primary" v-else>Create Section</v-btn>
+    <!--<v-btn slot="activator" block class="primary" v-else>Create Section</v-btn>-->
     <v-card>
       <v-container>
         <v-layout row wrap>
@@ -31,9 +31,9 @@
           <v-flex xs12>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn 
-                flat 
-                class="primary" 
+              <v-btn
+                flat
+                class="primary"
                 @click="onSaveChanges"
                 :disabled="loading"
                 :loading="loading"

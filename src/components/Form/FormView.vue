@@ -1,29 +1,6 @@
 <template>
   <div>
     <v-card-actions>
-      <app-create-section
-        :parentSectionId="-1"
-        :formId="formId"
-        v-if="submissionId === -1"
-      ></app-create-section>
-
-      <v-flex v-if="isAdmin">
-        <v-btn
-          color="primary"
-          @click="changeView('responses')"
-          v-if="submissionId === -1"
-        >
-          View Responses
-        </v-btn>
-
-        <v-btn
-          color="primary"
-          @click="changeView('questions')"
-          v-else
-        >
-          View Questions
-        </v-btn>
-      </v-flex>
 
       <v-spacer></v-spacer>
 
