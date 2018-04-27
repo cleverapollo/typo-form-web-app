@@ -22,7 +22,7 @@
             </v-list-tile-title>
           </v-list-tile>
 
-          <v-list-tile @click="deleteSection" v-if="includeSection">
+          <v-list-tile @click="deleteSection">
             <v-list-tile-title>Delete Section</v-list-tile-title>
           </v-list-tile>
 

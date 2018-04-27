@@ -19,26 +19,53 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn color="info" @click=onBack>Back</v-btn>
-
             <v-menu offset-y bottom left v-if="userIsAdmin">
               <v-btn icon slot="activator">
                 <v-icon>more_vert</v-icon>
               </v-btn>
 
               <v-list>
+
+                <v-list-tile @click="">
+                  <v-list-tile-title>
+                    <app-create-section
+                      :parentSectionId="-1"
+                      :formId="id"
+                    ></app-create-section>
+                  </v-list-tile-title>
+                </v-list-tile>
+
                 <v-list-tile @click="">
                   <v-list-tile-title>
                     <app-edit-form :form="form" :applicationName="applicationName"></app-edit-form>
                   </v-list-tile-title>
                 </v-list-tile>
 
+
                 <v-list-tile @click=onDeleteForm>
                   <v-list-tile-title>Delete Form</v-list-tile-title>
+                </v-list-tile>
+
+                <v-list-tile @click="changeView('responses')">
+                  <v-list-tile-title>View Responses</v-list-tile-title>
+                </v-list-tile>
+
+                <v-list-tile @click="changeView('questions')">
+                  <v-list-tile-title>View Questions</v-list-tile-title>
+                </v-list-tile>
+
+                <v-list-tile @click=onBack>
+                  <v-list-tile-title>Back</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
           </v-card-title>
+
+          <h3 class="pl-3">
+            <template v-if="form.period_start">Period: from {{ form.period_start.split(' ')[0] }}</template>
+            <template v-if="form.period_id"> for {{ period }}</template>
+            <template v-if="form.period_end"> to {{ form.period_end.split(' ')[0] }}</template>
+          </h3>
 
           <form-view
             :applicationName="applicationName"
@@ -100,6 +127,16 @@
       },
       loading () {
         return this.$store.getters.loading
+      },
+      period () {
+        if (this.form.period_id) {
+          const periods = this.$store.getters.periods
+          const index = periods.findIndex(function (period) {
+            return period.id === this.form.period_id
+          }.bind(this))
+          return periods[index].period
+        }
+        return null
       }
     },
     methods: {
