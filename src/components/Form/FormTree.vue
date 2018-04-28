@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panel>
+  <v-expansion-panel class="mt-1">
     <v-expansion-panel-content
       v-for="item in list"
       :key="item.id"

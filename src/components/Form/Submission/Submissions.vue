@@ -48,7 +48,7 @@
           <create-submission
             :applicationName="applicationName"
             :formId="formId"
-            v-if="isAdmin"
+            v-if="!isAdmin"
             style="margin: 0 auto"
           ></create-submission>
         </v-card-text>
