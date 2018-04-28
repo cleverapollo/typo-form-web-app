@@ -192,17 +192,21 @@ export default {
           return []
         }
 
-        const teams = rootState.team.loadedTeams[applicationName]
-        if (!state.loadedSubmissions[formId]) {
-          return teams
+        let teams = rootState.team.loadedTeams[applicationName].slice(0)
+        teams.push({id: 0, name: 'No Team'})
+        const submissions = state.loadedSubmissions[formId]
+        if (submissions) {
+          for (var i = 0; i < submissions.length; i++) {
+            teams.filter((team) => {
+              if (!submissions[i].team) {
+                return team.id !== 0
+              } else {
+                return submissions[i].team.id !== team.id
+              }
+            })
+          }
         }
-
-        return teams.filter((team) => {
-          const index = state.loadedSubmissions[formId].find((submission) => {
-            return submission.team && submission.team.id === team.id
-          })
-          return index === -1
-        })
+        return teams
       }
     }
   }
