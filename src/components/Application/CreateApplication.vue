@@ -13,7 +13,6 @@
                     label="Name"
                     id="name"
                     v-model="name"
-                    :rules="[validate]"
                     required></v-text-field>
                 </v-flex>
               </v-layout>
@@ -125,9 +124,6 @@
       }
     },
     methods: {
-      validate (value) {
-        return /^[a-z0-9]+$/.test(value) || 'Dont input symbols'
-      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId
