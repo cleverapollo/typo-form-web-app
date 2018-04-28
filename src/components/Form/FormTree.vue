@@ -61,9 +61,6 @@
         },
         active (item) {
           return (this.section && item.id === this.section.id) ? 'active' : ''
-        },
-        expanded (item) {
-          return (this.section && item.id === this.section.id) ? true : false
         }
       }
     }
