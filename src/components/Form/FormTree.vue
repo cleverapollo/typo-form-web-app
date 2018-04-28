@@ -1,9 +1,10 @@
 <template>
-  <v-expansion-panel>
+  <v-expansion-panel class="mt-1">
     <v-expansion-panel-content
       v-for="item in list"
       :key="item.id"
       :hide-actions="hasChildren(item)"
+      v-model="opened"
     >
       <div
         slot="header"
@@ -32,6 +33,11 @@
     export default {
       name: 'form-tree',
       props: ['formId', 'list', 'section', 'view'],
+      data () {
+        return {
+          opened: true
+        }
+      },
       methods: {
         children (item) {
           const children = this.$store.getters.loadedChildren(this.formId, item.id)

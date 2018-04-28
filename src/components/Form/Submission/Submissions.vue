@@ -48,7 +48,7 @@
           <create-submission
             :applicationName="applicationName"
             :formId="formId"
-            v-if="isAdmin"
+            v-if="!isAdmin"
             style="margin: 0 auto"
           ></create-submission>
         </v-card-text>
@@ -61,6 +61,7 @@
         :formId="formId"
         :submissionId="submissionId"
         :isAdmin="isAdmin"
+        :view="view"
         @change-view="changeView"
       ></show-submission>
     </v-flex>
@@ -73,7 +74,7 @@
   import EditSubmission from './EditSubmission'
 
   export default {
-    props: ['applicationName', 'formId', 'isAdmin'],
+    props: ['applicationName', 'formId', 'isAdmin', 'view'],
     components: {
       ShowSubmission,
       CreateSubmission,

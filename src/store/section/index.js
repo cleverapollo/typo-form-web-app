@@ -5,7 +5,8 @@ const MOVE_URL = '/move/'
 
 export default {
   state: {
-    loadedSections: {}
+    loadedSections: {},
+    selectedSection: null
   },
   mutations: {
     setLoadedSections (state, payload) {
@@ -54,6 +55,9 @@ export default {
         return e.id !== payload.id
       })
       state.loadedSections = sections
+    },
+    selectSection (state, payload) {
+      state.selectedSection = payload
     },
 
     setLoadedQuestions (state, payload) {
@@ -331,6 +335,9 @@ export default {
           console.log(error)
           commit('setLoading', false)
         })
+    },
+    selectSection ({commit}, payload) {
+      commit('selectSection', payload)
     }
   },
   getters: {
@@ -372,6 +379,11 @@ export default {
         return [...childSections, ...childQuestions].sort((childA, childB) => {
           return childA.order > childB.order
         })
+      }
+    },
+    loadSelectedSection (state) {
+      return () => {
+        return state.selectedSection
       }
     }
   }

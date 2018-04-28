@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="submissionTypes.length !== 0">
     <v-btn
       block
       dark
@@ -31,20 +31,6 @@
                   item-text="name"
                   v-model="submissionType"
                   label="Submission Type"
-                ></v-select>
-              </v-card-text>
-            </v-flex>
-
-            <v-spacer></v-spacer>
-
-            <v-flex xs12 v-if="submissionType === 2">
-              <v-card-text>
-                <v-select
-                  :items="teams"
-                  item-value="id"
-                  item-text="name"
-                  v-model="teamId"
-                  label="Team"
                 ></v-select>
               </v-card-text>
             </v-flex>
@@ -156,7 +142,7 @@
     data () {
       return {
         createSubmission: false,
-        submissionType: 1,
+        submissionType: 0,
         startMenu: false,
         periodStart: null,
         endMenu: false,
@@ -174,8 +160,8 @@
           periodEnd: this.periodEnd
         }
 
-        if (this.submissionType !== 1) {
-          submissionData.teamId = this.teamId
+        if (this.submissionType !== 0) {
+          submissionData.teamId = this.submissionType
         }
 
         this.$store.dispatch('createSubmission', submissionData)
@@ -196,17 +182,7 @@
         return this.$store.getters.loadedTeams(this.applicationName)
       },
       submissionTypes () {
-        let types = [
-          {id: 1, name: 'Your Self'}
-        ]
-
-        if (this.teams && this.teams.length > 0) {
-          types.push(
-            {id: 2, name: 'Team'}
-          )
-        }
-
-        return types
+        return this.$store.getters.loadedSubmissionTeams(this.applicationName, parseInt(this.formId))
       }
     }
   }

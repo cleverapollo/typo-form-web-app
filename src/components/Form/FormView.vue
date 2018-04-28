@@ -1,44 +1,54 @@
 <template>
   <div>
-    <v-card-actions>
+    <v-layout v-if="submissionId > 0" column class="mr-1">
+      <v-card>
+        <v-toolbar color="primary" dark>
+          <v-toolbar-title>{{submissionName}}</v-toolbar-title>
+        </v-toolbar>
+      </v-card>
+      <v-card>
+        <v-layout row wrap class="pa-3">
+          <div class="flex-column">
+            <v-card-title primary-title class="flex-column">
+              <div class="pa-1">
+                <span> {{periodStart}} ~ {{periodEnd}} </span>
+              </div>
+            </v-card-title>
 
-      <v-spacer></v-spacer>
+            <v-card-actions>
+              <v-btn
+                color="error"
+                @click="deleteSubmission"
+                v-if="removable"
+              >
+                Delete
+              </v-btn>
 
-      <v-btn
-        color="error"
-        @click="deleteSubmission"
-        v-if="removable"
-      >
-        Delete
-      </v-btn>
+              <v-btn
+                color="primary"
+                @click="sendSubmission"
+                v-if="!sendAble"
+              >
+                Send
+              </v-btn>
+            </v-card-actions>
+          </div>
 
-      <v-btn
-        color="primary"
-        @click="sendSubmission"
-        v-if="sendAble"
-      >
-        Send
-      </v-btn>
-    </v-card-actions>
+          <v-spacer></v-spacer>
 
-    <v-card class="mb-3" v-if="submissionId > 0">
-      <v-layout row wrap class="pa-3">
-        <v-toolbar-title  class="d-flex align-center">Submission Progress</v-toolbar-title>
-
-        <v-spacer></v-spacer>
-
-        <v-progress-circular
-          xs4
-          :size="100"
-          :width="15"
-          :rotate="-90"
-          :value="progress"
-          color="primary"
-        >
-          {{ progress.toFixed(2) }}
-        </v-progress-circular>
-      </v-layout>
-    </v-card>
+          <v-progress-circular
+            xs4
+            :size="120"
+            :width="15"
+            :rotate="-90"
+            :value="progress"
+            color="primary"
+          >
+            {{ progress.toFixed(2) }}
+          </v-progress-circular>
+        </v-layout>
+      </v-card>
+    </v-layout>
 
     <v-layout row wrap>
       <v-flex xs3>
@@ -73,11 +83,6 @@
     components: {
       sections,
       FormTree
-    },
-    data () {
-      return {
-        section: null
-      }
     },
     computed: {
       list: {
@@ -140,8 +145,46 @@
             }, this)
           }, this)
 
-          return responseCount * 100 / questionCount
+          return questionCount !== 0 ? responseCount * 100 / questionCount : 0
         }
+      },
+      section () {
+        let rtSection = this.$store.getters.loadSelectedSection()
+        if (!rtSection) {
+          if (this.view === 'questions') {
+            const sections = this.$store.getters.loadedChildren(this.formId, null)
+            if (sections.length === 0) {
+              rtSection = null
+            } else {
+              rtSection = sections[0]
+            }
+          } else {
+            rtSection = this.getChildSection(this.list)
+          }
+          this.$store.dispatch('selectSection', rtSection)
+        } else {
+          if (this.view === 'responses') {
+            const children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
+            if (children.length > 0 && children[0].questions) {
+              rtSection = this.getChildSection(rtSection)
+              this.$store.dispatch('selectSection', rtSection)
+            }
+          }
+        }
+        return rtSection
+      },
+      submissionName () {
+        if (this.submission.team == null) {
+          return this.submission.user.first_name + ' ' + this.submission.user.last_name
+        } else {
+          return this.submission.team.name
+        }
+      },
+      periodStart () {
+        return this.submission.period_start ? this.submission.period_start.substring(0, 10) : ''
+      },
+      periodEnd () {
+        return this.submission.period_end ? this.submission.period_end.substring(0, 10) : ''
       }
     },
     methods: {
@@ -222,10 +265,29 @@
         )
       },
       sectionClicked: function (item) {
-        this.section = item
+        this.$store.dispatch('selectSection', item)
       },
       changeView (view) {
         this.$emit('change-view', view)
+      },
+      getChildSection (rtSection) {
+        let repeat = true
+        let ptSection = rtSection
+
+        while (repeat) {
+          let children = this.$store.getters.loadedChildren(this.formId, ptSection.id)
+          if (children.length > 0) {
+            if (children[0].answers) {
+              repeat = false
+            } else {
+              ptSection = children[0]
+            }
+          } else {
+            repeat = false
+          }
+        }
+
+        return ptSection
       }
     }
   }

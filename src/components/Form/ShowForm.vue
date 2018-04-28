@@ -81,6 +81,7 @@
             :applicationName="applicationName"
             :formId="id"
             :isAdmin="userIsAdmin"
+            :view="view"
             @change-view="changeView"
             v-else
           ></submissions>
