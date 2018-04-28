@@ -109,7 +109,7 @@
         }
         this.editApplication = false
         this.$store.dispatch('updateApplication', {
-          id: this.id,
+          slug: this.application.slug,
           name: this.editedName,
           css: this.editedCSS
         })

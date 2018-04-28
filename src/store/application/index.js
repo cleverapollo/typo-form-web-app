@@ -24,21 +24,21 @@ export default {
     },
     updateApplication (state, payload) {
       const index = state.loadedApplications.findIndex(application => {
-        return application.id === payload.id
+        return application.slug === payload.slug
       })
-      state.loadedApplications.splice(index, 1, payload)
+      state.loadedApplications.splice(index, 1, payload.application)
     },
     deleteApplication (state, payload) {
       state.loadedApplications = state.loadedApplications.filter(e => {
-        return e.id !== payload.id
+        return e.slug !== payload.slug
       })
     }
   },
   actions: {
-    loadApplication ({commit}, applicationName) {
+    loadApplication ({commit}, slug) {
       commit('setLoading', true)
       return new Promise((resolve, reject) => {
-        window.axios.get(APPLICATION_URL + applicationName)
+        window.axios.get(APPLICATION_URL + slug)
           .then(
             response => {
               commit('setLoading', false)
@@ -95,7 +95,7 @@ export default {
       const application = {
         invitations: payload.invitations
       }
-      window.axios.post(APPLICATION_URL + payload.applicationName + '/invite', application)
+      window.axios.post(APPLICATION_URL + payload.slug + '/invite', application)
         .then(
           response => {
             commit('setLoading', false)
@@ -115,10 +115,14 @@ export default {
         updateObj.name = payload.name
         updateObj.css = payload.css
       }
-      window.axios.put(APPLICATION_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.slug, updateObj)
         .then(response => {
           commit('setLoading', false)
-          commit('updateApplication', response['data']['application'])
+          const updateObject = {
+            slug: payload.slug,
+            application: response['data']['application']
+          }
+          commit('updateApplication', updateObject)
         })
         .catch(error => {
           console.log(error)
@@ -127,7 +131,7 @@ export default {
     },
     deleteApplication ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.slug)
         .then(() => {
           commit('setLoading', false)
           commit('deleteApplication', payload)
@@ -145,9 +149,9 @@ export default {
       })
     },
     loadedApplication (state) {
-      return (applicationName) => {
+      return (slug) => {
         return state.loadedApplications.find((application) => {
-          return application.name === applicationName
+          return application.slug === slug
         })
       }
     }

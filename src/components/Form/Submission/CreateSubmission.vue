@@ -138,7 +138,7 @@
 
 <script>
   export default {
-    props: ['applicationName', 'formId'],
+    props: ['slug', 'formId'],
     data () {
       return {
         createSubmission: false,
@@ -179,10 +179,10 @@
         return this.$store.getters.loadedSubmissions(parseInt(this.formId))
       },
       teams () {
-        return this.$store.getters.loadedTeams(this.applicationName)
+        return this.$store.getters.loadedTeams(this.slug)
       },
       submissionTypes () {
-        return this.$store.getters.loadedSubmissionTeams(this.applicationName, parseInt(this.formId))
+        return this.$store.getters.loadedSubmissionTeams(this.slug, parseInt(this.formId))
       }
     }
   }

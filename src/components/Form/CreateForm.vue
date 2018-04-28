@@ -115,7 +115,7 @@
 
 <script>
   export default {
-    props: ['applicationName'],
+    props: ['slug'],
     data () {
       return {
         name: '',
@@ -132,7 +132,7 @@
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(this.applicationName)
+        return this.$store.getters.loadedApplication(this.slug)
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -174,7 +174,7 @@
         }
 
         const formData = {
-          applicationName: this.applicationName,
+          slug: this.slug,
           name: this.name,
           periodStart: this.periodStart,
           periodEnd: this.periodDuration === 5 ? this.periodEnd : null,
@@ -183,10 +183,10 @@
         }
 
         this.$store.dispatch('createForm', formData)
-        this.$router.push('/' + this.applicationName + '/forms')
+        this.$router.push('/' + this.slug + '/forms')
       },
       onCancel () {
-        this.$router.push('/' + this.applicationName + '/forms')
+        this.$router.push('/' + this.slug + '/forms')
       }
     },
     created: function () {

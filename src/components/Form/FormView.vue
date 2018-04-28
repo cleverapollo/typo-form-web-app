@@ -79,7 +79,7 @@
   import FormTree from './FormTree'
 
   export default {
-    props: ['applicationName', 'formId', 'submissionId', 'isAdmin', 'view'],
+    props: ['slug', 'formId', 'submissionId', 'isAdmin', 'view'],
     components: {
       sections,
       FormTree

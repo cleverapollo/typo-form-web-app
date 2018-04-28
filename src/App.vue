@@ -111,11 +111,11 @@ export default {
       return this.user !== null && this.user !== undefined
     },
     title () {
-      return this.$route.params['applicationName'] || 'Informed 365'
+      return this.$route.params['slug'] || 'Informed 365'
     },
     titleLink () {
-      if (this.$route.params['applicationName']) {
-        return '/' + this.$route.params['applicationName']
+      if (this.$route.params['slug']) {
+        return '/' + this.$route.params['slug']
       }
       return '/'
     },

@@ -84,7 +84,7 @@
 
 <script>
   export default {
-    props: ['applicationName'],
+    props: ['slug'],
     data () {
       return {
         inviteApplication: false,
@@ -113,7 +113,7 @@
           return
         }
         this.inviteApplication = false
-        this.$store.dispatch('inviteApplication', {invitations: invitations, applicationName: this.applicationName})
+        this.$store.dispatch('inviteApplication', {invitations: invitations, slug: this.slug})
       },
       onCancel () {
         this.invitations = [

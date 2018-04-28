@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <app-invite-application :applicationName="applicationName"  v-if="userIsAdmin"></app-invite-application>
+    <app-invite-application :slug="slug"  v-if="userIsAdmin"></app-invite-application>
     <v-spacer></v-spacer>
     <v-btn color="info" @click=onBack>Back</v-btn>
     <v-flex xs12>
@@ -62,7 +62,7 @@
 
 <script>
   export default {
-    props: ['applicationName'],
+    props: ['slug'],
     data () {
       return {
         active: null,
@@ -79,13 +79,13 @@
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(this.applicationName)
+        return this.$store.getters.loadedApplication(this.slug)
       },
       users () {
-        return this.$store.getters.loadedUsers(this.applicationName)
+        return this.$store.getters.loadedUsers(this.slug)
       },
       invitedUsers () {
-        return this.$store.getters.invitedUsers(this.applicationName)
+        return this.$store.getters.invitedUsers(this.slug)
       },
       loading () {
         return this.$store.getters.loading
@@ -102,7 +102,7 @@
     },
     methods: {
       onLoadUser (id) {
-        this.$router.push('/' + this.applicationName + '/users/show/' + id)
+        this.$router.push('/' + this.slug + '/users/show/' + id)
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -111,12 +111,12 @@
         return role ? role.name : 'undefined'
       },
       onBack () {
-        this.$router.push('/' + this.applicationName + '/show')
+        this.$router.push('/' + this.slug + '/show')
       }
     },
     created: function () {
       this.$store.dispatch('loadApplications')
-      this.$store.dispatch('loadUsers', this.applicationName)
+      this.$store.dispatch('loadUsers', this.slug)
     }
   }
 </script>

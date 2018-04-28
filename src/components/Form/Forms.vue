@@ -37,7 +37,7 @@
 
 <script>
   export default {
-    props: ['applicationName'],
+    props: ['slug'],
     data () {
       return {
         headers: [
@@ -50,7 +50,7 @@
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(this.applicationName)
+        return this.$store.getters.loadedApplication(this.slug)
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -62,7 +62,7 @@
         return this.getRole(this.application.application_role_id) === 'Admin'
       },
       forms () {
-        return this.$store.getters.loadedForms(this.applicationName)
+        return this.$store.getters.loadedForms(this.slug)
       },
       loading () {
         return this.$store.getters.loading
@@ -76,18 +76,18 @@
         return role ? role.name : 'undefined'
       },
       onLoadForm (id) {
-        this.$router.push('/' + this.applicationName + '/forms/show/' + id)
+        this.$router.push('/' + this.slug + '/forms/show/' + id)
       },
       onCreateForm () {
-        this.$router.push('/' + this.applicationName + '/forms/new')
+        this.$router.push('/' + this.slug + '/forms/new')
       },
       onBack () {
-        this.$router.push('/' + this.applicationName + '/show')
+        this.$router.push('/' + this.slug + '/show')
       }
     },
     created: function () {
       this.$store.dispatch('loadApplications')
-      this.$store.dispatch('loadForms', this.applicationName)
+      this.$store.dispatch('loadForms', this.slug)
     }
   }
 </script>

@@ -187,12 +187,12 @@ export default {
       }
     },
     loadedSubmissionTeams (state, getters, rootState) {
-      return (applicationName, formId) => {
-        if (!rootState.team.loadedTeams[applicationName]) {
+      return (slug, formId) => {
+        if (!rootState.team.loadedTeams[slug]) {
           return []
         }
 
-        let teams = rootState.team.loadedTeams[applicationName].slice(0)
+        let teams = rootState.team.loadedTeams[slug].slice(0)
         teams.push({id: 0, name: 'No Team'})
         const submissions = state.loadedSubmissions[formId]
         if (submissions) {

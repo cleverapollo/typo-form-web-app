@@ -37,7 +37,7 @@
 
                 <v-list-tile @click="">
                   <v-list-tile-title>
-                    <app-edit-form :form="form" :applicationName="applicationName"></app-edit-form>
+                    <app-edit-form :form="form" :slug="slug"></app-edit-form>
                   </v-list-tile-title>
                 </v-list-tile>
 
@@ -68,7 +68,7 @@
           </h3>
 
           <form-view
-            :applicationName="applicationName"
+            :slug="slug"
             :formId="id"
             :submissionId="-1"
             :isAdmin="userIsAdmin"
@@ -78,7 +78,7 @@
           ></form-view>
 
           <submissions
-            :applicationName="applicationName"
+            :slug="slug"
             :formId="id"
             :isAdmin="userIsAdmin"
             :view="view"
@@ -100,7 +100,7 @@
       Submissions,
       FormView
     },
-    props: ['applicationName', 'id'],
+    props: ['slug', 'id'],
     data () {
       return {
         active: null,
@@ -112,7 +112,7 @@
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(this.applicationName)
+        return this.$store.getters.loadedApplication(this.slug)
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -124,7 +124,7 @@
         return this.getRole(this.application.application_role_id) === 'Admin'
       },
       form () {
-        return this.$store.getters.loadedForm(this.applicationName, parseInt(this.id))
+        return this.$store.getters.loadedForm(this.slug, parseInt(this.id))
       },
       loading () {
         return this.$store.getters.loading
@@ -142,7 +142,7 @@
     },
     methods: {
       onBack () {
-        this.$router.push('/' + this.applicationName + '/forms')
+        this.$router.push('/' + this.slug + '/forms')
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -152,10 +152,10 @@
       },
       onDeleteForm () {
         this.$store.dispatch('deleteForm', {
-          applicationName: this.applicationName,
+          slug: this.slug,
           id: this.form.id
         })
-        this.$router.push('/' + this.applicationName + '/forms')
+        this.$router.push('/' + this.slug + '/forms')
       },
       changeView (view) {
         this.view = view
@@ -163,8 +163,8 @@
     },
     created: function () {
       this.$store.dispatch('loadApplications')
-      this.$store.dispatch('loadTeams', this.applicationName)
-      this.$store.dispatch('loadForms', this.applicationName)
+      this.$store.dispatch('loadTeams', this.slug)
+      this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadSections', this.id)
       this.$store.dispatch('loadSubmissions', this.id)
       this.$store.dispatch('loadValidations', this.id)

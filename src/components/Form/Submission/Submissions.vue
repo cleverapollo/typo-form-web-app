@@ -46,7 +46,7 @@
           </v-layout>
 
           <create-submission
-            :applicationName="applicationName"
+            :slug="slug"
             :formId="formId"
             v-if="!isAdmin"
             style="margin: 0 auto"
@@ -57,7 +57,7 @@
 
     <v-flex xs9>
       <show-submission
-        :applicationName="applicationName"
+        :slug="slug"
         :formId="formId"
         :submissionId="submissionId"
         :isAdmin="isAdmin"
@@ -74,7 +74,7 @@
   import EditSubmission from './EditSubmission'
 
   export default {
-    props: ['applicationName', 'formId', 'isAdmin', 'view'],
+    props: ['slug', 'formId', 'isAdmin', 'view'],
     components: {
       ShowSubmission,
       CreateSubmission,
@@ -93,7 +93,7 @@
         return this.$store.getters.loadedSubmissions(parseInt(this.formId))
       },
       submissionTeams () {
-        return this.$store.getters.loadedSubmissionTeams(this.applicationName, parseInt(this.formId))
+        return this.$store.getters.loadedSubmissionTeams(this.slug, parseInt(this.formId))
       }
     },
     watch: {

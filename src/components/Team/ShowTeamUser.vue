@@ -20,7 +20,7 @@
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-layout row wrap>
-              <app-edit-teamuser :user="user" :applicationName="applicationName" :teamId="teamId" class="my-1"></app-edit-teamuser>
+              <app-edit-teamuser :user="user" :slug="slug" :teamId="teamId" class="my-1"></app-edit-teamuser>
               <v-btn class="error my-1" @click=onDeleteTeamUser>Delete</v-btn>
               <v-spacer></v-spacer>
               <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
@@ -34,13 +34,13 @@
 
 <script>
   export default {
-    props: ['applicationName', 'teamId', 'id'],
+    props: ['slug', 'teamId', 'id'],
     computed: {
       roles () {
         return this.$store.getters.roles
       },
       team () {
-        return this.$store.getters.loadedTeam(this.applicationName, parseInt(this.teamId))
+        return this.$store.getters.loadedTeam(this.slug, parseInt(this.teamId))
       },
       user () {
         return this.$store.getters.loadedTeamUser(parseInt(this.teamId), parseInt(this.id))
@@ -61,11 +61,11 @@
     methods: {
       onDeleteTeamUser () {
         this.$store.dispatch('deleteTeamUser', {
-          applicationName: this.applicationName,
+          slug: this.slug,
           teamId: this.teamId,
           id: this.user.id
         })
-        this.$router.push('/' + this.applicationName + '/teams/show/' + this.teamId)
+        this.$router.push('/' + this.slug + '/teams/show/' + this.teamId)
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -74,13 +74,13 @@
         return role ? role.name : 'undefined'
       },
       onBack () {
-        this.$router.push('/' + this.applicationName + '/teams/show/' + this.teamId)
+        this.$router.push('/' + this.slug + '/teams/show/' + this.teamId)
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.applicationName)
+      this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadTeamUsers', {
-        applicationName: this.applicationName,
+        slug: this.slug,
         teamId: this.teamId
       })
     }

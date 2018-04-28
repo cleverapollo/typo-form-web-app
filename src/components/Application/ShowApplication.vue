@@ -41,7 +41,7 @@
 
 <script>
   export default {
-    props: ['applicationName'],
+    props: ['slug'],
     data () {
       return {
         items: [
@@ -56,7 +56,7 @@
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(this.applicationName)
+        return this.$store.getters.loadedApplication(this.slug)
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -83,12 +83,12 @@
       },
       onDeleteApplication () {
         this.$store.dispatch('deleteApplication', {
-          id: this.application.id
+          slug: this.slug
         })
         this.$router.push('/applications')
       },
       onList (type) {
-        this.$router.push('/' + this.applicationName + '/' + type)
+        this.$router.push('/' + this.slug + '/' + type)
       },
       showUsersToAdmin (type) {
         return type !== 'users' || this.userIsAdmin
