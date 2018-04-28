@@ -197,11 +197,11 @@ export default {
         const submissions = state.loadedSubmissions[formId]
         if (submissions) {
           for (var i = 0; i < submissions.length; i++) {
-            teams.filter((team) => {
+            teams = teams.filter((team) => {
               if (!submissions[i].team) {
                 return team.id !== 0
               } else {
-                return submissions[i].team.id !== team.id
+                return submissions[i].team.name !== team.name
               }
             })
           }
