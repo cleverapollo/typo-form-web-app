@@ -19,13 +19,14 @@
 
             <v-spacer></v-spacer>
 
+            <v-btn @click=onBack class="primary">Back</v-btn>
+
             <v-menu offset-y bottom left v-if="userIsAdmin">
               <v-btn icon slot="activator">
                 <v-icon>more_vert</v-icon>
               </v-btn>
 
               <v-list>
-
                 <v-list-tile @click="">
                   <v-list-tile-title>
                     <app-create-section
@@ -45,18 +46,6 @@
                 <v-list-tile @click=onDeleteForm>
                   <v-list-tile-title>Delete Form</v-list-tile-title>
                 </v-list-tile>
-
-                <v-list-tile @click="changeView('responses')">
-                  <v-list-tile-title>View Responses</v-list-tile-title>
-                </v-list-tile>
-
-                <v-list-tile @click="changeView('questions')">
-                  <v-list-tile-title>View Questions</v-list-tile-title>
-                </v-list-tile>
-
-                <v-list-tile @click=onBack>
-                  <v-list-tile-title>Back</v-list-tile-title>
-                </v-list-tile>
               </v-list>
             </v-menu>
           </v-card-title>
@@ -73,7 +62,6 @@
             :submissionId="-1"
             :isAdmin="userIsAdmin"
             :view="view"
-            @change-view="changeView"
             v-if="view === 'questions' && userIsAdmin"
           ></form-view>
 
@@ -82,7 +70,6 @@
             :formId="id"
             :isAdmin="userIsAdmin"
             :view="view"
-            @change-view="changeView"
             v-else
           ></submissions>
         </div>
@@ -100,11 +87,10 @@
       Submissions,
       FormView
     },
-    props: ['slug', 'id'],
+    props: ['slug', 'id', 'view'],
     data () {
       return {
-        active: null,
-        view: 'questions'
+        active: null
       }
     },
     computed: {
@@ -142,7 +128,11 @@
     },
     methods: {
       onBack () {
-        this.$router.push('/' + this.slug + '/forms')
+        if (this.view === 'responses') {
+          this.$router.push('/' + this.slug + '/submissions')
+        } else {
+          this.$router.push('/' + this.slug + '/forms')
+        }
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -156,9 +146,6 @@
           id: this.form.id
         })
         this.$router.push('/' + this.slug + '/forms')
-      },
-      changeView (view) {
-        this.view = view
       }
     },
     created: function () {

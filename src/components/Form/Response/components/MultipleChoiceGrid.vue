@@ -26,27 +26,35 @@
 <script>
   export default {
     name: 'multiple-choice-grid',
-    props: ['answers', 'responses'],
+    props: ['answers', 'responses', 'submissionId'],
     data () {
       return {
         checkAnswers: []
       }
     },
-    mounted () {
-      let ex = []
-      for (let i = 0; i < this.computedRows.length; i++) {
-        const filteredResponses = this.responses.filter((response) => {
-          return this.computedRows[i].id === response.answer_id
-        })
-        if (filteredResponses.length) {
-          ex[i] = parseInt(filteredResponses[0].response)
-        } else {
-          ex[i] = null
-        }
+    watch: {
+      submissionId (value) {
+        this.created()
       }
-      this.checkAnswers = ex
+    },
+    mounted () {
+      this.created()
     },
     methods: {
+      created () {
+        let ex = []
+        for (let i = 0; i < this.computedRows.length; i++) {
+          const filteredResponses = this.responses.filter((response) => {
+            return this.computedRows[i].id === response.answer_id
+          })
+          if (filteredResponses.length) {
+            ex[i] = parseInt(filteredResponses[0].response)
+          } else {
+            ex[i] = null
+          }
+        }
+        this.checkAnswers = ex
+      },
       checked (answerId, response) {
         if (this.responses.length) {
           const objs = this.responses.filter((obj) => {

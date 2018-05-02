@@ -62,7 +62,6 @@
         :submissionId="submissionId"
         :isAdmin="isAdmin"
         :view="view"
-        @change-view="changeView"
       ></show-submission>
     </v-flex>
   </v-layout>
@@ -128,9 +127,6 @@
       },
       active (submissionId) {
         return (this.submissionId === submissionId) ? 'active' : ''
-      },
-      changeView (view) {
-        this.$emit('change-view', view)
       }
     }
   }

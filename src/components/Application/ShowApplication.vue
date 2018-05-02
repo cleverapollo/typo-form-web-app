@@ -14,21 +14,47 @@
         <v-card v-if="application">
           <v-card-title>
             <h1 class="primary--text">{{ application.name }}</h1>
+            <v-spacer></v-spacer>
+            <v-menu offset-y bottom left v-if="userIsAdmin">
+              <v-btn icon slot="activator">
+                <v-icon>more_vert</v-icon>
+              </v-btn>
+
+              <v-list>
+                <v-list-tile @click="">
+                  <v-list-tile-title>
+                    <app-edit-application :application="application" class="my-1"></app-edit-application>
+                  </v-list-tile-title>
+                </v-list-tile>
+
+                <v-list-tile @click=onDeleteApplication>
+                  <v-list-tile-title>Delete</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
           </v-card-title>
           <v-card-text>
             <h3 class="break-all" v-if=userIsAdmin>{{joinURL}}</h3>
-            <v-list>
-              <v-list-tile v-for="item in items" :key="item.title" @click="onList(item.type)" v-if="showUsersToAdmin(item.type)">
-                <v-list-tile-content>
-                  <v-list-tile-title v-text="item.title"></v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
+            <v-btn
+              flat
+              style="height: 70px"
+              @click="onList(item.type)"
+              v-if="showUsersToAdmin(item.type)"
+              v-for="item in items"
+              :key="item.title">
+              <v-layout column wrap>
+                <v-flex>
+                  <v-icon
+                    x-large>
+                    {{item.icon}}
+                  </v-icon>
+                </v-flex>
+                <v-flex>{{item.title}}</v-flex>
+              </v-layout>
+            </v-btn>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-layout row wrap>
-              <app-edit-application :application="application" class="my-1"></app-edit-application>
-              <v-btn class="error my-1" @click=onDeleteApplication>Delete</v-btn>
               <v-spacer></v-spacer>
               <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
             </v-layout>
@@ -45,9 +71,10 @@
     data () {
       return {
         items: [
-          { title: 'User List', type: 'users' },
-          { title: 'Team List', type: 'teams' },
-          { title: 'Form List', type: 'forms' }
+          { title: 'User List', type: 'users', icon: 'person' },
+          { title: 'Team List', type: 'teams', icon: 'people' },
+          { title: 'Form List', type: 'forms', icon: 'content_paste' },
+          { title: 'Submission List', type: 'submissions', icon: 'assignment' }
         ]
       }
     },
