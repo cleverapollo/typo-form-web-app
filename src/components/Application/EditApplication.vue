@@ -1,10 +1,6 @@
 <template>
   <v-dialog width="350px" persistent v-model="editApplication">
-    <v-btn
-      v-if="btnRect"
-      class="primary"
-      slot="activator"
-    >Edit</v-btn>
+    <div slot="activator" v-if="btnRect">Edit</div>
     <v-btn
       v-else
       class="primary"
