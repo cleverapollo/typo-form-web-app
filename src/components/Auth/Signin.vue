@@ -42,18 +42,26 @@
                       :disabled="loading"
                       :loading="loading">
                       Sign in
-                       <span slot="loader" class="custom-loader">
+                      <span slot="loader" class="custom-loader">
                         <v-icon light>cached</v-icon>
                        </span>
                     </v-btn>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs12 text-xs-center class="mt-4">
+                  <v-flex xs12 text-xs-center class="pt-4">
                     <router-link to="/reset-password" tag="a" class="green--text">Forgot your password?</router-link>
                   </v-flex>
                 </v-layout>
               </form>
+            </v-container>
+            <v-container class="oauth-container">
+              <div class="oauth-login py-4">
+                <v-btn block color="normal" normal>Use Google Account</v-btn>
+                <v-btn block color="normal" normal>Use FaceBook Account</v-btn>
+                <v-btn block color="normal" normal>Use Live Account</v-btn>
+                <v-btn block color="normal" normal>Use Github Account</v-btn>
+              </div>
             </v-container>
           </v-card-text>
         </v-card>
@@ -121,3 +129,24 @@
     }
   }
 </script>
+
+<style scoped>
+  .oauth-container {
+    position: relative;
+  }
+  .oauth-login {
+    border-top: 2px dashed #efefef;
+  }
+  .oauth-login::after {
+    display: block;
+    content: "or";
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    padding: 0 10px;
+    background-color: #fff;
+    color: #b6b3b3;
+  }
+</style>
