@@ -78,7 +78,8 @@ const router = new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Home,
+      meta: { requiresAuth: true }
     },
     {
       path: '/applications',
@@ -155,6 +156,13 @@ const router = new Router({
       meta: { requiresAuth: true }
     },
     {
+      path: '/:slug/submissions',
+      name: 'Submissions',
+      component: Forms,
+      props: true,
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/:slug/forms/new',
       name: 'CreateForm',
       component: CreateForm,
@@ -162,7 +170,7 @@ const router = new Router({
       meta: { requiresAuth: true }
     },
     {
-      path: '/:slug/forms/show/:id',
+      path: '/:slug/forms/show/:id/:view',
       name: 'ShowForm',
       component: ShowForm,
       props: true,

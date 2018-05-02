@@ -17,13 +17,23 @@
           </v-card-title>
           <v-card-text>
             <h3 class="break-all" v-if=userIsAdmin>{{joinURL}}</h3>
-            <v-list>
-              <v-list-tile v-for="item in items" :key="item.title" @click="onList(item.type)" v-if="showUsersToAdmin(item.type)">
-                <v-list-tile-content>
-                  <v-list-tile-title v-text="item.title"></v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
+            <v-btn
+              flat
+              style="height: 70px"
+              @click="onList(item.type)"
+              v-if="showUsersToAdmin(item.type)"
+              v-for="item in items"
+              :key="item.title">
+              <v-layout column wrap>
+                <v-flex>
+                  <v-icon
+                    x-large>
+                    {{item.icon}}
+                  </v-icon>
+                </v-flex>
+                <v-flex>{{item.title}}</v-flex>
+              </v-layout>
+            </v-btn>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-layout row wrap>
@@ -45,9 +55,10 @@
     data () {
       return {
         items: [
-          { title: 'User List', type: 'users' },
-          { title: 'Team List', type: 'teams' },
-          { title: 'Form List', type: 'forms' }
+          { title: 'User List', type: 'users', icon: 'person' },
+          { title: 'Team List', type: 'teams', icon: 'people' },
+          { title: 'Form List', type: 'forms', icon: 'content_paste' },
+          { title: 'Submission List', type: 'submissions', icon: 'assignment' }
         ]
       }
     },

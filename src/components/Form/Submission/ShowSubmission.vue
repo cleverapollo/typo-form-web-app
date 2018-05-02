@@ -7,7 +7,6 @@
         :submissionId="submissionId"
         :isAdmin="isAdmin"
         :view="view"
-        @change-view="changeView"
       ></form-view>
     </v-flex>
   </v-layout>
@@ -39,9 +38,6 @@
         })
 
         return role ? role.name : 'undefined'
-      },
-      changeView (view) {
-        this.$emit('change-view', view)
       }
     }
   }

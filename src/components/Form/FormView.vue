@@ -267,9 +267,6 @@
       sectionClicked: function (item) {
         this.$store.dispatch('selectSection', item)
       },
-      changeView (view) {
-        this.$emit('change-view', view)
-      },
       getChildSection (rtSection) {
         let repeat = true
         let ptSection = rtSection

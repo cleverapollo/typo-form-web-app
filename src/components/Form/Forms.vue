@@ -59,7 +59,7 @@
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.getRole(this.application.application_role_id) === 'Admin'
+        return this.getRole(this.application.application_role_id) === 'Admin' && this.$route.name === 'Forms'
       },
       forms () {
         return this.$store.getters.loadedForms(this.slug)
@@ -76,7 +76,7 @@
         return role ? role.name : 'undefined'
       },
       onLoadForm (id) {
-        this.$router.push('/' + this.slug + '/forms/show/' + id)
+        this.$router.push('/' + this.slug + '/forms/show/' + id + '/' + (this.$route.name === 'Forms' ? 'questions' : 'responses'))
       },
       onCreateForm () {
         this.$router.push('/' + this.slug + '/forms/new')
