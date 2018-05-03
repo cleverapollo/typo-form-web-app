@@ -10,7 +10,7 @@
         <v-card>
           <v-card-text>
             <v-container>
-              <form @submit.prevent="onSignup">
+              <form v-show="isEmail" @submit.prevent="onSignup">
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
@@ -89,6 +89,15 @@
                   </v-flex>
                 </v-layout>
               </form>
+              <v-btn v-show="!isEmail" block color="normal" @click="activeEmail" class="success">Signup with your email</v-btn>
+            </v-container>
+            <v-container class="oauth-container">
+              <div class="oauth-login py-4">
+                <v-btn block color="normal" normal>Use Google Account</v-btn>
+                <v-btn block color="normal" normal>Use FaceBook Account</v-btn>
+                <v-btn block color="normal" normal>Use Live Account</v-btn>
+                <v-btn block color="normal" normal>Use Github Account</v-btn>
+              </div>
             </v-container>
           </v-card-text>
         </v-card>
@@ -101,6 +110,7 @@
   export default {
     data () {
       return {
+        isEmail: false,
         firstname: '',
         lastname: '',
         email: '',
@@ -138,6 +148,9 @@
       },
       onDismissed () {
         this.$store.dispatch('clearError')
+      },
+      activeEmail () {
+        this.isEmail = true
       }
     },
     created: function () {
@@ -146,3 +159,25 @@
     }
   }
 </script>
+
+<style scoped>
+  .oauth-container {
+    position: relative;
+  }
+  .oauth-login {
+    border-top: 2px dashed #efefef;
+  }
+  .oauth-login::after {
+    display: block;
+    content: "or";
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    padding: 0 10px;
+    background-color: #fff;
+    color: #b6b3b3;
+  }
+</style>
+
