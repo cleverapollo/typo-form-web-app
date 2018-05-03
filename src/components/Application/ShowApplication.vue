@@ -28,13 +28,13 @@
                 </v-list-tile>
 
                 <v-list-tile @click=onDeleteApplication>
-                  <v-list-tile-title>Delete</v-list-tile-title>
+                  <v-list-tile-title>Delete Application</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
           </v-card-title>
           <v-card-text>
-            <h3 class="break-all" v-if=userIsAdmin>{{joinURL}}</h3>
+            <h3 class="break-all pb-4" v-if=userIsAdmin>{{joinURL}}</h3>
             <v-btn
               flat
               style="height: 70px"

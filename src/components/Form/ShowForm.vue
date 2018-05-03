@@ -21,7 +21,7 @@
 
             <v-btn @click=onBack class="primary">Back</v-btn>
 
-            <v-menu offset-y bottom left v-if="userIsAdmin">
+            <v-menu offset-y bottom left v-if="view === 'questions' && userIsAdmin">
               <v-btn icon slot="activator">
                 <v-icon>more_vert</v-icon>
               </v-btn>
