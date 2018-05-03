@@ -1,52 +1,54 @@
 <template>
   <div>
-    <v-card>
-      <v-toolbar color="primary" dark>
-        <v-toolbar-title>{{submissionName}}</v-toolbar-title>
-      </v-toolbar>
-    </v-card>
-    <v-card>
-      <v-layout v-if="submissionId > 0" row wrap class="pa-3">
-        <div class="flex-column">
-          <v-card-title primary-title class="flex-column">
-            <div class="pa-1">
-              <span>( {{periodStart}} ~ {{periodEnd}} )</span>
-            </div>
-          </v-card-title>
+    <div v-if="submissionId > 0">
+      <v-card>
+        <v-toolbar color="primary" dark>
+          <v-toolbar-title>{{submissionName}}</v-toolbar-title>
+        </v-toolbar>
+      </v-card>
+      <v-card>
+        <v-layout  row wrap class="pa-3">
+          <div class="flex-column">
+            <v-card-title primary-title class="flex-column">
+              <div class="pa-1">
+                <span>( {{periodStart}} ~ {{periodEnd}} )</span>
+              </div>
+            </v-card-title>
 
-          <v-card-actions>
-            <v-btn
-              color="error"
-              @click="deleteSubmission"
-              v-if="removable"
-            >
-              Delete
-            </v-btn>
+            <v-card-actions>
+              <v-btn
+                color="error"
+                @click="deleteSubmission"
+                v-if="removable"
+              >
+                Delete
+              </v-btn>
 
-            <v-btn
-              color="primary"
-              @click="sendSubmission"
-              v-if="!sendAble"
-            >
-              Send
-            </v-btn>
-          </v-card-actions>
-        </div>
+              <v-btn
+                color="primary"
+                @click="sendSubmission"
+                v-if="!sendAble"
+              >
+                Send
+              </v-btn>
+            </v-card-actions>
+          </div>
 
-        <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
 
-        <v-progress-circular
-          xs4
-          :size="120"
-          :width="15"
-          :rotate="-90"
-          :value="progress"
-          color="primary"
-        >
-          {{ progress.toFixed(2) }}
-        </v-progress-circular>
-      </v-layout>
-    </v-card>
+          <v-progress-circular
+            xs4
+            :size="120"
+            :width="15"
+            :rotate="-90"
+            :value="progress"
+            color="primary"
+          >
+            {{ progress.toFixed(2) }}
+          </v-progress-circular>
+        </v-layout>
+      </v-card>
+    </div>
 
     <v-layout row wrap>
       <v-flex xs3>
