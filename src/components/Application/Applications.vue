@@ -22,7 +22,7 @@
           class="elevation-1"
         >
           <template slot="items" slot-scope="props">
-            <td @click=onLoadApplication(props.item.name)>{{ props.item.name }}</td>
+            <td @click=onLoadApplication(props.item.slug)>{{ props.item.name }}</td>
           </template>
         </v-data-table>
       </v-flex>

@@ -65,7 +65,7 @@
 
 <script>
   export default {
-    props: ['user', 'applicationName'],
+    props: ['user', 'slug'],
     data () {
       return {
         id: this.user.id,
@@ -80,7 +80,7 @@
         if (this.editedRole !== this.user.application_role_id) {
           this.$store.dispatch('updateUser',
             {
-              applicationName: this.applicationName,
+              slug: this.slug,
               id: this.id,
               email: this.editedEmail,
               applicationRoleId: this.editedRole

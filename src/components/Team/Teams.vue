@@ -37,7 +37,7 @@
 
 <script>
   export default {
-    props: ['applicationName'],
+    props: ['slug'],
     data () {
       return {
         headers: [
@@ -48,7 +48,7 @@
     },
     computed: {
       teams () {
-        return this.$store.getters.loadedTeams(this.applicationName)
+        return this.$store.getters.loadedTeams(this.slug)
       },
       loading () {
         return this.$store.getters.loading
@@ -56,17 +56,17 @@
     },
     methods: {
       onLoadTeam (id) {
-        this.$router.push('/' + this.applicationName + '/teams/show/' + id)
+        this.$router.push('/' + this.slug + '/teams/show/' + id)
       },
       onCreateTeam () {
-        this.$router.push('/' + this.applicationName + '/teams/new')
+        this.$router.push('/' + this.slug + '/teams/new')
       },
       onBack () {
-        this.$router.push('/' + this.applicationName + '/show')
+        this.$router.push('/' + this.slug + '/show')
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.applicationName)
+      this.$store.dispatch('loadTeams', this.slug)
     }
   }
 </script>

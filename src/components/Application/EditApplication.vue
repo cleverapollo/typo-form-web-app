@@ -1,10 +1,6 @@
 <template>
   <v-dialog width="350px" persistent v-model="editApplication">
-    <v-btn
-      v-if="btnRect"
-      class="primary"
-      slot="activator"
-    >Edit</v-btn>
+    <div slot="activator" v-if="btnRect">Edit Application</div>
     <v-btn
       v-else
       class="primary"
@@ -109,7 +105,7 @@
         }
         this.editApplication = false
         this.$store.dispatch('updateApplication', {
-          id: this.id,
+          slug: this.application.slug,
           name: this.editedName,
           css: this.editedCSS
         })

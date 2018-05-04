@@ -20,7 +20,7 @@
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-layout row wrap>
-              <app-edit-user :user="user" :applicationName="applicationName" class="my-1"></app-edit-user>
+              <app-edit-user :user="user" :slug="slug" class="my-1"></app-edit-user>
               <v-btn class="error my-1" @click=onDeleteUser>Delete</v-btn>
               <v-spacer></v-spacer>
               <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
@@ -34,18 +34,18 @@
 
 <script>
   export default {
-    props: ['applicationName', 'id'],
+    props: ['slug', 'id'],
     computed: {
       roles () {
         console.log('roles')
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(this.applicationName)
+        return this.$store.getters.loadedApplication(this.slug)
       },
       user () {
         console.log('user')
-        return this.$store.getters.loadedUser(this.applicationName, parseInt(this.id))
+        return this.$store.getters.loadedUser(this.slug, parseInt(this.id))
       },
       userIsAuthenticated () {
         console.log('userIsAuthenticated')
@@ -66,10 +66,10 @@
     methods: {
       onDeleteUser () {
         this.$store.dispatch('deleteUser', {
-          applicationName: this.applicationName,
+          slug: this.slug,
           id: this.user.id
         })
-        this.$router.push('/' + this.applicationName + '/users')
+        this.$router.push('/' + this.slug + '/users')
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -78,12 +78,12 @@
         return role ? role.name : 'undefined'
       },
       onBack () {
-        this.$router.push('/' + this.applicationName + '/users')
+        this.$router.push('/' + this.slug + '/users')
       }
     },
     created: function () {
       this.$store.dispatch('loadApplications')
-      this.$store.dispatch('loadUsers', this.applicationName)
+      this.$store.dispatch('loadUsers', this.slug)
     }
   }
 </script>

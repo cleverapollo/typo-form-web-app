@@ -178,8 +178,8 @@
       }
     },
     watch: {
-      repeatable (value) {
-        this.hasRepeatableQuestions = value
+      section (value) {
+        console.log(value)
       }
     },
     computed: {

@@ -15,7 +15,7 @@
   export default {
     name: 'checkboxes',
     mixins: [validationMixin],
-    props: ['answers', 'responses'],
+    props: ['answers', 'responses', 'submissionId'],
     data () {
       return {
         checkAnswers: []
@@ -25,6 +25,13 @@
       this.checkAnswers = this.responses.map((response) => {
         return response.answer_id
       })
+    },
+    watch: {
+      submissionId (value) {
+        this.checkAnswers = this.responses.map((response) => {
+          return response.answer_id
+        })
+      }
     },
     methods: {
       checkAble (answerId) {

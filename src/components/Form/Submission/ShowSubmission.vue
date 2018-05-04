@@ -2,12 +2,11 @@
   <v-layout row wrap class="pl-3">
     <v-flex d-flex>
       <form-view
-        :applicationName="applicationName"
+        :slug="slug"
         :formId="formId"
         :submissionId="submissionId"
         :isAdmin="isAdmin"
         :view="view"
-        @change-view="changeView"
       ></form-view>
     </v-flex>
   </v-layout>
@@ -17,7 +16,7 @@
   import FormView from '../FormView'
 
   export default {
-    props: ['applicationName', 'formId', 'submissionId', 'isAdmin', 'view'],
+    props: ['slug', 'formId', 'submissionId', 'isAdmin', 'view'],
     components: {
       FormView
     },
@@ -26,7 +25,7 @@
         return this.$store.getters.roles
       },
       form () {
-        return this.$store.getters.loadedForm(this.applicationName, parseInt(this.id))
+        return this.$store.getters.loadedForm(this.slug, parseInt(this.id))
       },
       loading () {
         return this.$store.getters.loading
@@ -39,9 +38,6 @@
         })
 
         return role ? role.name : 'undefined'
-      },
-      changeView (view) {
-        this.$emit('change-view', view)
       }
     }
   }

@@ -46,9 +46,9 @@
           </v-layout>
 
           <create-submission
-            :applicationName="applicationName"
+            :slug="slug"
             :formId="formId"
-            v-if="isAdmin"
+            v-if="!isAdmin"
             style="margin: 0 auto"
           ></create-submission>
         </v-card-text>
@@ -57,12 +57,11 @@
 
     <v-flex xs9>
       <show-submission
-        :applicationName="applicationName"
+        :slug="slug"
         :formId="formId"
         :submissionId="submissionId"
         :isAdmin="isAdmin"
         :view="view"
-        @change-view="changeView"
       ></show-submission>
     </v-flex>
   </v-layout>
@@ -74,7 +73,7 @@
   import EditSubmission from './EditSubmission'
 
   export default {
-    props: ['applicationName', 'formId', 'isAdmin', 'view'],
+    props: ['slug', 'formId', 'isAdmin', 'view'],
     components: {
       ShowSubmission,
       CreateSubmission,
@@ -93,7 +92,7 @@
         return this.$store.getters.loadedSubmissions(parseInt(this.formId))
       },
       submissionTeams () {
-        return this.$store.getters.loadedSubmissionTeams(this.applicationName, parseInt(this.formId))
+        return this.$store.getters.loadedSubmissionTeams(this.slug, parseInt(this.formId))
       }
     },
     watch: {
@@ -128,9 +127,6 @@
       },
       active (submissionId) {
         return (this.submissionId === submissionId) ? 'active' : ''
-      },
-      changeView (view) {
-        this.$emit('change-view', view)
       }
     }
   }

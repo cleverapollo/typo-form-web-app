@@ -78,7 +78,8 @@ const router = new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Home,
+      meta: { requiresAuth: true }
     },
     {
       path: '/applications',
@@ -93,76 +94,83 @@ const router = new Router({
       meta: { requiresAuth: true }
     },
     {
-      path: '/:applicationName',
+      path: '/:slug',
       name: 'Application',
       component: Application,
       props: true
     },
     {
-      path: '/:applicationName/show',
+      path: '/:slug/show',
       name: 'ShowApplication',
       component: ShowApplication,
       props: true,
       meta: { requiresAuth: true }
     },
     {
-      path: '/:applicationName/teams',
+      path: '/:slug/teams',
       name: 'Teams',
       component: Teams,
       props: true,
       meta: { requiresAuth: true }
     },
     {
-      path: '/:applicationName/teams/new',
+      path: '/:slug/teams/new',
       name: 'CreateTeam',
       component: CreateTeam,
       props: true,
       meta: { requiresAuth: true }
     },
     {
-      path: '/:applicationName/teams/show/:id',
+      path: '/:slug/teams/show/:id',
       name: 'ShowTeam',
       component: ShowTeam,
       props: true,
       meta: { requiresAuth: true }
     },
     {
-      path: '/:applicationName/teams/:teamId/users/:id',
+      path: '/:slug/teams/:teamId/users/:id',
       name: 'ShowTeamUser',
       component: ShowTeamUser,
       props: true,
       meta: { requiresAuth: true }
     },
     {
-      path: '/:applicationName/users',
+      path: '/:slug/users',
       name: 'Users',
       component: Users,
       props: true,
       meta: { requiresAuth: true }
     },
     {
-      path: '/:applicationName/users/show/:id',
+      path: '/:slug/users/show/:id',
       name: 'ShowUser',
       component: ShowUser,
       props: true,
       meta: { requiresAuth: true }
     },
     {
-      path: '/:applicationName/forms',
+      path: '/:slug/forms',
       name: 'Forms',
       component: Forms,
       props: true,
       meta: { requiresAuth: true }
     },
     {
-      path: '/:applicationName/forms/new',
+      path: '/:slug/submissions',
+      name: 'Submissions',
+      component: Forms,
+      props: true,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/:slug/forms/new',
       name: 'CreateForm',
       component: CreateForm,
       props: true,
       meta: { requiresAuth: true }
     },
     {
-      path: '/:applicationName/forms/show/:id',
+      path: '/:slug/forms/show/:id/:view',
       name: 'ShowForm',
       component: ShowForm,
       props: true,
@@ -177,15 +185,15 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  document.title = to.params['applicationName'] || 'Informed 365'
+  document.title = to.params['slug'] || 'Informed 365'
   if (to.matched.some(record => record.meta.requiresAuth) && store.getters.user === null) {
     next({
       path: '/signin',
       query: { redirect: to.fullPath }
     })
   }
-  if (to.matched.some(record => record.path.includes(':applicationName'))) {
-    store.dispatch('loadApplication', to.params['applicationName'])
+  if (to.matched.some(record => record.path.includes(':slug'))) {
+    store.dispatch('loadApplication', to.params['slug'])
       .then(() => next())
       .catch(() => next({ path: '/' }))
   } else {

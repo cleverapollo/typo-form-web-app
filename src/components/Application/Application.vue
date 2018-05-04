@@ -12,7 +12,7 @@
   export default {
     name: 'application', // todo: redirect to first page if getting application fails
     props: {
-      applicationName: {
+      slug: {
         type: String
       }
     },
@@ -29,7 +29,7 @@
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(this.applicationName)
+        return this.$store.getters.loadedApplication(this.slug)
       },
       userIsAdmin () {
         if (!this.userIsAuthenticated || !this.application) {
@@ -43,7 +43,7 @@
     },
     mounted: function () {
       if (this.application.application_role_id) {
-        this.$router.push('/' + this.applicationName + '/show')
+        this.$router.push('/' + this.slug + '/show')
       }
     }
   }

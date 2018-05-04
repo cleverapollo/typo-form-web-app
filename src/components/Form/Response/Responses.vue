@@ -29,6 +29,7 @@
             :responses="responses"
             :question-id="question.id"
             :form-id="formId"
+            :submission-id="submissionId"
             @create-response="createResponse"
             @update-response="updateResponse"
             @delete-response="deleteResponse"

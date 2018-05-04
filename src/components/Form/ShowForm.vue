@@ -19,13 +19,14 @@
 
             <v-spacer></v-spacer>
 
-            <v-menu offset-y bottom left v-if="userIsAdmin">
+            <v-btn @click=onBack class="primary">Back</v-btn>
+
+            <v-menu offset-y bottom left v-if="view === 'questions' && userIsAdmin">
               <v-btn icon slot="activator">
                 <v-icon>more_vert</v-icon>
               </v-btn>
 
               <v-list>
-
                 <v-list-tile @click="">
                   <v-list-tile-title>
                     <app-create-section
@@ -37,25 +38,13 @@
 
                 <v-list-tile @click="">
                   <v-list-tile-title>
-                    <app-edit-form :form="form" :applicationName="applicationName"></app-edit-form>
+                    <app-edit-form :form="form" :slug="slug"></app-edit-form>
                   </v-list-tile-title>
                 </v-list-tile>
 
 
                 <v-list-tile @click=onDeleteForm>
                   <v-list-tile-title>Delete Form</v-list-tile-title>
-                </v-list-tile>
-
-                <v-list-tile @click="changeView('responses')">
-                  <v-list-tile-title>View Responses</v-list-tile-title>
-                </v-list-tile>
-
-                <v-list-tile @click="changeView('questions')">
-                  <v-list-tile-title>View Questions</v-list-tile-title>
-                </v-list-tile>
-
-                <v-list-tile @click=onBack>
-                  <v-list-tile-title>Back</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
@@ -68,21 +57,19 @@
           </h3>
 
           <form-view
-            :applicationName="applicationName"
+            :slug="slug"
             :formId="id"
             :submissionId="-1"
             :isAdmin="userIsAdmin"
             :view="view"
-            @change-view="changeView"
             v-if="view === 'questions' && userIsAdmin"
           ></form-view>
 
           <submissions
-            :applicationName="applicationName"
+            :slug="slug"
             :formId="id"
             :isAdmin="userIsAdmin"
             :view="view"
-            @change-view="changeView"
             v-else
           ></submissions>
         </div>
@@ -100,11 +87,10 @@
       Submissions,
       FormView
     },
-    props: ['applicationName', 'id'],
+    props: ['slug', 'id', 'view'],
     data () {
       return {
-        active: null,
-        view: 'questions'
+        active: null
       }
     },
     computed: {
@@ -112,7 +98,7 @@
         return this.$store.getters.roles
       },
       application () {
-        return this.$store.getters.loadedApplication(this.applicationName)
+        return this.$store.getters.loadedApplication(this.slug)
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -124,7 +110,7 @@
         return this.getRole(this.application.application_role_id) === 'Admin'
       },
       form () {
-        return this.$store.getters.loadedForm(this.applicationName, parseInt(this.id))
+        return this.$store.getters.loadedForm(this.slug, parseInt(this.id))
       },
       loading () {
         return this.$store.getters.loading
@@ -142,7 +128,11 @@
     },
     methods: {
       onBack () {
-        this.$router.push('/' + this.applicationName + '/forms')
+        if (this.view === 'responses') {
+          this.$router.push('/' + this.slug + '/submissions')
+        } else {
+          this.$router.push('/' + this.slug + '/forms')
+        }
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -152,19 +142,16 @@
       },
       onDeleteForm () {
         this.$store.dispatch('deleteForm', {
-          applicationName: this.applicationName,
+          slug: this.slug,
           id: this.form.id
         })
-        this.$router.push('/' + this.applicationName + '/forms')
-      },
-      changeView (view) {
-        this.view = view
+        this.$router.push('/' + this.slug + '/forms')
       }
     },
     created: function () {
       this.$store.dispatch('loadApplications')
-      this.$store.dispatch('loadTeams', this.applicationName)
-      this.$store.dispatch('loadForms', this.applicationName)
+      this.$store.dispatch('loadTeams', this.slug)
+      this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadSections', this.id)
       this.$store.dispatch('loadSubmissions', this.id)
       this.$store.dispatch('loadValidations', this.id)

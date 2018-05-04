@@ -187,22 +187,26 @@ export default {
       }
     },
     loadedSubmissionTeams (state, getters, rootState) {
-      return (applicationName, formId) => {
-        if (!rootState.team.loadedTeams[applicationName]) {
+      return (slug, formId) => {
+        if (!rootState.team.loadedTeams[slug]) {
           return []
         }
 
-        const teams = rootState.team.loadedTeams[applicationName]
-        if (!state.loadedSubmissions[formId]) {
-          return teams
+        let teams = rootState.team.loadedTeams[slug].slice(0)
+        teams.push({id: 0, name: 'No Team'})
+        const submissions = state.loadedSubmissions[formId]
+        if (submissions) {
+          for (var i = 0; i < submissions.length; i++) {
+            teams = teams.filter((team) => {
+              if (!submissions[i].team) {
+                return team.id !== 0
+              } else {
+                return submissions[i].team.name !== team.name
+              }
+            })
+          }
         }
-
-        return teams.filter((team) => {
-          const index = state.loadedSubmissions[formId].find((submission) => {
-            return submission.team && submission.team.id === team.id
-          })
-          return index === -1
-        })
+        return teams
       }
     }
   }

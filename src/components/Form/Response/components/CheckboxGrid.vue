@@ -21,23 +21,19 @@
 <script>
   export default {
     name: 'checkbox-grid',
-    props: ['answers', 'responses'],
+    props: ['answers', 'responses', 'submissionId'],
     data () {
       return {
         checkAnswers: []
       }
     },
-    mounted () {
-      let ex = []
-      for (let i = 0; i < this.computedRows.length; i++) {
-        const filteredResponses = this.responses.filter((response) => {
-          return this.computedRows[i].id === response.answer_id
-        })
-        ex[i] = filteredResponses.map((response) => {
-          return parseInt(response.response)
-        })
+    watch: {
+      submissionId (value) {
+        this.created()
       }
-      this.checkAnswers = ex
+    },
+    mounted () {
+      this.created()
     },
     computed: {
       computedRows () {
@@ -52,6 +48,18 @@
       }
     },
     methods: {
+      created () {
+        let ex = []
+        for (let i = 0; i < this.computedRows.length; i++) {
+          const filteredResponses = this.responses.filter((response) => {
+            return this.computedRows[i].id === response.answer_id
+          })
+          ex[i] = filteredResponses.map((response) => {
+            return parseInt(response.response)
+          })
+        }
+        this.checkAnswers = ex
+      },
       checkAble (answerId, responseId) {
         const index = this.responses.findIndex((response) => {
           return response.answer_id === answerId && parseInt(response.response) === responseId

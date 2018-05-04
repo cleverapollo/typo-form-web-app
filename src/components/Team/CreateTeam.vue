@@ -87,7 +87,7 @@
 
 <script>
   export default {
-    props: ['applicationName'],
+    props: ['slug'],
     data () {
       return {
         name: '',
@@ -127,7 +127,7 @@
           return
         }
         const teamData = {
-          applicationName: this.applicationName,
+          slug: this.slug,
           name: this.name,
           description: this.description,
           invitations: this.invitations.filter(function (item) {
@@ -135,7 +135,7 @@
           })
         }
         this.$store.dispatch('createTeam', teamData)
-        this.$router.push('/' + this.applicationName + '/teams')
+        this.$router.push('/' + this.slug + '/teams')
       },
       onAddMember () {
         this.invitations.push({
@@ -144,7 +144,7 @@
         })
       },
       onCancel () {
-        this.$router.push('/' + this.applicationName + '/teams')
+        this.$router.push('/' + this.slug + '/teams')
       }
     }
   }

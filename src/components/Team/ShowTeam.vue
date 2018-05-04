@@ -18,7 +18,7 @@
           <v-card-text>
             <h3 class="break-all">{{joinURL}}</h3>
             <h3 class="break-all">{{ team.description }}</h3>
-            <app-invite-team :applicationName="applicationName" :teamId="id"></app-invite-team>
+            <app-invite-team :slug="slug" :teamId="id"></app-invite-team>
             <v-tabs v-model="active">
               <v-tabs-bar class="primary" dark>
                 <v-tabs-item
@@ -75,7 +75,7 @@
           </v-card-text>
           <v-card-actions>
             <v-layout row wrap>
-              <app-edit-team :team="team" :applicationName="applicationName" class="my-1"></app-edit-team>
+              <app-edit-team :team="team" :slug="slug" class="my-1"></app-edit-team>
               <v-btn class="error my-1" @click=onDeleteTeam>Delete</v-btn>
               <v-spacer></v-spacer>
               <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
@@ -115,7 +115,7 @@
 
 <script>
   export default {
-    props: ['applicationName', 'id'],
+    props: ['slug', 'id'],
     data () {
       return {
         active: null,
@@ -132,7 +132,7 @@
         return this.$store.getters.roles
       },
       team () {
-        return this.$store.getters.loadedTeam(this.applicationName, parseInt(this.id))
+        return this.$store.getters.loadedTeam(this.slug, parseInt(this.id))
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
@@ -159,13 +159,13 @@
     methods: {
       onDeleteTeam () {
         this.$store.dispatch('deleteTeam', {
-          applicationName: this.applicationName,
+          slug: this.slug,
           id: this.team.id
         })
-        this.$router.push('/' + this.applicationName + '/teams')
+        this.$router.push('/' + this.slug + '/teams')
       },
       onLoadTeamUser (id) {
-        this.$router.push('/' + this.applicationName + '/teams/' + this.id + '/users/' + id)
+        this.$router.push('/' + this.slug + '/teams/' + this.id + '/users/' + id)
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {
@@ -174,12 +174,12 @@
         return role ? role.name : 'undefined'
       },
       onBack () {
-        this.$router.push('/' + this.applicationName + '/teams')
+        this.$router.push('/' + this.slug + '/teams')
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.applicationName)
-      this.$store.dispatch('loadTeamUsers', {applicationName: this.applicationName, teamId: this.id})
+      this.$store.dispatch('loadTeams', this.slug)
+      this.$store.dispatch('loadTeamUsers', {slug: this.slug, teamId: this.id})
     }
   }
 </script>

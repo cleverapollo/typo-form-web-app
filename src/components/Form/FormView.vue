@@ -79,7 +79,7 @@
   import FormTree from './FormTree'
 
   export default {
-    props: ['applicationName', 'formId', 'submissionId', 'isAdmin', 'view'],
+    props: ['slug', 'formId', 'submissionId', 'isAdmin', 'view'],
     components: {
       sections,
       FormTree
@@ -145,7 +145,7 @@
             }, this)
           }, this)
 
-          return responseCount * 100 / questionCount
+          return questionCount !== 0 ? responseCount * 100 / questionCount : 0
         }
       },
       section () {
@@ -266,9 +266,6 @@
       },
       sectionClicked: function (item) {
         this.$store.dispatch('selectSection', item)
-      },
-      changeView (view) {
-        this.$emit('change-view', view)
       },
       getChildSection (rtSection) {
         let repeat = true

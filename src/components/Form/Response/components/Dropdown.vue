@@ -18,10 +18,17 @@
 <script>
   export default {
     name: 'dropdown',
-    props: ['answers', 'responses'],
+    props: ['answers', 'responses', 'submissionId'],
     data () {
       return {
         selectedOption: null
+      }
+    },
+    watch: {
+      submissionId (value) {
+        if (this.responses.length) {
+          this.selectedOption = parseInt(this.responses[0].response)
+        }
       }
     },
     methods: {

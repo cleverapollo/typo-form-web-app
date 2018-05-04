@@ -111,11 +111,12 @@ export default {
       return this.user !== null && this.user !== undefined
     },
     title () {
-      return this.$route.params['applicationName'] || 'Informed 365'
+      const application = this.$store.getters.loadedApplication(this.$route.params['slug'])
+      return application ? application.name : 'Informed 365'
     },
     titleLink () {
-      if (this.$route.params['applicationName']) {
-        return '/' + this.$route.params['applicationName']
+      if (this.$route.params['slug']) {
+        return '/' + this.$route.params['slug']
       }
       return '/'
     },
