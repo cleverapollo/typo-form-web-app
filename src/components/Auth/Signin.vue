@@ -57,10 +57,10 @@
             </v-container>
             <v-container class="oauth-container">
               <div class="oauth-login py-4">
-                <v-btn block color="normal" normal>Use Google Account</v-btn>
-                <v-btn block color="normal" normal>Use FaceBook Account</v-btn>
-                <v-btn block color="normal" normal>Use Live Account</v-btn>
-                <v-btn block color="normal" normal>Use Github Account</v-btn>
+                <v-btn block color="normal" href="http://localhost:8000/socialite/google" normal>Use Google Account</v-btn>
+                <v-btn block color="normal" href="http://localhost:8000/socialite/facebook" normal>Use FaceBook Account</v-btn>
+                <v-btn block color="normal" href="http://localhost:8000/socialite/live" normal>Use Live Account</v-btn>
+                <v-btn block color="normal" href="http://localhost:8000/socialite/github" normal>Use Github Account</v-btn>
               </div>
             </v-container>
           </v-card-text>
