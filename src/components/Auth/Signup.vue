@@ -46,13 +46,13 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field
+                    <v-text-ficeld
                       name="password"
                       label="Password"
                       id="password"
                       v-model="password"
                       type="password"
-                      required></v-text-field>
+                      required></v-text-ficeld>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
