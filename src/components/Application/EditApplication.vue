@@ -104,11 +104,15 @@
           return
         }
         this.editApplication = false
-        this.$store.dispatch('updateApplication', {
+        let updateObj = {
           slug: this.application.slug,
-          name: this.editedName,
           css: this.editedCSS
-        })
+        }
+        if (this.editedName !== this.application.name) {
+          updateObj.name = this.editedName
+        }
+        this.$store.dispatch('updateApplication', updateObj)
+          .then((response) => this.$router.push('/' + response.data.application.slug + '/show'))
       },
       onCancel () {
         this.editedName = this.application.name

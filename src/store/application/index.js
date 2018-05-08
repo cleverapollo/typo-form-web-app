@@ -136,21 +136,27 @@ export default {
       const updateObj = {}
       if (payload.name) {
         updateObj.name = payload.name
+      }
+      if (payload.css) {
         updateObj.css = payload.css
       }
-      window.axios.put(APPLICATION_URL + payload.slug, updateObj)
-        .then(response => {
-          commit('setLoading', false)
-          const updateObject = {
-            slug: payload.slug,
-            application: response['data']['application']
-          }
-          commit('updateApplication', updateObject)
-        })
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
+      return new Promise((resolve, reject) => {
+        window.axios.put(APPLICATION_URL + payload.slug, updateObj)
+          .then(response => {
+            commit('setLoading', false)
+            const updateObject = {
+              slug: payload.slug,
+              application: response['data']['application']
+            }
+            commit('updateApplication', updateObject)
+            resolve(response)
+          })
+          .catch(error => {
+            console.log(error)
+            commit('setLoading', false)
+            reject(error)
+          })
+      })
     },
     deleteApplication ({commit}, payload) {
       commit('setLoading', true)
