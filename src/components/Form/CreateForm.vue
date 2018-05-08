@@ -123,7 +123,7 @@
         periodStart: null,
         endMenu: false,
         periodEnd: null,
-        periodDuration: 1,
+        periodDuration: 5,
         showProgress: true
       }
     },
@@ -188,9 +188,6 @@
       onCancel () {
         this.$router.push('/' + this.slug + '/forms')
       }
-    },
-    created: function () {
-      this.$store.dispatch('loadApplications')
     }
   }
 </script>

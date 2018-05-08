@@ -1,6 +1,7 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
 const TEAM_URL = `/team/`
+const USER_URL = `/user/`
 
 export default {
   state: {
@@ -85,7 +86,29 @@ export default {
       window.axios.post(APPLICATION_URL + payload.slug + TEAM_URL + payload.id + '/invite', team)
         .then(
           response => {
-            commit('setLoading', false)
+            window.axios.get(APPLICATION_URL + payload.slug + TEAM_URL + payload.id + USER_URL)
+              .then(
+                response => {
+                  commit('setLoading', false)
+                  const updateLoadedObj = {
+                    teamId: payload.id,
+                    users: response['data']['users']['current']
+                  }
+                  commit('setLoadedTeamUsers', updateLoadedObj)
+
+                  const updateInvitedObj = {
+                    teamId: payload.id,
+                    users: response['data']['users']['unaccepted']
+                  }
+                  commit('setInvitedTeamUsers', updateInvitedObj)
+                }
+              )
+              .catch(
+                error => {
+                  commit('setLoading', false)
+                  console.log(error)
+                }
+              )
           }
         )
         .catch(

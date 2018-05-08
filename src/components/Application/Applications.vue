@@ -63,9 +63,6 @@
       onLoadApplication (name) {
         this.$router.push('/' + name)
       }
-    },
-    created: function () {
-      this.$store.dispatch('loadApplications')
     }
   }
 </script>

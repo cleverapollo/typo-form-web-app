@@ -48,13 +48,13 @@
               <v-icon>apps</v-icon>
             </v-avatar>
           </v-btn>
-          <v-list>
+          <v-list v-if='applications.length'>
             <template v-for="(application, index) in applications">
               <v-list-tile
                 avatar
                 ripple
                 :key="application.id"
-                :to="'/'+application.name">
+                :to="'/'+application.slug">
                 <v-list-tile-content>
                   {{application.name}}
                 </v-list-tile-content>

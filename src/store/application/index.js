@@ -1,5 +1,6 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
+const USER_URL = `/user/`
 
 export default {
   state: {
@@ -98,7 +99,29 @@ export default {
       window.axios.post(APPLICATION_URL + payload.slug + '/invite', application)
         .then(
           response => {
-            commit('setLoading', false)
+            window.axios.get(APPLICATION_URL + payload.slug + USER_URL)
+              .then(
+                response => {
+                  commit('setLoading', false)
+                  const updateLoadedObj = {
+                    slug: payload.slug,
+                    users: response['data']['users']['current']
+                  }
+                  commit('setLoadedUsers', updateLoadedObj)
+
+                  const updateInvitedObj = {
+                    slug: payload.slug,
+                    users: response['data']['users']['unaccepted']
+                  }
+                  commit('setInvitedUsers', updateInvitedObj)
+                }
+              )
+              .catch(
+                error => {
+                  commit('setLoading', false)
+                  console.log(error)
+                }
+              )
           }
         )
         .catch(
@@ -145,7 +168,7 @@ export default {
   getters: {
     loadedApplications (state) {
       return state.loadedApplications.sort((applicationA, applicationB) => {
-        return applicationA.id > applicationB.id
+        return applicationA.name > applicationB.name
       })
     },
     loadedApplication (state) {

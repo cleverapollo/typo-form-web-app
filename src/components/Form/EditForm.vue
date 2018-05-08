@@ -145,7 +145,7 @@
         id: this.form.id,
         editForm: false,
         editedName: this.form.name,
-        periodDuration: this.form.period_end ? 5 : 1,
+        periodDuration: this.form.period_end ? 5 : this.form.period_id,
         startMenu: false,
         periodStart: this.form.period_start ? this.form.period_start.substring(0, 10) : null,
         endMenu: false,
@@ -182,12 +182,6 @@
       },
       loading () {
         return this.$store.getters.loading
-      },
-      periodTypes () {
-        return [
-          {id: 1, name: 'Set Period Duration'},
-          {id: 2, name: 'Set Period End'}
-        ]
       },
       periodDurations () {
         var options = this.$store.getters.periods
