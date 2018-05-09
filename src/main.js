@@ -52,7 +52,7 @@ Vue.use(VueAuthenticate, {
       redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
     },
     live: {
-      clientId: '79ff1315-2451-4f3b-ab27-0611a3126568',
+      clientId: '4489dd7c-3951-47f5-8526-1de225e2cf1c',
       redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
     }
   }

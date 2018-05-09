@@ -174,7 +174,7 @@
               this_.response = response
             })
           } else if (provider === 'google') {
-            this_.$http.get('https://www.googleapis.com/plus/v1/people/me/openIdConnect').then(function (response) {
+            this_.$http.get('https://www.googleapis.com/oauth2/v3/userinfo').then(function (response) {
               this_.response = response
             })
           } else if (provider === 'twitter') {
