@@ -1,6 +1,10 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import VueAuthenticate from 'vue-authenticate'
+import VueAxios from 'vue-axios'
+import axios from 'axios'
+
 import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
@@ -28,6 +32,31 @@ import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
 
 Vue.use(Vuetify)
+Vue.use(VueAxios, axios)
+Vue.use(VueAuthenticate, {
+  tokenName: 'access_token',
+  baseUrl: 'http://localhost:4000',
+  storageType: 'cookieStorage',
+  providers: {
+    // Define OAuth providers config
+    github: {
+      clientId: 'cfb878be79c0a7b7616a',
+      redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
+    },
+    facebook: {
+      clientId: '',
+      redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
+    },
+    google: {
+      clientId: '5570114347-1q8r9fkardh7oko0a2d7qqee95a8ve6i.apps.googleusercontent.com',
+      redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
+    },
+    live: {
+      clientId: '79ff1315-2451-4f3b-ab27-0611a3126568',
+      redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
+    }
+  }
+})
 Vue.config.productionTip = false
 
 Vue.component('app-alert', AlertCmp)
