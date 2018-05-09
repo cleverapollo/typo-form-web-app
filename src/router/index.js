@@ -175,6 +175,12 @@ const router = new Router({
       component: ShowForm,
       props: true,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/socialite/github/callback',
+      component: {
+        template: '<div class="auth-component">dfafda</div>'
+      }
     }
     /* {
       path: '*',

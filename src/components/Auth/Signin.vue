@@ -57,10 +57,10 @@
             </v-container>
             <v-container class="oauth-container">
               <div class="oauth-login py-4">
-                <v-btn block color="normal" href="http://localhost:8000/socialite/google" normal>Use Google Account</v-btn>
-                <v-btn block color="normal" href="http://localhost:8000/socialite/facebook" normal>Use FaceBook Account</v-btn>
-                <v-btn block color="normal" href="http://localhost:8000/socialite/live" normal>Use Live Account</v-btn>
-                <v-btn block color="normal" href="http://localhost:8000/socialite/github" normal>Use Github Account</v-btn>
+                <v-btn block color="normal" @click="authenticate('google')" normal>Use Google Account</v-btn>
+                <v-btn block color="normal" @click="authenticate('facebook')" normal>Use FaceBook Account</v-btn>
+                <v-btn block color="normal" @click="authenticate('live')" normal>Use Live Account</v-btn>
+                <v-btn block color="normal" @click="authenticate('github')" normal>Use Github Account</v-btn>
               </div>
             </v-container>
           </v-card-text>
@@ -77,6 +77,56 @@
 </template>
 
 <script>
+  import Vue from 'vue'
+  import VueAxios from 'vue-axios'
+  import VueAuthenticate from 'vue-authenticate'
+  import axios from 'axios'
+
+  Vue.use(VueAxios, axios)
+  Vue.use(VueAuthenticate, {
+    baseUrl: 'http://localhost:8000', // Your API domain
+
+    providers: {
+      google: {
+        clientId: '5570114347-1q8r9fkardh7oko0a2d7qqee95a8ve6i.apps.googleusercontent.com/',
+        redirectUrl: 'http://localhost:8080/auth/callback' // Your client app URL
+      },
+      facebook: {
+        clientId: 'cfb878be79c0a7b7616a',
+        redirectUrl: 'http://localhost:8080/auth/callback' // Your client app URL
+      },
+      live: {
+        clientId: '79ff1315-2451-4f3b-ab27-0611a3126568',
+        redirectUrl: 'http://localhost:8080/auth/callback'// Your client app URL
+      },
+      github: {
+        url: '/socialite/github/callback',
+        clientId: 'cfb878be79c0a7b7616a',
+        redirectUri: 'http://localhost:8080/socialite/github/callback'
+//        redirectUri: 'http://localhost:8080/socialite/github/callback' // Your client app URL
+      }
+    },
+    bindRequestInterceptor: function () {
+      this.$http.interceptors.request.use((config) => {
+        if (this.isAuthenticated()) {
+          config.headers['Authorization'] = [
+            this.options.tokenType, this.getToken()
+          ].join(' ')
+        } else {
+          delete config.headers['Authorization']
+        }
+        return config
+      })
+    },
+
+    bindResponseInterceptor: function () {
+      this.$http.interceptors.response.use((response) => {
+        this.setToken(response)
+        return response
+      })
+    }
+  })
+
   export default {
     data () {
       return {
@@ -121,6 +171,12 @@
       },
       onDismissed () {
         this.$store.dispatch('clearError')
+      },
+      authenticate: function (provider) {
+        alert(window.location.origin)
+        this.$auth.authenticate(provider).then(function () {
+          alert(1)
+        })
       }
     },
     created: function () {
@@ -134,9 +190,11 @@
   .oauth-container {
     position: relative;
   }
+
   .oauth-login {
     border-top: 2px dashed #efefef;
   }
+
   .oauth-login::after {
     display: block;
     content: "or";
