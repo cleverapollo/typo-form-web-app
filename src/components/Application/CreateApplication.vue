@@ -166,7 +166,6 @@
         })
       },
       updateIcon (icon) {
-        console.log(icon)
         this.icon = icon
       },
       onCancel () {

@@ -37,29 +37,24 @@
     props: ['slug', 'id'],
     computed: {
       roles () {
-        console.log('roles')
         return this.$store.getters.roles
       },
       application () {
         return this.$store.getters.loadedApplication(this.slug)
       },
       user () {
-        console.log('user')
         return this.$store.getters.loadedUser(this.slug, parseInt(this.id))
       },
       userIsAuthenticated () {
-        console.log('userIsAuthenticated')
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsAdmin () {
-        console.log('userIsAdmin')
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
         return this.getRole(this.application.application_role_id) === 'Admin'
       },
       loading () {
-        console.log('loading')
         return this.$store.getters.loading
       }
     },
