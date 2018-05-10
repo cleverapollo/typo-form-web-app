@@ -38,7 +38,7 @@
       <v-toolbar-title class="ml-0 pl-3">
         <router-link :to="titleLink" tag="span" style="cursor: pointer">
           <div class="d-flex flex-row">
-            <div class="application-icon align-self-center">
+            <div v-if="titleIcon" class="application-icon align-self-center">
               <img :src="api_url + 'uploads/' + titleIcon"/>
             </div>
             <div class="pl-3">{{title}}</div>
