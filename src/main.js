@@ -35,7 +35,7 @@ Vue.use(Vuetify)
 Vue.use(VueAxios, axios)
 Vue.use(VueAuthenticate, {
   tokenName: 'access_token',
-  baseUrl: 'http://localhost:4000',
+  baseUrl: 'http://localhost:8000',
   storageType: 'cookieStorage',
   providers: {
     // Define OAuth providers config

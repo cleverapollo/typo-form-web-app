@@ -111,7 +111,6 @@
       return {
         email: '',
         password: '',
-        access_token: null,
         response: null
       }
     },
@@ -162,6 +161,8 @@
 
         var this_ = this
         this.$auth.authenticate(provider).then(function (authResponse) {
+          console.log(provider)
+          console.log(authResponse)
           if (provider === 'github') {
             this_.$http.get('https://api.github.com/user').then(function (response) {
               this_.response = response

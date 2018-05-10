@@ -177,11 +177,6 @@
         max_rows: this.section.max_rows
       }
     },
-    watch: {
-      section (value) {
-        console.log(value)
-      }
-    },
     computed: {
       list: {
         get () {

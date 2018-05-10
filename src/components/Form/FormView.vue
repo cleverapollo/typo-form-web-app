@@ -151,17 +151,15 @@
       section () {
         let rtSection = this.$store.getters.loadSelectedSection()
         if (!rtSection) {
-          if (this.view === 'questions') {
-            const sections = this.$store.getters.loadedChildren(this.formId, null)
-            if (sections.length === 0) {
-              rtSection = null
-            } else {
+          const sections = this.list
+          if (sections.length) {
+            if (this.view === 'questions') {
               rtSection = sections[0]
+            } else {
+              rtSection = this.getChildSection(sections[0])
             }
-          } else {
-            rtSection = this.getChildSection(this.list)
+            this.$store.dispatch('selectSection', rtSection)
           }
-          this.$store.dispatch('selectSection', rtSection)
         } else {
           if (this.view === 'responses') {
             const children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
@@ -290,7 +288,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .expansion-panel .card__text {
     padding-right: 0 !important;
   }
