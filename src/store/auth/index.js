@@ -171,12 +171,16 @@ export default {
       if (payload.password) {
         obj.password = payload.password
       }
+      if (payload.passwordConfirm) {
+        obj.password_confirmation = payload.passwordConfirm
+      }
       if (payload.email) {
         obj.email = payload.email
       }
       let token = ''
       if (payload.token) {
         token = payload.token
+        obj.token = payload.token
       }
       return new Promise((resolve, reject) => {
         window.axios.post(PASSWORD_RESET_URL + token, obj)

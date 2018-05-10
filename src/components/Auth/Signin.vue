@@ -49,8 +49,8 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs12 text-xs-center class="pt-4">
-                    <router-link to="/reset-password" tag="a" class="green--text">Forgot your password?</router-link>
+                  <v-flex xs12 text-xs-center class="mt-4">
+                    <router-link to="/password/reset" tag="a" class="green--text">Forgot your password?</router-link>
                   </v-flex>
                 </v-layout>
               </form>
@@ -111,7 +111,6 @@
       return {
         email: '',
         password: '',
-        access_token: null,
         response: null
       }
     },
@@ -162,6 +161,8 @@
 
         var this_ = this
         this.$auth.authenticate(provider).then(function (authResponse) {
+          console.log(provider)
+          console.log(authResponse)
           if (provider === 'github') {
             this_.$http.get('https://api.github.com/user').then(function (response) {
               this_.response = response

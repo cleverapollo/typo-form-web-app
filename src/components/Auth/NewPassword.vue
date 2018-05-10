@@ -14,6 +14,17 @@
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
+                      name="email"
+                      label="Email"
+                      id="email"
+                      v-model="email"
+                      type="email"
+                      required></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs12>
+                    <v-text-field
                       name="password"
                       label="Password"
                       id="password"
@@ -25,10 +36,10 @@
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
-                      name="confirmPassword"
+                      name="passwordConfirm"
                       label="Confirm Password"
-                      id="confirmPassword"
-                      v-model="confirmPassword"
+                      id="passwordConfirm"
+                      v-model="passwordConfirm"
                       type="password"
                       :rules="[comparePasswords]"></v-text-field>
                   </v-flex>
@@ -62,13 +73,14 @@
     props: ['token'],
     data () {
       return {
+        email: '',
         password: '',
-        confirmPassword: ''
+        passwordConfirm: ''
       }
     },
     computed: {
       comparePasswords () {
-        return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
+        return this.password !== this.passwordConfirm ? 'Passwords do not match' : ''
       },
       error () {
         return this.$store.getters.error
@@ -79,9 +91,10 @@
     },
     methods: {
       onCreatePassword () {
-        this.$store.dispatch('resetPassword', {token: this.token, password: this.password}).then(response => {
-          this.$router.push('/signin')
-        })
+        this.$store.dispatch('resetPassword', {email: this.email, token: this.token, password: this.password, passwordConfirm: this.passwordConfirm})
+          .then(response => {
+            this.$router.push('/signin')
+          })
       },
       onDismissed () {
         this.$store.dispatch('clearError')
