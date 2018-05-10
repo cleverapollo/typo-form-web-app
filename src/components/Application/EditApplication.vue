@@ -48,6 +48,14 @@
             </v-card-text>
           </v-flex>
         </v-layout>
+        <v-layout row>
+          <v-flex xs12 class="ph-2">
+            <upload-icon
+              :icon='icon'
+              @update-icon="updateIcon">
+            </upload-icon>
+          </v-flex>
+        </v-layout>
         <v-divider></v-divider>
         <v-layout row wrap>
           <v-flex xs12>
@@ -80,6 +88,8 @@
 </template>
 
 <script>
+  import uploadIcon from './IconUpload'
+
   export default {
     props: {
       application: {
@@ -90,12 +100,16 @@
         default: true
       }
     },
+    components: {
+      uploadIcon
+    },
     data () {
       return {
         id: this.application.id,
         editApplication: false,
         editedName: this.application.name,
-        editedCSS: this.application.css
+        editedCSS: this.application.css,
+        icon: this.application.icon
       }
     },
     methods: {
@@ -108,11 +122,20 @@
           slug: this.application.slug,
           css: this.editedCSS
         }
+
         if (this.editedName !== this.application.name) {
           updateObj.name = this.editedName
         }
+
+        if (this.icon !== this.application.icon) {
+          updateObj.icon = this.icon
+        }
+
         this.$store.dispatch('updateApplication', updateObj)
           .then((response) => this.$router.push('/' + response.data.application.slug + '/show'))
+      },
+      updateIcon (icon) {
+        this.icon = icon
       },
       onCancel () {
         this.editedName = this.application.name

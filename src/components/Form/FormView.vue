@@ -1,17 +1,17 @@
 <template>
   <div>
-    <v-layout v-if="submissionId > 0" column class="mr-1">
+    <div v-if="submissionId > 0">
       <v-card>
         <v-toolbar color="primary" dark>
           <v-toolbar-title>{{submissionName}}</v-toolbar-title>
         </v-toolbar>
       </v-card>
       <v-card>
-        <v-layout row wrap class="pa-3">
+        <v-layout  row wrap class="pa-3">
           <div class="flex-column">
             <v-card-title primary-title class="flex-column">
               <div class="pa-1">
-                <span> {{periodStart}} ~ {{periodEnd}} </span>
+                <span>( {{periodStart}} ~ {{periodEnd}} )</span>
               </div>
             </v-card-title>
 
@@ -48,7 +48,7 @@
           </v-progress-circular>
         </v-layout>
       </v-card>
-    </v-layout>
+    </div>
 
     <v-layout row wrap>
       <v-flex xs3>

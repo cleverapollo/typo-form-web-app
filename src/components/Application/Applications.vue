@@ -22,7 +22,14 @@
           class="elevation-1"
         >
           <template slot="items" slot-scope="props">
-            <td @click=onLoadApplication(props.item.slug)>{{ props.item.name }}</td>
+            <td @click=onLoadApplication(props.item)>
+              <div class="row">
+                <div class="application-icon inline-block">
+                  <img :src="api_url + 'uploads/' + props.item.icon"/>
+                </div>
+                <div class="pl-3 inline-block">{{ props.item.name }}</div>
+              </div>
+            </td>
           </template>
         </v-data-table>
       </v-flex>
@@ -34,8 +41,9 @@
   export default {
     data () {
       return {
+        api_url: process.env.API_ORIGIN_URL,
         headers: [
-          { text: 'Name', value: 'name', sortable: false, align: 'left' }
+          {text: 'Name', value: 'name', sortable: false, align: 'left'}
         ]
       }
     },
@@ -60,9 +68,19 @@
         })
         return role ? role.name : 'undefined'
       },
-      onLoadApplication (name) {
-        this.$router.push('/' + name)
+      onLoadApplication (application) {
+        if (application.icon) {
+          let favicon = document.getElementById('dyc-favicon')
+          favicon.setAttribute('href', this.api_url + 'uploads/' + application.icon)
+        }
+        this.$router.push('/' + application.slug)
       }
     }
   }
 </script>
+
+<style scope="">
+  .inline-block {
+    display: inline-block;
+  }
+</style>

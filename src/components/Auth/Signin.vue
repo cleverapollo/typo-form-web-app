@@ -42,7 +42,7 @@
                       :disabled="loading"
                       :loading="loading">
                       Sign in
-                       <span slot="loader" class="custom-loader">
+                      <span slot="loader" class="custom-loader">
                         <v-icon light>cached</v-icon>
                        </span>
                     </v-btn>
@@ -202,3 +202,26 @@
     }
   }
 </script>
+
+<style scoped>
+  .oauth-container {
+    position: relative;
+  }
+
+  .oauth-login {
+    border-top: 2px dashed #efefef;
+  }
+
+  .oauth-login::after {
+    display: block;
+    content: "or";
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    padding: 0 10px;
+    background-color: #fff;
+    color: #b6b3b3;
+  }
+</style>

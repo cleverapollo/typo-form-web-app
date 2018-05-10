@@ -27,12 +27,20 @@
                 </v-flex>
               </v-layout>
               <v-layout row>
+                <v-flex xs4>
+                  <upload-icon
+                    :icon='null'
+                    @update-icon="updateIcon">
+                  </upload-icon>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
                 <v-flex xs12>
                   <v-container pa-0>
                     <v-layout wrap text-xs-center>
                       <v-spacer></v-spacer>
                       <v-btn dark color="primary"
-                        @click="onAddMember">
+                             @click="onAddMember">
                         <v-icon dark>add</v-icon>
                         Add
                       </v-btn>
@@ -58,7 +66,7 @@
                         </v-flex>
                         <v-flex xs12 sm1 offset-sm1 text-xs-center>
                           <v-btn fab dark small color="error"
-                            @click="invitations.splice(index, 1)">
+                                 @click="invitations.splice(index, 1)">
                             <v-icon dark>remove</v-icon>
                           </v-btn>
                         </v-flex>
@@ -86,11 +94,17 @@
 </template>
 
 <script>
+  import uploadIcon from './IconUpload'
+
   export default {
+    components: {
+      uploadIcon
+    },
     data () {
       return {
         name: '',
         css: '',
+        icon: '',
         invitations: [
           {
             email: '',
@@ -137,6 +151,7 @@
         const applicationData = {
           name: this.name,
           css: this.css,
+          icon: this.icon,
           invitations: this.invitations.filter(function (item) {
             return item.email.trim() !== ''
           })
@@ -150,6 +165,10 @@
           application_role_id: ''
         })
       },
+      updateIcon (icon) {
+        console.log(icon)
+        this.icon = icon
+      },
       onCancel () {
         this.$router.push('/applications')
       }
@@ -161,3 +180,9 @@
     }
   }
 </script>
+
+<style scope="">
+  .dz-preview.dz-processing{
+    z-index: 1;
+  }
+</style>

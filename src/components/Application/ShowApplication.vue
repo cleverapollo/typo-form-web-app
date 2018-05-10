@@ -13,7 +13,12 @@
       <v-flex xs12>
         <v-card v-if="application">
           <v-card-title>
-            <h1 class="primary--text">{{ application.name }}</h1>
+            <div class="d-flex flex-row">
+              <div class="application-icon align-self-center">
+                <img :src="api_url + 'uploads/' + application.icon"/>
+              </div>
+              <div class="pl-3"> <h1 class="primary--text">{{ application.name }}</h1></div>
+            </div>
             <v-spacer></v-spacer>
             <v-menu offset-y bottom left v-if="userIsAdmin">
               <v-btn icon slot="activator">
@@ -70,6 +75,7 @@
     props: ['slug'],
     data () {
       return {
+        api_url: process.env.API_ORIGIN_URL,
         items: [
           { title: 'User List', type: 'users', icon: 'person', admin: true },
           { title: 'Team List', type: 'teams', icon: 'people', admin: false },

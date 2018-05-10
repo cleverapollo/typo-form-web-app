@@ -14,7 +14,7 @@
             :to="item.link"
             :key="item.title"
             @click='drawer = false'
-            >
+          >
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
@@ -35,8 +35,15 @@
       fixed
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
-        <router-link :to="titleLink" tag="span" style="cursor: pointer">{{ title }}</router-link>
+      <v-toolbar-title class="ml-0 pl-3">
+        <router-link :to="titleLink" tag="span" style="cursor: pointer">
+          <div class="d-flex flex-row">
+            <div class="application-icon align-self-center">
+              <img :src="api_url + 'uploads/' + titleIcon"/>
+            </div>
+            <div class="pl-3">{{title}}</div>
+          </div>
+        </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <template v-if="userIsAuthenticated">
@@ -56,7 +63,12 @@
                 :key="application.id"
                 :to="'/'+application.slug">
                 <v-list-tile-content>
-                  {{application.name}}
+                  <div class="d-flex flex-row">
+                    <div class="application-icon">
+                      <img :src="api_url + 'uploads/' + application.icon"/>
+                    </div>
+                    <div class="pl-3">{{application.name}}</div>
+                  </div>
                 </v-list-tile-content>
               </v-list-tile>
             </template>
@@ -97,68 +109,83 @@
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      drawer: null
-    }
-  },
-  computed: {
-    user () {
-      return this.$store.getters.user
-    },
-    userIsAuthenticated () {
-      return this.user !== null && this.user !== undefined
-    },
-    title () {
-      const application = this.$store.getters.loadedApplication(this.$route.params['slug'])
-      return application ? application.name : 'Informed 365'
-    },
-    titleLink () {
-      if (this.$route.params['slug']) {
-        return '/' + this.$route.params['slug']
+  export default {
+    data () {
+      return {
+        drawer: null,
+        api_url: process.env.API_ORIGIN_URL
       }
-      return '/'
     },
-    applications () {
-      return this.$store.getters.loadedApplications
+    computed: {
+      user () {
+        return this.$store.getters.user
+      },
+      userIsAuthenticated () {
+        return this.user !== null && this.user !== undefined
+      },
+      title () {
+        const application = this.$store.getters.loadedApplication(this.$route.params['slug'])
+        return application ? application.name : 'Informed 365'
+      },
+      titleIcon () {
+        const application = this.$store.getters.loadedApplication(this.$route.params['slug'])
+        return application ? application.icon : null
+      },
+      titleLink () {
+        if (this.$route.params['slug']) {
+          return '/' + this.$route.params['slug']
+        }
+        return '/'
+      },
+      applications () {
+        return this.$store.getters.loadedApplications
+      },
+      menuItems () {
+        if (this.userIsAuthenticated) {
+          return [
+            {icon: 'account_circle', title: 'My account', link: '/profile'},
+            {icon: 'apps', title: 'Applications', link: '/applications'}
+          ]
+        } else {
+          return [
+            {icon: 'face', title: 'Sign up', link: '/signup'},
+            {icon: 'lock_open', title: 'Sign in', link: '/signin'}
+          ]
+        }
+      }
     },
-    menuItems () {
+    created () {
       if (this.userIsAuthenticated) {
-        return [
-          {icon: 'account_circle', title: 'My account', link: '/profile'},
-          {icon: 'apps', title: 'Applications', link: '/applications'}
-        ]
-      } else {
-        return [
-          {icon: 'face', title: 'Sign up', link: '/signup'},
-          {icon: 'lock_open', title: 'Sign in', link: '/signin'}
-        ]
+        this.$store.dispatch('loadQuestionTypes')
+        this.$store.dispatch('loadValidationTypes')
+        this.$store.dispatch('loadPeriods')
+        this.$store.dispatch('loadStatuses')
+        this.$store.dispatch('loadRoles')
+        this.$store.dispatch('loadApplications')
       }
-    }
-  },
-  created () {
-    if (this.userIsAuthenticated) {
-      this.$store.dispatch('loadQuestionTypes')
-      this.$store.dispatch('loadValidationTypes')
-      this.$store.dispatch('loadPeriods')
-      this.$store.dispatch('loadStatuses')
-      this.$store.dispatch('loadRoles')
-      this.$store.dispatch('loadApplications')
-    }
-  },
-  methods: {
-    onLogout () {
-      this.$store.dispatch('logout')
-      this.$router.push('/signin')
-    }
-  },
-  name: 'App'
-}
+    },
+    methods: {
+      onLogout () {
+        this.$store.dispatch('logout')
+        this.$router.push('/signin')
+      }
+    },
+    name: 'App'
+  }
 </script>
 
 <style>
   .break-all {
     word-break: break-all;
+  }
+
+  .application-icon {
+    width: 30px;
+    margin: auto;
+  }
+
+  .application-icon img {
+    width: 100%;
+    vertical-align: middle;
   }
 </style>
