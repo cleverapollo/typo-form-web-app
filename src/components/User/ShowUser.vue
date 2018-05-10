@@ -82,7 +82,6 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadApplications')
       this.$store.dispatch('loadUsers', this.slug)
     }
   }

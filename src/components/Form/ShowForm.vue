@@ -149,7 +149,6 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadApplications')
       this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadSections', this.id)

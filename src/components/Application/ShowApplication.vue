@@ -39,8 +39,8 @@
               flat
               style="height: 70px"
               @click="onList(item.type)"
-              v-if="showUsersToAdmin(item.type)"
               v-for="item in items"
+              v-if="!item.admin || userIsAdmin"
               :key="item.title">
               <v-layout column wrap>
                 <v-flex>
@@ -71,10 +71,10 @@
     data () {
       return {
         items: [
-          { title: 'User List', type: 'users', icon: 'person' },
-          { title: 'Team List', type: 'teams', icon: 'people' },
-          { title: 'Form List', type: 'forms', icon: 'content_paste' },
-          { title: 'Submission List', type: 'submissions', icon: 'assignment' }
+          { title: 'User List', type: 'users', icon: 'person', admin: true },
+          { title: 'Team List', type: 'teams', icon: 'people', admin: false },
+          { title: 'Form List', type: 'forms', icon: 'content_paste', admin: true },
+          { title: 'Submission List', type: 'submissions', icon: 'assignment', admin: false }
         ]
       }
     },
@@ -117,15 +117,9 @@
       onList (type) {
         this.$router.push('/' + this.slug + '/' + type)
       },
-      showUsersToAdmin (type) {
-        return type !== 'users' || this.userIsAdmin
-      },
       onBack () {
         this.$router.push('/applications')
       }
-    },
-    created: function () {
-      this.$store.dispatch('loadApplications')
     }
   }
 </script>

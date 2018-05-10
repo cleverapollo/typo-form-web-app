@@ -1,5 +1,6 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
+const USER_URL = `/user/`
 
 export default {
   state: {
@@ -99,7 +100,29 @@ export default {
       window.axios.post(APPLICATION_URL + payload.slug + '/invite', application)
         .then(
           response => {
-            commit('setLoading', false)
+            window.axios.get(APPLICATION_URL + payload.slug + USER_URL)
+              .then(
+                response => {
+                  commit('setLoading', false)
+                  const updateLoadedObj = {
+                    slug: payload.slug,
+                    users: response['data']['users']['current']
+                  }
+                  commit('setLoadedUsers', updateLoadedObj)
+
+                  const updateInvitedObj = {
+                    slug: payload.slug,
+                    users: response['data']['users']['unaccepted']
+                  }
+                  commit('setInvitedUsers', updateInvitedObj)
+                }
+              )
+              .catch(
+                error => {
+                  commit('setLoading', false)
+                  console.log(error)
+                }
+              )
           }
         )
         .catch(
@@ -114,22 +137,30 @@ export default {
       const updateObj = {}
       if (payload.name) {
         updateObj.name = payload.name
+      }
+      if (payload.css) {
         updateObj.css = payload.css
+      }
+      if (payload.icon) {
         updateObj.icon = payload.icon
       }
-      window.axios.put(APPLICATION_URL + payload.slug, updateObj)
-        .then(response => {
-          commit('setLoading', false)
-          const updateObject = {
-            slug: payload.slug,
-            application: response['data']['application']
-          }
-          commit('updateApplication', updateObject)
-        })
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
+      return new Promise((resolve, reject) => {
+        window.axios.put(APPLICATION_URL + payload.slug, updateObj)
+          .then(response => {
+            commit('setLoading', false)
+            const updateObject = {
+              slug: payload.slug,
+              application: response['data']['application']
+            }
+            commit('updateApplication', updateObject)
+            resolve(response)
+          })
+          .catch(error => {
+            console.log(error)
+            commit('setLoading', false)
+            reject(error)
+          })
+      })
     },
     deleteApplication ({commit}, payload) {
       commit('setLoading', true)
@@ -147,7 +178,7 @@ export default {
   getters: {
     loadedApplications (state) {
       return state.loadedApplications.sort((applicationA, applicationB) => {
-        return applicationA.id > applicationB.id
+        return applicationA.name > applicationB.name
       })
     },
     loadedApplication (state) {

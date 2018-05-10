@@ -118,15 +118,23 @@
           return
         }
         this.editApplication = false
-        this.$store.dispatch('updateApplication', {
+        let updateObj = {
           slug: this.application.slug,
-          name: this.editedName,
-          icon: this.icon,
           css: this.editedCSS
-        })
+        }
+
+        if (this.editedName !== this.application.name) {
+          updateObj.name = this.editedName
+        }
+
+        if (this.icon !== this.application.icon) {
+          updateObj.icon = this.icon
+        }
+
+        this.$store.dispatch('updateApplication', updateObj)
+          .then((response) => this.$router.push('/' + response.data.application.slug + '/show'))
       },
       updateIcon (icon) {
-        console.log(icon)
         this.icon = icon
       },
       onCancel () {

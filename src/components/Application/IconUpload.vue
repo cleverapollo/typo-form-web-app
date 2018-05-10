@@ -10,26 +10,26 @@
   import vue2Dropzone from 'vue2-dropzone/dist/vue2Dropzone.js'
   import 'vue2-dropzone/dist/vue2Dropzone.css'
 
-  const APP_URL = process.env.API_URL
+  const API_URL = process.env.API_URL
+  const API_ORIGIN_URL = process.env.API_ORIGIN_URL
 
   export default {
     name: 'IconUpload',
-    props: ['url'],
+    props: ['icon'],
     components: {
       vueDropzone: vue2Dropzone
     },
     computed: {
       label () {
-        if (this.url) {
-          const str = this.url.split('_', 2)
-          return '<h3 style="color:black">' + str[1] + ' is uploaded</h3>'
+        if (this.icon) {
+          return '<img src="' + API_ORIGIN_URL + 'uploads/' + this.icon + '" class="icon-preview"/>'
         } else {
           return 'Please Drag and Drop to upload Icon'
         }
       },
       dropzoneOptions () {
         return {
-          url: APP_URL + 'file',
+          url: API_URL + 'file',
           thumbnailWidth: 150,
           acceptedFiles: '.jpg, .png',
           dictDefaultMessage: this.label,
@@ -49,3 +49,9 @@
     }
   }
 </script>
+
+<style scope="">
+  .icon-preview {
+    width: 100%;
+  }
+</style>

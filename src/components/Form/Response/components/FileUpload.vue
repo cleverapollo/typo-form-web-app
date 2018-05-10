@@ -10,7 +10,7 @@
   import vue2Dropzone from 'vue2-dropzone/dist/vue2Dropzone.js'
   import 'vue2-dropzone/dist/vue2Dropzone.css'
 
-  const APP_URL = process.env.API_URL
+  const API_URL = process.env.API_URL
 
   export default {
     name: 'fileupload',
@@ -30,7 +30,7 @@
       },
       dropzoneOptions () {
         return {
-          url: APP_URL + 'file',
+          url: API_URL + 'file',
           thumbnailWidth: 150,
           acceptedFiles: '.jpg, .png',
           dictDefaultMessage: this.label,

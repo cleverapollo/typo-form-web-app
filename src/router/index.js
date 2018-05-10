@@ -177,9 +177,9 @@ const router = new Router({
       meta: { requiresAuth: true }
     },
     {
-      path: '/socialite/github/callback',
+      path: '/auth/callback',
       component: {
-        template: '<div class="auth-component">dfafda</div>'
+        template: '<div class="auth-component"></div>'
       }
     }
     /* {
