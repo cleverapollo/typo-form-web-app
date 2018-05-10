@@ -44,15 +44,15 @@ const router = new Router({
       component: Signin
     },
     {
-      path: '/reset-password',
-      name: 'ResetPassword',
-      component: ResetPassword,
+      path: '/password/reset/:token',
+      name: 'NewPassword',
+      component: NewPassword,
       props: true
     },
     {
-      path: '/reset-password/:token',
-      name: 'NewPassword',
-      component: NewPassword,
+      path: '/password/reset',
+      name: 'ResetPassword',
+      component: ResetPassword,
       props: true
     },
     {
