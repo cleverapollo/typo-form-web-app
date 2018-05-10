@@ -27,7 +27,7 @@ import Forms from '@/components/Form/Forms'
 import CreateForm from '@/components/Form/CreateForm'
 import ShowForm from '@/components/Form/ShowForm'
 
-import { store } from '@/store'
+import {store} from '@/store'
 
 Vue.use(Router)
 
@@ -59,39 +59,39 @@ const router = new Router({
       path: '/profile',
       name: 'Profile',
       component: Profile,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/invitation/:type/:token',
       name: 'AcceptInvitation',
       component: AcceptInvitation,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/join/:type/:token',
       name: 'AcceptJoin',
       component: AcceptJoin,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/',
       name: 'Home',
       component: Home,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/applications',
       name: 'Applications',
       component: Applications,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/applications/new',
       name: 'CreateApplication',
       component: CreateApplication,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug',
@@ -104,77 +104,77 @@ const router = new Router({
       name: 'ShowApplication',
       component: ShowApplication,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/teams',
       name: 'Teams',
       component: Teams,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/teams/new',
       name: 'CreateTeam',
       component: CreateTeam,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/teams/show/:id',
       name: 'ShowTeam',
       component: ShowTeam,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/teams/:teamId/users/:id',
       name: 'ShowTeamUser',
       component: ShowTeamUser,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/users',
       name: 'Users',
       component: Users,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/users/show/:id',
       name: 'ShowUser',
       component: ShowUser,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/forms',
       name: 'Forms',
       component: Forms,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/submissions',
       name: 'Submissions',
       component: Forms,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/forms/new',
       name: 'CreateForm',
       component: CreateForm,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/forms/show/:id/:view',
       name: 'ShowForm',
       component: ShowForm,
       props: true,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     },
     {
       path: '/auth/callback',
@@ -195,13 +195,21 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth) && store.getters.user === null) {
     next({
       path: '/signin',
-      query: { redirect: to.fullPath }
+      query: {redirect: to.fullPath}
     })
   }
   if (to.matched.some(record => record.path.includes(':slug'))) {
     store.dispatch('loadApplication', to.params['slug'])
-      .then(() => next())
-      .catch(() => next({ path: '/' }))
+      .then(() => {
+        const application = store.getters.loadedApplication(to.params['slug'])
+        if (application.icon) {
+          let favicon = document.getElementById('dyc-favicon')
+          favicon.setAttribute('href', process.env.API_ORIGIN_URL + 'uploads/' + application.icon)
+        }
+
+        next()
+      })
+      .catch(() => next({path: '/'}))
   } else {
     next()
   }

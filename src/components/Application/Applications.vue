@@ -69,10 +69,6 @@
         return role ? role.name : 'undefined'
       },
       onLoadApplication (application) {
-        if (application.icon) {
-          let favicon = document.getElementById('dyc-favicon')
-          favicon.setAttribute('href', this.api_url + 'uploads/' + application.icon)
-        }
         this.$router.push('/' + application.slug)
       }
     }
