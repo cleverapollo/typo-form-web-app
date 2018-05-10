@@ -50,7 +50,7 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12 text-xs-center class="mt-4">
-                    <router-link to="/reset-password" tag="a" class="green--text">Forgot your password?</router-link>
+                    <router-link to="/password/reset" tag="a" class="green--text">Forgot your password?</router-link>
                   </v-flex>
                 </v-layout>
               </form>
