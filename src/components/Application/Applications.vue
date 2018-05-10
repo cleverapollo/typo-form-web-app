@@ -24,7 +24,7 @@
           <template slot="items" slot-scope="props">
             <td @click=onLoadApplication(props.item)>
               <div class="row">
-                <div class="application-icon inline-block">
+                <div class="application-icon inline-block" v-if="props.item.icon">
                   <img :src="api_url + 'uploads/' + props.item.icon"/>
                 </div>
                 <div class="pl-3 inline-block">{{ props.item.name }}</div>

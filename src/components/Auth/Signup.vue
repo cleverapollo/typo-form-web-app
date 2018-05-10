@@ -46,13 +46,13 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-ficeld
+                    <v-text-field
                       name="password"
                       label="Password"
                       id="password"
                       v-model="password"
                       type="password"
-                      required></v-text-ficeld>
+                      required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -90,14 +90,43 @@
                 </v-layout>
               </form>
               <v-btn v-show="!isEmail" block color="normal" @click="activeEmail" class="success">Signup with your email</v-btn>
-            </v-container>
-            <v-container class="oauth-container">
-              <div class="oauth-login py-4">
-                <v-btn block color="normal" href="http://localhost:8000/socialite/google" normal>Use Google Account</v-btn>
-                <v-btn block color="normal" href="http://localhost:8000/socialite/facebook" normal>Use FaceBook Account</v-btn>
-                <v-btn block color="normal" href="http://localhost:8000/socialite/live" normal>Use Live Account</v-btn>
-                <v-btn block color="normal" href="http://localhost:8000/socialite/github" normal>Use Github Account</v-btn>
-              </div>
+              <v-layout row>
+                <v-flex xs12 sm6 offset-sm3 text-xs-center class="mt-4">
+                  <span class="grey--text">or</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12 sm6 offset-sm3 text-xs-center>
+                  <v-btn @click="auth('github')" block>
+                    <img src='/static/icon/github_icon.png' height="25px" class="mr-2" />
+                    <span>Use <b> Github Account</b></span>
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12 sm6 offset-sm3 text-xs-center>
+                  <v-btn @click="auth('facebook')" block>
+                    <img src='/static/icon/facebook_icon.png' height="25px" class="mr-2" />
+                    <span>Use <b> Facebook Account</b></span>
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12 sm6 offset-sm3 text-xs-center>
+                  <v-btn @click="auth('google')" block>
+                    <img src='/static/icon/google_icon.png' height="25px" class="mr-2" />
+                    <span>Use <b> Google Account</b></span>
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12 sm6 offset-sm3 text-xs-center>
+                  <v-btn @click="auth('live')" block>
+                    <img src='/static/icon/live_icon.png' height="25px" class="mr-2" />
+                    <span>Use <b> Live Account</b></span>
+                  </v-btn>
+                </v-flex>
+              </v-layout>
             </v-container>
           </v-card-text>
         </v-card>
