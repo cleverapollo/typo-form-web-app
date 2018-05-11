@@ -48,7 +48,7 @@
           </template>
 
           <template v-else>
-            <h1 @click="setEditMode">{{ section.name }}</h1>
+            <h1 @click="setEditMode">{{ editedName }}</h1>
           </template>
         </div>
       </v-flex>
@@ -175,6 +175,14 @@
         hasRepeatableQuestions: this.section.repeatable,
         min_rows: this.section.min_rows,
         max_rows: this.section.max_rows
+      }
+    },
+    watch: {
+      section (value) {
+        this.editedName = value.name
+        this.hasRepeatableQuestions = value.repeatable
+        this.min_rows = value.min_rows
+        this.max_rows = value.max_rows
       }
     },
     computed: {

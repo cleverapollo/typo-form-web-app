@@ -23,6 +23,7 @@
                     label="CSS"
                     id="css"
                     v-model="css"
+                    multi-line
                   ></v-text-field>
                 </v-flex>
               </v-layout>

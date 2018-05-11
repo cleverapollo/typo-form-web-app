@@ -96,8 +96,10 @@
         }
       },
       createResponse () {
-        this.$emit('create-response', [this.computedAnswers[0].id, '', this.computedQuestions[0].id, this.orderByResponses()])
-        this.selectedOptions.push(this.computedQuestions[0].id)
+        if (this.computedAnswers.length && this.computedQuestions.length) {
+          this.$emit('create-response', [this.computedAnswers[0].id, '', this.computedQuestions[0].id, this.orderByResponses()])
+          this.selectedOptions.push(this.computedQuestions[0].id)
+        }
       },
       removeResponse (rowindex, order) {
         const $this = this
@@ -139,7 +141,7 @@
         this.computedResponses.forEach((response, index) => {
           options[index] = response.question_id
         })
-      } else {
+      } else if (this.computedQuestions.length) {
         options[0] = this.computedQuestions[0].id
       }
       this.selectedOptions = options
