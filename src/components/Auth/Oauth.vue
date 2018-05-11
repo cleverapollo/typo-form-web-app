@@ -64,7 +64,7 @@
           if (provider === 'github') {
             this_.$http.get('https://api.github.com/user').then(function (response) {
               this_.response = response
-              this_.authSignIn(provider, response.data.id)
+              this_.authSignIn(provider, response.data.id + '')
             })
           } else if (provider === 'facebook') {
             this_.$http.get('https://graph.facebook.com/v2.5/me', {

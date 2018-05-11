@@ -1,9 +1,10 @@
 const API_URL = process.env.API_URL
+const API_ORIGIN_URL = process.env.API_ORIGIN_URL
 const SIGNUP_URL = `${API_URL}register`
 const SIGNIN_URL = `${API_URL}login`
 const SIGNOUT_URL = `${API_URL}logout`
 const USER_URL = `${API_URL}user/`
-const SOCIAL_URL = `${API_URL}social/`
+const SOCIAL_URL = `${API_ORIGIN_URL}auth/signin`
 const PASSWORD_RESET_URL = `${API_URL}password/reset/`
 const EMAIL_UPDATE_URL = `${API_URL}user/update-email`
 const PASSWORD_UPDATE_URL = `${API_URL}user/update-password`
@@ -129,6 +130,7 @@ export default {
     logout ({commit}) {
       commit('clearError')
       window.axios.post(SIGNOUT_URL)
+      delete window.axios.defaults.headers.common['api_token']
       commit('setUser', null)
       localStorage.removeItem('token')
     },
