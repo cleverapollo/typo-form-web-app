@@ -90,43 +90,7 @@
                 </v-layout>
               </form>
               <v-btn v-show="!isEmail" block color="normal" @click="activeEmail" class="success">Signup with your email</v-btn>
-              <v-layout row>
-                <v-flex xs12 sm6 offset-sm3 text-xs-center class="mt-4">
-                  <span class="grey--text">or</span>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <v-flex xs12 sm6 offset-sm3 text-xs-center>
-                  <v-btn @click="auth('github')" block>
-                    <img src='/static/icon/github_icon.png' height="25px" class="mr-2" />
-                    <span>Use <b> Github Account</b></span>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <v-flex xs12 sm6 offset-sm3 text-xs-center>
-                  <v-btn @click="auth('facebook')" block>
-                    <img src='/static/icon/facebook_icon.png' height="25px" class="mr-2" />
-                    <span>Use <b> Facebook Account</b></span>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <v-flex xs12 sm6 offset-sm3 text-xs-center>
-                  <v-btn @click="auth('google')" block>
-                    <img src='/static/icon/google_icon.png' height="25px" class="mr-2" />
-                    <span>Use <b> Google Account</b></span>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <v-flex xs12 sm6 offset-sm3 text-xs-center>
-                  <v-btn @click="auth('live')" block>
-                    <img src='/static/icon/live_icon.png' height="25px" class="mr-2" />
-                    <span>Use <b> Live Account</b></span>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
+              <oauth></oauth>
             </v-container>
           </v-card-text>
         </v-card>
@@ -136,6 +100,7 @@
 </template>
 
 <script>
+  import Oauth from './Oauth'
   export default {
     data () {
       return {
@@ -146,6 +111,9 @@
         password: '',
         confirmPassword: ''
       }
+    },
+    components: {
+      Oauth
     },
     computed: {
       comparePasswords () {
@@ -188,25 +156,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .oauth-container {
-    position: relative;
-  }
-  .oauth-login {
-    border-top: 2px dashed #efefef;
-  }
-  .oauth-login::after {
-    display: block;
-    content: "or";
-    position: absolute;
-    top: 7px;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-    padding: 0 10px;
-    background-color: #fff;
-    color: #b6b3b3;
-  }
-</style>
-

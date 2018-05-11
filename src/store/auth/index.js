@@ -3,6 +3,7 @@ const SIGNUP_URL = `${API_URL}register`
 const SIGNIN_URL = `${API_URL}login`
 const SIGNOUT_URL = `${API_URL}logout`
 const USER_URL = `${API_URL}user/`
+const SOCIAL_URL = `${API_URL}social/`
 const PASSWORD_RESET_URL = `${API_URL}password/reset/`
 const EMAIL_UPDATE_URL = `${API_URL}user/update-email`
 const PASSWORD_UPDATE_URL = `${API_URL}user/update-password`
@@ -36,16 +37,20 @@ export default {
               error => {
                 commit('setLoading', false)
                 commit('setUser', null)
-                commit('setError', error.response.data)
-                console.log(error.response.data)
+                if (typeof (error.response.data) !== 'string') {
+                  commit('setError', error.response.data)
+                  console.log(error.response.data)
+                }
               }
             )
         )
         .catch(
           error => {
             commit('setLoading', false)
-            commit('setError', error.response.data)
-            console.log(error.response.data)
+            if (typeof (error.response.data) !== 'string') {
+              commit('setError', error.response.data)
+              console.log(error.response.data)
+            }
           }
         )
     },
@@ -66,8 +71,10 @@ export default {
           error => {
             commit('setLoading', false)
             commit('setUser', null)
-            commit('setError', error.response.data)
-            console.log(error.response.data)
+            if (typeof (error.response.data) !== 'string') {
+              commit('setError', error.response.data)
+              console.log(error.response.data)
+            }
           }
         )
     },
@@ -88,10 +95,36 @@ export default {
               commit('setLoading', false)
               commit('setUser', null)
               reject(error)
-              console.log(error.response.data)
+              if (typeof (error.response.data) !== 'string') {
+                console.log(error.response.data)
+              }
             }
           )
       })
+    },
+    authSignIn ({commit}, payload) {
+      commit('setLoading', true)
+      commit('clearError')
+      window.axios.post(SOCIAL_URL, payload)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const user = response['data']['user']
+            localStorage.setItem('token', user['api_token'])
+            window.axios.defaults.headers.common['api_token'] = user['api_token']
+            commit('setUser', user)
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            commit('setUser', null)
+            if (typeof (error.response.data) !== 'string') {
+              commit('setError', error.response.data)
+              console.log(error.response.data)
+            }
+          }
+        )
     },
     logout ({commit}) {
       commit('clearError')
