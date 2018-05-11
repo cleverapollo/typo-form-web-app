@@ -51,7 +51,7 @@
     </div>
 
     <v-layout row wrap>
-      <v-flex xs3>
+      <v-flex xs12 sm3>
         <form-tree
           :formId="formId"
           :section="section"
@@ -61,7 +61,7 @@
         ></form-tree>
       </v-flex>
 
-      <v-flex>
+      <v-flex xs12 sm9>
         <sections
           :section="section"
           :formId="formId"

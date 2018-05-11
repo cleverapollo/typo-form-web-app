@@ -193,13 +193,3 @@
     }
   }
 </script>
-
-<style>
-  .input-group__details {
-    min-height: unset;
-  }
-
-  .px-3 {
-    padding: 0 16px;
-  }
-</style>

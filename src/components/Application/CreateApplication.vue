@@ -181,7 +181,7 @@
   }
 </script>
 
-<style scope="">
+<style scoped>
   .dz-preview.dz-processing{
     z-index: 1;
   }

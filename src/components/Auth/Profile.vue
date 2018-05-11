@@ -165,7 +165,7 @@
 </script>
 
 <style scoped>
-.overflow-flex {
-  min-width: 0;
-}
+  .overflow-flex {
+    min-width: 0;
+  }
 </style>

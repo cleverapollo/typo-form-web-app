@@ -1,5 +1,5 @@
 <template>
-  <v-layout row wrap class="pl-3">
+  <v-layout row wrap>
     <v-flex d-flex>
       <form-view
         :slug="slug"

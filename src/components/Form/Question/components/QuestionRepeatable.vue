@@ -3,7 +3,7 @@
     <v-flex xs5 style="min-width: 130px">
       <v-text-field label="Minimum rows count" @change="updateRowsCount" v-model="minRowsInput" :rules="[validateMinRows]"></v-text-field>
 
-      <h3>Rows</h3>
+      <h3 class="pt-4">Rows</h3>
 
       <draggable v-model="computedQuestions" class="dragArea1" :options="{draggable: '.repeatableItem'}" style="min-height: 100px" @end="checkEnd">
         <v-layout row v-for="(question, index) in computedQuestions" :key="'Option ' + index" class="repeatableItem" :class="'item' + question.id">
@@ -44,7 +44,7 @@
     <v-flex xs5 style="min-width: 130px">
       <v-text-field label="Maximum rows count" @change="updateRowsCount" v-model="maxRowsInput" :rules="[validateMaxRows]"></v-text-field>
 
-      <h3>Columns</h3>
+      <h3 class="pt-4">Columns</h3>
 
       <draggable v-model="computedAnswers" class="dragArea2" :options="{draggable:'.repeatableItem'}" style="min-height: 100px" @end="checkEnd">
         <v-layout row v-for="(answer, index) in computedAnswers" :key="'Option ' + index" class="repeatableItem" :class="'item' + answer.id">

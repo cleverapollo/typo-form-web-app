@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs3>
-      <v-card>
+    <v-flex xs12 md3>
+      <v-card class="ma-1">
         <v-toolbar color="primary" dark>
           <v-toolbar-title>Submission List</v-toolbar-title>
         </v-toolbar>
@@ -55,7 +55,7 @@
       </v-card>
     </v-flex>
 
-    <v-flex xs9>
+    <v-flex xs12 md9>
       <show-submission
         :slug="slug"
         :formId="formId"
