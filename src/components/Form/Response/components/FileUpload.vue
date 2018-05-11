@@ -32,7 +32,6 @@
         return {
           url: API_URL + 'file',
           thumbnailWidth: 150,
-          acceptedFiles: '.jpg, .png',
           dictDefaultMessage: this.label,
           headers: {'api_token': localStorage.getItem('token')}
         }
