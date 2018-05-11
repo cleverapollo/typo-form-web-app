@@ -23,6 +23,7 @@
                     label="CSS"
                     id="css"
                     v-model="css"
+                    multi-line
                   ></v-text-field>
                 </v-flex>
               </v-layout>
@@ -166,7 +167,6 @@
         })
       },
       updateIcon (icon) {
-        console.log(icon)
         this.icon = icon
       },
       onCancel () {
@@ -181,7 +181,7 @@
   }
 </script>
 
-<style scope="">
+<style scoped>
   .dz-preview.dz-processing{
     z-index: 1;
   }

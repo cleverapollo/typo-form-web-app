@@ -14,7 +14,7 @@
         <v-card v-if="application">
           <v-card-title>
             <div class="d-flex flex-row">
-              <div class="application-icon align-self-center">
+              <div class="application-icon align-self-center" v-if="application.icon">
                 <img :src="api_url + 'uploads/' + application.icon"/>
               </div>
               <div class="pl-3"> <h1 class="primary--text">{{ application.name }}</h1></div>

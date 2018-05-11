@@ -198,21 +198,33 @@ router.beforeEach((to, from, next) => {
       query: {redirect: to.fullPath}
     })
   }
+  const favicon = document.getElementById('dyc-favicon')
+  const head = document.head || document.getElementsByTagName('head')[0]
+  const style = document.getElementById('dyc-css') || document.createElement('style')
+  style.type = 'text/css'
+  style.id = 'dyc-css'
   if (to.matched.some(record => record.path.includes(':slug'))) {
     store.dispatch('loadApplication', to.params['slug'])
       .then(() => {
         const application = store.getters.loadedApplication(to.params['slug'])
-        let favicon = document.getElementById('dyc-favicon')
-        if (application.icon) {
-          favicon.setAttribute('href', process.env.API_ORIGIN_URL + 'uploads/' + application.icon)
-        } else {
-          favicon.setAttribute('href', '')
-        }
 
+        favicon.href = application.icon ? process.env.API_ORIGIN_URL + 'uploads/' + application.icon : '/static/logo.png'
+        const css = application.css ? application.css : ''
+        if (style.childNodes.length) {
+          style.childNodes[0].textContent = css
+        } else {
+          style.appendChild(document.createTextNode(css))
+        }
+        head.appendChild(style)
         next()
       })
       .catch(() => next({path: '/'}))
   } else {
+    favicon.href = '/static/logo.png'
+    if (style.childNodes.length) {
+      style.childNodes[0].textContent = ''
+    }
+    head.appendChild(style)
     next()
   }
 })

@@ -46,13 +46,13 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-ficeld
+                    <v-text-field
                       name="password"
                       label="Password"
                       id="password"
                       v-model="password"
                       type="password"
-                      required></v-text-ficeld>
+                      required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -90,14 +90,7 @@
                 </v-layout>
               </form>
               <v-btn v-show="!isEmail" block color="normal" @click="activeEmail" class="success">Signup with your email</v-btn>
-            </v-container>
-            <v-container class="oauth-container">
-              <div class="oauth-login py-4">
-                <v-btn block color="normal" href="http://localhost:8000/socialite/google" normal>Use Google Account</v-btn>
-                <v-btn block color="normal" href="http://localhost:8000/socialite/facebook" normal>Use FaceBook Account</v-btn>
-                <v-btn block color="normal" href="http://localhost:8000/socialite/live" normal>Use Live Account</v-btn>
-                <v-btn block color="normal" href="http://localhost:8000/socialite/github" normal>Use Github Account</v-btn>
-              </div>
+              <oauth></oauth>
             </v-container>
           </v-card-text>
         </v-card>
@@ -107,6 +100,7 @@
 </template>
 
 <script>
+  import Oauth from './Oauth'
   export default {
     data () {
       return {
@@ -117,6 +111,9 @@
         password: '',
         confirmPassword: ''
       }
+    },
+    components: {
+      Oauth
     },
     computed: {
       comparePasswords () {
@@ -159,25 +156,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .oauth-container {
-    position: relative;
-  }
-  .oauth-login {
-    border-top: 2px dashed #efefef;
-  }
-  .oauth-login::after {
-    display: block;
-    content: "or";
-    position: absolute;
-    top: 7px;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-    padding: 0 10px;
-    background-color: #fff;
-    color: #b6b3b3;
-  }
-</style>
-

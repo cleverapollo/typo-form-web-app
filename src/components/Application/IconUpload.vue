@@ -50,7 +50,7 @@
   }
 </script>
 
-<style scope="">
+<style scoped>
   .icon-preview {
     width: 100%;
   }

@@ -20,7 +20,7 @@
 
               <v-layout row wrap pt-4>
 
-                <v-flex xs3>
+                <v-flex xs12 sm3>
                   <v-menu
                     lazy
                     :close-on-content-click="false"
@@ -50,7 +50,7 @@
                   </v-menu>
                 </v-flex>
 
-                <v-flex offset-xs1 xs3>
+                <v-flex xs12 offset-sm1 sm3>
                   <v-select
                     :items="periodDurations"
                     item-value="id"
@@ -60,7 +60,7 @@
                   ></v-select>
                 </v-flex>
 
-                <v-flex offset-xs1 xs3 v-if="periodDuration === 5">
+                <v-flex xs12 offset-sm1 sm3 v-if="periodDuration === 5">
                   <v-menu
                     lazy
                     :close-on-content-click="false"
@@ -92,7 +92,7 @@
               </v-layout>
 
               <v-layout pt-4>
-                <v-flex xs3>
+                <v-flex xs12>
                   <v-checkbox label="Show Progress" v-model="showProgress" light></v-checkbox>
                 </v-flex>
               </v-layout>
@@ -223,13 +223,3 @@
     }
   }
 </script>
-
-<style>
-  .input-group__details {
-    min-height: unset;
-  }
-
-  .menu__content {
-    min-width: unset !important;
-  }
-</style>

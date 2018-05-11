@@ -44,7 +44,7 @@
                 label="CSS"
                 id="css"
                 v-model="editedCSS"
-                required></v-text-field>
+                multi-line></v-text-field>
             </v-card-text>
           </v-flex>
         </v-layout>
