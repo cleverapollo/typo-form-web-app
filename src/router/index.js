@@ -202,9 +202,11 @@ router.beforeEach((to, from, next) => {
     store.dispatch('loadApplication', to.params['slug'])
       .then(() => {
         const application = store.getters.loadedApplication(to.params['slug'])
+        let favicon = document.getElementById('dyc-favicon')
         if (application.icon) {
-          let favicon = document.getElementById('dyc-favicon')
           favicon.setAttribute('href', process.env.API_ORIGIN_URL + 'uploads/' + application.icon)
+        } else {
+          favicon.setAttribute('href', '')
         }
 
         next()

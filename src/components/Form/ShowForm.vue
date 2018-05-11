@@ -46,6 +46,10 @@
                 <v-list-tile @click=onDeleteForm>
                   <v-list-tile-title>Delete Form</v-list-tile-title>
                 </v-list-tile>
+
+                <v-list-tile @click=onUploadCSV>
+                  <v-list-tile-title>Upload CSV</v-list-tile-title>
+                </v-list-tile>
               </v-list>
             </v-menu>
           </v-card-title>
@@ -146,6 +150,9 @@
           id: this.form.id
         })
         this.$router.push('/' + this.slug + '/forms')
+      },
+      onUploadCSV () {
+
       }
     },
     created: function () {

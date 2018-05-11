@@ -96,6 +96,13 @@
                   <v-checkbox label="Show Progress" v-model="showProgress" light></v-checkbox>
                 </v-flex>
               </v-layout>
+              <v-layout>
+                <v-flex v-on:click="startedUploading" class="ma-5">
+                  <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"
+                                v-on:vdropzone-drop="startedUploading"
+                                v-on:vdropzone-success="onUploaded"></vue-dropzone>
+                </v-flex>
+              </v-layout>
             </v-container>
           </v-card-text>
 
@@ -105,7 +112,8 @@
             <v-btn
               class="primary"
               :disabled="!formIsValid"
-              @click="onCreateForm">Create Form</v-btn>
+              @click="onCreateForm">Create Form
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -114,8 +122,14 @@
 </template>
 
 <script>
+  import vue2Dropzone from 'vue2-dropzone/dist/vue2Dropzone.js'
+  import 'vue2-dropzone/dist/vue2Dropzone.css'
+
   export default {
     props: ['slug'],
+    components: {
+      vueDropzone: vue2Dropzone
+    },
     data () {
       return {
         name: '',
@@ -124,7 +138,8 @@
         endMenu: false,
         periodEnd: null,
         periodDuration: 5,
-        showProgress: true
+        showProgress: true,
+        csv: null
       }
     },
     computed: {
@@ -150,8 +165,18 @@
         var options = this.$store.getters.periods
         options.push({
           id: 5,
-          period: 'Custom'})
+          period: 'Custom'
+        })
         return options
+      },
+      dropzoneOptions () {
+        return {
+          url: process.env.API_URL + 'file',
+          thumbnailWidth: 150,
+          acceptedFiles: '.csv',
+          dictDefaultMessage: 'Please Drag and Drop CSV file.',
+          headers: {'api_token': localStorage.getItem('token')}
+        }
       }
     },
     watch: {
@@ -179,7 +204,8 @@
           periodStart: this.periodStart,
           periodEnd: this.periodDuration === 5 ? this.periodEnd : null,
           periodId: this.periodDuration !== 5 ? this.periodDuration : null,
-          showProgress: this.showProgress
+          showProgress: this.showProgress,
+          csv: this.csv
         }
 
         this.$store.dispatch('createForm', formData)
@@ -187,6 +213,12 @@
       },
       onCancel () {
         this.$router.push('/' + this.slug + '/forms')
+      },
+      startedUploading () {
+        this.$refs.myVueDropzone.removeAllFiles()
+      },
+      onUploaded (file, response) {
+        this.csv = response.path
       }
     }
   }
