@@ -90,7 +90,7 @@
             this_.response = authResponse
           } else if (provider === 'live') {
             this_.response = authResponse
-            this_.authSignIn(provider, authResponse.user_id)
+            this_.authSignIn(provider, authResponse.data.user_id)
           }
         }).catch(function (err) {
           this_.response = err
