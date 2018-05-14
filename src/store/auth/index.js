@@ -95,6 +95,7 @@ export default {
             error => {
               commit('setLoading', false)
               commit('setUser', null)
+              delete window.axios.defaults.headers.common['api_token']
               reject(error)
               if (typeof (error.response.data) !== 'string') {
                 console.log(error.response.data)
