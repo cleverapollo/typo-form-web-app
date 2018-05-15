@@ -97,10 +97,10 @@
                 </v-flex>
               </v-layout>
               <v-layout>
-                <v-flex v-on:click="startedUploading" class="ma-5">
-                  <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"
-                                v-on:vdropzone-drop="startedUploading"
-                                v-on:vdropzone-success="onUploaded"></vue-dropzone>
+                <v-flex>
+                  <input type="file" class="hide inputfile" @change="onFileChange" id="upload"
+                         data-multiple-caption="{count} files selected" multiple/>
+                  <label for="upload"><span>{{ csvFileName }}</span></label>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -122,14 +122,8 @@
 </template>
 
 <script>
-  import vue2Dropzone from 'vue2-dropzone/dist/vue2Dropzone.js'
-  import 'vue2-dropzone/dist/vue2Dropzone.css'
-
   export default {
     props: ['slug'],
-    components: {
-      vueDropzone: vue2Dropzone
-    },
     data () {
       return {
         name: '',
@@ -139,7 +133,8 @@
         periodEnd: null,
         periodDuration: 5,
         showProgress: true,
-        csv: null
+        csv: null,
+        csvFileName: 'Please Upload a CSV.'
       }
     },
     computed: {
@@ -168,15 +163,6 @@
           period: 'Custom'
         })
         return options
-      },
-      dropzoneOptions () {
-        return {
-          url: process.env.API_URL + 'file',
-          thumbnailWidth: 150,
-          acceptedFiles: '.csv',
-          dictDefaultMessage: 'Please Drag and Drop CSV file.',
-          headers: {'api_token': localStorage.getItem('token')}
-        }
       }
     },
     watch: {
@@ -197,7 +183,6 @@
         if (!this.formIsValid || !this.userIsAdmin) {
           return
         }
-
         const formData = {
           slug: this.slug,
           name: this.name,
@@ -214,12 +199,40 @@
       onCancel () {
         this.$router.push('/' + this.slug + '/forms')
       },
-      startedUploading () {
-        this.$refs.myVueDropzone.removeAllFiles()
-      },
-      onUploaded (file, response) {
-        this.csv = response.path
+      onFileChange (e) {
+        const files = e.target.files || e.dataTransfer.files
+
+        if (files.length) {
+          this.csv = files[0]
+          this.csvFileName = this.csv.name
+        }
       }
     }
   }
 </script>
+
+<style scope="">
+  .hide {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+
+  label[for="upload"] {
+    display: inline-block;
+    cursor: pointer;
+    padding: 10px 30px;
+    background-color: #2196f3;
+    color: #ffffff;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25), 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  label[for="upload"]:hover {
+    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.25), 0 5px 18px 0 rgba(0, 0, 0, 0.2);
+  }
+</style>
