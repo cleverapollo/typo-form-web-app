@@ -188,4 +188,8 @@
     width: 100%;
     vertical-align: middle;
   }
+
+  .icon-preview {
+    width: 100%;
+  }
 </style>

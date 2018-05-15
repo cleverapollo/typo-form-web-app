@@ -49,9 +49,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .icon-preview {
-    width: 100%;
-  }
-</style>
