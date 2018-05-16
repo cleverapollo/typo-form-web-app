@@ -17,6 +17,7 @@
           </v-card-title>
           <v-card-text>
             <h3 class="break-all">{{ user.first_name }} {{ user.last_name }} - {{ getRole(user.team_role_id) }}</h3>
+            <h3 class="break-all" v-if="user.provider">{{ user.provider }} - {{ user.social_id }}</h3>
           </v-card-text>
           <v-card-actions v-if="userIsAdmin">
             <v-layout row wrap>

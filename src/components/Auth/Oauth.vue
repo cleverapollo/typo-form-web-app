@@ -49,8 +49,8 @@
       }
     },
     methods: {
-      authSignIn: function (provider, id) {
-        this.$store.dispatch('authSignIn', {provider: provider, id: id})
+      authSignIn: function (parameter) {
+        this.$store.dispatch('authSignIn', parameter)
       },
       auth: function (provider) {
         if (this.$auth.isAuthenticated()) {
@@ -64,19 +64,19 @@
           if (provider === 'github') {
             this_.$http.get('https://api.github.com/user').then(function (response) {
               this_.response = response
-              this_.authSignIn(provider, response.data.id + '')
+              this_.authSignIn({ provider: provider, id: response.data.id + '' })
             })
           } else if (provider === 'facebook') {
             this_.$http.get('https://graph.facebook.com/v2.5/me', {
               params: { access_token: this_.$auth.getToken() }
             }).then(function (response) {
               this_.response = response
-              this_.authSignIn(provider, response.data.id)
+              this_.authSignIn({ provider: provider, id: response.data.id })
             })
           } else if (provider === 'google') {
             this_.$http.get('https://www.googleapis.com/oauth2/v3/userinfo').then(function (response) {
               this_.response = response
-              this_.authSignIn(provider, response.data.sub)
+              this_.authSignIn({ provider: provider, id: response.data.sub, first_name: response.data.given_name, last_name: response.data.family_name, email: response.data.email })
             })
           } else if (provider === 'twitter') {
             this_.response = authResponse.body.profile
@@ -90,7 +90,7 @@
             this_.response = authResponse
           } else if (provider === 'live') {
             this_.response = authResponse
-            this_.authSignIn(provider, authResponse.data.user_id)
+            this_.authSignIn({ provider: provider, id: authResponse.data.user_id })
           }
         }).catch(function (err) {
           this_.response = err
