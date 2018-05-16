@@ -89,58 +89,7 @@
         </v-flex>
       </v-layout>
 
-      <v-layout wrap v-if="questionOptions.length > 0">
-        <h3>Trigger Parent Questions</h3>
-      </v-layout>
-
-      <template v-for='(item, index) in editedTriggers' v-if="questionOptions.length > 0">
-        <v-layout row wrap>
-          <v-flex xs12 sm2>
-            <v-select
-              :items="questionOptions"
-              item-text="question"
-              item-value="id"
-              v-model="item.parent_question_id"
-              label="Parent Question"
-              single-line
-            ></v-select>
-          </v-flex>
-          <v-flex xs12 sm2 offset-sm1>
-            <v-text-field
-              label="Parent Answer"
-              type="text"
-              v-model="item.parent_answer_id"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm2 offset-sm1>
-            <v-text-field
-              label="Comparator"
-              type="text"
-              v-model="item.comparator_id"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm1 offset-sm1>
-            <v-text-field
-              label="Comparator"
-              type="text"
-              v-model="item.operator"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm1 offset-sm1 text-xs-center>
-            <v-btn fab dark small color="error"
-                   @click="deleteTrigger(index)">
-              <v-icon dark>remove</v-icon>
-            </v-btn>
-          </v-flex>
-        </v-layout>
-      </template>
-
-      <v-layout wrap v-if="questionOptions.length > 0">
-        <v-btn dark block color="primary" @click="createTrigger">
-          <v-icon dark>add</v-icon>
-          Add
-        </v-btn>
-      </v-layout>
+      <triggers :formId="formId" :sectionId="sectionId" :question="question"></triggers>
     
       <v-divider></v-divider>
     </v-card-text>
@@ -200,15 +149,19 @@
   import timeComponent from './components/Time'
   import * as _ from 'lodash'
 
+  import triggers from './Triggers'
+
   export default {
     props: ['question', 'formId', 'sectionId', 'index'],
+    components: {
+      triggers
+    },
     data () {
       return {
         editedName: this.question.question,
         editedDescription: this.question.description,
         questionTypeId: this.question.question_type_id,
         mandatory: !!this.question.mandatory, // got number type
-        editedTriggers: this.question.triggers ? this.question.triggers : [],
         questionsComponentsMap: {
           'Short answer': shortAnswer,
           'Paragraph': paragraph,
@@ -284,12 +237,6 @@
       }
     },
     computed: {
-      section () {
-        return this.$store.getters.loadedSection(this.formId, this.sectionId)
-      },
-      questionOptions () {
-        return this.section.questions.filter((question) => { return question.id !== this.question.id })
-      },
       answers () {
         return _.sortBy(this.question.answers, element => {
           return 1000000 * (element.parameter ? 0 : 1) + element.order
@@ -487,17 +434,6 @@
           id: validationId,
           formId: this.formId
         })
-      },
-      createTrigger () {
-        this.editedTriggers.push({
-          parent_question_id: this.questionOptions[0].id,
-          parent_answer_id: 1,
-          comparator_id: 1,
-          operator: 1
-        })
-      },
-      deleteTrigger (index) {
-        this.editedTriggers.splice(index, 1)
       }
     }
   }

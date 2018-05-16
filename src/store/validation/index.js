@@ -40,11 +40,11 @@ export default {
         .then(
           response => {
             commit('setLoading', false)
-            const updateObj = {
+            const createObj = {
               formId: formId,
               validations: response['data']['validations']
             }
-            commit('setLoadedValidations', updateObj)
+            commit('setLoadedValidations', createObj)
           }
         )
         .catch(

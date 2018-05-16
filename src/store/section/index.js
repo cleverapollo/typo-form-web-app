@@ -218,56 +218,6 @@ export default {
         return e.parameter === 1
       })
       state.loadedSections = sections
-    },
-
-    setLoadedTriggers (state, payload) {
-      let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
-        return section.id === payload.sectionId
-      })
-      const question = section.questions.find((question) => {
-        return question.id === payload.questionId
-      })
-      question.triggers = payload.triggers
-      state.loadedSections = sections
-    },
-    createTrigger (state, payload) {
-      let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
-        return section.id === payload.sectionId
-      })
-      const question = section.questions.find((question) => {
-        return question.id === payload.questionId
-      })
-      question.triggers.push(payload.trigger)
-      state.loadedSections = sections
-    },
-    updateTrigger (state, payload) {
-      let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
-        return section.id === payload.sectionId
-      })
-      const question = section.questions.find((question) => {
-        return question.id === payload.questionId
-      })
-      const index = question.triggers.findIndex(trigger => {
-        return trigger.id === payload.trigger.id
-      })
-      question.triggers.splice(index, 1, payload.trigger)
-      state.loadedSections = sections
-    },
-    deleteTrigger (state, payload) {
-      let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
-        return section.id === payload.sectionId
-      })
-      const question = section.questions.find((question) => {
-        return question.id === payload.questionId
-      })
-      question.triggers = question.triggers.filter(e => {
-        return e.id !== payload.id
-      })
-      state.loadedSections = sections
     }
   },
   actions: {

@@ -1,19 +1,47 @@
 const API_URL = process.env.API_URL
-const QUESTION_URL = `${API_URL}question/`
+const FORM_URL = `${API_URL}form/`
 const TRIGGER_URL = '/trigger/'
 
 export default {
+  state: {
+    loadedTriggers: []
+  },
+  mutations: {
+    setLoadedTriggers (state, payload) {
+      let triggers = Object.assign({}, state.loadedTriggers)
+      triggers[payload.formId] = payload.triggers
+      state.loadedTriggers = triggers
+    },
+    createTrigger (state, payload) {
+      let triggers = Object.assign({}, state.loadedTriggers)
+      triggers[payload.formId].push(payload.trigger)
+      state.loadedTriggers = triggers
+    },
+    updateTrigger (state, payload) {
+      let triggers = Object.assign({}, state.loadedTriggers)
+      const index = triggers[payload.formId].findIndex(trigger => {
+        return trigger.id === payload.trigger.id
+      })
+      triggers[payload.formId].splice(index, 1, payload.trigger)
+      state.loadedTriggers = triggers
+    },
+    deleteTrigger (state, payload) {
+      let triggers = Object.assign({}, state.loadedTriggers)
+      triggers[payload.formId] = triggers[payload.formId].filter(e => {
+        return e.id !== payload.id
+      })
+      state.loadedTriggers = triggers
+    }
+  },
   actions: {
-    loadTriggers ({commit}, payload) {
+    loadTriggers ({commit}, formId) {
       commit('setLoading', true)
-      window.axios.get(QUESTION_URL + payload.questionId + TRIGGER_URL)
+      window.axios.get(FORM_URL + formId + TRIGGER_URL)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              formId: payload.formId,
-              sectionId: payload.sectionId,
-              questionId: payload.questionId,
+              formId: formId,
               triggers: response['data']['triggers']
             }
             commit('setLoadedTriggers', createObj)
@@ -35,14 +63,12 @@ export default {
         order: payload.order,
         operator: payload.operator
       }
-      window.axios.post(QUESTION_URL + payload.questionId + TRIGGER_URL, trigger)
+      window.axios.post(FORM_URL + payload.formId + TRIGGER_URL, trigger)
         .then(
           response => {
             commit('setLoading', false)
             const createdObj = {
               formId: payload.formId,
-              sectionId: payload.sectionId,
-              questionId: payload.questionId,
               trigger: response['data']['trigger']
             }
             commit('createTrigger', createdObj)
@@ -76,14 +102,12 @@ export default {
       if (payload.operator) {
         updateObj.operator = payload.operator
       }
-      window.axios.put(QUESTION_URL + payload.questionId + TRIGGER_URL + payload.id, updateObj)
+      window.axios.put(FORM_URL + payload.formId + TRIGGER_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
               formId: payload.formId,
-              sectionId: payload.sectionId,
-              questionId: payload.questionId,
               trigger: response['data']['trigger']
             }
             commit('updateTrigger', updateObj)
@@ -96,7 +120,7 @@ export default {
     },
     deleteTrigger ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(QUESTION_URL + payload.questionId + TRIGGER_URL + payload.id)
+      window.axios.delete(FORM_URL + payload.formId + TRIGGER_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteTrigger', payload)
@@ -108,45 +132,31 @@ export default {
     }
   },
   getters: {
-    loadedTriggers (state, getters, rootState) {
-      return (formId, sectionId, questionId) => {
-        if (!rootState.section.loadedSections[formId]) {
+    loadedTriggers (state) {
+      return (formId) => {
+        if (!state.loadedTriggers[formId]) {
           return []
         }
-        const section = rootState.section.loadedSections[formId].find((section) => {
-          return section.id === sectionId
-        })
-        if (!section) {
-          return []
-        }
-        const question = section.questions.find((question) => {
-          return question.id === questionId
-        })
-        if (!question) {
-          return []
-        }
-        return question.triggers
+        return state.loadedTriggers[formId]
       }
     },
-    loadedTrigger (state, getters, rootState) {
-      return (formId, sectionId, questionId, triggerId) => {
-        if (!rootState.section.loadedSections[formId]) {
+    loadedTrigger (state) {
+      return (formId, triggerId) => {
+        if (!state.loadedTriggers[formId]) {
           return null
         }
-        const section = rootState.section.loadedSections[formId].find((section) => {
-          return section.id === sectionId
-        })
-        if (!section) {
-          return null
-        }
-        const question = section.questions.find((question) => {
-          return question.id === questionId
-        })
-        if (!question) {
-          return null
-        }
-        return question.triggers.find((trigger) => {
+        return state.loadedTriggers[formId].find((trigger) => {
           return trigger.id === triggerId
+        })
+      }
+    },
+    loadedQuestionTrigger (state) {
+      return (formId, questionId) => {
+        if (!state.loadedTriggers[formId]) {
+          return []
+        }
+        return state.loadedTriggers[formId].filter((trigger) => {
+          return trigger.question_id === questionId
         })
       }
     }

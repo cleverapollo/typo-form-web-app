@@ -161,6 +161,7 @@
         this.$store.dispatch('loadPeriods')
         this.$store.dispatch('loadStatuses')
         this.$store.dispatch('loadRoles')
+        this.$store.dispatch('loadComparators')
         this.$store.dispatch('loadApplications')
       }
     },

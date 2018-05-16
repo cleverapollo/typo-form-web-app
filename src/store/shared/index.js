@@ -6,6 +6,7 @@ const ROLE_URL = `${API_URL}role/`
 const PERIOD_URL = `${API_URL}period/`
 const STATUS_URL = `${API_URL}status/`
 const VALIDATION_TYPE_URL = `${API_URL}validation-type/`
+const COMPARATOR_URL = `${API_URL}comparator/`
 
 export default {
   state: {
@@ -15,7 +16,8 @@ export default {
     validationTypes: [],
     periods: [],
     roles: [],
-    statuses: []
+    statuses: [],
+    comparators: []
   },
   mutations: {
     setLoading (state, payload) {
@@ -41,6 +43,9 @@ export default {
     },
     setStatuses (state, payload) {
       state.statuses = payload
+    },
+    setComparators (state, payload) {
+      state.comparators = payload
     }
   },
   actions: {
@@ -156,6 +161,22 @@ export default {
             console.log(error)
           }
         )
+    },
+    loadComparators ({commit}) {
+      commit('setLoading', true)
+      window.axios.get(COMPARATOR_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setComparators', response['data']['comparators'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
     }
   },
   getters: {
@@ -187,6 +208,9 @@ export default {
     },
     statuses (state) {
       return state.statuses
+    },
+    comparators (state) {
+      return state.comparators
     }
   }
 }
