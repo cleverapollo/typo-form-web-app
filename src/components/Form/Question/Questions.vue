@@ -89,7 +89,7 @@
         </v-flex>
       </v-layout>
 
-      <triggers :formId="formId" :sectionId="sectionId" :question="question"></triggers>
+      <triggers :formId="formId" :sectionId="sectionId" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
     
       <v-divider></v-divider>
     </v-card-text>
@@ -237,6 +237,12 @@
       }
     },
     computed: {
+      section () {
+        return this.$store.getters.loadedSection(this.formId, this.sectionId)
+      },
+      questionOptions () {
+        return this.section.questions.filter((question) => { return question.id !== this.question.id })
+      },
       answers () {
         return _.sortBy(this.question.answers, element => {
           return 1000000 * (element.parameter ? 0 : 1) + element.order

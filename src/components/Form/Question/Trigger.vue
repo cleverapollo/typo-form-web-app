@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 sm1>
+    <v-flex xs12 sm12>
       <v-select
         :items="questionOptions"
         item-text="question"
@@ -8,10 +8,10 @@
         v-model="parentQuestionId"
         label="Parent Question"
         single-line
-        @change="updateTrigger"
+        @change="updateParentQuestion($event)"
       ></v-select>
     </v-flex>
-    <v-flex xs12 sm1 offset-sm1>
+    <v-flex xs12 sm3>
       <v-select
         :items="answers"
         item-text="answer"
@@ -19,10 +19,10 @@
         v-model="parentAnswerId"
         label="Parent Answer"
         single-line
-        @change="updateTrigger"
+        @change="updateParentAnswer($event)"
       ></v-select>
     </v-flex>
-    <v-flex xs12 sm1 offset-sm1>
+    <v-flex xs12 sm3 offset-sm1>
       <v-select
         :items="comparators"
         item-text="comparator"
@@ -30,18 +30,18 @@
         v-model="comparatorId"
         label="Comparator"
         single-line
-        @change="updateTrigger"
+        @change="updateComparator($event)"
       ></v-select>
     </v-flex>
-    <v-flex xs12 sm1 offset-sm1>
+    <v-flex xs12 sm3 offset-sm1>
       <v-text-field
         label="Value"
         type="text"
         v-model="value"
-        @change="updateTrigger"
+        @change="updateValue($event)"
       ></v-text-field>
     </v-flex>
-    <v-flex xs12 sm1 offset-sm1>
+    <v-flex xs12 sm3 offset-sm4>
       <v-select
         :items="operators"
         item-text="operator"
@@ -49,10 +49,11 @@
         v-model="operator"
         label="Operator"
         single-line
-        @change="updateTrigger"
+        @change="updateOperator($event)"
+        v-if='!isLast'
       ></v-select>
     </v-flex>
-    <v-flex xs12 sm1 offset-sm1 text-xs-center>
+    <v-flex xs12 sm1 offset-sm3 text-xs-center>
       <v-btn fab dark small color="error"
              @click="deleteTrigger()">
         <v-icon dark>remove</v-icon>
@@ -63,7 +64,7 @@
 
 <script>
   export default {
-    props: ['formId', 'sectionId', 'question', 'trigger'],
+    props: ['formId', 'sectionId', 'question', 'trigger', 'questionOptions', 'isLast'],
     data () {
       return {
         parentQuestionId: this.trigger.parent_question_id,
@@ -78,20 +79,34 @@
       }
     },
     computed: {
-      section () {
-        return this.$store.getters.loadedSection(this.formId, this.sectionId)
-      },
-      questionOptions () {
-        return this.section.questions.filter((question) => { return question.id !== this.question.id })
-      },
       answers () {
         return this.$store.getters.loadedAnswers(this.formId, this.sectionId, this.parentQuestionId)
       },
       comparators () {
-        return this.$store.gettes.comparators
+        return this.$store.getters.comparators
       }
     },
     methods: {
+      updateParentQuestion (value) {
+        this.parentQuestionId = value
+        this.updateTrigger()
+      },
+      updateParentAnswer (value) {
+        this.parentAnswerId = value
+        this.updateTrigger()
+      },
+      updateComparator (value) {
+        this.comparatorId = value
+        this.updateTrigger()
+      },
+      updateValue (value) {
+        this.value = value
+        this.updateTrigger()
+      },
+      updateOperator (value) {
+        this.operator = value
+        this.updateTrigger()
+      },
       deleteTrigger () {
         this.$store.dispatch('deleteTrigger', {
           formId: this.formId,
@@ -99,9 +114,6 @@
         })
       },
       updateTrigger () {
-        if (this.parentQuestionId !== this.trigger.parentQuestionId && this.answers.length > 0) {
-          this.parentAnswerId = this.answers[0].id
-        }
         this.$store.dispatch('updateTrigger', {
           id: this.trigger.id,
           formId: this.formId,

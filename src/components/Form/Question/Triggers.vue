@@ -6,7 +6,8 @@
       </v-layout>
 
       <template v-for='(item, index) in triggers'>
-        <trigger :formId="formId" :sectionId="sectionId" :question="question" :trigger="item"></trigger>
+        <trigger :formId="formId" :sectionId="sectionId" :question="question" :trigger="item" :questionOptions="questionOptions" :isLast="isLast(index)"></trigger>
+        <v-divider v-if='!isLast(index)'></v-divider>
       </template>
 
       <v-layout wrap>
@@ -22,7 +23,7 @@
 <script>
   import trigger from './Trigger'
   export default {
-    props: ['formId', 'sectionId', 'question'],
+    props: ['formId', 'sectionId', 'question', 'questionOptions'],
     components: {
       trigger
     },
@@ -35,12 +36,14 @@
       createTrigger () {
         this.$store.dispatch('createTrigger', {
           formId: this.formId,
-          parentQuestionId: 1,
-          parentAnswerId: 1,
-          value: 1,
+          questionId: this.question.id,
+          parentQuestionId: this.questionOptions[0].id,
           comparatorId: 1,
-          operator: 1
+          operator: 0
         })
+      },
+      isLast (index) {
+        return this.triggers.length - 1 === index
       }
     }
   }

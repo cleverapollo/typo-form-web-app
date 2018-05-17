@@ -161,7 +161,7 @@
       this.$store.dispatch('loadSections', this.id)
       this.$store.dispatch('loadSubmissions', this.id)
       this.$store.dispatch('loadValidations', this.id)
-      // this.$store.dispatch('loadTriggers', this.id)
+      this.$store.dispatch('loadTriggers', this.id)
       this.$store.dispatch('selectSection', null)
     }
   }

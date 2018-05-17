@@ -56,11 +56,9 @@ export default {
     },
     createTrigger ({commit, getters}, payload) {
       const trigger = {
+        question_id: payload.questionId,
         parent_question_id: payload.parentQuestionId,
-        parent_answer_id: payload.parentAnswerId,
-        value: payload.value,
         comparator_id: payload.comparatorId,
-        order: payload.order,
         operator: payload.operator
       }
       window.axios.post(FORM_URL + payload.formId + TRIGGER_URL, trigger)
@@ -87,17 +85,14 @@ export default {
       if (payload.parentQuestionId) {
         updateObj.parent_question_id = payload.parentQuestionId
       }
-      if (payload.parentAnswer_id) {
-        updateObj.parent_answer_id = payload.parentAnswer_id
+      if (payload.parentAnswerId !== undefined) {
+        updateObj.parent_answer_id = payload.parentAnswerId
       }
-      if (payload.value) {
+      if (payload.value !== undefined) {
         updateObj.value = payload.value
       }
       if (payload.comparatorId) {
         updateObj.comparator_id = payload.comparatorId
-      }
-      if (payload.order) {
-        updateObj.order = payload.order
       }
       if (payload.operator) {
         updateObj.operator = payload.operator
