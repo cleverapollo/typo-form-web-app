@@ -98,7 +98,7 @@
               </v-layout>
               <v-layout>
                 <v-flex>
-                  <input type="file" class="hide inputfile" @change="onFileChange" id="upload"
+                  <input id="upload" type="file" class="hide inputfile" accept=".csv, .xls, .xlsx" @change="onFileChange"
                          data-multiple-caption="{count} files selected" multiple/>
                   <label for="upload"><span>{{ csvFileName }}</span></label>
                 </v-flex>
