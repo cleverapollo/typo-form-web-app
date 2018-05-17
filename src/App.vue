@@ -161,6 +161,7 @@
         this.$store.dispatch('loadPeriods')
         this.$store.dispatch('loadStatuses')
         this.$store.dispatch('loadRoles')
+        this.$store.dispatch('loadComparators')
         this.$store.dispatch('loadApplications')
       }
     },
@@ -187,5 +188,9 @@
   .application-icon img {
     width: 100%;
     vertical-align: middle;
+  }
+
+  .icon-preview {
+    width: 100%;
   }
 </style>

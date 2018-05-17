@@ -87,7 +87,9 @@
     computed: {
       list: {
         get () {
-          return this.$store.getters.loadedChildren(this.formId, null)
+          return _.sortBy(this.$store.getters.loadedChildren(this.formId, null), element => {
+            return element.order
+          })
         },
         set (value) {
           // TODO: draggable

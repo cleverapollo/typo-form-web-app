@@ -35,25 +35,25 @@ Vue.use(Vuetify)
 Vue.use(VueAxios, axios)
 Vue.use(VueAuthenticate, {
   tokenName: 'access_token',
-  baseUrl: 'http://localhost:8000',
+  baseUrl: process.env.API_ORIGIN_URL,
   storageType: 'cookieStorage',
   providers: {
     // Define OAuth providers config
     github: {
-      clientId: 'cfb878be79c0a7b7616a',
-      redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
+      clientId: process.env.GITHUB_CLIENT_ID,
+      redirectUri: process.env.REDIRECT_URL // Your client app URL
     },
     facebook: {
-      clientId: '',
-      redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      redirectUri: process.env.REDIRECT_URL // Your client app URL
     },
     google: {
-      clientId: '5570114347-1q8r9fkardh7oko0a2d7qqee95a8ve6i.apps.googleusercontent.com',
-      redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      redirectUri: process.env.REDIRECT_URL // Your client app URL
     },
     live: {
-      clientId: '4489dd7c-3951-47f5-8526-1de225e2cf1c',
-      redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
+      clientId: process.env.LIVE_CLIENT_ID,
+      redirectUri: process.env.REDIRECT_URL // Your client app URL
     }
   }
 })

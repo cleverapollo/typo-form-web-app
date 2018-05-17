@@ -88,9 +88,11 @@
           ></component>
         </v-flex>
       </v-layout>
-    </v-card-text>
 
-    <v-divider></v-divider>
+      <triggers :formId="formId" :sectionId="sectionId" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
+    
+      <v-divider></v-divider>
+    </v-card-text>
 
     <v-card-actions class="pa-3">
       <v-spacer></v-spacer>
@@ -147,8 +149,13 @@
   import timeComponent from './components/Time'
   import * as _ from 'lodash'
 
+  import triggers from './Triggers'
+
   export default {
     props: ['question', 'formId', 'sectionId', 'index'],
+    components: {
+      triggers
+    },
     data () {
       return {
         editedName: this.question.question,
@@ -230,6 +237,12 @@
       }
     },
     computed: {
+      section () {
+        return this.$store.getters.loadedSection(this.formId, this.sectionId)
+      },
+      questionOptions () {
+        return this.section.questions.filter((question) => { return question.id !== this.question.id })
+      },
       answers () {
         return _.sortBy(this.question.answers, element => {
           return 1000000 * (element.parameter ? 0 : 1) + element.order

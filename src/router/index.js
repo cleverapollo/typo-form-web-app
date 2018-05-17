@@ -191,7 +191,6 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  document.title = to.params['slug'] || 'Informed 365'
   if (to.matched.some(record => record.meta.requiresAuth) && store.getters.user === null) {
     next({
       path: '/signin',
@@ -216,6 +215,7 @@ router.beforeEach((to, from, next) => {
           style.appendChild(document.createTextNode(css))
         }
         head.appendChild(style)
+        document.title = application ? application.name : 'Informed 365'
         next()
       })
       .catch(() => next({path: '/'}))
@@ -225,6 +225,7 @@ router.beforeEach((to, from, next) => {
       style.childNodes[0].textContent = ''
     }
     head.appendChild(style)
+    document.title = 'Informed 365'
     next()
   }
 })

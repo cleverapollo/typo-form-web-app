@@ -34,6 +34,8 @@
                 <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
                 <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
                 <td @click=onLoadUser(props.item.id)>{{ getRole(props.item.application_role_id) }}</td>
+                <td @click=onLoadUser(props.item.id)>{{ props.item.provider }}</td>
+                <td @click=onLoadUser(props.item.id)>{{ props.item.social_id }}</td>
               </template>
             </v-data-table>
           </v-tabs-content>
@@ -41,16 +43,19 @@
             :id="'invite'"
           >
             <v-data-table
-              :headers="headers.slice(0, 3)"
+              :headers="headers"
               :items="invitedUsers"
               hide-actions
               class="elevation-1"
               no-data-text="No invites"
             >
               <template slot="items" slot-scope="props">
-                <td @click=onLoadUser(props.item.id)>{{ props.item.first_name }}</td>
-                <td @click=onLoadUser(props.item.id)>{{ props.item.last_name }}</td>
-                <td @click=onLoadUser(props.item.id)>{{ props.item.email }}</td>
+                <td>{{ props.item.first_name }}</td>
+                <td>{{ props.item.last_name }}</td>
+                <td>{{ props.item.email }}</td>
+                <td></td>
+                <td>{{ props.item.provider }}</td>
+                <td>{{ props.item.social_id }}</td>
               </template>
             </v-data-table>
           </v-tabs-content>
@@ -70,7 +75,9 @@
           { text: 'First Name', value: 'first_name', sortable: false, align: 'left' },
           { text: 'Last Name', value: 'last_name', sortable: false, align: 'left' },
           { text: 'Email', value: 'email', sortable: false, align: 'left' },
-          { text: 'Role', value: 'role', sortable: false, align: 'left' }
+          { text: 'Role', value: 'role', sortable: false, align: 'left' },
+          { text: 'Provider', value: 'role', sortable: false, align: 'left' },
+          { text: 'Social ID', value: 'role', sortable: false, align: 'left' }
         ]
       }
     },

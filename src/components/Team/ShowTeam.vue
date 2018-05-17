@@ -49,6 +49,8 @@
                       <td @click=onLoadTeamUser(props.item.id)>{{ props.item.last_name }}</td>
                       <td @click=onLoadTeamUser(props.item.id)>{{ props.item.email }}</td>
                       <td @click=onLoadTeamUser(props.item.id)>{{ getRole(props.item.team_role_id) }}</td>
+                      <td @click=onLoadTeamUser(props.item.id)>{{ props.item.provider }}</td>
+                      <td @click=onLoadTeamUser(props.item.id)>{{ props.item.social_id }}</td>
                     </template>
                   </v-data-table>
                 </v-tabs-content>
@@ -66,6 +68,9 @@
                       <td>{{ props.item.first_name }}</td>
                       <td>{{ props.item.last_name }}</td>
                       <td>{{ props.item.email }}</td>
+                      <td></td>
+                      <td>{{ props.item.provider }}</td>
+                      <td>{{ props.item.social_id }}</td>
                       <td></td>
                     </template>
                   </v-data-table>
