@@ -188,7 +188,9 @@
     computed: {
       list: {
         get () {
-          return this.$store.getters.loadedChildren(this.formId, this.section.id)
+          return _.sortBy(this.$store.getters.loadedChildren(this.formId, this.section.id), element => {
+            return element.order
+          })
         },
         set (value) {
           // TODO: Drggable components
@@ -440,7 +442,10 @@
           parentSectionId = parseInt(parentSectionId)
         }
 
-        const children = this.$store.getters.loadedChildren(this.formId, parentSectionId)
+        const children = _.sortBy(this.$store.getters.loadedChildren(this.formId, parentSectionId), element => {
+          return element.order
+        })
+
         let order = 0
         if (children.length === 0) {
           order = 1
