@@ -1,16 +1,17 @@
 <template>
   <v-container>
     <v-layout row v-if="error">
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex sm12 md8 offset-md2 xl4 offset-xl4>
         <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
       </v-flex>
     </v-layout>
     <v-layout row>
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex sm12 md8 offset-md2 xl4 offset-xl4>
         <v-card>
           <v-card-text>
             <v-container>
               <form @submit.prevent="onSignin">
+                <oauth></oauth>
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
@@ -50,14 +51,13 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12 text-xs-center class="mt-4">
-                    <router-link to="/password/reset" tag="a" class="green--text">Forgot your password?</router-link>
+                    <router-link to="/password/reset" tag="a">Forgot your password?</router-link>
                   </v-flex>
                 </v-layout>
-                <oauth></oauth>
                 <v-layout row>
                   <v-flex xs12 text-xs-center class="mt-4">
-                    <span class="grey--text">Don't have an account?</span>
-                    <router-link to="/signup" tag="a" class="green--text">Sign up</router-link>
+                    <span>Don't have an account?</span>
+                    <router-link to="/signup" tag="a">Sign up</router-link>
                   </v-flex>
                 </v-layout>
               </form>
