@@ -60,8 +60,7 @@ export default {
         period_start: payload.periodStart,
         period_end: payload.periodEnd,
         period_id: payload.periodId,
-        show_progress: payload.showProgress,
-        csv: payload.csv
+        show_progress: payload.showProgress
       }
 
       window.axios.post(APPLICATION_URL + payload.slug + FORM_URL, form)
