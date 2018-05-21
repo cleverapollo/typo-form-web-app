@@ -102,11 +102,11 @@
       onSaveChanges () {
         this.settingApplication = false
         let updateObj = {
-          slug: this.application.slug
+          slug: this.application.slug,
+          formIds: this.selectedForms
         }
 
-        this.$store.dispatch('updateApplication', updateObj)
-          .then((response) => this.$router.push('/' + response.data.application.slug + '/show'))
+        this.$store.dispatch('setAuto', updateObj)
       },
       onCancel () {
         this.settingApplication = false
@@ -122,6 +122,18 @@
       loading () {
         return this.$store.getters.loading
       }
+    },
+    watch: {
+      forms (value) {
+        this.selectedForms = value.filter(e => {
+          return e.auto
+        }).map(e => e.id)
+      }
+    },
+    created () {
+      this.selectedForms = this.forms.filter(e => {
+        return e.auto
+      }).map(e => e.id)
     }
   }
 </script>
