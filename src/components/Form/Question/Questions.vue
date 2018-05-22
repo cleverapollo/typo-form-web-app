@@ -1,88 +1,74 @@
 <template>
   <v-container>
-    <v-layout row wrap justify-space-between>
-      <v-flex xs4 class="pt-3" style="min-width: 210px">
-        <v-text-field
-          label="Question"
-          single-line
-          autofocus
-          @blur="checkUpdateName"
-          v-model="editedName"
-        ></v-text-field>
-      </v-flex>
+    <v-text-field
+      label="Question"
+      single-line
+      autofocus
+      @blur="checkUpdateName"
+      v-model="editedName"
+    ></v-text-field>
 
-      <v-flex xs4 style="min-width: 210px">
-        <v-select
-          :items="menuItems"
-          item-text="title"
-          item-value="title"
-          v-model="questionTypeString"
-          auto
-          persistent-hint
-          hint=" "
-          @change="updateQuestionType"
-        >
-          <template slot="selection" slot-scope="data">
-            <v-list-tile-avatar>
-              <v-icon v-text="data.item.action"></v-icon>
-            </v-list-tile-avatar>
+    <v-text-field
+      label="Description"
+      v-model="editedDescription"
+      single-line
+      autofocus
+      @blur="checkUpdateDescription"
+    ></v-text-field>
 
-            <v-list-tile-content style="color: black">
-              <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
-            </v-list-tile-content>
-          </template>
+    <v-select
+      :items="menuItems"
+      item-text="title"
+      item-value="title"
+      v-model="questionTypeString"
+      auto
+      persistent-hint
+      hint=" "
+      @change="updateQuestionType"
+    >
+      <template slot="selection" slot-scope="data">
+        <v-list-tile-avatar>
+          <v-icon v-text="data.item.action"></v-icon>
+        </v-list-tile-avatar>
 
-          <template slot="item" slot-scope="data">
-            <template v-if="typeof data.item !== 'object'">
-              <v-list-tile-content v-text="data.item"></v-list-tile-content>
-            </template>
+        <v-list-tile-content style="color: black">
+          <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
+        </v-list-tile-content>
+      </template>
 
-            <template v-else>
-              <v-list-tile-avatar>
-                <v-icon v-text="data.item.action"></v-icon>
-              </v-list-tile-avatar>
+      <template slot="item" slot-scope="data">
+        <template v-if="typeof data.item !== 'object'">
+          <v-list-tile-content v-text="data.item"></v-list-tile-content>
+        </template>
 
-              <v-list-tile-content>
-                <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
-              </v-list-tile-content>
-            </template>
-          </template>
-        </v-select>
-      </v-flex>
-    </v-layout>
+        <template v-else>
+          <v-list-tile-avatar>
+            <v-icon v-text="data.item.action"></v-icon>
+          </v-list-tile-avatar>
 
-    <v-layout>
-      <v-flex>
-        <v-text-field
-          label="Description"
-          v-model="editedDescription"
-          single-line
-          autofocus
-          @blur="checkUpdateDescription"
-        ></v-text-field>
-      </v-flex>
-    </v-layout>
+          <v-list-tile-content>
+            <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
+          </v-list-tile-content>
+        </template>
+      </template>
+    </v-select>
 
-    <v-layout>
-      <v-flex xs12>
-        <component
-          :is="questionComponent"
-          :question-id="question.id"
-          :form-id="formId"
-          :answers="answers"
-          :has-validation="mandatory && hasValidation"
-          @create-answer="createAnswer"
-          @delete-answer="deleteAnswer"
-          @delete-answers="deleteAnswers"
-          @change-answer="changeAnswer"
-          @update-answer="updateAnswer"
-          @move-answer="moveAnswer"
-          @create-validation="createValidation"
-          @update-validation="updateValidation"
-          @remove-validation="removeValidation"
-        ></component>
-      </v-flex>
-    </v-layout>
+    <component
+      :is="questionComponent"
+      :question-id="question.id"
+      :form-id="formId"
+      :answers="answers"
+      :has-validation="mandatory && hasValidation"
+      @create-answer="createAnswer"
+      @delete-answer="deleteAnswer"
+      @delete-answers="deleteAnswers"
+      @change-answer="changeAnswer"
+      @update-answer="updateAnswer"
+      @move-answer="moveAnswer"
+      @create-validation="createValidation"
+      @update-validation="updateValidation"
+      @remove-validation="removeValidation"
+    ></component>
 
     <triggers :formId="formId" :sectionId="sectionId" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
 

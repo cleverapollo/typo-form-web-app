@@ -1,34 +1,24 @@
 <template>
   <v-container>
-    <v-layout row>
-      <v-flex xs4>
-        <h2>
-          {{ editedName }}
-        </h2>
-      </v-flex>
-    </v-layout>
+    <h2>
+      {{ editedName }}
+    </h2>
 
-    <v-layout v-if='editedDescription'>
-      <v-flex>
-        {{ editedDescription }}
-      </v-flex>
-    </v-layout>
+    <p v-if='editedDescription'>
+      {{ editedDescription }}
+    </p>
 
-    <v-layout>
-      <v-flex xs12>
-        <component
-          :is="questionComponent"
-          :answers="answers"
-          :responses="responses"
-          :question-id="question.id"
-          :form-id="formId"
-          :submission-id="submissionId"
-          @create-response="createResponse"
-          @update-response="updateResponse"
-          @delete-response="deleteResponse"
-        ></component>
-      </v-flex>
-    </v-layout>
+    <component
+      :is="questionComponent"
+      :answers="answers"
+      :responses="responses"
+      :question-id="question.id"
+      :form-id="formId"
+      :submission-id="submissionId"
+      @create-response="createResponse"
+      @update-response="updateResponse"
+      @delete-response="deleteResponse"
+    ></component>
   </v-container>
 </template>
 
