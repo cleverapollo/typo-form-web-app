@@ -7,6 +7,7 @@ const PERIOD_URL = `${API_URL}period/`
 const STATUS_URL = `${API_URL}status/`
 const VALIDATION_TYPE_URL = `${API_URL}validation-type/`
 const COMPARATOR_URL = `${API_URL}comparator/`
+const TRIGGER_TYPE_URL = `${API_URL}trigger-type/`
 
 export default {
   state: {
@@ -17,7 +18,8 @@ export default {
     periods: [],
     roles: [],
     statuses: [],
-    comparators: []
+    comparators: [],
+    triggerTypes: []
   },
   mutations: {
     setLoading (state, payload) {
@@ -46,6 +48,9 @@ export default {
     },
     setComparators (state, payload) {
       state.comparators = payload
+    },
+    setTriggerTypes (state, payload) {
+      state.triggerTypes = payload
     }
   },
   actions: {
@@ -177,6 +182,22 @@ export default {
             console.log(error)
           }
         )
+    },
+    loadTriggerTypes ({commit}) {
+      commit('setLoading', true)
+      window.axios.get(TRIGGER_TYPE_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setTriggerTypes', response['data']['trigger_types'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
     }
   },
   getters: {
@@ -211,6 +232,9 @@ export default {
     },
     comparators (state) {
       return state.comparators
+    },
+    triggerTypes (state) {
+      return state.triggerTypes
     }
   }
 }

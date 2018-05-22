@@ -106,6 +106,7 @@
           this.$store.dispatch('loadStatuses')
           this.$store.dispatch('loadRoles')
           this.$store.dispatch('loadComparators')
+          this.$store.dispatch('loadTriggerTypes')
           this.$store.dispatch('loadApplications')
           if (this.$route.query.redirect) {
             this.$router.push(this.$route.query.redirect)
