@@ -1,100 +1,93 @@
 <template>
-  <v-card active-class="active-question" class="ma-2">
-    <v-toolbar class="handle">
-      <v-toolbar-title>{{ "Question " + index }}</v-toolbar-title>
-    </v-toolbar>
+  <v-container>
+    <v-layout row wrap justify-space-between>
+      <v-flex xs4 class="pt-3" style="min-width: 210px">
+        <v-text-field
+          label="Question"
+          single-line
+          autofocus
+          @blur="checkUpdateName"
+          v-model="editedName"
+        ></v-text-field>
+      </v-flex>
 
-    <v-card-text>
-      <v-layout row wrap justify-space-between>
-        <v-flex xs4 class="pt-3" style="min-width: 210px">
-          <v-text-field
-            label="Question"
-            single-line
-            autofocus
-            @blur="checkUpdateName"
-            v-model="editedName"
-          ></v-text-field>
-        </v-flex>
+      <v-flex xs4 style="min-width: 210px">
+        <v-select
+          :items="menuItems"
+          item-text="title"
+          item-value="title"
+          v-model="questionTypeString"
+          auto
+          persistent-hint
+          hint=" "
+          @change="updateQuestionType"
+        >
+          <template slot="selection" slot-scope="data">
+            <v-list-tile-avatar>
+              <v-icon v-text="data.item.action"></v-icon>
+            </v-list-tile-avatar>
 
-        <v-flex xs4 style="min-width: 210px">
-          <v-select
-            :items="menuItems"
-            item-text="title"
-            item-value="title"
-            v-model="questionTypeString"
-            auto
-            persistent-hint
-            hint=" "
-            @change="updateQuestionType"
-          >
-            <template slot="selection" slot-scope="data">
+            <v-list-tile-content style="color: black">
+              <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
+            </v-list-tile-content>
+          </template>
+
+          <template slot="item" slot-scope="data">
+            <template v-if="typeof data.item !== 'object'">
+              <v-list-tile-content v-text="data.item"></v-list-tile-content>
+            </template>
+
+            <template v-else>
               <v-list-tile-avatar>
                 <v-icon v-text="data.item.action"></v-icon>
               </v-list-tile-avatar>
 
-              <v-list-tile-content style="color: black">
+              <v-list-tile-content>
                 <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
               </v-list-tile-content>
             </template>
+          </template>
+        </v-select>
+      </v-flex>
+    </v-layout>
 
-            <template slot="item" slot-scope="data">
-              <template v-if="typeof data.item !== 'object'">
-                <v-list-tile-content v-text="data.item"></v-list-tile-content>
-              </template>
+    <v-layout>
+      <v-flex>
+        <v-text-field
+          label="Description"
+          v-model="editedDescription"
+          single-line
+          autofocus
+          @blur="checkUpdateDescription"
+        ></v-text-field>
+      </v-flex>
+    </v-layout>
 
-              <template v-else>
-                <v-list-tile-avatar>
-                  <v-icon v-text="data.item.action"></v-icon>
-                </v-list-tile-avatar>
+    <v-layout>
+      <v-flex xs12>
+        <component
+          :is="questionComponent"
+          :question-id="question.id"
+          :form-id="formId"
+          :answers="answers"
+          :has-validation="mandatory && hasValidation"
+          @create-answer="createAnswer"
+          @delete-answer="deleteAnswer"
+          @delete-answers="deleteAnswers"
+          @change-answer="changeAnswer"
+          @update-answer="updateAnswer"
+          @move-answer="moveAnswer"
+          @create-validation="createValidation"
+          @update-validation="updateValidation"
+          @remove-validation="removeValidation"
+        ></component>
+      </v-flex>
+    </v-layout>
 
-                <v-list-tile-content>
-                  <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
-                </v-list-tile-content>
-              </template>
-            </template>
-          </v-select>
-        </v-flex>
-      </v-layout>
+    <triggers :formId="formId" :sectionId="sectionId" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
 
-      <v-layout>
-        <v-flex>
-          <v-text-field
-            label="Description"
-            v-model="editedDescription"
-            single-line
-            autofocus
-            @blur="checkUpdateDescription"
-          ></v-text-field>
-        </v-flex>
-      </v-layout>
-
-      <v-layout>
-        <v-flex xs12>
-          <component
-            :is="questionComponent"
-            :question-id="question.id"
-            :form-id="formId"
-            :answers="answers"
-            :has-validation="mandatory && hasValidation"
-            @create-answer="createAnswer"
-            @delete-answer="deleteAnswer"
-            @delete-answers="deleteAnswers"
-            @change-answer="changeAnswer"
-            @update-answer="updateAnswer"
-            @move-answer="moveAnswer"
-            @create-validation="createValidation"
-            @update-validation="updateValidation"
-            @remove-validation="removeValidation"
-          ></component>
-        </v-flex>
-      </v-layout>
-
-      <triggers :formId="formId" :sectionId="sectionId" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
-    
-      <v-divider></v-divider>
-    </v-card-text>
-
-    <v-card-actions class="pa-3">
+    <v-divider></v-divider>
+    <v-layout pa-3 class="card_actions">
       <v-spacer></v-spacer>
       <v-btn color="grey darken-2" flat icon @click="duplicateQuestion">
         <v-icon>content_copy</v-icon>
@@ -105,11 +98,11 @@
 
       <div class="v-divider">&nbsp</div>
 
-      <v-switch style="min-width: 110px; max-width: 110px;"
-                class="switch-mandatory"
-                label="Required"
-                v-model="mandatory"
-                hide-details
+      <v-switch
+        label="Required"
+        v-model="mandatory"
+        hide-details
+        class="switch-mandatory"
       ></v-switch>
 
       <v-menu v-if="ifRequireValidation[questionTypeString]" offset-y bottom right>
@@ -131,8 +124,8 @@
           </v-list-tile>
         </v-list>
       </v-menu>
-    </v-card-actions>
-  </v-card>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -446,6 +439,10 @@
 </script>
 
 <style scoped>
+  .card_actions .btn, .card_actions>* {
+    margin: 0 4px;
+  }
+
   .switch-mandatory {
     max-width: 120px;
     margin-left: 20px;

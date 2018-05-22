@@ -1,43 +1,35 @@
 <template>
-  <v-card active-class="active-question" class="ma-2">
-    <v-toolbar>
-      <v-toolbar-title>{{ "Question " + index }}</v-toolbar-title>
-    </v-toolbar>
+  <v-container>
+    <v-layout row>
+      <v-flex xs4>
+        <h2>
+          {{ editedName }}
+        </h2>
+      </v-flex>
+    </v-layout>
 
-    <v-card-text>
-      <v-layout row>
-        <v-flex xs4>
-          <h2>
-            {{ editedName }}
-          </h2>
-        </v-flex>
-      </v-layout>
+    <v-layout v-if='editedDescription'>
+      <v-flex>
+        {{ editedDescription }}
+      </v-flex>
+    </v-layout>
 
-      <v-layout>
-        <v-flex>
-          <p>
-            {{ editedDescription }}
-          </p>
-        </v-flex>
-      </v-layout>
-
-      <v-layout>
-        <v-flex xs12>
-          <component
-            :is="questionComponent"
-            :answers="answers"
-            :responses="responses"
-            :question-id="question.id"
-            :form-id="formId"
-            :submission-id="submissionId"
-            @create-response="createResponse"
-            @update-response="updateResponse"
-            @delete-response="deleteResponse"
-          ></component>
-        </v-flex>
-      </v-layout>
-    </v-card-text>
-  </v-card>
+    <v-layout>
+      <v-flex xs12>
+        <component
+          :is="questionComponent"
+          :answers="answers"
+          :responses="responses"
+          :question-id="question.id"
+          :form-id="formId"
+          :submission-id="submissionId"
+          @create-response="createResponse"
+          @update-response="updateResponse"
+          @delete-response="deleteResponse"
+        ></component>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
