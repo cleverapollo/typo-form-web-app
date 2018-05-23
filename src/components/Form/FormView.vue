@@ -66,6 +66,7 @@
           :section="section"
           :formId="formId"
           :submissionId="submissionId"
+          :isAdmin="isAdmin"
           v-if="section"
         ></sections>
       </v-flex>

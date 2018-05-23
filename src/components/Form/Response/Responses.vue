@@ -56,7 +56,7 @@
   import timeComponent from './components/Time'
 
   export default {
-    props: ['question', 'formId', 'submissionId', 'index', 'sectionId'],
+    props: ['question', 'formId', 'submissionId', 'index', 'sectionId', 'isAdmin'],
     components: {
       draggable
     },
@@ -119,6 +119,23 @@
         get: function () {
           return this.questionsComponentsMap[this.questionTypeString]
         }
+      },
+      questionTriggers () {
+        return this.$store.getters.loadedQuestionTrigger(parseInt(this.formId), parseInt(this.question.id))
+      },
+      isTrigger () {
+//        const $this = this
+//        let triggerF = false
+//        let tempF1 = true
+//        let tempF2 = true
+//
+//        this.questionTriggers.forEach((questionTrigger) => {
+//          let parrentQuestion = $this.$store.getters.loadedQuestion(parseInt(this.formId), parseInt(questionTrigger.parrent_question_id))
+//
+//          if(questionTrigger.opperator) {
+//
+//          }
+//        })
       }
     },
     methods: {
@@ -128,6 +145,9 @@
         }) + 1
       },
       createResponse (args) {
+        if (this.isAdmin) {
+          return
+        }
         if (!this.submissionId) {
           return
         }
@@ -142,6 +162,9 @@
         })
       },
       updateResponse (args) {
+        if (this.isAdmin) {
+          return
+        }
         const answerId = args[0]
         const response = args[1]
         const id = args[2]
@@ -155,6 +178,9 @@
         })
       },
       deleteResponse (id) {
+        if (this.isAdmin) {
+          return
+        }
         this.$store.dispatch('deleteResponse', {
           submissionId: this.submissionId,
           questionId: this.question.id,
