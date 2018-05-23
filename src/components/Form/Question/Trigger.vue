@@ -25,7 +25,7 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-flex xs12 sm3 offset-sm1>
+      <v-flex xs12 sm4 offset-sm1>
         <v-select
           :items="parentQuestionType == 8 || parentQuestionType == 9 ? trueAnswers : answers"
           item-text="answer"
@@ -37,7 +37,7 @@
           v-if='selectedTriggerType && selectedTriggerType.answer'
         ></v-select>
       </v-flex>
-      <v-flex xs12 sm2 offset-sm1 v-if="parentQuestionType == 8 || parentQuestionType == 9">
+      <v-flex xs12 sm4 offset-sm2 v-if="parentQuestionType == 8 || parentQuestionType == 9">
         <v-select
           :items="falseAnswers"
           item-text="answer"
@@ -49,7 +49,7 @@
           v-if='selectedTriggerType && selectedTriggerType.value'
         ></v-select>
       </v-flex>
-      <v-flex xs12 sm2 offset-sm1 v-else>
+      <v-flex xs12 sm4 offset-sm2 v-else>
         <v-text-field
           label="Value"
           type="text"
@@ -58,7 +58,9 @@
           v-if='selectedTriggerType && selectedTriggerType.value'
         ></v-text-field>
       </v-flex>
-      <v-flex xs12 sm2 offset-sm1>
+    </v-layout>
+    <v-layout row wrap>
+      <v-flex xs12 sm2 offset-sm4>
         <v-select
           :items="operators"
           item-text="operator"
@@ -70,7 +72,7 @@
           v-if='!isLast'
         ></v-select>
       </v-flex>
-      <v-flex xs12 sm1 text-xs-center>
+      <v-flex xs12 sm1 offset-sm1 text-xs-center>
         <v-btn fab dark small color="error"
                @click="deleteTrigger()">
           <v-icon dark>remove</v-icon>
