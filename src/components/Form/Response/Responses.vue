@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container v-if="isTrigger">
     <h2>
       {{ editedName }}
     </h2>
@@ -79,6 +79,9 @@
           return response.question_id === this.question.id
         })
       },
+      allResponses () {
+        return this.$store.getters.loadedResponses(parseInt(this.formId), parseInt(this.submissionId))
+      },
       questionTypes () {
         return this.$store.getters.questionTypes
       },
@@ -105,19 +108,24 @@
       questionTriggers () {
         return this.$store.getters.loadedQuestionTrigger(parseInt(this.formId), parseInt(this.question.id))
       },
+      triggerTypes () {
+        return this.$store.getters.triggerTypes
+      },
       isTrigger () {
-//        const $this = this
-//        let triggerF = false
-//        let tempF1 = true
-//        let tempF2 = true
-//
-//        this.questionTriggers.forEach((questionTrigger) => {
-//          let parrentQuestion = $this.$store.getters.loadedQuestion(parseInt(this.formId), parseInt(questionTrigger.parrent_question_id))
-//
-//          if(questionTrigger.opperator) {
-//
-//          }
-//        })
+        const $this = this
+        let triggerF = false
+        let tempF = true
+
+        _.forEach(this.questionTriggers, function (questionTrigger) {
+          if (questionTrigger.operator === 1) {
+            triggerF |= tempF && $this.compareCondition(questionTrigger)
+            tempF = true
+          } else {
+            tempF &= $this.compareCondition(questionTrigger)
+          }
+        })
+
+        return triggerF || tempF
       }
     },
     methods: {
@@ -169,6 +177,160 @@
           formId: this.formId,
           id: id
         })
+      },
+      parentResponses (questionId) {
+        return this.allResponses.filter((response) => {
+          return response.question_id === questionId
+        })
+      },
+      triggerType (questionTypeId, comparatorId) {
+        return this.triggerTypes.filter((triggerType) => {
+          return triggerType.question_type_id === questionTypeId && triggerType.comparator_id === comparatorId
+        })[0]
+      },
+      compareCondition (questionTrigger) {
+        let question = this.$store.getters.loadedQuestion(parseInt(this.formId), parseInt(this.sectionId), parseInt(questionTrigger.parent_question_id))
+        let parentResponses = this.parentResponses(questionTrigger.parent_question_id)
+        let triggerType = this.triggerType(question.question_type_id, questionTrigger.comparator_id)
+
+        let questionTypeID = question.question_type_id
+        let comparatorID = questionTrigger.comparator_id
+        let answerF = triggerType.answer
+        let valueF = triggerType.value
+        let answer = questionTrigger.parent_answer_id
+        let value = questionTrigger.value
+
+        let questionAnswer = ''
+        let questionValue = ''
+        if (parentResponses.length > 0) {
+          if (questionTypeID === 4) {
+            let filteredResponses = parentResponses.filter(function (parentResponse) {
+              return parentResponse.answer_id === answer
+            })
+            if (filteredResponses.length > 0) {
+              questionAnswer = answer.toString()
+            }
+          } else if (questionTypeID === 9) {
+            let filteredResponses = parentResponses.filter(function (parentResponse) {
+              return parentResponse.answer_id === answer && parentResponse.response === value
+            })
+            if (filteredResponses.length > 0) {
+              questionAnswer = answer.toString()
+              questionValue = value
+            }
+          } else {
+            if (parentResponses[0].answer_id) {
+              console.log(parentResponses[0])
+              questionAnswer = parentResponses[0].answer_id.toString()
+            }
+            questionValue = parentResponses[0].response
+          }
+        }
+
+        answer = answer ? answer.toString() : null
+        switch (comparatorID) {
+          case 1:
+            if (!answerF) {
+              if (questionValue === value) {
+                return true
+              }
+            } else {
+              if (!valueF) {
+                return questionAnswer === answer
+              } else {
+                return questionAnswer === answer && questionValue === value
+              }
+            }
+            break
+          case 2:
+            if (!answerF) {
+              if (questionValue < value) {
+                return true
+              }
+            } else {
+              if (questionAnswer < answer) {
+                return true
+              }
+            }
+            break
+          case 3:
+            if (!answerF) {
+              if (questionValue > value) {
+                return true
+              }
+            } else {
+              if (questionAnswer > answer) {
+                return true
+              }
+            }
+            break
+          case 4:
+            if (!answerF) {
+              if (questionValue <= value) {
+                return true
+              }
+            } else {
+              if (questionAnswer <= answer) {
+                return true
+              }
+            }
+            break
+          case 5:
+            if (!answerF) {
+              if (questionValue >= value) {
+                return true
+              }
+            } else {
+              if (questionAnswer >= answer) {
+                return true
+              }
+            }
+            break
+          case 6:
+            if (questionTypeID === 4) {
+              return questionAnswer === answer
+            } else if (questionTypeID === 9) {
+              return questionAnswer === answer && questionValue === value
+            } else {
+              if (!answerF) {
+                return _.includes(questionValue, value)
+              } else {
+                if (!valueF) {
+                  return _.includes(questionAnswer, answer)
+                } else {
+                  return _.includes(questionAnswer, answer) && _.includes(questionValue, value)
+                }
+              }
+            }
+          case 7:
+            if (!answerF) {
+              return _.startsWith(questionValue, value)
+            } else {
+              return _.startsWith(questionAnswer, answer)
+            }
+          case 8:
+            if (!answerF) {
+              return _.endsWith(questionValue, value)
+            } else {
+              return _.endsWith(questionAnswer, answer)
+            }
+          case 9:
+            if (parentResponses.length > 0) {
+              return false
+            } else {
+              return true
+            }
+          case 10:
+            if (parentResponses.length > 0) {
+              return true
+            } else {
+              return false
+            }
+          default:
+            break
+        }
+
+        return false
       }
     }
   }
