@@ -53,6 +53,14 @@
       </template>
     </v-select>
 
+    <v-select
+      :items="grids"
+      v-model="questionWidth"
+      label="Question Width"
+      single-line
+      @change="updateQuestionWidth($event)"
+    ></v-select>
+
     <component
       :is="questionComponent"
       :question-id="question.id"
@@ -140,6 +148,7 @@
         editedName: this.question.question,
         editedDescription: this.question.description,
         questionTypeId: this.question.question_type_id,
+        questionWidth: this.question.width,
         mandatory: !!this.question.mandatory, // got number type
         questionsComponentsMap: {
           'Short answer': shortAnswer,
@@ -216,6 +225,9 @@
       }
     },
     computed: {
+      grids () {
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      },
       section () {
         return this.$store.getters.loadedSection(this.formId, this.sectionId)
       },
@@ -330,6 +342,10 @@
           questionId: this.question.id
         })
       },
+      updateQuestionWidth (value) {
+        this.questionWidth = value
+        this.updateQuestion()
+      },
       updateQuestionType (value) {
         // 1, 2, 6, 7, 10, 11 - QuestionType Group 1
         // 3, 4, 5 - QuestionType Group 2
@@ -356,7 +372,8 @@
             question: this.editedName,
             description: this.editedDescription,
             questionTypeId: this.questionTypeId,
-            mandatory: this.mandatory
+            mandatory: this.mandatory,
+            width: this.questionWidth
           })
       },
       duplicateQuestion () {

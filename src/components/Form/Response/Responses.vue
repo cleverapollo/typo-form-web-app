@@ -1,24 +1,28 @@
 <template>
-  <v-container v-if="isTrigger">
-    <h2>
-      {{ editedName }}
-    </h2>
+  <v-container>
+    <v-layout row wrap>
+      <v-flex :class='"xs" + (question.width ? question.width : 12)'>
+        <h2>
+          {{ editedName }}
+        </h2>
 
-    <p v-if='editedDescription'>
-      {{ editedDescription }}
-    </p>
+        <p v-if='editedDescription'>
+          {{ editedDescription }}
+        </p>
 
-    <component
-      :is="questionComponent"
-      :answers="answers"
-      :responses="responses"
-      :question-id="question.id"
-      :form-id="formId"
-      :submission-id="submissionId"
-      @create-response="createResponse"
-      @update-response="updateResponse"
-      @delete-response="deleteResponse"
-    ></component>
+        <component
+          :is="questionComponent"
+          :answers="answers"
+          :responses="responses"
+          :question-id="question.id"
+          :form-id="formId"
+          :submission-id="submissionId"
+          @create-response="createResponse"
+          @update-response="updateResponse"
+          @delete-response="deleteResponse"
+        ></component>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
