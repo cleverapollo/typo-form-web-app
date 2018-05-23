@@ -145,7 +145,7 @@
         id: this.form.id,
         editForm: false,
         editedName: this.form.name,
-        periodDuration: this.form.period_end ? 5 : this.form.period_id,
+        periodDuration: this.form.period_id ? this.form.period_id : 5,
         startMenu: false,
         periodStart: this.form.period_start ? this.form.period_start.substring(0, 10) : null,
         endMenu: false,

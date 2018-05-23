@@ -5,7 +5,20 @@
         <v-card>
           <v-card-text>
             <v-container>
-              <h1 class="mb-4">Create Form</h1>
+              <v-layout row wrap>
+                <v-flex>
+                  <h1 class="mb-4">Create Form</h1>
+                </v-flex>
+                <v-flex text-xs-right>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    flat
+                    icon
+                    href='/static/Form Template.xlsx'>
+                    <v-icon>cloud_download</v-icon>
+                  </v-btn>
+                </v-flex>
+              </v-layout>
 
               <v-layout row wrap>
                 <v-flex xs12>
@@ -14,7 +27,8 @@
                     label="Name"
                     id="name"
                     v-model="name"
-                    required></v-text-field>
+                    required>
+                  </v-text-field>
                 </v-flex>
               </v-layout>
 

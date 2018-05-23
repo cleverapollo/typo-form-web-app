@@ -28,6 +28,12 @@
               <v-list>
                 <v-list-tile @click="">
                   <v-list-tile-title>
+                    <app-setting-application :application="application" class="my-1"></app-setting-application>
+                  </v-list-tile-title>
+                </v-list-tile>
+
+                <v-list-tile @click="">
+                  <v-list-tile-title>
                     <app-edit-application :application="application" class="my-1"></app-edit-application>
                   </v-list-tile-title>
                 </v-list-tile>
@@ -126,6 +132,9 @@
       onBack () {
         this.$router.push('/applications')
       }
+    },
+    created () {
+      this.$store.dispatch('loadForms', this.slug)
     }
   }
 </script>

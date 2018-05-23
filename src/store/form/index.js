@@ -1,6 +1,7 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
 const FORM_URL = `/form/`
+const SETTING_URL = `auto/`
 
 export default {
   state: {
@@ -30,6 +31,17 @@ export default {
       forms[payload.slug] = forms[payload.slug].filter(e => {
         return e.id !== payload.id
       })
+      state.loadedForms = forms
+    },
+    setAuto (state, payload) {
+      let forms = Object.assign({}, state.loadedForms)
+      for (let i = 0; i < forms[payload.slug].length; i++) {
+        if (payload.formIds.includes(forms[payload.slug][i].id)) {
+          forms[payload.slug][i].auto = 1
+        } else {
+          forms[payload.slug][i].auto = 0
+        }
+      }
       state.loadedForms = forms
     }
   },
@@ -144,6 +156,29 @@ export default {
           console.log(error)
           commit('setLoading', false)
         })
+    },
+    setAuto ({commit}, payload) {
+      commit('setLoading', true)
+      const updateObj = {
+        form_ids: payload.formIds
+      }
+      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + SETTING_URL, updateObj)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              slug: payload.slug,
+              formIds: payload.formIds
+            }
+            commit('setAuto', updateObj)
+          }
+        )
+        .catch(
+          error => {
+            console.log(error)
+            commit('setLoading', false)
+          }
+        )
     }
   },
   getters: {

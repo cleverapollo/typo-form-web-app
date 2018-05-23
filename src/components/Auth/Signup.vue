@@ -1,16 +1,17 @@
 <template>
   <v-container>
     <v-layout row v-if="error">
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex sm12 md8 offset-md2 xl4 offset-xl4>
         <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
       </v-flex>
     </v-layout>
     <v-layout row>
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex sm12 md8 offset-md2 xl4 offset-xl4>
         <v-card>
           <v-card-text>
             <v-container>
-              <form v-show="isEmail" @submit.prevent="onSignup">
+              <oauth></oauth>
+              <form @submit.prevent="onSignup">
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
@@ -70,7 +71,7 @@
                   <v-flex xs12>
                     <v-btn
                       block
-                      class="success"
+                      class="info"
                       type="submit"
                       :disabled="loading"
                       :loading="loading">
@@ -89,8 +90,6 @@
                   </v-flex>
                 </v-layout>
               </form>
-              <v-btn v-show="!isEmail" block color="normal" @click="activeEmail" class="success">Signup with your email</v-btn>
-              <oauth></oauth>
             </v-container>
           </v-card-text>
         </v-card>
@@ -104,7 +103,6 @@
   export default {
     data () {
       return {
-        isEmail: false,
         firstname: '',
         lastname: '',
         email: '',
@@ -145,9 +143,6 @@
       },
       onDismissed () {
         this.$store.dispatch('clearError')
-      },
-      activeEmail () {
-        this.isEmail = true
       }
     },
     created: function () {

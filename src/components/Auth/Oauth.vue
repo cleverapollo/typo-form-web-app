@@ -1,40 +1,40 @@
 <template>
   <div>
     <v-layout row>
-      <v-flex xs12 sm12 md8 offset-md2 lg6 offset-lg3 text-xs-center class="mt-4">
-        <span class="grey--text">or</span>
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex xs12 sm12 md8 offset-md2 lg6 offset-lg3 text-xs-center>
-        <v-btn @click="auth('github')" block>
-          <img src='/static/icon/github_icon.png' height="25px" class="mr-2" />
-          <span>Use <b> Github Account</b></span>
-        </v-btn>
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex xs12 sm12 md8 offset-md2 lg6 offset-lg3 text-xs-center>
-        <v-btn @click="auth('facebook')" block>
-          <img src='/static/icon/facebook_icon.png' height="25px" class="mr-2" />
-          <span>Use <b> Facebook Account</b></span>
-        </v-btn>
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex xs12 sm12 md8 offset-md2 lg6 offset-lg3 text-xs-center>
+      <v-flex xs12 sm12 text-xs-center>
         <v-btn @click="auth('google')" block>
           <img src='/static/icon/google_icon.png' height="25px" class="mr-2" />
-          <span>Use <b> Google Account</b></span>
+          <span>Login with Google</span>
         </v-btn>
       </v-flex>
     </v-layout>
     <v-layout row>
-      <v-flex xs12 sm12 md8 offset-md2 lg6 offset-lg3 text-xs-center>
+      <v-flex xs12 sm12 text-xs-center>
         <v-btn @click="auth('live')" block>
           <img src='/static/icon/live_icon.png' height="25px" class="mr-2" />
-          <span>Use <b> Live Account</b></span>
+          <span>Login with Live</span>
         </v-btn>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs12 sm12 text-xs-center>
+        <v-btn @click="auth('facebook')" block>
+          <img src='/static/icon/facebook_icon.png' height="25px" class="mr-2" />
+          <span>Login with Facebook</span>
+        </v-btn>
+      </v-flex>
+    </v-layout>
+    <v-layout row>  
+      <v-flex xs12 sm12 text-xs-center>
+        <v-btn @click="auth('github')" block>
+          <img src='/static/icon/github_icon.png' height="25px" class="mr-2" />
+          <span>Login with Github</span>
+        </v-btn>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs12 sm12 text-xs-center class="mt-4">
+        <span class="grey--text">or</span>
       </v-flex>
     </v-layout>
   </div>
