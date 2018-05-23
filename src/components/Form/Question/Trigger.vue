@@ -27,7 +27,7 @@
     <v-layout row wrap>
       <v-flex xs12 sm3 offset-sm1>
         <v-select
-          :items="answers"
+          :items="parentQuestionType == 8 || parentQuestionType == 9 ? trueAnswers : answers"
           item-text="answer"
           item-value="id"
           v-model="parentAnswerId"
@@ -37,7 +37,19 @@
           v-if='selectedTriggerType && selectedTriggerType.answer'
         ></v-select>
       </v-flex>
-      <v-flex xs12 sm2 offset-sm1>
+      <v-flex xs12 sm2 offset-sm1 v-if="parentQuestionType == 8 || parentQuestionType == 9">
+        <v-select
+          :items="falseAnswers"
+          item-text="answer"
+          item-value="id"
+          v-model="value"
+          label="Value"
+          single-line
+          @change="updateValue($event)"
+          v-if='selectedTriggerType && selectedTriggerType.value'
+        ></v-select>
+      </v-flex>
+      <v-flex xs12 sm2 offset-sm1 v-else>
         <v-text-field
           label="Value"
           type="text"
@@ -85,6 +97,16 @@
       }
     },
     computed: {
+      trueAnswers () {
+        return this.$store.getters.loadedAnswers(this.formId, this.sectionId, this.parentQuestionId).filter(e => {
+          return e.parameter
+        })
+      },
+      falseAnswers () {
+        return this.$store.getters.loadedAnswers(this.formId, this.sectionId, this.parentQuestionId).filter(e => {
+          return !e.parameter
+        })
+      },
       answers () {
         return this.$store.getters.loadedAnswers(this.formId, this.sectionId, this.parentQuestionId)
       },
