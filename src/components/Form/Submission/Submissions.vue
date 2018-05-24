@@ -55,7 +55,7 @@
       </v-card>
     </v-flex>
 
-    <v-flex xs12 md9>
+    <v-flex xs12 md9 v-if="submissionId > 0">
       <show-submission
         :slug="slug"
         :formId="formId"
@@ -63,11 +63,29 @@
         :isAdmin="isAdmin"
         :view="view"
       ></show-submission>
+
+      <v-layout row justify-space-between class="mt-3 mb-3">
+        <v-btn
+          color="primary"
+          @click="prevSubmission"
+          :disabled="!prevAble"
+        >
+          prev
+        </v-btn>
+        <v-btn
+          color="primary"
+          @click="nextSubmission"
+          :disabled="!nextAble"
+        >
+          next
+        </v-btn>
+      </v-layout>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
+  import * as _ from 'lodash'
   import ShowSubmission from './ShowSubmission'
   import CreateSubmission from './CreateSubmission'
   import EditSubmission from './EditSubmission'
@@ -93,6 +111,28 @@
       },
       submissionTeams () {
         return this.$store.getters.loadedSubmissionTeams(this.slug, parseInt(this.formId))
+      },
+      nextAble () {
+        if (this.submissions) {
+          const submissionIndex = _.findIndex(this.submissions, submission => {
+            return submission.id === this.submissionId
+          })
+          if (submissionIndex >= 0 && this.submissions.length > submissionIndex + 1) {
+            return true
+          }
+        }
+        return false
+      },
+      prevAble () {
+        if (this.submissions) {
+          const submissionIndex = _.findIndex(this.submissions, submission => {
+            return submission.id === this.submissionId
+          })
+          if (submissionIndex > 0) {
+            return true
+          }
+        }
+        return false
       }
     },
     watch: {
@@ -127,6 +167,22 @@
       },
       active (submissionId) {
         return (this.submissionId === submissionId) ? 'active' : ''
+      },
+      prevSubmission () {
+        if (this.submissions) {
+          const submissionIndex = _.findIndex(this.submissions, submission => {
+            return submission.id === this.submissionId
+          })
+          this.submissionId = this.submissions[submissionIndex - 1].id
+        }
+      },
+      nextSubmission () {
+        if (this.submissions) {
+          const submissionIndex = _.findIndex(this.submissions, submission => {
+            return submission.id === this.submissionId
+          })
+          this.submissionId = this.submissions[submissionIndex + 1].id
+        }
       }
     }
   }

@@ -7,7 +7,7 @@
         </v-toolbar>
       </v-card>
       <v-card>
-        <v-layout  row wrap class="pa-3">
+        <v-layout row wrap class="pa-3">
           <div class="flex-column">
             <v-card-title primary-title class="flex-column">
               <div class="pa-1">
@@ -27,7 +27,7 @@
               <v-btn
                 color="primary"
                 @click="sendSubmission"
-                v-if="!sendAble"
+                v-if="sendAble"
               >
                 Send
               </v-btn>
@@ -66,6 +66,7 @@
           :section="section"
           :formId="formId"
           :submissionId="submissionId"
+          :isAdmin="isAdmin"
           v-if="section"
         ></sections>
       </v-flex>
@@ -100,6 +101,10 @@
       },
       sendAble () {
         if (this.submissionId <= 0) {
+          return false
+        }
+
+        if (new Date(this.periodStart).getTime() - new Date().getTime() > 0 || new Date(this.periodEnd).getTime() - new Date().getTime() < 0) {
           return false
         }
 

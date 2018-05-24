@@ -114,6 +114,7 @@
             <sections
               :section="element"
               :formId="formId"
+              :isAdmin="isAdmin"
               :submissionId="submissionId"
               v-if="element.questions"
             ></sections>
@@ -131,6 +132,7 @@
             :question="element"
             :formId="formId"
             :sectionId="section.id"
+            :isAdmin="isAdmin"
             :index="index + 1"
             :submissionId="submissionId"
             v-else
@@ -159,7 +161,7 @@
 
   export default {
     name: 'sections',
-    props: ['section', 'formId', 'submissionId'],
+    props: ['section', 'formId', 'isAdmin', 'submissionId'],
     components: {
       draggable,
       questions,
@@ -317,7 +319,7 @@
         })
       },
       createResponse (args) {
-        if (this.submissionId <= 0) {
+        if (this.submissionId <= 0 || this.isAdmin) {
           return
         }
         const answerId = args[0]
@@ -334,6 +336,9 @@
         })
       },
       updateResponse (args) {
+        if (this.isAdmin) {
+          return
+        }
         const answerId = args[0]
         const response = args[1]
         const id = args[2]
@@ -350,6 +355,9 @@
         })
       },
       deleteResponse (args) {
+        if (this.isAdmin) {
+          return
+        }
         this.$store.dispatch('deleteResponse', {
           submissionId: this.submissionId,
           questionId: args[1],

@@ -31,7 +31,8 @@ export default {
         question: payload.question,
         description: payload.description,
         mandatory: payload.mandatory,
-        question_type_id: payload.questionTypeId
+        question_type_id: payload.questionTypeId,
+        width: 12
       }
       window.axios.post(SECTION_URL + payload.sectionId + QUESTION_URL, question)
         .then(
@@ -66,6 +67,9 @@ export default {
       }
       if (payload.mandatory !== undefined) {
         updateObj.mandatory = payload.mandatory
+      }
+      if (payload.width) {
+        updateObj.width = payload.width
       }
       window.axios.put(SECTION_URL + payload.sectionId + QUESTION_URL + payload.id, updateObj)
         .then(

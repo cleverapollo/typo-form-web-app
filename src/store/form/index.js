@@ -67,31 +67,48 @@ export default {
         )
     },
     createForm ({commit, getters}, payload) {
-      const form = {
-        name: payload.name,
-        period_start: payload.periodStart,
-        period_end: payload.periodEnd,
-        period_id: payload.periodId,
-        show_progress: payload.showProgress
+      let formData = new FormData()
+
+      formData.append('name', payload.name)
+      if (payload.csv) {
+        formData.append('csv', payload.csv)
       }
 
-      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL, form)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const createObj = {
-              slug: payload.slug,
-              form: response['data']['form']
-            }
-            commit('createForm', createObj)
+      if (payload.periodStart) {
+        formData.append('period_start', payload.periodStart)
+      }
+
+      if (payload.periodEnd) {
+        formData.append('period_end', payload.periodEnd)
+      }
+
+      if (payload.periodId) {
+        formData.append('period_id', parseInt(payload.periodId))
+      }
+      if (payload.showProgress === true) {
+        formData.append('show_progress', 1)
+      } else {
+        formData.append('show_progress', 0)
+      }
+
+      const config = {
+        headers: {'content-type': 'multipart/form-data'}
+      }
+      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL,
+        formData,
+        config
+      ).then(
+        response => {
+          commit('setLoading', false)
+          const createObj = {
+            slug: payload.slug,
+            form: response['data']['form']
           }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+          commit('createForm', createObj)
+        }
+      ).catch(function () {
+        commit('setLoading', false)
+      })
     },
     updateForm ({commit}, payload) {
       commit('setLoading', true)
