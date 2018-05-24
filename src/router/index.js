@@ -20,7 +20,6 @@ import ShowUser from '@/components/User/ShowUser'
 
 import Application from '@/components/Application/Application'
 import Applications from '@/components/Application/Applications'
-import ShowApplication from '@/components/Application/ShowApplication'
 
 import Forms from '@/components/Form/Forms'
 import ShowForm from '@/components/Form/ShowForm'
@@ -93,13 +92,6 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
-      path: '/:slug/show',
-      name: 'ShowApplication',
-      component: ShowApplication,
-      props: true,
-      meta: {requiresAuth: true}
-    },
-    {
       path: '/:slug/teams',
       name: 'Teams',
       component: Teams,
@@ -168,10 +160,6 @@ const router = new Router({
         template: '<div class="auth-component"></div>'
       }
     }
-    /* {
-      path: '*',
-      component: { template: '<div>404 page</div>' }
-    } */
   ],
   mode: 'history'
 })
