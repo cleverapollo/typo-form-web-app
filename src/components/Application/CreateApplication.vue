@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600px">
-    <v-card class="elevation-2">
-      <v-card-title class="info">
-        <div class="title mb-2 mt-2 white--text">Create Application</div>
+    <v-card>
+      <v-card-title>
+        <div class="title mb-2 mt-2">Create Application</div>
       </v-card-title>
       <v-card-text>
         <v-layout row>

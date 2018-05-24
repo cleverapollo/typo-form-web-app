@@ -1,49 +1,49 @@
 <template>
-  <v-layout row wrap py-3>
+  <v-layout row wrap>
     <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
-      <v-card class="elevation-2">
-        <v-card-title class="info">
-          <div class="title mb-2 mt-2 white--text">Applications</div>
-        </v-card-title>
-        <v-list one-line>
-          <template v-if="applications.length">
+      <v-layout row wrap>
+        <v-flex d-flex xs12>
+          <div class="subheading py-2 px-3">Applications</div>
+        </v-flex>
+        <v-flex d-flex xs12>
+          <v-card>
+            <v-list one-line>
+              <template v-if="applications.length">
 
-            <!-- //Application List -->
-            <template v-for="(item, index) in sortedApplications(applications)">
-              <v-layout row wrap>
-                <v-flex xs8>
-                  <v-list-tile avatar>
+                <!-- //Application List -->
+                <template v-for="(item, index) in sortApplications(applications)">
+                  <v-list-tile :to="applicationUrl(item.slug)" :key="item.id" avatar>
                     <v-list-tile-avatar tile v-if="item.icon">
                       <img :src="api_url + 'uploads/' + item.icon">
                     </v-list-tile-avatar>
-                    <v-list-tile-avatar color="teal" v-else>
-                      <span class="white--black headline">{{ getFirstLetter(item.name) }}</span>
+                    <v-list-tile-avatar color="primary" v-else>
+                      <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                       <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                </v-flex>
-                <v-flex xs4 class="text-xs-right">
-                  <v-btn color="pink accent-2 white--text my-3" :to="applicationUrl(item.slug)">Select</v-btn>
-                </v-flex>
-              </v-layout>
-              <v-divider v-if="index != applications.length -1"></v-divider>
-            </template>
-          </template>
+                  <v-divider v-if="index < applications.length -1"></v-divider>
+                </template>
+              </template>
 
-          <!-- //No Applications -->
-          <template v-else>
-            <div class="text-xs-center">No applications available.</div>
-          </template>
-        </v-list>
-      </v-card>
+              <!-- //No Applications -->
+              <template v-else>
+                <div class="text-xs-center">No applications available.</div>
+              </template>
+            </v-list>
+          </v-card>
+        </v-flex>
+      </v-layout>
     </v-flex>
 
     <!-- //Action Button -->
-    <v-btn fixed dark bottom right fab router class="red elevation-5" @click.stop="createApplication = true" v-if="isSuperUser">
-      <v-icon>add</v-icon>
-    </v-btn>
+    <v-tooltip top>
+      <v-btn slot="activator" fixed dark bottom right fab router class="red" @click.stop="createApplication = true" v-if="isSuperUser">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <span>Create Application</span>
+    </v-tooltip>
 
     <!-- //Create Application -->
     <CreateApplication :visible="createApplication" @close="createApplication = false"></CreateApplication>
@@ -77,7 +77,7 @@
       applicationUrl (slug) {
         return '/' + slug
       },
-      sortedApplications (applications) {
+      sortApplications (applications) {
         return applications.slice().sort(function (a, b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0) })
       }
     }
