@@ -13,14 +13,8 @@
       <v-flex xs12>
         <v-card v-if="application">
           <v-card-title>
-            <div class="d-flex flex-row">
-              <div class="application-icon align-self-center" v-if="application.icon">
-                <img :src="api_url + 'uploads/' + application.icon"/>
-              </div>
-              <div class="pl-3"> <h1 class="primary--text">{{ application.name }}</h1></div>
-            </div>
             <v-spacer></v-spacer>
-            <v-menu offset-y bottom left v-if="userIsAdmin">
+            <v-menu offset-y bottom left v-if="userIsApplicationAdmin">
               <v-btn icon slot="activator">
                 <v-icon>more_vert</v-icon>
               </v-btn>
@@ -38,20 +32,20 @@
                   </v-list-tile-title>
                 </v-list-tile>
 
-                <v-list-tile @click=onDeleteApplication>
+                <v-list-tile @click="onDeleteApplication">
                   <v-list-tile-title>Delete Application</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
           </v-card-title>
           <v-card-text>
-            <h3 class="break-all pb-4" v-if=userIsAdmin>{{joinURL}}</h3>
+            <h3 class="break-all pb-4" v-if="userIsApplicationAdmin">{{joinURL}}</h3>
             <v-btn
               flat
               style="height: 70px"
               @click="onList(item.type)"
               v-for="item in items"
-              v-if="!item.admin || userIsAdmin"
+              v-if="!item.admin || userIsApplicationAdmin"
               :key="item.title">
               <v-layout column wrap>
                 <v-flex>
@@ -64,12 +58,6 @@
               </v-layout>
             </v-btn>
           </v-card-text>
-          <v-card-actions v-if="userIsAdmin">
-            <v-layout row wrap>
-              <v-spacer></v-spacer>
-              <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
-            </v-layout>
-          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -83,10 +71,10 @@
       return {
         api_url: process.env.API_ORIGIN_URL,
         items: [
-          { title: 'User List', type: 'users', icon: 'person', admin: true },
-          { title: 'Team List', type: 'teams', icon: 'people', admin: false },
-          { title: 'Form List', type: 'forms', icon: 'content_paste', admin: true },
-          { title: 'Submission List', type: 'submissions', icon: 'assignment', admin: false }
+          { title: 'Users', type: 'users', icon: 'person', admin: true },
+          { title: 'Teams', type: 'teams', icon: 'people', admin: false },
+          { title: 'Forms', type: 'forms', icon: 'content_paste', admin: true },
+          { title: 'Submissions', type: 'submissions', icon: 'assignment', admin: false }
         ]
       }
     },
@@ -99,6 +87,9 @@
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      userIsApplicationAdmin () {
+        return this.application && this.application.application_role_id <= 2
       },
       userIsAdmin () {
         if (!this.userIsAuthenticated || !this.application) {

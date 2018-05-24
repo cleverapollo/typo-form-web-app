@@ -3,8 +3,8 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 
 import Profile from '@/components/Auth/Profile'
-import Signup from '@/components/Auth/Signup'
-import Signin from '@/components/Auth/Signin'
+import Register from '@/components/Auth/Register'
+import Login from '@/components/Auth/Login'
 import NewPassword from '@/components/Auth/NewPassword'
 import ResetPassword from '@/components/Auth/ResetPassword'
 import AcceptInvitation from '@/components/Shared/AcceptInvitation'
@@ -34,14 +34,14 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     {
-      path: '/signup',
-      name: 'Signup',
-      component: Signup
+      path: '/register',
+      name: 'Register',
+      component: Register
     },
     {
-      path: '/signin',
-      name: 'Signin',
-      component: Signin
+      path: '/login',
+      name: 'Login',
+      component: Login
     },
     {
       path: '/password/reset/:token',
@@ -97,7 +97,8 @@ const router = new Router({
       path: '/:slug',
       name: 'Application',
       component: Application,
-      props: true
+      props: true,
+      meta: {requiresAuth: true}
     },
     {
       path: '/:slug/show',
@@ -193,8 +194,8 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth) && store.getters.user === null) {
     next({
-      path: '/signin',
-      query: {redirect: to.fullPath}
+      path: '/login'
+      // ,query: {redirect: to.fullPath}
     })
   }
   const favicon = document.getElementById('dyc-favicon')
@@ -215,7 +216,7 @@ router.beforeEach((to, from, next) => {
           style.appendChild(document.createTextNode(css))
         }
         head.appendChild(style)
-        document.title = application ? application.name : 'Informed 365'
+        document.title = application ? application.name : process.env.APP_NAME
         next()
       })
       .catch(() => next({path: '/'}))
@@ -225,7 +226,7 @@ router.beforeEach((to, from, next) => {
       style.childNodes[0].textContent = ''
     }
     head.appendChild(style)
-    document.title = 'Informed 365'
+    document.title = process.env.APP_NAME
     next()
   }
 })

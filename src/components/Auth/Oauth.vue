@@ -16,6 +16,9 @@
         </v-btn>
       </v-flex>
     </v-layout>
+
+    <!-- //Disabled Github and Facebook Auth -->
+    <!--
     <v-layout row>
       <v-flex xs12 sm12 text-xs-center>
         <v-btn @click="auth('facebook')" block>
@@ -32,6 +35,8 @@
         </v-btn>
       </v-flex>
     </v-layout>
+    -->
+
     <v-layout row>
       <v-flex xs12 sm12 text-xs-center class="mt-4">
         <span class="grey--text">or</span>
