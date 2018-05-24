@@ -20,11 +20,9 @@ import ShowUser from '@/components/User/ShowUser'
 
 import Application from '@/components/Application/Application'
 import Applications from '@/components/Application/Applications'
-import CreateApplication from '@/components/Application/CreateApplication'
 import ShowApplication from '@/components/Application/ShowApplication'
 
 import Forms from '@/components/Form/Forms'
-import CreateForm from '@/components/Form/CreateForm'
 import ShowForm from '@/components/Form/ShowForm'
 
 import {store} from '@/store'
@@ -85,12 +83,6 @@ const router = new Router({
       path: '/applications',
       name: 'Applications',
       component: Applications,
-      meta: {requiresAuth: true}
-    },
-    {
-      path: '/applications/new',
-      name: 'CreateApplication',
-      component: CreateApplication,
       meta: {requiresAuth: true}
     },
     {
@@ -160,13 +152,6 @@ const router = new Router({
       path: '/:slug/submissions',
       name: 'Submissions',
       component: Forms,
-      props: true,
-      meta: {requiresAuth: true}
-    },
-    {
-      path: '/:slug/forms/new',
-      name: 'CreateForm',
-      component: CreateForm,
       props: true,
       meta: {requiresAuth: true}
     },

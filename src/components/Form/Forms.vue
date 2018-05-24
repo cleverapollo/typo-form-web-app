@@ -1,49 +1,56 @@
 <template>
-  <v-container>
-    <v-layout row wrap class="mb-2">
-      <v-flex xs12 style="position: relative">
-        <v-btn
-          absolute
-          bottom
-          right
-          dark
-          fab
-          router
-          @click=onCreateForm()
-          class="primary"
-          v-if="userIsAdmin"
-        >
-          <v-icon>add</v-icon>
-        </v-btn>
-        <v-btn
-          color="info"
-          @click=onBack>
-          Back
-        </v-btn>
-        <v-data-table
-          :headers="headers"
-          :items="forms"
-          hide-actions
-          class="elevation-1"
-        >
-          <template slot="items" slot-scope="props">
-            <td @click=onLoadForm(props.item.id)>{{ props.item.name }}</td>
-          </template>
-        </v-data-table>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-layout row wrap>
+    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+      <v-layout row wrap>
+        <v-flex d-flex xs12>
+          <div class="subheading py-2 px-3">Forms</div>
+        </v-flex>
+        <v-flex d-flex xs12>
+          <v-card>
+            <v-list one-line>
+              <template v-if="forms.length">
+
+                <!-- //Form List -->
+                <template v-for="(item, index) in forms">
+                  <v-list-tile :to="onLoadForm(item.id)" :key="item.id" avatar>
+                    <v-list-tile-avatar color="primary">
+                      <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
+                    </v-list-tile-avatar>
+                    <v-list-tile-content>
+                      <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider v-if="index < forms.length -1"></v-divider>
+                </template>
+              </template>
+
+              <!-- //No Forms -->
+              <template v-else>
+                <div class="text-xs-center">No forms available.</div>
+              </template>
+            </v-list>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+
+    <!-- //Action Button -->
+    <v-btn fixed fab dark bottom left color="primary" @click="onBack">
+      <v-icon>chevron_left</v-icon>
+    </v-btn>
+
+    <!-- //Create Form -->
+    <CreateForm :slug="slug" v-if="userIsApplicationAdmin"></CreateForm>
+  </v-layout>
 </template>
 
 <script>
+  import * as _ from 'lodash'
+  import CreateForm from './CreateForm'
   export default {
     props: ['slug'],
-    data () {
-      return {
-        headers: [
-          { text: 'Name', value: 'name', sortable: false, align: 'left' }
-        ]
-      }
+    components: {
+      CreateForm
     },
     computed: {
       roles () {
@@ -55,20 +62,22 @@
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
-      userIsAdmin () {
+      userIsApplicationAdmin () {
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
         return this.getRole(this.application.application_role_id) === 'Admin' && this.$route.name === 'Forms'
       },
       forms () {
-        return this.$store.getters.loadedForms(this.slug)
-      },
-      loading () {
-        return this.$store.getters.loading
+        return _.sortBy(this.$store.getters.loadedForms(this.slug), element => {
+          return element.name.toLowerCase()
+        })
       }
     },
     methods: {
+      getFirstLetter (word) {
+        return word.length > 0 ? word.trim().substring(0, 1).toUpperCase() : ''
+      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId
@@ -76,10 +85,7 @@
         return role ? role.name : 'undefined'
       },
       onLoadForm (id) {
-        this.$router.push('/' + this.slug + '/forms/show/' + id + '/' + (this.$route.name === 'Forms' ? 'questions' : 'responses'))
-      },
-      onCreateForm () {
-        this.$router.push('/' + this.slug + '/forms/new')
+        return '/' + this.slug + '/forms/show/' + id + '/' + (this.$route.name === 'Forms' ? 'questions' : 'responses')
       },
       onBack () {
         this.$router.push('/' + this.slug + '/show')
