@@ -1,47 +1,116 @@
 <template>
   <v-app>
+
+    <!-- //Navigation Drawer -->
     <v-navigation-drawer
+      v-model="drawer"
       fixed
       app
-      v-model="drawer"
-      disable-route-watcher
       temporary
-      hide-overlay
     >
-      <v-list dense>
-        <template v-for="item in menuItems">
-          <v-list-tile
-            :to="item.link"
-            :key="item.title"
-            @click='drawer = false'
-          >
-            <v-list-tile-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
+
+      <v-toolbar flat class="transparent">
+        <v-list class="pa-0">
+          <v-list-tile avatar>
+            <v-list-tile-avatar tile>
+              <img src="/static/logo.png" >
+            </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title>
-                {{ item.title }}
-              </v-list-tile-title>
+              <v-list-tile-title>{{ app_name }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
+        </v-list>
+      </v-toolbar>
+
+      <!-- //Authenticated User -->
+      <template v-if="userIsAuthenticated">
+
+        <!-- //Application Items -->
+        <template v-if="application">
+          <v-divider></v-divider>
+          <v-list dense>
+            <template 
+              v-for="item in applicationItems"
+              v-if="!item.admin || userIsApplicationAdmin"
+              >
+              <v-list-tile
+                :to="applicationURL(item.path)"
+                :key="item.title"
+              >
+                <v-list-tile-action>
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    {{ item.title }}
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
+          </v-list>
         </template>
-      </v-list>
+
+        <!-- //Account Items -->
+        <v-list dense>
+          <v-divider></v-divider>
+          <template v-for="item in accountItems">
+            <v-list-tile
+              :to="rootURL(item.path)"
+              :key="item.title"
+            >
+              <v-list-tile-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  {{ item.title }}
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </template>
+        </v-list>
+      </template>
+
+      <!-- //Auth Menu -->
+      <template v-else>
+        <v-divider></v-divider>
+        <v-list dense>
+          <template v-for="item in authItems">
+            <v-list-tile
+              :to="rootURL(item.path)"
+              :key="item.title"
+            >
+              <v-list-tile-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  {{ item.title }}
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </template>
+        </v-list>
+      </template>
+
     </v-navigation-drawer>
+
+    <!-- //Toolbar -->
     <v-toolbar
-      color="primary"
+      :clipped-left="$vuetify.breakpoint.lgAndUp"
+      color="info"
       dark
       app
-      :clipped-left="$vuetify.breakpoint.lgAndUp"
       fixed
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title class="ml-0 pl-3">
         <router-link :to="titleLink" tag="span" style="cursor: pointer">
           <div class="d-flex flex-row">
-            <div class="application-icon align-self-center" v-if='titleIcon'>
+            <v-avatar tile v-if="titleIcon">
               <img :src="titleIcon"/>
-            </div>
-            <div class="pl-3">{{title}}</div>
+            </v-avatar>
+            <div class="pl-3 application-name">{{title}}</div>
           </div>
         </router-link>
       </v-toolbar-title>
@@ -61,7 +130,7 @@
                 avatar
                 ripple
                 :key="application.id"
-                :to="'/'+application.slug">
+                :to="'/'+ application.slug">
                 <v-list-tile-content>
                   <div class="d-flex flex-row">
                     <div class="application-icon" v-if='application.icon'>
@@ -99,8 +168,13 @@
           </v-list>
         </v-menu>
       </template>
+      <template v-else>
+        <v-btn icon :to="'login'">
+          <v-icon>account_circle</v-icon>
+        </v-btn>
+      </template>
     </v-toolbar>
-    <v-content>
+    <v-content class="border-bottom">
       <v-container fluid>
         <router-view></router-view>
       </v-container>
@@ -113,7 +187,8 @@
     data () {
       return {
         drawer: null,
-        api_url: process.env.API_ORIGIN_URL
+        api_url: process.env.API_ORIGIN_URL,
+        app_name: process.env.APP_NAME
       }
     },
     computed: {
@@ -125,7 +200,7 @@
       },
       title () {
         const application = this.$store.getters.loadedApplication(this.$route.params['slug'])
-        return application ? application.name : 'Informed 365'
+        return application ? application.name : process.env.APP_NAME
       },
       titleIcon () {
         const application = this.$store.getters.loadedApplication(this.$route.params['slug'])
@@ -140,18 +215,36 @@
       applications () {
         return this.$store.getters.loadedApplications
       },
-      menuItems () {
-        if (this.userIsAuthenticated) {
-          return [
-            {icon: 'account_circle', title: 'My account', link: '/profile'},
-            {icon: 'apps', title: 'Applications', link: '/applications'}
-          ]
-        } else {
-          return [
-            {icon: 'face', title: 'Sign up', link: '/signup'},
-            {icon: 'lock_open', title: 'Sign in', link: '/signin'}
-          ]
-        }
+      application () {
+        return this.$store.getters.loadedApplication(this.$route.params['slug'])
+      },
+      applicationItems () {
+        return [
+            { title: 'Dashboard', path: '', icon: 'dashboard', admin: false },
+            { title: 'Users', path: 'users', icon: 'person', admin: true },
+            { title: 'Teams', path: 'teams', icon: 'people', admin: false },
+            { title: 'Forms', path: 'forms', icon: 'content_paste', admin: true },
+            { title: 'Submissions', path: 'submissions', icon: 'assignment', admin: false },
+            { title: 'Settings', path: 'settings', icon: 'settings', admin: true }
+        ]
+      },
+      accountItems () {
+        return [
+            { title: 'Applications', path: 'applications', icon: 'apps' },
+            { title: 'My Profile', path: 'profile', icon: 'account_circle' }
+        ]
+      },
+      authItems () {
+        return [
+            { title: 'Log In', path: 'login', icon: 'account_circle' },
+            { title: 'Register', path: 'register', icon: 'person_add' }
+        ]
+      },
+      userIsApplicationAdmin () {
+        return this.application && this.application.application_role_id <= 2
+      },
+      copyright () {
+        return new Date().getFullYear() + ' ' + process.env.APP_NAME
       }
     },
     created () {
@@ -169,7 +262,13 @@
     methods: {
       onLogout () {
         this.$store.dispatch('logout')
-        this.$router.push('/signin')
+        this.$router.push('/login')
+      },
+      applicationURL (path) {
+        return '/' + this.application.slug + '/' + path
+      },
+      rootURL (path) {
+        return '/' + path
       }
     },
     name: 'App'
@@ -177,21 +276,15 @@
 </script>
 
 <style>
-  .break-all {
-    word-break: break-all;
+  .application-name {
+    line-height:46px;
   }
 
-  .application-icon {
-    width: 30px;
-    margin: auto;
+  .border-top {
+    border-top:1px solid #e0e0e0;
   }
 
-  .application-icon img {
-    width: 100%;
-    vertical-align: middle;
-  }
-
-  .icon-preview {
-    width: 100%;
+  .border-bottom {
+    border-bottom:1px solid #e0e0e0;
   }
 </style>

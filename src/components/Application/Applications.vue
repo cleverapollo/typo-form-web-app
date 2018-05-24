@@ -1,107 +1,85 @@
 <template>
-  <v-container>
-    <v-layout wrap>
-      <v-flex d-flex>
-		<v-card>
-			<v-card-title>
-			<div class="title">
-				Applications
-			</div>
-			<v-spacer></v-spacer>
-			<v-text-field
-				v-model="search"
-				append-icon="search"
-				label="Search"
-				single-line
-				hide-details
-			></v-text-field>
-			<v-btn
-			fixed
-			bottom
-			right
-			dark
-			fab
-			router
-			to="/applications/new"
-			class="primary"
-			v-if=userIsSuper
-			>
-			<v-icon>add</v-icon>
-			</v-btn>
-			</v-card-title>
-			<v-data-table
-				:headers="headers"
-				:items="applications"
-				:search="search"
-				hide-actions
-				class="elevation-1"
-			>
-				<template slot="items" slot-scope="props">
-				<td @click=onLoadApplication(props.item)>
-					<div class="application-icon d-inline-block" v-if="props.item.icon">
-					<img :src="api_url + 'uploads/' + props.item.icon"/>
-					</div>
-				</td>
-				<td @click=onLoadApplication(props.item)>{{ props.item.name }}</td>
-				<td @click=onLoadApplication(props.item)>{{ props.item.forms }}</td>
-				<td @click=onLoadApplication(props.item)>{{ props.item.submissions }}</td>
-				<td @click=onLoadApplication(props.item)>{{ props.item.users }}</td>
-				<td @click=onLoadApplication(props.item)>{{ props.item.teams }}</td>
-				</template>
-				<v-alert slot="no-results" :value="true" color="error" icon="warning">
-				Your search for "{{ search }}" found no results.
-				</v-alert>
-			</v-data-table>
-		</v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-layout row wrap py-3>
+    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+      <v-card class="elevation-2">
+        <v-card-title class="info">
+          <div class="title mb-2 mt-2 white--text">Applications</div>
+        </v-card-title>
+        <v-list one-line>
+          <template v-if="applications.length">
+
+            <!-- //Application List -->
+            <template v-for="(item, index) in sortedApplications(applications)">
+              <v-layout row wrap>
+                <v-flex xs8>
+                  <v-list-tile avatar>
+                    <v-list-tile-avatar tile v-if="item.icon">
+                      <img :src="api_url + 'uploads/' + item.icon">
+                    </v-list-tile-avatar>
+                    <v-list-tile-avatar color="teal" v-else>
+                      <span class="white--black headline">{{ getFirstLetter(item.name) }}</span>
+                    </v-list-tile-avatar>
+                    <v-list-tile-content>
+                      <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                </v-flex>
+                <v-flex xs4 class="text-xs-right">
+                  <v-btn color="pink accent-2 white--text my-3" :to="applicationUrl(item.slug)">Select</v-btn>
+                </v-flex>
+              </v-layout>
+              <v-divider v-if="index != applications.length -1"></v-divider>
+            </template>
+          </template>
+
+          <!-- //No Applications -->
+          <template v-else>
+            <div class="text-xs-center">No applications available.</div>
+          </template>
+        </v-list>
+      </v-card>
+    </v-flex>
+
+    <!-- //Action Button -->
+    <v-btn fixed dark bottom right fab router class="red elevation-5" @click.stop="createApplication = true" v-if="isSuperUser">
+      <v-icon>add</v-icon>
+    </v-btn>
+
+    <!-- //Create Application -->
+    <CreateApplication :visible="createApplication" @close="createApplication = false"></CreateApplication>
+  </v-layout>
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      api_url: process.env.API_ORIGIN_URL,
-      search: '',
-      headers: [
-        { text: 'Icon', value: 'icon', sortable: false, align: 'left' },
-        { text: 'Name', value: 'name', sortable: true, align: 'left' },
-        { text: 'Forms', value: 'forms', sortable: true, align: 'left' },
-        { text: 'Submissions', value: 'submissions', sortable: true, align: 'left' },
-        { text: 'Users', value: 'users', sortable: true, align: 'left' },
-        { text: 'Teams', value: 'teams', sortable: true, align: 'left' }
-      ]
-    }
-  },
-  computed: {
-    roles () {
-      return this.$store.getters.roles
+  import CreateApplication from './CreateApplication'
+  export default {
+    data () {
+      return {
+        createApplication: false,
+        api_url: process.env.API_ORIGIN_URL
+      }
     },
-    applications () {
-      return this.$store.getters.loadedApplications
+    components: {
+      CreateApplication
     },
-    loading () {
-      return this.$store.getters.loading
+    computed: {
+      applications () {
+        return this.$store.getters.loadedApplications
+      },
+      isSuperUser () {
+        return this.$store.getters.user && this.$store.getters.user.role_id === 1
+      }
     },
-    userIsSuper () {
-      return (
-        this.$store.getters.user !== null &&
-        this.$store.getters.user !== undefined &&
-        this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
-      )
-    }
-  },
-  methods: {
-    getRole (roleId) {
-      const role = this.roles.find(role => {
-        return role.id === roleId
-      })
-      return role ? role.name : 'undefined'
-    },
-    onLoadApplication (application) {
-      this.$router.push('/' + application.slug)
+    methods: {
+      getFirstLetter (word) {
+        return word.length > 0 ? word.trim().substring(0, 1).toUpperCase() : ''
+      },
+      applicationUrl (slug) {
+        return '/' + slug
+      },
+      sortedApplications (applications) {
+        return applications.slice().sort(function (a, b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0) })
+      }
     }
   }
-}
 </script>

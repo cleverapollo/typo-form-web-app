@@ -47,7 +47,7 @@
     created: function () {
       if (this.token.trim() !== '' && this.user !== null && this.user !== undefined) {
         this.$store.dispatch('acceptJoin', {type: this.type, token: this.token})
-        this.messageString = 'Thanks to join the ' + this.type
+        this.messageString = 'You have joinind the ' + this.type
       }
     }
   }

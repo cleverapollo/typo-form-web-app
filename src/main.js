@@ -15,14 +15,17 @@ import AlertCmp from './components/Shared/Alert.vue'
 import EditEmail from './components/Auth/EditProfile/EditEmail.vue'
 import EditPassword from './components/Auth/EditProfile/EditPassword.vue'
 
+// Applications
 import EditApplication from './components/Application/EditApplication.vue'
 import SettingApplication from './components/Application/SettingApplication.vue'
 import InviteApplication from './components/Application/InviteApplication.vue'
 
+// Teams
 import EditTeam from './components/Team/EditTeam.vue'
 import InviteTeam from './components/Team/InviteTeam.vue'
 import EditTeamUser from './components/Team/EditTeamUser.vue'
 
+// Users
 import EditUser from './components/User/EditUser.vue'
 
 import EditForm from './components/Form/EditForm.vue'

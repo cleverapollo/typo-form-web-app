@@ -1,8 +1,8 @@
 const API_URL = process.env.API_URL
 const API_ORIGIN_URL = process.env.API_ORIGIN_URL
-const SIGNUP_URL = `${API_URL}register`
-const SIGNIN_URL = `${API_URL}login`
-const SIGNOUT_URL = `${API_URL}logout`
+const REGISTER_URL = `${API_URL}register`
+const LOGIN_URL = `${API_URL}login`
+const LOGOUT_URL = `${API_URL}logout`
 const USER_URL = `${API_URL}user/`
 const SOCIAL_URL = `${API_ORIGIN_URL}auth/signin`
 const PASSWORD_RESET_URL = `${API_URL}password/reset/`
@@ -22,9 +22,9 @@ export default {
     signUserUp ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      window.axios.post(SIGNUP_URL, payload)
+      window.axios.post(REGISTER_URL, payload)
         .then(
-          response => window.axios.post(SIGNIN_URL, payload)
+          response => window.axios.post(LOGIN_URL, payload)
             .then(
               response => {
                 commit('setLoading', false)
@@ -58,7 +58,7 @@ export default {
     signUserIn ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      window.axios.post(SIGNIN_URL, payload)
+      window.axios.post(LOGIN_URL, payload)
         .then(
           response => {
             commit('setLoading', false)
@@ -130,7 +130,7 @@ export default {
     },
     logout ({commit}) {
       commit('clearError')
-      window.axios.post(SIGNOUT_URL)
+      window.axios.post(LOGOUT_URL)
       delete window.axios.defaults.headers.common['api_token']
       commit('setUser', null)
       localStorage.removeItem('token')

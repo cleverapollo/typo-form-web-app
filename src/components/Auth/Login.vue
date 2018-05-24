@@ -10,30 +10,8 @@
         <v-card>
           <v-card-text>
             <v-container>
-              <oauth></oauth>
-              <form @submit.prevent="onSignup">
-                <v-layout row>
-                  <v-flex xs12>
-                    <v-text-field
-                      name="firstname"
-                      label="Firstname"
-                      id="firstname"
-                      v-model="firstname"
-                      type="text"
-                      required></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs12>
-                    <v-text-field
-                      name="lastname"
-                      label="Lastname"
-                      id="lastname"
-                      v-model="lastname"
-                      type="text"
-                      required></v-text-field>
-                  </v-flex>
-                </v-layout>
+              <form @submit.prevent="onSignin">
+                <oauth></oauth>
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
@@ -58,35 +36,28 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field
-                      name="confirmPassword"
-                      label="Confirm Password"
-                      id="confirmPassword"
-                      v-model="confirmPassword"
-                      type="password"
-                      :rules="[comparePasswords]"></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs12>
                     <v-btn
                       block
                       class="info"
                       type="submit"
                       :disabled="loading"
                       :loading="loading">
-                      Sign up
-                       <span slot="loader" class="custom-loader">
+                      Log In
+                      <span slot="loader" class="custom-loader">
                         <v-icon light>cached</v-icon>
                        </span>
                     </v-btn>
                   </v-flex>
                 </v-layout>
-                <v-divider></v-divider>
                 <v-layout row>
                   <v-flex xs12 text-xs-center class="mt-4">
-                    <span>Already have an account?</span>
-                    <router-link to="/signin" tag="a">Sign in</router-link>
+                    <router-link to="/password/reset" tag="a">Forgot your password?</router-link>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs12 text-xs-center class="mt-4">
+                    <span>Don't have an account?</span>
+                    <router-link to="/register" tag="a">Register</router-link>
                   </v-flex>
                 </v-layout>
               </form>
@@ -103,20 +74,14 @@
   export default {
     data () {
       return {
-        firstname: '',
-        lastname: '',
         email: '',
-        password: '',
-        confirmPassword: ''
+        password: ''
       }
     },
     components: {
       Oauth
     },
     computed: {
-      comparePasswords () {
-        return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
-      },
       user () {
         return this.$store.getters.user
       },
@@ -135,11 +100,23 @@
     methods: {
       onValidate (value) {
         if (value !== null && value !== undefined) {
-          this.$router.push('/')
+          this.$store.dispatch('loadQuestionTypes')
+          this.$store.dispatch('loadValidationTypes')
+          this.$store.dispatch('loadPeriods')
+          this.$store.dispatch('loadStatuses')
+          this.$store.dispatch('loadRoles')
+          this.$store.dispatch('loadComparators')
+          this.$store.dispatch('loadTriggerTypes')
+          this.$store.dispatch('loadApplications')
+          if (this.$route.query.redirect) {
+            this.$router.push(this.$route.query.redirect)
+          } else {
+            this.$router.push('/')
+          }
         }
       },
-      onSignup () {
-        this.$store.dispatch('signUserUp', {first_name: this.firstname, last_name: this.lastname, email: this.email, password: this.password})
+      onSignin () {
+        this.$store.dispatch('signUserIn', {email: this.email, password: this.password})
       },
       onDismissed () {
         this.$store.dispatch('clearError')
