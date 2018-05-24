@@ -67,48 +67,23 @@ export default {
         )
     },
     createForm ({commit, getters}, payload) {
-      let formData = new FormData()
-
-      formData.append('name', payload.name)
-      if (payload.csv) {
-        formData.append('csv', payload.csv)
+      const form = {
+        name: payload.name,
+        show_progress: 1
       }
-
-      if (payload.periodStart) {
-        formData.append('period_start', payload.periodStart)
-      }
-
-      if (payload.periodEnd) {
-        formData.append('period_end', payload.periodEnd)
-      }
-
-      if (payload.periodId) {
-        formData.append('period_id', parseInt(payload.periodId))
-      }
-      if (payload.showProgress === true) {
-        formData.append('show_progress', 1)
-      } else {
-        formData.append('show_progress', 0)
-      }
-
-      const config = {
-        headers: {'content-type': 'multipart/form-data'}
-      }
-      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL,
-        formData,
-        config
-      ).then(
-        response => {
-          commit('setLoading', false)
-          const createObj = {
-            slug: payload.slug,
-            form: response['data']['form']
+      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL, form)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const createObj = {
+              slug: payload.slug,
+              form: response['data']['form']
+            }
+            commit('createForm', createObj)
           }
-          commit('createForm', createObj)
-        }
-      ).catch(function () {
-        commit('setLoading', false)
-      })
+        ).catch(function () {
+          commit('setLoading', false)
+        })
     },
     updateForm ({commit}, payload) {
       commit('setLoading', true)
@@ -128,6 +103,17 @@ export default {
       if (payload.showProgress) {
         updateObj.show_progress = payload.showProgress
       }
+
+      /*
+      let formData = new FormData()
+
+      if (payload.csv) {
+        formData.append('csv', payload.csv)
+      }
+
+      const config = {
+        headers: {'content-type': 'multipart/form-data'}
+      } */
 
       window.axios.put(APPLICATION_URL + payload.slug + FORM_URL + payload.id, updateObj)
         .then(

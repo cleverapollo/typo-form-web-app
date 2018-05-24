@@ -5,10 +5,17 @@
     <v-card>
       <v-container>
         <v-layout row wrap>
-          <v-flex xs12>
-            <v-card-title>
-              <h2>Edit Form</h2>
-            </v-card-title>
+          <v-flex>
+            <h2>Edit Form</h2>
+          </v-flex>
+          <v-flex>
+            <v-spacer></v-spacer>
+            <v-btn
+              flat
+              icon
+              href='/static/Form Template.xlsx'>
+              <v-icon>cloud_download</v-icon>
+            </v-btn>
           </v-flex>
         </v-layout>
 
@@ -27,87 +34,19 @@
             </v-flex>
           </v-layout>
 
-          <v-layout row wrap pt-2>
-            <v-flex xs12>
-              <v-menu
-                lazy
-                :close-on-content-click="false"
-                v-model="startMenu"
-                transition="scale-transition"
-                offset-y
-                full-width
-                :nudge-right="40"
-              >
-                <v-text-field
-                  slot="activator"
-                  label="Period Start"
-                  v-model="periodStart"
-                  prepend-icon="event"
-                  readonly
-                ></v-text-field>
-
-                <v-date-picker v-model="periodStart" no-title scrollable actions>
-                  <template slot-scope="{ save, cancel }">
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                      <v-btn flat color="primary" @click="save">OK</v-btn>
-                    </v-card-actions>
-                  </template>
-                </v-date-picker>
-              </v-menu>
-            </v-flex>
-          </v-layout>
-
-          <v-layout row wrap pt-2>
-            <v-flex xs12>
-              <v-select
-                :items="periodDurations"
-                item-value="id"
-                item-text="period"
-                v-model="periodDuration"
-                label="Period Duration"
-              ></v-select>
-            </v-flex>
-          </v-layout>
-
-          <v-layout row wrap pt-2>
-            <v-flex xs12 v-if="periodDuration === 5">
-              <v-menu
-                lazy
-                :close-on-content-click="false"
-                v-model="endMenu"
-                transition="scale-transition"
-                offset-y
-                full-width
-                :nudge-right="40"
-              >
-                <v-text-field
-                  slot="activator"
-                  label="Period End"
-                  v-model="periodEnd"
-                  prepend-icon="event"
-                  readonly
-                ></v-text-field>
-
-                <v-date-picker v-model="periodEnd" no-title scrollable actions>
-                  <template slot-scope="{ save, cancel }">
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                      <v-btn flat color="primary" @click="save">OK</v-btn>
-                    </v-card-actions>
-                  </template>
-                </v-date-picker>
-              </v-menu>
-            </v-flex>
-          </v-layout>
-
           <v-layout row wrap pt-4>
             <v-flex xs12>
               <v-checkbox label="Show Progress" v-model="showProgress" light></v-checkbox>
             </v-flex>
           </v-layout>
+
+          <!-- <v-layout>
+            <v-flex>
+              <label for="upload"><span>{{ csvFileName }}</span></label>
+              <input id="upload" type="file" class="hide inputfile" accept=".csv, .xls, .xlsx" @change="onFileChange"
+                     data-multiple-caption="{count} files selected" multiple/>
+            </v-flex>
+          </v-layout> -->
         </v-card-text>
 
         <v-divider></v-divider>
@@ -175,6 +114,14 @@
         this.editedName = this.form.name
         this.editForm = false
       }
+      /* onFileChange (e) {
+        const files = e.target.files || e.dataTransfer.files
+
+        if (files.length) {
+          this.csv = files[0]
+          this.csvFileName = this.csv.name
+        }
+      } */
     },
     computed: {
       error () {

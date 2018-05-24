@@ -9,15 +9,6 @@
                 <v-flex>
                   <h1 class="mb-4">Create Form</h1>
                 </v-flex>
-                <v-flex text-xs-right>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    flat
-                    icon
-                    href='/static/Form Template.xlsx'>
-                    <v-icon>cloud_download</v-icon>
-                  </v-btn>
-                </v-flex>
               </v-layout>
 
               <v-layout row wrap>
@@ -29,92 +20,6 @@
                     v-model="name"
                     required>
                   </v-text-field>
-                </v-flex>
-              </v-layout>
-
-              <v-layout row wrap pt-4>
-
-                <v-flex xs12 sm3>
-                  <v-menu
-                    lazy
-                    :close-on-content-click="false"
-                    v-model="startMenu"
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    :nudge-right="40"
-                  >
-                    <v-text-field
-                      slot="activator"
-                      label="Period Start"
-                      v-model="periodStart"
-                      prepend-icon="event"
-                      readonly
-                    ></v-text-field>
-
-                    <v-date-picker v-model="periodStart" no-title scrollable actions>
-                      <template slot-scope="{ save, cancel }">
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                          <v-btn flat color="primary" @click="save">OK</v-btn>
-                        </v-card-actions>
-                      </template>
-                    </v-date-picker>
-                  </v-menu>
-                </v-flex>
-
-                <v-flex xs12 offset-sm1 sm3>
-                  <v-select
-                    :items="periodDurations"
-                    item-value="id"
-                    item-text="period"
-                    v-model="periodDuration"
-                    label="Period Duration"
-                  ></v-select>
-                </v-flex>
-
-                <v-flex xs12 offset-sm1 sm3 v-if="periodDuration === 5">
-                  <v-menu
-                    lazy
-                    :close-on-content-click="false"
-                    v-model="endMenu"
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    :nudge-right="40"
-                  >
-                    <v-text-field
-                      slot="activator"
-                      label="Period End"
-                      v-model="periodEnd"
-                      prepend-icon="event"
-                      readonly
-                    ></v-text-field>
-
-                    <v-date-picker v-model="periodEnd" no-title scrollable actions>
-                      <template slot-scope="{ save, cancel }">
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                          <v-btn flat color="primary" @click="save">OK</v-btn>
-                        </v-card-actions>
-                      </template>
-                    </v-date-picker>
-                  </v-menu>
-                </v-flex>
-              </v-layout>
-
-              <v-layout pt-4>
-                <v-flex xs12>
-                  <v-checkbox label="Show Progress" v-model="showProgress" light></v-checkbox>
-                </v-flex>
-              </v-layout>
-              <v-layout>
-                <v-flex>
-                  <input id="upload" type="file" class="hide inputfile" accept=".csv, .xls, .xlsx" @change="onFileChange"
-                         data-multiple-caption="{count} files selected" multiple/>
-                  <label for="upload"><span>{{ csvFileName }}</span></label>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -140,15 +45,7 @@
     props: ['slug'],
     data () {
       return {
-        name: '',
-        startMenu: false,
-        periodStart: null,
-        endMenu: false,
-        periodEnd: null,
-        periodDuration: 5,
-        showProgress: true,
-        csv: null,
-        csvFileName: 'Please Upload a CSV.'
+        name: ''
       }
     },
     computed: {
@@ -169,14 +66,6 @@
       },
       formIsValid () {
         return this.name !== ''
-      },
-      periodDurations () {
-        var options = this.$store.getters.periods
-        options.push({
-          id: 5,
-          period: 'Custom'
-        })
-        return options
       }
     },
     watch: {
@@ -212,41 +101,7 @@
       },
       onCancel () {
         this.$router.push('/' + this.slug + '/forms')
-      },
-      onFileChange (e) {
-        const files = e.target.files || e.dataTransfer.files
-
-        if (files.length) {
-          this.csv = files[0]
-          this.csvFileName = this.csv.name
-        }
       }
     }
   }
 </script>
-
-<style scope="">
-  .hide {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
-  }
-
-  label[for="upload"] {
-    display: inline-block;
-    cursor: pointer;
-    padding: 10px 30px;
-    background-color: #2196f3;
-    color: #ffffff;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25), 0 2px 10px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
-    transition: all 0.3s;
-  }
-
-  label[for="upload"]:hover {
-    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.25), 0 5px 18px 0 rgba(0, 0, 0, 0.2);
-  }
-</style>
