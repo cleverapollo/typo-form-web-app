@@ -2,6 +2,7 @@
 require('dotenv').config()
 module.exports = {
   NODE_ENV: '"production"',
+  APP_NAME: JSON.stringify(process.env.APP_NAME),
   API_URL: JSON.stringify(process.env.API_URL),
   API_ORIGIN_URL: JSON.stringify(process.env.API_ORIGIN_URL),
 
