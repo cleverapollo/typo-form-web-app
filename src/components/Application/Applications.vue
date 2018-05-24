@@ -39,7 +39,7 @@
 
     <!-- //Action Button -->
     <v-tooltip top>
-      <v-btn slot="activator" fixed dark bottom right fab router class="red" @click.stop="createApplication = true" v-if="isSuperUser">
+      <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="createApplication = true" v-if="isSuperUser">
         <v-icon>add</v-icon>
       </v-btn>
       <span>Create Application</span>
