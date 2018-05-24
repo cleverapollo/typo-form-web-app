@@ -33,8 +33,7 @@
   export default {
     data () {
       return {
-        name: '',
-        api_url: process.env.API_ORIGIN_URL
+        name: ''
       }
     },
     computed: {

@@ -94,10 +94,7 @@ export default {
     },
     createApplication ({commit, getters}, payload) {
       const application = {
-        name: payload.name,
-        css: payload.css,
-        icon: payload.icon,
-        invitations: payload.invitations
+        name: payload.name
       }
       window.axios.post(APPLICATION_URL, application)
         .then(
