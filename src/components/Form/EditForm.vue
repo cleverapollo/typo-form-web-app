@@ -84,11 +84,6 @@
         id: this.form.id,
         editForm: false,
         editedName: this.form.name,
-        periodDuration: this.form.period_id ? this.form.period_id : 5,
-        startMenu: false,
-        periodStart: this.form.period_start ? this.form.period_start.substring(0, 10) : null,
-        endMenu: false,
-        periodEnd: this.form.period_end ? this.form.period_end.substring(0, 10) : null,
         showProgress: this.form.show_progress
       }
     },
@@ -104,9 +99,6 @@
           slug: this.slug,
           id: this.id,
           name: this.editedName,
-          periodStart: this.periodStart,
-          periodEnd: this.periodDuration === 5 ? this.periodEnd : null,
-          periodId: this.periodDuration !== 5 ? this.periodDuration : null,
           showProgress: this.showProgress
         })
       },
@@ -129,13 +121,6 @@
       },
       loading () {
         return this.$store.getters.loading
-      },
-      periodDurations () {
-        var options = this.$store.getters.periods
-        options.push({
-          id: 5,
-          period: 'Custom'})
-        return options
       }
     }
   }

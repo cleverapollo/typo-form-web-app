@@ -91,15 +91,6 @@ export default {
       if (payload.name) {
         updateObj.name = payload.name
       }
-      if (payload.periodStart) {
-        updateObj.period_start = payload.periodStart
-      }
-      if (payload.periodEnd) {
-        updateObj.period_end = payload.periodEnd
-      }
-      if (payload.periodId) {
-        updateObj.period_id = payload.periodId
-      }
       if (payload.showProgress) {
         updateObj.show_progress = payload.showProgress
       }
