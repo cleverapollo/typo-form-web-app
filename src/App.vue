@@ -125,7 +125,7 @@
             </v-avatar>
           </v-btn>
           <v-list v-if='applications.length'>
-            <template v-for="(application, index) in applications">
+            <template v-for="(application, index) in applications" :v-bind="application.id">
               <v-list-tile
                 avatar
                 ripple

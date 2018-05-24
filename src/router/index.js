@@ -21,7 +21,6 @@ import ShowUser from '@/components/User/ShowUser'
 import Application from '@/components/Application/Application'
 import Applications from '@/components/Application/Applications'
 import CreateApplication from '@/components/Application/CreateApplication'
-import ShowApplication from '@/components/Application/ShowApplication'
 
 import Forms from '@/components/Form/Forms'
 import CreateForm from '@/components/Form/CreateForm'
@@ -97,13 +96,6 @@ const router = new Router({
       path: '/:slug',
       name: 'Application',
       component: Application,
-      props: true,
-      meta: {requiresAuth: true}
-    },
-    {
-      path: '/:slug/show',
-      name: 'ShowApplication',
-      component: ShowApplication,
       props: true,
       meta: {requiresAuth: true}
     },
