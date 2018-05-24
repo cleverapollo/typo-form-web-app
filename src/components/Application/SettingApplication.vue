@@ -11,7 +11,7 @@
           </v-flex>
         </v-layout>
         <v-divider></v-divider>
-        <v-layout row wrap>
+        <v-layout row wrap v-if="forms.length">
           <v-flex xs12>
             <v-card-text>
               <v-select
@@ -32,6 +32,7 @@
                 id="recipient"
                 name="recipient"
                 label="Recipient"
+                v-model="emailRecipients"
               ></v-text-field>
             </v-card-text>
           </v-flex>
@@ -41,6 +42,7 @@
                 id="subject"
                 name="subject"
                 label="Subject"
+                v-model="emailSubject"
               ></v-text-field>
             </v-card-text>
           </v-flex>
@@ -50,6 +52,7 @@
                 id="body"
                 name="body"
                 label="Body"
+                v-model="emailBody"
                 multi-line
               ></v-text-field>
             </v-card-text>
@@ -95,18 +98,36 @@
     data () {
       return {
         settingApplication: false,
-        selectedForms: []
+        selectedForms: [],
+        emailRecipients: '',
+        emailSubject: '',
+        emailBody: ''
       }
     },
     methods: {
       onSaveChanges () {
-        this.settingApplication = false
-        let updateObj = {
-          slug: this.application.slug,
-          formIds: this.selectedForms
+        if (this.emailRecipients.trim() === '' || this.emailSubject.trim() === '' || this.emailBody.trim() === '') {
+          return
         }
 
-        this.$store.dispatch('setAuto', updateObj)
+        this.settingApplication = false
+        let updateObj = {}
+        if (this.selectedForms.length) {
+          updateObj = {
+            slug: this.application.slug,
+            formIds: this.selectedForms
+          }
+          this.$store.dispatch('setAuto', updateObj)
+        }
+
+        updateObj = {
+          slug: this.application.slug,
+          id: this.applicationEmail.id,
+          recipients: this.emailRecipients,
+          subject: this.emailSubject,
+          body: this.emailBody
+        }
+        this.$store.dispatch('updateApplicationEmail', updateObj)
       },
       onCancel () {
         this.settingApplication = false
@@ -121,6 +142,9 @@
       },
       loading () {
         return this.$store.getters.loading
+      },
+      applicationEmail () {
+        return this.$store.getters.loadedApplicationEmail(this.application.slug)
       }
     },
     watch: {
@@ -128,12 +152,24 @@
         this.selectedForms = value.filter(e => {
           return e.auto
         }).map(e => e.id)
+      },
+      applicationEmail (value) {
+        if (value) {
+          this.emailRecipients = value.recipients
+          this.emailSubject = value.subject
+          this.emailBody = value.body
+        }
       }
     },
     created () {
       this.selectedForms = this.forms.filter(e => {
         return e.auto
       }).map(e => e.id)
+      if (this.applicationEmail) {
+        this.emailRecipients = this.applicationEmail.recipients
+        this.emailSubject = this.applicationEmail.subject
+        this.emailBody = this.applicationEmail.body
+      }
     }
   }
 </script>

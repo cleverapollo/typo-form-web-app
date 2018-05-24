@@ -135,6 +135,7 @@
     },
     created () {
       this.$store.dispatch('loadForms', this.slug)
+      this.$store.dispatch('loadApplicationEmail', this.slug)
     }
   }
 </script>
