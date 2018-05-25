@@ -1,83 +1,66 @@
 <template>
-  <v-dialog width="500px" persistent v-model="inviteTeam">
-    <v-btn class="primary" slot="activator">Invite</v-btn>
+  <v-dialog v-model="inviteTeam" persistent max-width="600px">
+    <v-btn slot="activator" fixed dark bottom right fab router class="error">
+      <v-icon>add</v-icon>
+    </v-btn>
     <v-card>
-      <v-container>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <v-card-title>
-              <h2>Invite members</h2>
-              <v-spacer></v-spacer>
-              <v-btn dark color="primary"
-                @click="onAddMember">
-                <v-icon dark>add</v-icon>
-                Add
+      <v-card-title>
+        <div class="title mb-2 mt-2">Invite Users</div>
+      </v-card-title>
+      <v-card-text>
+
+        <!-- //Invitation -->
+        <template v-for="(item, index) in invitations">
+          <v-layout wrap>
+            <v-flex xs12 sm6 d-flex>
+              <v-text-field
+                label="Email"
+                type="email"
+                v-model="item.email"
+                required
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm4 offset-sm1 d-flex>
+              <v-select
+                :items="invitationRoles"
+                item-text="name"
+                item-value="id"
+                v-model="item.team_role_id"
+                label="Role"
+                single-line
+                required
+              ></v-select>
+            </v-flex>
+            <v-flex xs12 sm1 text-xs-center text-sm-right>
+              <v-btn flat icon @click="removeUser" class="mt-3">
+                <v-icon>close</v-icon>
               </v-btn>
-            </v-card-title>
-          </v-flex>
-        </v-layout>
-        <v-divider></v-divider>
+            </v-flex>
+          </v-layout>
+        </template>
+
+        <!-- //Add Row -->
         <v-layout row>
-          <v-flex xs12>
-            <v-container pa-0>
-              <template v-for='(item, index) in invitations'>
-                <v-layout wrap>
-                  <v-flex xs12 sm4 d-flex>
-                    <v-text-field
-                      label="Email"
-                      type="email"
-                      v-model="item.email"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm4 offset-sm1 d-flex>
-                    <v-select
-                      :items="invitationRoles"
-                      item-text="name"
-                      item-value="id"
-                      v-model="item.team_role_id"
-                      label="Role"
-                      single-line
-                    ></v-select>
-                  </v-flex>
-                  <v-flex xs12 sm1 offset-sm1 text-xs-center>
-                    <v-btn fab dark small color="error"
-                      @click="invitations.splice(index, 1)">
-                      <v-icon dark>remove</v-icon>
-                    </v-btn>
-                  </v-flex>
-                </v-layout>
-              </template>
-            </v-container>
+          <v-flex xs12 class="text-xs-left">
+            <v-btn flat @click.stop="addUser">Add another user</v-btn>
           </v-flex>
         </v-layout>
-        <v-divider></v-divider>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                flat
-                class="secondary"
-                @click="onCancel"
-              >
-                Close
-              </v-btn>
-              <v-btn 
-                flat 
-                class="primary" 
-                @click="onInvite"
-                :disabled="loading"
-                :loading="loading"
-              >
-                Invite
-                <span slot="loader" class="custom-loader">
-                  <v-icon light>cached</v-icon>
-                </span>
-              </v-btn>
-            </v-card-actions>
+
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-layout row py-2>
+          <v-flex xs12 class="text-xs-right">
+            <v-btn flat @click.stop="close">Cancel</v-btn>
+            <v-btn color="primary" @click.stop="invite" :disabled="loading" :loading="loading">
+              Invite
+              <span slot="loader" class="custom-loader">
+                <v-icon light>cached</v-icon>
+              </span>
+            </v-btn>
           </v-flex>
         </v-layout>
-      </v-container>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -88,55 +71,7 @@
     data () {
       return {
         inviteTeam: false,
-        invitations: [
-          {
-            email: '',
-            team_role_id: ''
-          },
-          {
-            email: '',
-            team_role_id: ''
-          },
-          {
-            email: '',
-            team_role_id: ''
-          }
-        ]
-      }
-    },
-    methods: {
-      onInvite () {
-        const invitations = this.invitations.filter(function (item) {
-          return item.email.trim() !== ''
-        })
-        if (!invitations.length) {
-          return
-        }
-        this.inviteTeam = false
-        this.$store.dispatch('inviteTeam', {invitations: invitations, id: this.teamId, slug: this.slug})
-      },
-      onCancel () {
-        this.invitations = [
-          {
-            email: '',
-            team_role_id: ''
-          },
-          {
-            email: '',
-            team_role_id: ''
-          },
-          {
-            email: '',
-            team_role_id: ''
-          }
-        ]
-        this.inviteTeam = false
-      },
-      onAddMember () {
-        this.invitations.push({
-          email: '',
-          team_role_id: ''
-        })
+        invitations: [{ email: '', team_role_id: '' }]
       }
     },
     computed: {
@@ -148,11 +83,30 @@
           return role.name !== 'Super Admin'
         })
       },
-      error () {
-        return this.$store.getters.error
-      },
       loading () {
         return this.$store.getters.loading
+      }
+    },
+    methods: {
+      close () {
+        this.invitations = [{ email: '', team_role_id: '' }]
+        this.inviteTeam = false
+      },
+      addUser () {
+        this.invitations.push({ email: '', team_role_id: '' })
+      },
+      removeUser (index) {
+        this.invitations.splice(index, 1)
+      },
+      invite () {
+        const invitations = this.invitations.filter(function (item) {
+          return item.email.trim() !== ''
+        })
+        if (!invitations.length) {
+          return
+        }
+        this.inviteTeam = false
+        this.$store.dispatch('inviteTeam', {invitations: invitations, id: this.teamId, slug: this.slug})
       }
     }
   }

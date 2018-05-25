@@ -58,8 +58,7 @@ export default {
     createTeam ({commit, getters}, payload) {
       const team = {
         name: payload.name,
-        description: payload.description,
-        invitations: payload.invitations
+        description: payload.description
       }
       window.axios.post(APPLICATION_URL + payload.slug + TEAM_URL, team)
         .then(

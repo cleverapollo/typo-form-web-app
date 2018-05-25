@@ -1,136 +1,136 @@
 <template>
-  <v-container>
-    <v-layout row wrap v-if="loading">
-      <v-flex xs12 class="text-xs-center">
-        <v-progress-circular
-          indeterminate
-          class="primary--text"
-          :width="7"
-          :size="70"></v-progress-circular>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap v-else>
-      <v-flex xs12 v-if="userIsAdmin">
-        <v-card v-if="team">
-          <v-card-title>
-            <h1 class="primary--text">{{ team.name }}</h1>
-          </v-card-title>
-          <v-card-text>
-            <h3 class="break-all">{{joinURL}}</h3>
-            <h3 class="break-all">{{ team.description }}</h3>
-            <app-invite-team :slug="slug" :teamId="id"></app-invite-team>
-            <v-tabs v-model="active">
-              <v-tabs-bar class="primary" dark>
-                <v-tabs-item
-                  :href="'#member'"
-                  ripple
-                >
-                  Members
-                </v-tabs-item>
-                <v-tabs-item
-                  :href="'#invite'"
-                  ripple
-                >
-                  Invites
-                </v-tabs-item>
-              </v-tabs-bar>
-              <v-tabs-items>
-                <v-tabs-content
-                  :id="'member'"
-                >
-                  <v-data-table
-                    :headers="headers"
-                    :items="users"
-                    hide-actions
-                    class="elevation-1"
+  <v-layout row wrap v-if='team'>
+    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+      <v-layout row wrap>
+        <v-flex d-flex xs12>
+          <div class="subheading py-2 px-3">{{ team.name }}</div>
+          <v-menu offset-y bottom left class="text-xs-right" v-if="isTeamAdmin">
+            <v-btn icon slot="activator">
+              <v-icon>more_vert</v-icon>
+            </v-btn>
+
+            <v-list>
+              <v-list-tile @click="">
+                <v-list-tile-title>
+                  <app-edit-team :team="team" :slug="slug" class="my-1"></app-edit-team>
+                </v-list-tile-title>
+              </v-list-tile>
+
+              <v-list-tile @click="onDeleteTeam">
+                <v-list-tile-title>Delete Team</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
+        </v-flex>
+        <v-flex xs12>
+          <div class="subheading py-2 px-3 break-all">{{ team.description }}</div>
+          <div class="subheading py-2 px-3 break-all">{{ joinURL }}</div>
+        </v-flex>
+        <v-flex d-flex xs12>
+          <v-card>
+            <v-tabs dark slider-color="white" color="info">
+              <v-tab href="#active">Active Users</v-tab>
+              <v-tab href="#invited">Invited Users</v-tab>
+              <v-tab-item id="active">
+
+                <!-- //User Search -->
+                <v-card-title>
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    v-model="userSearch"
+                    append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
                   >
-                    <template slot="items" slot-scope="props">
-                      <td @click=onLoadTeamUser(props.item.id)>{{ props.item.first_name }}</td>
-                      <td @click=onLoadTeamUser(props.item.id)>{{ props.item.last_name }}</td>
-                      <td @click=onLoadTeamUser(props.item.id)>{{ props.item.email }}</td>
-                      <td @click=onLoadTeamUser(props.item.id)>{{ getRole(props.item.team_role_id) }}</td>
-                      <td @click=onLoadTeamUser(props.item.id)>{{ props.item.provider }}</td>
-                      <td @click=onLoadTeamUser(props.item.id)>{{ props.item.social_id }}</td>
-                    </template>
-                  </v-data-table>
-                </v-tabs-content>
-                <v-tabs-content
-                  :id="'invite'"
+                  </v-text-field>
+                </v-card-title>
+
+                <!-- //Users -->
+                <v-data-table
+                  :headers="userHeaders"
+                  :items="users"
+                  :search="userSearch"
                 >
-                  <v-data-table
-                    :headers="headers.slice(0, 3)"
-                    :items="invitedUsers"
-                    hide-actions
-                    class="elevation-1"
-                    no-data-text="No invites"
+                  <template slot="items" slot-scope="props">
+                    <td>{{ props.item.first_name }}</td>
+                    <td>{{ props.item.last_name }}</td>
+                    <td>{{ props.item.email }}</td>
+                    <td>{{ getRole(props.item.team_role_id) }}</td>
+                    <td>{{ props.item.created_at.date }}</td>
+                  </template>
+                  <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                    Your search for "{{ userSearch }}" found no results.
+                  </v-alert>
+                </v-data-table>
+              </v-tab-item>
+              <v-tab-item id="invited">
+
+                <!-- //Invited User Search -->
+                <v-card-title>
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    v-model="invitedUserSearch"
+                    append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
                   >
-                    <template slot="items" slot-scope="props">
-                      <td>{{ props.item.first_name }}</td>
-                      <td>{{ props.item.last_name }}</td>
-                      <td>{{ props.item.email }}</td>
-                      <td></td>
-                      <td>{{ props.item.provider }}</td>
-                      <td>{{ props.item.social_id }}</td>
-                      <td></td>
-                    </template>
-                  </v-data-table>
-                </v-tabs-content>
-              </v-tabs-items>
+                  </v-text-field>
+                </v-card-title>
+
+                <!-- //Invited Users -->
+                <v-data-table
+                  :headers="invitedHeaders"
+                  :items="invitedUsers"
+                  :search="invitedUserSearch"
+                >
+                  <template slot="items" slot-scope="props">
+                    <td>{{ props.item.invitee }}</td>
+                    <td>{{ getRole(props.item.role_id) }}</td>
+                    <td>{{ props.item.created_at }}</td>
+                  </template>
+                  <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                    Your search for "{{ invitedUserSearch }}" found no results.
+                  </v-alert>
+                </v-data-table>
+              </v-tab-item>
             </v-tabs>
-          </v-card-text>
-          <v-card-actions>
-            <v-layout row wrap>
-              <app-edit-team :team="team" :slug="slug" class="my-1"></app-edit-team>
-              <v-btn class="error my-1" @click=onDeleteTeam>Delete</v-btn>
-              <v-spacer></v-spacer>
-              <v-btn color="info" @click=onBack class="my-1">Back</v-btn>
-            </v-layout>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-      <v-flex xs12 v-else>
-        <v-card v-if="team">
-          <v-card-title>
-            <h1 class="primary--text">{{ team.name }}</h1>
-          </v-card-title>
-          <v-card-text>
-            <h3>{{ team.description }}</h3>
-            <v-data-table
-              :headers="headers"
-              :items="users"
-              hide-actions
-              class="elevation-1"
-            >
-              <template slot="items" slot-scope="props">
-                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.first_name }}</td>
-                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.last_name }}</td>
-                <td @click=onLoadTeamUser(props.item.id)>{{ props.item.email }}</td>
-                <td @click=onLoadTeamUser(props.item.id)>{{ getRole(props.item.team_role_id) }}</td>
-              </template>
-            </v-data-table>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn color="info" @click=onBack>Back</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+
+    <!-- //Invite Team -->
+    <InviteTeam :slug="slug" :teamId="id"></InviteTeam>
+  </v-layout>
 </template>
 
 <script>
+  import InviteTeam from './InviteTeam'
   export default {
     props: ['slug', 'id'],
     data () {
       return {
-        active: null,
-        headers: [
-          { text: 'First Name', value: 'first_name', sortable: false, align: 'left' },
-          { text: 'Last Name', value: 'last_name', sortable: false, align: 'left' },
-          { text: 'Email', value: 'email', sortable: false, align: 'left' },
-          { text: 'Role', value: 'role', sortable: false, align: 'left' }
+        userSearch: '',
+        invitedUserSearch: '',
+        userHeaders: [
+          { text: 'First Name', value: 'first_name', sortable: true, align: 'left' },
+          { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
+          { text: 'Email', value: 'email', sortable: true, align: 'left' },
+          { text: 'Role', value: 'role', sortable: true, align: 'left' },
+          { text: 'Joined', value: 'created_at', sortable: true, align: 'left' }
+        ],
+        invitedHeaders: [
+          { text: 'Email', value: 'email', sortable: true, align: 'left' },
+          { text: 'Role', value: 'role', sortable: true, align: 'left' },
+          { text: 'Invited', value: 'created_at', sortable: true, align: 'left' }
         ]
       }
+    },
+    components: {
+      InviteTeam
     },
     computed: {
       roles () {
@@ -139,17 +139,8 @@
       team () {
         return this.$store.getters.loadedTeam(this.slug, parseInt(this.id))
       },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.team) {
-          return false
-        }
-        return this.getRole(this.team.team_role_id) === 'Admin'
-      },
-      loading () {
-        return this.$store.getters.loading
+      isTeamAdmin () {
+        return this.team && this.getRole(this.team.team_role_id) === 'Admin'
       },
       users () {
         return this.$store.getters.loadedTeamUsers(parseInt(this.id))

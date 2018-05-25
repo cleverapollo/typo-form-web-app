@@ -202,7 +202,7 @@
         <v-layout row>
           <v-flex xs12 class="text-xs-left">
             <v-btn flat @click.stop="addUser">Add another user</v-btn>
-          </v-flex> 
+          </v-flex>
         </v-layout>
 
       </v-card-text>
@@ -212,7 +212,7 @@
             <v-flex xs12 class="text-xs-right">
               <v-btn flat @click.stop="close">Cancel</v-btn>
               <v-btn color="primary" @click.stop="invite">Invite</v-btn>
-            </v-flex> 
+            </v-flex>
           </v-layout>
       </v-card-actions>
     </v-card>
