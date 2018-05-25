@@ -167,8 +167,8 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth) && store.getters.user === null) {
     next({
-      path: '/login'
-      // ,query: {redirect: to.fullPath}
+      path: '/login',
+      query: {redirect: to.fullPath}
     })
   }
   const favicon = document.getElementById('dyc-favicon')
