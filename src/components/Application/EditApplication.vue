@@ -132,7 +132,7 @@
         }
 
         this.$store.dispatch('updateApplication', updateObj)
-          .then((response) => this.$router.push('/' + response.data.application.slug + '/show'))
+          .then((response) => this.$router.push('/' + response.data.application.slug))
       },
       updateIcon (icon) {
         this.icon = icon

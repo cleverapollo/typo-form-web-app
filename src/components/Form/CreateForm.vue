@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="createForm" persistent max-width="350">
+  <v-dialog v-model="createForm" persistent max-width="600">
     <v-btn slot="activator" fixed dark bottom right fab router class="error">
       <v-icon>add</v-icon>
     </v-btn>

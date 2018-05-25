@@ -34,11 +34,6 @@
       </v-layout>
     </v-flex>
 
-    <!-- //Action Button -->
-    <v-btn fixed fab dark bottom left color="primary" @click="onBack">
-      <v-icon>chevron_left</v-icon>
-    </v-btn>
-
     <!-- //Create Form -->
     <CreateForm :slug="slug" v-if="userIsApplicationAdmin"></CreateForm>
   </v-layout>
@@ -86,9 +81,6 @@
       },
       onLoadForm (id) {
         return '/' + this.slug + '/forms/show/' + id + '/' + (this.$route.name === 'Forms' ? 'questions' : 'responses')
-      },
-      onBack () {
-        this.$router.push('/' + this.slug + '/show')
       }
     },
     created: function () {

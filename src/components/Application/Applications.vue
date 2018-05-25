@@ -55,7 +55,8 @@
   export default {
     data () {
       return {
-        createApplication: false
+        createApplication: false,
+        api_url: process.env.API_ORIGIN_URL
       }
     },
     components: {

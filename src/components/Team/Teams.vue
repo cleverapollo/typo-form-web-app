@@ -34,11 +34,6 @@
       </v-layout>
     </v-flex>
 
-    <!-- //Action Button -->
-    <v-btn fixed fab dark bottom left color="primary" @click="onBack">
-      <v-icon>chevron_left</v-icon>
-    </v-btn>
-
     <!-- //Create Team -->
     <CreateTeam :slug="slug"></CreateTeam>
   </v-layout>
@@ -66,9 +61,6 @@
       },
       onLoadTeam (id) {
         return '/' + this.slug + '/teams/show/' + id
-      },
-      onBack () {
-        this.$router.push('/' + this.slug + '/show')
       }
     },
     created: function () {
