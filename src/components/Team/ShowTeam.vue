@@ -160,17 +160,11 @@
         })
         this.$router.push('/' + this.slug + '/teams')
       },
-      onLoadTeamUser (id) {
-        this.$router.push('/' + this.slug + '/teams/' + this.id + '/users/' + id)
-      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId
         })
         return role ? role.name : 'undefined'
-      },
-      onBack () {
-        this.$router.push('/' + this.slug + '/teams')
       }
     },
     created: function () {

@@ -119,9 +119,6 @@
       },
       onList (type) {
         this.$router.push('/' + this.slug + '/' + type)
-      },
-      onBack () {
-        this.$router.push('/applications')
       }
     },
     created () {
