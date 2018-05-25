@@ -11,7 +11,6 @@ import AcceptInvitation from '@/components/Shared/AcceptInvitation'
 import AcceptJoin from '@/components/Shared/AcceptJoin'
 
 import Teams from '@/components/Team/Teams'
-import CreateTeam from '@/components/Team/CreateTeam'
 import ShowTeam from '@/components/Team/ShowTeam'
 import ShowTeamUser from '@/components/Team/ShowTeamUser'
 
@@ -103,13 +102,6 @@ const router = new Router({
       path: '/:slug/teams',
       name: 'Teams',
       component: Teams,
-      props: true,
-      meta: {requiresAuth: true}
-    },
-    {
-      path: '/:slug/teams/new',
-      name: 'CreateTeam',
-      component: CreateTeam,
       props: true,
       meta: {requiresAuth: true}
     },

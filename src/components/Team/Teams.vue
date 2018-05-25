@@ -1,65 +1,71 @@
 <template>
-  <v-container>
-    <v-layout row wrap class="mb-2">
-      <v-flex xs12 style="position: relative">
-        <v-btn
-          absolute
-          bottom
-          right
-          dark
-          fab
-          router
-          @click=onCreateTeam()
-          class="primary"
-        >
-          <v-icon>add</v-icon>
-        </v-btn>
-        <v-btn
-          color="info"
-          @click=onBack>
-          Back
-        </v-btn>
-        <v-data-table
-          :headers="headers"
-          :items="teams"
-          hide-actions
-          class="elevation-1"
-        >
-          <template slot="items" slot-scope="props">
-            <td @click=onLoadTeam(props.item.id)>{{ props.item.name }}</td>
-            <td @click=onLoadTeam(props.item.id)>{{ props.item.description }}</td>
-          </template>
-        </v-data-table>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-layout row wrap>
+    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+      <v-layout row wrap>
+        <v-flex d-flex xs12>
+          <div class="subheading py-2 px-3">Teams</div>
+        </v-flex>
+        <v-flex d-flex xs12>
+          <v-card>
+            <v-list one-line>
+              <template v-if="teams.length">
+
+                <!-- //Team List -->
+                <template v-for="(item, index) in teams">
+                  <v-list-tile :to="onLoadTeam(item.id)" :key="item.id" avatar>
+                    <v-list-tile-avatar color="primary">
+                      <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
+                    </v-list-tile-avatar>
+                    <v-list-tile-content>
+                      <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider v-if="index < teams.length -1"></v-divider>
+                </template>
+              </template>
+
+              <!-- //No Teams -->
+              <template v-else>
+                <div class="text-xs-center">No teams available.</div>
+              </template>
+            </v-list>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+
+    <!-- //Action Button -->
+    <v-btn fixed fab dark bottom left color="primary" @click="onBack">
+      <v-icon>chevron_left</v-icon>
+    </v-btn>
+
+    <!-- //Create Team -->
+    <CreateTeam :slug="slug"></CreateTeam>
+  </v-layout>
 </template>
 
+
 <script>
+  import * as _ from 'lodash'
+  import CreateTeam from './CreateTeam'
   export default {
     props: ['slug'],
-    data () {
-      return {
-        headers: [
-          { text: 'Name', value: 'name', sortable: false, align: 'left' },
-          { text: 'Description', value: 'description', sortable: false, align: 'left' }
-        ]
-      }
+    components: {
+      CreateTeam
     },
     computed: {
       teams () {
-        return this.$store.getters.loadedTeams(this.slug)
-      },
-      loading () {
-        return this.$store.getters.loading
+        return _.sortBy(this.$store.getters.loadedTeams(this.slug), element => {
+          return element.name.toLowerCase()
+        })
       }
     },
     methods: {
-      onLoadTeam (id) {
-        this.$router.push('/' + this.slug + '/teams/show/' + id)
+      getFirstLetter (word) {
+        return word.length > 0 ? word.trim().substring(0, 1).toUpperCase() : ''
       },
-      onCreateTeam () {
-        this.$router.push('/' + this.slug + '/teams/new')
+      onLoadTeam (id) {
+        return '/' + this.slug + '/teams/show/' + id
       },
       onBack () {
         this.$router.push('/' + this.slug + '/show')

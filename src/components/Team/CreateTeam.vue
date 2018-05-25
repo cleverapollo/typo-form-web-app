@@ -1,88 +1,52 @@
 <template>
-  <v-container>
-    <v-layout row>
-      <v-flex xs12>
-        <v-card>
-          <v-card-text>
-            <v-container>
+  <v-dialog v-model="createTeam" persistent max-width="350">
+    <v-btn slot="activator" fixed dark bottom right fab router class="error">
+      <v-icon>add</v-icon>
+    </v-btn>
+    <v-card>
+      <v-card-text>
+        <v-container>
+          <v-layout row wrap>
+            <v-flex>
               <h1 class="mb-4">Create Team</h1>
-              <v-layout row>
-                <v-flex xs12>
-                  <v-text-field
-                    name="name"
-                    label="Name"
-                    id="name"
-                    v-model="name"
-                    required></v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <v-flex xs12>
-                  <v-text-field
-                    name="description"
-                    label="Description"
-                    id="description"
-                    v-model="description"
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <v-flex xs12>
-                  <v-container pa-0>
-                    <v-layout wrap text-xs-center>
-                      <v-spacer></v-spacer>
-                      <v-btn dark color="primary"
-                        @click="onAddMember">
-                        <v-icon dark>add</v-icon>
-                        Add
-                      </v-btn>
-                    </v-layout>
-                    <template v-for='(item, index) in invitations'>
-                      <v-layout row wrap>
-                        <v-flex xs12 sm4>
-                          <v-text-field
-                            label="Email"
-                            type="email"
-                            v-model="item.email"
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm4 offset-sm1>
-                          <v-select
-                            :items="invitationRoles"
-                            item-text="name"
-                            item-value="id"
-                            v-model="item.team_role_id"
-                            label="Role"
-                            single-line
-                          ></v-select>
-                        </v-flex>
-                        <v-flex xs12 sm1 offset-sm1 text-xs-center>
-                          <v-btn fab dark small color="error"
-                            @click="invitations.splice(index, 1)">
-                            <v-icon dark>remove</v-icon>
-                          </v-btn>
-                        </v-flex>
-                      </v-layout>
-                    </template>
-                  </v-container>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn color="info" @click=onCancel>Cancel</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-              class="primary"
-              :disabled="!formIsValid"
-              @click="onCreateTeam">
-              Create
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+            </v-flex>
+          </v-layout>
+
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-text-field
+                name="name"
+                label="Name"
+                id="name"
+                v-model="name"
+                required>
+              </v-text-field>
+            </v-flex>
+          </v-layout>
+
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-text-field
+                name="description"
+                label="Description"
+                id="description"
+                v-model="description"
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-layout row py-2>
+          <v-flex xs12 class="text-xs-right">
+            <v-btn flat @click.stop="close">Cancel</v-btn>
+            <v-btn color="primary" @click.stop="save" :disabled="!formIsValid">Save</v-btn>
+          </v-flex>
+        </v-layout>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -92,59 +56,31 @@
       return {
         name: '',
         description: '',
-        invitations: [
-          {
-            email: '',
-            team_role_id: ''
-          },
-          {
-            email: '',
-            team_role_id: ''
-          },
-          {
-            email: '',
-            team_role_id: ''
-          }
-        ]
+        createTeam: false
       }
     },
     computed: {
-      roles () {
-        return this.$store.getters.roles
-      },
-      invitationRoles () {
-        return this.roles.filter((role) => {
-          return role.name !== 'Super Admin'
-        })
-      },
       formIsValid () {
         return this.name !== ''
       }
     },
     methods: {
-      onCreateTeam () {
+      save () {
         if (!this.formIsValid) {
           return
         }
         const teamData = {
           slug: this.slug,
           name: this.name,
-          description: this.description,
-          invitations: this.invitations.filter(function (item) {
-            return item.email.trim() !== ''
-          })
+          description: this.description
         }
         this.$store.dispatch('createTeam', teamData)
-        this.$router.push('/' + this.slug + '/teams')
+        this.close()
       },
-      onAddMember () {
-        this.invitations.push({
-          email: '',
-          team_role_id: ''
-        })
-      },
-      onCancel () {
-        this.$router.push('/' + this.slug + '/teams')
+      close () {
+        this.name = ''
+        this.description = ''
+        this.createTeam = false
       }
     }
   }
