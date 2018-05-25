@@ -1,195 +1,95 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 md3>
-      <v-card class="ma-1">
-        <v-toolbar color="primary" dark>
-          <v-toolbar-title>Submission List</v-toolbar-title>
-        </v-toolbar>
+    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+      <v-layout row wrap>
+        <v-flex d-flex xs12>
+          <div class="subheading py-2 px-3">Submissions</div>
+        </v-flex>
+        <v-flex d-flex xs12>
+          <v-card>
 
-        <v-card-text>
-          <v-layout row wrap>
-            <template v-for="(submission, index) in submissions">
-              <v-flex xs12 style="margin-bottom: 16px">
-                <v-card
-                  class="white--text"
-                  :class="active(submission.id)"
-                  color="blue-grey darken-2"
-                  style="cursor: pointer;"
-                >
-                  <div @click="onSubmission(submission.id)">
-                    <v-card-title primary-title class="flex-column">
-                      <v-flex xs-12 class="headline">
-                        {{getSubmissionName(submission)}}
-                      </v-flex>
+            <!-- //Search -->
+            <v-card-title>
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="search"
+                append-icon="search"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
 
-                      <div>
-                        <span>Start: {{getPeriodStart(submission)}}</span>
-                        <br/>
-                        <span>End  : {{getPeriodEnd(submission)}}</span>
-                      </div>
-                    </v-card-title>
+            <!-- //Submissions -->
+            <v-data-table
+              :headers="headers"
+              :items="submissions"
+              :search="search"
+            >
+              <template slot="items" slot-scope="props">
+                <td>{{ props.item.name }}</td>
+                <td>{{ props.item.owner }}</td>
+                <td>{{ props.item.created_at }}</td>
+                <td>{{ props.item.updated_at }}</td>
+                <td>{{ props.item.status }}</td>
+              </template>
+              <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                Your search for "{{ search }}" found no results.
+              </v-alert>
+            </v-data-table>
 
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <edit-submission
-                        :submission="submission"
-                        :formId="formId"
-                        v-if="!isAdmin"
-                      ></edit-submission>
-                    </v-card-actions>
-                  </div>
-                </v-card>
-              </v-flex>
-
-              <v-divider v-if="index + 1 < submissions.length"></v-divider>
-            </template>
-          </v-layout>
-
-          <create-submission
-            :slug="slug"
-            :formId="formId"
-            v-if="!isAdmin"
-            style="margin: 0 auto"
-          ></create-submission>
-        </v-card-text>
-      </v-card>
-    </v-flex>
-
-    <v-flex xs12 md9 v-if="submissionId > 0">
-      <show-submission
-        :slug="slug"
-        :formId="formId"
-        :submissionId="submissionId"
-        :isAdmin="isAdmin"
-        :view="view"
-      ></show-submission>
-
-      <v-layout row justify-space-between class="mt-3 mb-3">
-        <v-btn
-          color="primary"
-          @click="prevSubmission"
-          :disabled="!prevAble"
-        >
-          prev
-        </v-btn>
-        <v-btn
-          color="primary"
-          @click="nextSubmission"
-          :disabled="!nextAble"
-        >
-          next
-        </v-btn>
+          </v-card>
+        </v-flex>
       </v-layout>
     </v-flex>
+
+    <!-- //Action Button -->
+    <v-tooltip top>
+      <v-btn slot="activator" fixed dark bottom right fab router class="red" @click.stop="createSubmission = true">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <span>Add Submission</span>
+    </v-tooltip>
+
+    <!-- //Create Submission -->
+    <CreateSubmission :visible="createSubmission" :slug="slug" @close="createSubmission = false"></CreateSubmission>
   </v-layout>
 </template>
 
 <script>
-  import * as _ from 'lodash'
-  import ShowSubmission from './ShowSubmission'
   import CreateSubmission from './CreateSubmission'
-  import EditSubmission from './EditSubmission'
 
   export default {
-    props: ['slug', 'formId', 'isAdmin', 'view'],
+    props: ['slug'],
     components: {
-      ShowSubmission,
-      CreateSubmission,
-      EditSubmission
+      CreateSubmission
     },
     data () {
       return {
-        submissionId: 0
+        createSubmission: false,
+        loading: false,
+        search: '',
+        headers: [
+          { text: 'Submission', value: 'name', sortable: true, align: 'left' },
+          { text: 'Owner', value: 'owner', sortable: true, align: 'left' },
+          { text: 'Created', value: 'created_at', sortable: true, align: 'left' },
+          { text: 'Modified', value: 'updated_at', sortable: true, align: 'left' },
+          { text: 'Status', value: 'status', sortable: true, align: 'left' }
+        ]
       }
     },
     computed: {
-      roles () {
-        return this.$store.getters.roles
-      },
       submissions () {
-        return this.$store.getters.loadedSubmissions(parseInt(this.formId))
-      },
-      submissionTeams () {
-        return this.$store.getters.loadedSubmissionTeams(this.slug, parseInt(this.formId))
-      },
-      nextAble () {
-        if (this.submissions) {
-          const submissionIndex = _.findIndex(this.submissions, submission => {
-            return submission.id === this.submissionId
-          })
-          if (submissionIndex >= 0 && this.submissions.length > submissionIndex + 1) {
-            return true
-          }
-        }
-        return false
-      },
-      prevAble () {
-        if (this.submissions) {
-          const submissionIndex = _.findIndex(this.submissions, submission => {
-            return submission.id === this.submissionId
-          })
-          if (submissionIndex > 0) {
-            return true
-          }
-        }
-        return false
-      }
-    },
-    watch: {
-      submissions (value) {
-        if (value.length) {
-          this.submissionId = value[0].id
-        }
+        return []
       }
     },
     methods: {
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
-      },
-      onSubmission (id) {
-        this.submissionId = id
-      },
-      getSubmissionName (submission) {
-        if (submission.team == null) {
-          return submission.user.first_name + ' ' + submission.user.last_name
-        } else {
-          return submission.team.name
-        }
-      },
-      getPeriodStart (submission) {
-        return submission.period_start ? submission.period_start.substring(0, 10) : ''
-      },
-      getPeriodEnd (submission) {
-        return submission.period_end ? submission.period_end.substring(0, 10) : ''
-      },
-      active (submissionId) {
-        return (this.submissionId === submissionId) ? 'active' : ''
-      },
-      prevSubmission () {
-        if (this.submissions) {
-          const submissionIndex = _.findIndex(this.submissions, submission => {
-            return submission.id === this.submissionId
-          })
-          this.submissionId = this.submissions[submissionIndex - 1].id
-        }
-      },
-      nextSubmission () {
-        if (this.submissions) {
-          const submissionIndex = _.findIndex(this.submissions, submission => {
-            return submission.id === this.submissionId
-          })
-          this.submissionId = this.submissions[submissionIndex + 1].id
-        }
+      submissionUrl (id) {
+        return '/' + this.slug + '/submissions/' + id
       }
+    },
+    created: function () {
+      this.$store.dispatch('loadForms', this.slug)
     }
   }
 </script>
-
-<style scoped>
-  .active {
-    background-color: #1976D2 !important;
-  }
-</style>

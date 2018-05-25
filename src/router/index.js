@@ -21,6 +21,9 @@ import ShowUser from '@/components/User/ShowUser'
 import Application from '@/components/Application/Application'
 import Applications from '@/components/Application/Applications'
 
+// Submissions
+import Submissions from '@/components/Form/Submission/Submissions'
+
 import Forms from '@/components/Form/Forms'
 import ShowForm from '@/components/Form/ShowForm'
 
@@ -143,7 +146,7 @@ const router = new Router({
     {
       path: '/:slug/submissions',
       name: 'Submissions',
-      component: Forms,
+      component: Submissions,
       props: true,
       meta: {requiresAuth: true}
     },

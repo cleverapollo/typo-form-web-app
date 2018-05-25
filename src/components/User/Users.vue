@@ -9,14 +9,28 @@
           <v-card>
 
             <v-tabs dark slider-color="white" color="info">
-              <v-tab href="#active">Active</v-tab>
-              <v-tab href="#invited">Invited</v-tab>
+              <v-tab href="#active">Active Users</v-tab>
+              <v-tab href="#invited">Invited Users</v-tab>
               <v-tab-item id="active">
+
+                <!-- //User Search -->
+                <v-card-title>
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    v-model="userSearch"
+                    append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
+                  >
+                  </v-text-field>
+                </v-card-title>
 
                 <!-- //Users -->
                 <v-data-table
                   :headers="userHeaders"
                   :items="users"
+                  :search="userSearch"
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.first_name }}</td>
@@ -25,20 +39,40 @@
                     <td>{{ getRole(props.item.application_role_id) }}</td>
                     <td>{{ props.item.created_at.date }}</td>
                   </template>
+                  <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                    Your search for "{{ userSearch }}" found no results.
+                  </v-alert>
                 </v-data-table>
               </v-tab-item>
               <v-tab-item id="invited">
+
+                <!-- //Invited User Search -->
+                <v-card-title>
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    v-model="invitedUserSearch"
+                    append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
+                  >
+                  </v-text-field>
+                </v-card-title>
 
                 <!-- //Invited Users -->
                 <v-data-table
                   :headers="invitedHeaders"
                   :items="invitedUsers"
+                  :search="invitedUserSearch"
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.invitee }}</td>
                     <td>{{ getRole(props.item.role_id) }}</td>
                     <td>{{ props.item.created_at }}</td>
                   </template>
+                  <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                    Your search for "{{ invitedUserSearch }}" found no results.
+                  </v-alert>
                 </v-data-table>
               </v-tab-item>
             </v-tabs>
@@ -68,6 +102,8 @@
     data () {
       return {
         inviteApplication: false,
+        userSearch: '',
+        invitedUserSearch: '',
         userHeaders: [
           { text: 'First Name', value: 'first_name', sortable: true, align: 'left' },
           { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },

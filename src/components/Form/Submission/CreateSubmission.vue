@@ -1,189 +1,176 @@
 <template>
-  <div v-if="submissionTypes.length !== 0">
-    <v-btn
-      block
-      dark
-      class="primary"
-      @click.native.stop="createSubmission = true"
-    >
-      <v-icon>add</v-icon>
-    </v-btn>
+  <v-dialog v-model="show" persistent max-width="600px">
+    <v-card>
+      <v-card-title>
+        <div class="title mb-2 mt-2">Create Sumission</div>
+      </v-card-title>
+      <v-card-text>
 
-    <v-dialog width="350px" persistent v-model="createSubmission">
-      <v-card>
-        <v-container>
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-card-title>
-                <h2>Create Submission</h2>
-              </v-card-title>
-            </v-flex>
-          </v-layout>
+        <v-layout row wrap>
 
-          <v-divider></v-divider>
+          <!-- //Forms -->
+          <v-flex xs12>
+            <v-select
+              :items="forms"
+              item-value="id"
+              item-text="name"
+              v-model="formId"
+              label="Form Type"
+            ></v-select>
+          </v-flex>
 
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-card-text>
-                <v-select
-                  :items="submissionTypes"
-                  item-value="id"
-                  item-text="name"
-                  v-model="submissionType"
-                  label="Submission Type"
-                ></v-select>
-              </v-card-text>
-            </v-flex>
+          <!-- //Users -->
+          <v-flex xs12>
+            <v-select
+              :items="users"
+              item-value="id"
+              item-text="name"
+              v-model="userId"
+              label="User"
+            ></v-select>
+          </v-flex>
 
-            <v-spacer></v-spacer>
+          <!-- //Teams -->
+          <v-flex xs12>
+            <v-select
+              :items="teams"
+              item-value="id"
+              item-text="name"
+              v-model="teamId"
+              label="Team"
+            ></v-select>
+          </v-flex>
 
-            <v-flex xs12>
-              <v-menu
-                class="px-3"
-                lazy
-                :close-on-content-click="false"
-                v-model="startMenu"
-                transition="scale-transition"
-                offset-y
-                full-width
-                :nudge-right="40"
-              >
-                <v-text-field
-                  slot="activator"
-                  label="Period Start"
-                  v-model="periodStart"
-                  prepend-icon="event"
-                  readonly
-                ></v-text-field>
+          <!-- //Period Start -->
+          <v-flex xs12 sm6>
+            <v-menu
+              ref="periodStartMenu"
+              :close-on-content-click="false"
+              v-model="periodStartMenu"
+              :nudge-right="40"
+              :return-value.sync="periodStart"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              min-width="290px"
+            >
+              <v-text-field
+                slot="activator"
+                v-model="periodStart"
+                label="Start Date"
+                prepend-icon="event"
+                readonly
+              ></v-text-field>
+              <v-date-picker v-model="periodStart" @input="$refs.periodStartMenu.save(periodStart)"></v-date-picker>
+            </v-menu>
+          </v-flex>
 
-                <v-date-picker v-model="periodStart" no-title scrollable actions>
-                  <template slot-scope="{ save, cancel }">
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                      <v-btn flat color="primary" @click="save">OK</v-btn>
-                    </v-card-actions>
-                  </template>
-                </v-date-picker>
-              </v-menu>
-            </v-flex>
+          <!-- //Period End -->
+          <v-flex xs12 sm6>
+            <v-menu
+              ref="periodEndMenu"
+              :close-on-content-click="false"
+              v-model="periodEndMenu"
+              :nudge-right="40"
+              :return-value.sync="periodEnd"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              min-width="290px"
+            >
+              <v-text-field
+                slot="activator"
+                v-model="periodEnd"
+                label="End Date"
+                prepend-icon="event"
+                readonly
+              ></v-text-field>
+              <v-date-picker v-model="periodEnd" @input="$refs.periodEndMenu.save(periodEnd)"></v-date-picker>
+            </v-menu>
+          </v-flex>
 
-            <v-spacer></v-spacer>
+        </v-layout>
 
-            <v-flex xs12>
-              <v-menu
-                class="px-3"
-                lazy
-                :close-on-content-click="false"
-                v-model="endMenu"
-                transition="scale-transition"
-                offset-y
-                full-width
-                :nudge-right="40"
-              >
-                <v-text-field
-                  slot="activator"
-                  label="Period End"
-                  v-model="periodEnd"
-                  prepend-icon="event"
-                  readonly
-                ></v-text-field>
-
-                <v-date-picker v-model="periodEnd" no-title scrollable actions>
-                  <template slot-scope="{ save, cancel }">
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                      <v-btn flat color="primary" @click="save">OK</v-btn>
-                    </v-card-actions>
-                  </template>
-                </v-date-picker>
-              </v-menu>
-            </v-flex>
-          </v-layout>
-
-          <v-divider></v-divider>
-
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-card-actions>
-                <v-btn
-                  flat
-                  class="secondary"
-                  @click="onCancel"
-                >
-                  Close
-                </v-btn>
-
-                <v-btn
-                  flat
-                  class="primary"
-                  @click="onCreate"
-                  :disabled="loading"
-                  :loading="loading"
-                >
-                  Save
-                  <span slot="loader" class="custom-loader">
-                    <v-icon light>cached</v-icon>
-                  </span>
-                </v-btn>
-              </v-card-actions>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-card>
-    </v-dialog>
-  </div>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-layout row py-2>
+          <v-flex xs12 class="text-xs-right">
+            <v-btn flat @click.stop="close">Cancel</v-btn>
+            <v-btn color="primary" @click.stop="save">Save</v-btn>
+          </v-flex>
+        </v-layout>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
+  import * as _ from 'lodash'
   export default {
-    props: ['slug', 'formId'],
     data () {
       return {
-        createSubmission: false,
-        submissionType: 0,
-        startMenu: false,
+        formId: null,
         periodStart: null,
-        endMenu: false,
         periodEnd: null,
-        teamId: null
-      }
-    },
-    methods: {
-      onCreate () {
-        this.createSubmission = false
-
-        let submissionData = {
-          formId: this.formId,
-          periodStart: this.periodStart,
-          periodEnd: this.periodEnd
-        }
-
-        if (this.submissionType !== 0) {
-          submissionData.teamId = this.submissionType
-        }
-
-        this.$store.dispatch('createSubmission', submissionData)
-      },
-      onCancel () {
-        this.questionType = 1
-        this.createSubmission = false
+        periodStartMenu: false,
+        periodEndMenu: false,
+        teamId: null,
+        userId: null
       }
     },
     computed: {
+      show: {
+        get () {
+          return this.visible
+        },
+        set (value) {
+          if (!value) {
+            this.$emit('close')
+          }
+        }
+      },
       loading () {
         return this.$store.getters.loading
-      },
-      submissions () {
-        return this.$store.getters.loadedSubmissions(parseInt(this.formId))
       },
       teams () {
         return this.$store.getters.loadedTeams(this.slug)
       },
-      submissionTypes () {
-        return this.$store.getters.loadedSubmissionTeams(this.slug, parseInt(this.formId))
+      forms () {
+        return _.sortBy(this.$store.getters.loadedForms(this.slug), element => {
+          return element.name.toLowerCase()
+        })
+      },
+      users () {
+        return []
       }
-    }
+    },
+    methods: {
+      save () {
+        let data = {
+          // TODO: Create the data object for post
+        }
+        this.$store.dispatch('createSubmission', data)
+          .then(response => {
+            this.reset()
+          })
+      },
+      close () {
+        this.reset()
+      },
+      reset () {
+        this.formId = null
+        this.periodStart = null
+        this.periodEnd = null
+        this.periodStartMenu = false
+        this.periodEndMenu = false
+        this.teamId = null
+        this.userId = null
+        this.show = false
+      }
+    },
+    props: ['visible', 'slug']
   }
 </script>
