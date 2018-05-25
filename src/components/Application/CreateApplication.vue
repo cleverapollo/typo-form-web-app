@@ -53,14 +53,15 @@
         let data = {
           name: this.name
         }
-        let vm = this
         this.$store.dispatch('createApplication', data)
-          .then(function (response) {
-            vm.$emit('close')
-            vm.name = ''
+          .then(response => {
+            this.reset()
           })
       },
       close () {
+        this.reset()
+      },
+      reset () {
         this.name = ''
         this.show = false
       }

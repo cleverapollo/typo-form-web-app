@@ -1,21 +1,19 @@
 <template>
-  <v-container>
-    <v-layout row wrap v-if="loading">
-      <v-flex xs12 class="text-xs-center">
-        <v-progress-circular
-          indeterminate
-          class="primary--text"
-          :width="7"
-          :size="70"
-        ></v-progress-circular>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap class="mb-2" v-else>
-      <v-flex xs12>
-        {{messageString}}
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-layout row wrap>
+    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+      <v-layout row wrap>
+        <v-flex d-flex xs12>
+          <div class="subheading py-2 px-3">Accept Invitation</div>
+        </v-flex>
+        <v-flex d-flex xs12>
+          <v-alert :value="true" :type="alert">
+            {{ message }}
+          </v-alert>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+
+  </v-layout>
 </template>
 
 <script>
@@ -23,7 +21,8 @@
     props: ['type', 'token'],
     data () {
       return {
-        messageString: 'Please Sign in'
+        alert: 'info',
+        message: 'You must be signed in to accept this invitation.'
       }
     },
     computed: {
@@ -32,22 +31,21 @@
       },
       user () {
         return this.$store.getters.user
-      },
-      loading () {
-        return this.$store.getters.loading
-      }
-    },
-    watch: {
-      error (value) {
-        if (value) {
-          this.messageString = value.message
-        }
       }
     },
     created: function () {
+      this.message = 'Processing invitation'
       if (this.token.trim() !== '' && this.user !== null && this.user !== undefined) {
         this.$store.dispatch('acceptInvitation', {type: this.type, token: this.token})
-        this.messageString = 'Thanks for accepting the invitations'
+        .then(response => {
+          this.message = response.data.data.message ? response.data.data.message : 'Invitation accepted.'
+          this.alert = 'success'
+          // TODO: Redirect to application page
+        })
+        .catch(error => {
+          this.message = error.response.data.message ? error.response.data.message : 'Error.'
+          this.alert = 'error'
+        })
       }
     }
   }

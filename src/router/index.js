@@ -19,7 +19,9 @@ import ShowUser from '@/components/User/ShowUser'
 
 import Application from '@/components/Application/Application'
 import Applications from '@/components/Application/Applications'
-import ShowApplication from '@/components/Application/ShowApplication'
+
+// Submissions
+import Submissions from '@/components/Form/Submission/Submissions'
 
 import Forms from '@/components/Form/Forms'
 import ShowForm from '@/components/Form/ShowForm'
@@ -92,13 +94,6 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
-      path: '/:slug/show',
-      name: 'ShowApplication',
-      component: ShowApplication,
-      props: true,
-      meta: {requiresAuth: true}
-    },
-    {
       path: '/:slug/teams',
       name: 'Teams',
       component: Teams,
@@ -143,7 +138,7 @@ const router = new Router({
     {
       path: '/:slug/submissions',
       name: 'Submissions',
-      component: Forms,
+      component: Submissions,
       props: true,
       meta: {requiresAuth: true}
     },
@@ -160,10 +155,6 @@ const router = new Router({
         template: '<div class="auth-component"></div>'
       }
     }
-    /* {
-      path: '*',
-      component: { template: '<div>404 page</div>' }
-    } */
   ],
   mode: 'history'
 })
@@ -171,8 +162,8 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth) && store.getters.user === null) {
     next({
-      path: '/login'
-      // ,query: {redirect: to.fullPath}
+      path: '/login',
+      query: {redirect: to.fullPath}
     })
   }
   const favicon = document.getElementById('dyc-favicon')
