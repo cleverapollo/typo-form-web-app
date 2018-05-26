@@ -19,9 +19,6 @@ import EditPassword from './components/Auth/EditProfile/EditPassword.vue'
 import EditApplication from './components/Application/EditApplication.vue'
 import SettingApplication from './components/Application/SettingApplication.vue'
 
-// Users
-import EditUser from './components/User/EditUser.vue'
-
 import EditForm from './components/Form/EditForm.vue'
 import CreateSection from './components/Form/Section/CreateSection.vue'
 import CreateQuestion from './components/Form/Question/CreateQuestion.vue'
@@ -62,7 +59,6 @@ Vue.component('app-edit-email', EditEmail)
 Vue.component('app-edit-password', EditPassword)
 Vue.component('app-edit-application', EditApplication)
 Vue.component('app-setting-application', SettingApplication)
-Vue.component('app-edit-user', EditUser)
 Vue.component('app-edit-form', EditForm)
 Vue.component('app-create-section', CreateSection)
 Vue.component('app-create-question', CreateQuestion)

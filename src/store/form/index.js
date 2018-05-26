@@ -86,16 +86,14 @@ export default {
     },
     updateForm ({commit}, payload) {
       commit('setLoading', true)
-      const updateObj = {}
-      if (payload.name) {
-        updateObj.name = payload.name
-      }
-      if (payload.showProgress) {
-        updateObj.show_progress = payload.showProgress
-      }
-
-      /*
       let formData = new FormData()
+
+      if (payload.name) {
+        formData.append('name', payload.name)
+      }
+      if (payload.showProgress !== null) {
+        formData.append('show_progress', payload.showProgress ? 1 : 0)
+      }
 
       if (payload.csv) {
         formData.append('csv', payload.csv)
@@ -103,9 +101,9 @@ export default {
 
       const config = {
         headers: {'content-type': 'multipart/form-data'}
-      } */
+      }
 
-      window.axios.put(APPLICATION_URL + payload.slug + FORM_URL + payload.id, updateObj)
+      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + payload.id, formData, config)
         .then(
           response => {
             commit('setLoading', false)

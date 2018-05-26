@@ -8,11 +8,12 @@
           <v-flex>
             <h2>Edit Form</h2>
           </v-flex>
-          <v-flex>
+          <v-flex class="text-xs-right">
             <v-spacer></v-spacer>
             <v-btn
               flat
               icon
+              class="my-0"
               href='/static/Form Template.xlsx'>
               <v-icon>cloud_download</v-icon>
             </v-btn>
@@ -40,13 +41,13 @@
             </v-flex>
           </v-layout>
 
-          <!-- <v-layout>
+          <v-layout>
             <v-flex>
               <label for="upload"><span>{{ csvFileName }}</span></label>
               <input id="upload" type="file" class="hide inputfile" accept=".csv, .xls, .xlsx" @change="onFileChange"
                      data-multiple-caption="{count} files selected" multiple/>
             </v-flex>
-          </v-layout> -->
+          </v-layout>
         </v-card-text>
 
         <v-divider></v-divider>
@@ -84,7 +85,9 @@
         id: this.form.id,
         editForm: false,
         editedName: this.form.name,
-        showProgress: this.form.show_progress
+        showProgress: parseInt(this.form.show_progress),
+        csv: this.form.csv,
+        csvFileName: 'Please Upload CSV.'
       }
     },
     methods: {
@@ -99,29 +102,53 @@
           slug: this.slug,
           id: this.id,
           name: this.editedName,
-          showProgress: this.showProgress
+          showProgress: this.showProgress,
+          csv: this.csv
         })
       },
       onCancel () {
         this.editedName = this.form.name
         this.editForm = false
-      }
-      /* onFileChange (e) {
+      },
+      onFileChange (e) {
         const files = e.target.files || e.dataTransfer.files
 
         if (files.length) {
           this.csv = files[0]
           this.csvFileName = this.csv.name
         }
-      } */
+      }
     },
     computed: {
-      error () {
-        return this.$store.getters.error
-      },
       loading () {
         return this.$store.getters.loading
       }
     }
   }
 </script>
+
+<style scoped>
+  .hide {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+
+  label[for="upload"] {
+    display: inline-block;
+    cursor: pointer;
+    padding: 10px 30px;
+    background-color: #2196f3;
+    color: #ffffff;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25), 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  label[for="upload"]:hover {
+    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.25), 0 5px 18px 0 rgba(0, 0, 0, 0.2);
+  }
+</style>
