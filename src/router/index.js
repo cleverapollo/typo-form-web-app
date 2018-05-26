@@ -12,10 +12,8 @@ import AcceptJoin from '@/components/Shared/AcceptJoin'
 
 import Teams from '@/components/Team/Teams'
 import ShowTeam from '@/components/Team/ShowTeam'
-import ShowTeamUser from '@/components/Team/ShowTeamUser'
 
 import Users from '@/components/User/Users'
-import ShowUser from '@/components/User/ShowUser'
 
 import Application from '@/components/Application/Application'
 import Applications from '@/components/Application/Applications'
@@ -108,23 +106,9 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
-      path: '/:slug/teams/:teamId/users/:id',
-      name: 'ShowTeamUser',
-      component: ShowTeamUser,
-      props: true,
-      meta: {requiresAuth: true}
-    },
-    {
       path: '/:slug/users',
       name: 'Users',
       component: Users,
-      props: true,
-      meta: {requiresAuth: true}
-    },
-    {
-      path: '/:slug/users/show/:id',
-      name: 'ShowUser',
-      component: ShowUser,
       props: true,
       meta: {requiresAuth: true}
     },

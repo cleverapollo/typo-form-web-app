@@ -19,11 +19,6 @@ import EditPassword from './components/Auth/EditProfile/EditPassword.vue'
 import EditApplication from './components/Application/EditApplication.vue'
 import SettingApplication from './components/Application/SettingApplication.vue'
 
-// Teams
-import EditTeam from './components/Team/EditTeam.vue'
-import InviteTeam from './components/Team/InviteTeam.vue'
-import EditTeamUser from './components/Team/EditTeamUser.vue'
-
 // Users
 import EditUser from './components/User/EditUser.vue'
 
@@ -67,11 +62,8 @@ Vue.component('app-edit-email', EditEmail)
 Vue.component('app-edit-password', EditPassword)
 Vue.component('app-edit-application', EditApplication)
 Vue.component('app-setting-application', SettingApplication)
-Vue.component('app-invite-team', InviteTeam)
-Vue.component('app-edit-team', EditTeam)
 Vue.component('app-edit-user', EditUser)
 Vue.component('app-edit-form', EditForm)
-Vue.component('app-edit-teamuser', EditTeamUser)
 Vue.component('app-create-section', CreateSection)
 Vue.component('app-create-question', CreateQuestion)
 

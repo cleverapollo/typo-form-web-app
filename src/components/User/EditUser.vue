@@ -1,6 +1,6 @@
 <template>
-  <v-dialog width="350px" persistent v-model="editUser">
-    <v-btn class="primary" slot="activator">Edit</v-btn>
+  <v-dialog persistent v-model="editUser" max-width="600px">
+    <v-btn icon slot="activator" class="mx-0"><v-icon color="teal">edit</v-icon></v-btn>
     <v-card>
       <v-container>
         <v-layout row wrap>
@@ -76,7 +76,6 @@
     },
     methods: {
       onSaveChanges () {
-        this.editUser = false
         if (this.editedRole !== this.user.application_role_id) {
           this.$store.dispatch('updateUser',
             {
@@ -86,6 +85,7 @@
               applicationRoleId: this.editedRole
             })
         }
+        this.editUser = false
       },
       onCancel () {
         this.editedEmail = this.user.email
@@ -101,9 +101,6 @@
         return this.roles.filter((role) => {
           return role.name !== 'Super Admin'
         })
-      },
-      error () {
-        return this.$store.getters.error
       },
       loading () {
         return this.$store.getters.loading

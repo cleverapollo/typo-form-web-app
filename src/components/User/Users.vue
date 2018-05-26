@@ -38,6 +38,12 @@
                     <td>{{ props.item.email }}</td>
                     <td>{{ getRole(props.item.application_role_id) }}</td>
                     <td>{{ props.item.created_at.date }}</td>
+                    <td v-if='isApplicationAdmin'>
+                      <EditUser :user="props.item" :slug="slug"></EditUser>
+                      <v-btn icon class="mx-0" @click="onDeleteUser(props.item.id)">
+                        <v-icon color="pink">delete</v-icon>
+                      </v-btn>
+                    </td>
                   </template>
                   <v-alert slot="no-results" :value="true" color="error" icon="warning">
                     Your search for "{{ userSearch }}" found no results.
@@ -69,6 +75,12 @@
                     <td>{{ props.item.invitee }}</td>
                     <td>{{ getRole(props.item.role_id) }}</td>
                     <td>{{ props.item.created_at }}</td>
+                    <td v-if='isApplicationAdmin'>
+                      <EditUser :user="props.item" :slug="slug"></EditUser>
+                      <v-btn icon class="mx-0" @click="onDeleteUser(props.item.id)">
+                        <v-icon color="pink">delete</v-icon>
+                      </v-btn>
+                    </td>
                   </template>
                   <v-alert slot="no-results" :value="true" color="error" icon="warning">
                     Your search for "{{ invitedUserSearch }}" found no results.
@@ -97,29 +109,19 @@
 
 <script>
   import InviteApplication from '../Application/InviteApplication'
+  import EditUser from './EditUser'
   export default {
     props: ['slug'],
     data () {
       return {
         inviteApplication: false,
         userSearch: '',
-        invitedUserSearch: '',
-        userHeaders: [
-          { text: 'First Name', value: 'first_name', sortable: true, align: 'left' },
-          { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
-          { text: 'Email', value: 'email', sortable: true, align: 'left' },
-          { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Joined', value: 'created_at', sortable: true, align: 'left' }
-        ],
-        invitedHeaders: [
-          { text: 'Email', value: 'email', sortable: true, align: 'left' },
-          { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Invited', value: 'created_at', sortable: true, align: 'left' }
-        ]
+        invitedUserSearch: ''
       }
     },
     components: {
-      InviteApplication
+      InviteApplication,
+      EditUser
     },
     computed: {
       roles () {
@@ -136,6 +138,33 @@
       },
       invitedUsers () {
         return this.$store.getters.invitedUsers(this.slug)
+      },
+      userHeaders () {
+        let defaultUserHeaders = [
+          { text: 'First Name', value: 'first_name', sortable: true, align: 'left' },
+          { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
+          { text: 'Email', value: 'email', sortable: true, align: 'left' },
+          { text: 'Role', value: 'role', sortable: true, align: 'left' },
+          { text: 'Joined', value: 'created_at', sortable: true, align: 'left' }
+        ]
+        if (this.isApplicationAdmin) {
+          defaultUserHeaders.push({ text: 'Action', sortable: false, align: 'left' })
+        }
+        return defaultUserHeaders
+      },
+      invitedHeaders () {
+        let defaultInvitedHeaders = [
+          { text: 'Email', value: 'email', sortable: true, align: 'left' },
+          { text: 'Role', value: 'role', sortable: true, align: 'left' },
+          { text: 'Invited', value: 'created_at', sortable: true, align: 'left' }
+        ]
+        if (this.isApplicationAdmin) {
+          defaultInvitedHeaders.push({ text: 'Action', sortable: false, align: 'left' })
+        }
+        return defaultInvitedHeaders
+      },
+      user () {
+        return this.$store.getters.user
       }
     },
     methods: {
@@ -144,6 +173,20 @@
           return role.id === roleId
         })
         return role ? role.name : 'undefined'
+      },
+      onDeleteUser (userIndex) {
+        this.$store.dispatch('deleteUser', {
+          slug: this.slug,
+          id: userIndex
+        })
+          .then(() => {
+            if (this.user.id === userIndex) {
+              this.$store.dispatch('loadApplications')
+                .then(() => {
+                  this.$router.push('/applications')
+                })
+            }
+          })
       }
     },
     created: function () {

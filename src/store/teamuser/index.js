@@ -24,7 +24,7 @@ export default {
       const index = users[payload.teamId].findIndex(user => {
         return user.id === payload.user.user_id
       })
-      users[payload.teamId].splice(index, 1, payload.user)
+      users[payload.teamId][index].team_role_id = payload.user.team_role_id
       state.loadedTeamUsers = users
     },
     deleteTeamUser (state, payload) {

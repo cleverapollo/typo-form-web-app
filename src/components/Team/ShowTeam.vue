@@ -12,7 +12,7 @@
             <v-list>
               <v-list-tile @click="">
                 <v-list-tile-title>
-                  <app-edit-team :team="team" :slug="slug" class="my-1"></app-edit-team>
+                  <EditTeam :team="team" :slug="slug" class="my-1"></EditTeam>
                 </v-list-tile-title>
               </v-list-tile>
 
@@ -24,7 +24,7 @@
         </v-flex>
         <v-flex xs12>
           <div class="subheading py-2 px-3 break-all">{{ team.description }}</div>
-          <div class="subheading py-2 px-3 break-all">{{ joinURL }}</div>
+          <div class="subheading py-2 px-3 break-all" v-if="isTeamAdmin">{{ joinURL }}</div>
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -58,6 +58,12 @@
                     <td>{{ props.item.email }}</td>
                     <td>{{ getRole(props.item.team_role_id) }}</td>
                     <td>{{ props.item.created_at.date }}</td>
+                    <td v-if='isTeamAdmin'>
+                      <EditTeamUser :user="props.item" :slug="slug" :teamId="id"></EditTeamUser>
+                      <v-btn icon class="mx-0" @click="onDeleteTeamUser(props.item.id)">
+                        <v-icon color="pink">delete</v-icon>
+                      </v-btn>
+                    </td>
                   </template>
                   <v-alert slot="no-results" :value="true" color="error" icon="warning">
                     Your search for "{{ userSearch }}" found no results.
@@ -89,6 +95,12 @@
                     <td>{{ props.item.invitee }}</td>
                     <td>{{ getRole(props.item.role_id) }}</td>
                     <td>{{ props.item.created_at }}</td>
+                    <td v-if='isTeamAdmin'>
+                      <EditTeamUser :user="props.item" :slug="slug" :teamId="id"></EditTeamUser>
+                      <v-btn icon class="mx-0" @click="onDeleteTeamUser(props.item.id)">
+                        <v-icon color="pink">delete</v-icon>
+                      </v-btn>
+                    </td>
                   </template>
                   <v-alert slot="no-results" :value="true" color="error" icon="warning">
                     Your search for "{{ invitedUserSearch }}" found no results.
@@ -109,28 +121,20 @@
 
 <script>
   import InviteTeam from './InviteTeam'
+  import EditTeam from './EditTeam'
+  import EditTeamUser from './EditTeamUser'
   export default {
     props: ['slug', 'id'],
     data () {
       return {
         userSearch: '',
-        invitedUserSearch: '',
-        userHeaders: [
-          { text: 'First Name', value: 'first_name', sortable: true, align: 'left' },
-          { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
-          { text: 'Email', value: 'email', sortable: true, align: 'left' },
-          { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Joined', value: 'created_at', sortable: true, align: 'left' }
-        ],
-        invitedHeaders: [
-          { text: 'Email', value: 'email', sortable: true, align: 'left' },
-          { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Invited', value: 'created_at', sortable: true, align: 'left' }
-        ]
+        invitedUserSearch: ''
       }
     },
     components: {
-      InviteTeam
+      InviteTeam,
+      EditTeam,
+      EditTeamUser
     },
     computed: {
       roles () {
@@ -150,6 +154,33 @@
       },
       joinURL () {
         return window.origin + '/join/team/' + this.team.share_token
+      },
+      userHeaders () {
+        let defaultUserHeaders = [
+          { text: 'First Name', value: 'first_name', sortable: true, align: 'left' },
+          { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
+          { text: 'Email', value: 'email', sortable: true, align: 'left' },
+          { text: 'Role', value: 'role', sortable: true, align: 'left' },
+          { text: 'Joined', value: 'created_at', sortable: true, align: 'left' }
+        ]
+        if (this.isTeamAdmin) {
+          defaultUserHeaders.push({ text: 'Action', sortable: false, align: 'left' })
+        }
+        return defaultUserHeaders
+      },
+      invitedHeaders () {
+        let defaultInvitedHeaders = [
+          { text: 'Email', value: 'email', sortable: true, align: 'left' },
+          { text: 'Role', value: 'role', sortable: true, align: 'left' },
+          { text: 'Invited', value: 'created_at', sortable: true, align: 'left' }
+        ]
+        if (this.isTeamAdmin) {
+          defaultInvitedHeaders.push({ text: 'Action', sortable: false, align: 'left' })
+        }
+        return defaultInvitedHeaders
+      },
+      user () {
+        return this.$store.getters.user
       }
     },
     methods: {
@@ -159,6 +190,21 @@
           id: this.team.id
         })
         this.$router.push('/' + this.slug + '/teams')
+      },
+      onDeleteTeamUser (teamUserId) {
+        this.$store.dispatch('deleteTeamUser', {
+          slug: this.slug,
+          teamId: this.team.id,
+          id: teamUserId
+        })
+          .then(() => {
+            if (this.user.id === teamUserId) {
+              this.$store.dispatch('loadTeams', this.slug)
+                .then(() => {
+                  this.$router.push('/' + this.slug + '/teams')
+                })
+            }
+          })
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {

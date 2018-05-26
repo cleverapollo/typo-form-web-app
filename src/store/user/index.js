@@ -21,9 +21,9 @@ export default {
     updateUser (state, payload) {
       let users = Object.assign({}, state.loadedUsers)
       const index = users[payload.slug].findIndex(user => {
-        return user.id === payload.user.id
+        return user.id === payload.user.user_id
       })
-      users[payload.slug].splice(index, 1, payload.user)
+      users[payload.slug][index].application_role_id = payload.user.application_role_id
       state.loadedUsers = users
     },
     deleteUser (state, payload) {
