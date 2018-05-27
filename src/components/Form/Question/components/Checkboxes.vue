@@ -6,7 +6,6 @@
           :disabled='!answer.parameter'
           prepend-icon='check_box_outline_blank'
           :value='answer.answer'
-          autofocus
           @change='updateAnswer(answer.id, $event)'
         ></v-text-field>
       </v-flex>

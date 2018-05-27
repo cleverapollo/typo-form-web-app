@@ -10,7 +10,6 @@
           <v-flex xs10 style='min-width: 60px'>
             <v-text-field
               :value='rowAnswer.answer'
-              autofocus
               @change='updateAnswer(rowAnswer.id, $event)'
             ></v-text-field>
           </v-flex>
@@ -41,7 +40,6 @@
             <v-text-field
               prepend-icon='radio_button_unchecked'
               :value='columnAnswer.answer'
-              autofocus
               @change='updateAnswer(columnAnswer.id, $event)'
             ></v-text-field>
           </v-flex>

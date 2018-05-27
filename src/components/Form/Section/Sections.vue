@@ -42,7 +42,6 @@
             <v-text-field
               label="Section Name"
               v-model="editedName"
-              autofocus
               @blur="checkNameUpdate"
             ></v-text-field>
           </template>

@@ -6,7 +6,6 @@
           :disabled='!answer.parameter'
           prepend-icon='radio_button_unchecked'
           :value='answer.answer'
-          autofocus
           @change='updateAnswer(answer.id, $event)'
         ></v-text-field>
       </v-flex>

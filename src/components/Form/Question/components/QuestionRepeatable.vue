@@ -14,7 +14,6 @@
           <v-flex xs10 style="min-width: 60px">
             <v-text-field
               :value="question.question"
-              autofocus
               @change="updateQuestion(question.id, $event)"
             ></v-text-field>
           </v-flex>
@@ -52,7 +51,6 @@
             <v-text-field
               prepend-icon="radio_button_unchecked"
               :value="answer.answer"
-              autofocus
               @change="updateAnswer(answer.id, $event)"
             ></v-text-field>
           </v-flex>

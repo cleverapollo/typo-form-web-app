@@ -3,7 +3,6 @@
     <v-text-field
       label="Question"
       single-line
-      autofocus
       @blur="checkUpdateName"
       v-model="editedName"
     ></v-text-field>
@@ -12,7 +11,6 @@
       label="Description"
       v-model="editedDescription"
       single-line
-      autofocus
       @blur="checkUpdateDescription"
     ></v-text-field>
 

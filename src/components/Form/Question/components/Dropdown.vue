@@ -8,7 +8,6 @@
         <v-text-field
           :disabled='!answer.parameter'
           :value='answer.answer'
-          autofocus
           @change='updateAnswer(answer.id, $event)'
         ></v-text-field>
       </v-flex>
