@@ -18,7 +18,7 @@
         <v-list>
           <v-list-tile @click="" v-if="includeSection || !includeQuestion">
             <v-list-tile-title>
-              <app-create-section :parentSectionId="section.id" :formId="formId"></app-create-section>
+              <CreateSection :parentSectionId="section.id" :formId="formId"></CreateSection>
             </v-list-tile-title>
           </v-list-tile>
 
@@ -28,7 +28,7 @@
 
           <v-list-tile v-show="!hasRepeatableQuestions" @click="" v-if="!includeSection || includeQuestion">
             <v-list-tile-title>
-              <app-create-question :sectionId="section.id" :formId="formId"></app-create-question>
+              <CreateQuestion :sectionId="section.id" :formId="formId"></CreateQuestion>
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -157,6 +157,8 @@
   import responses from '../Response/Responses'
   import questionRepeatable from '../Question/components/QuestionRepeatable'
   import ResponseRepeatable from '../Response/components/ResponseRepeatable'
+  import CreateSection from './CreateSection'
+  import CreateQuestion from '../Question/CreateQuestion'
   import * as _ from 'lodash'
 
   export default {
@@ -167,7 +169,9 @@
       questions,
       responses,
       questionRepeatable,
-      ResponseRepeatable
+      ResponseRepeatable,
+      CreateSection,
+      CreateQuestion
     },
     data () {
       return {

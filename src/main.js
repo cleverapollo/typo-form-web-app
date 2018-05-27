@@ -12,17 +12,6 @@ import { store } from './store'
 
 import AlertCmp from './components/Shared/Alert.vue'
 
-import EditEmail from './components/Auth/EditProfile/EditEmail.vue'
-import EditPassword from './components/Auth/EditProfile/EditPassword.vue'
-
-// Applications
-import EditApplication from './components/Application/EditApplication.vue'
-import SettingApplication from './components/Application/SettingApplication.vue'
-
-import EditForm from './components/Form/EditForm.vue'
-import CreateSection from './components/Form/Section/CreateSection.vue'
-import CreateQuestion from './components/Form/Question/CreateQuestion.vue'
-
 import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
 
@@ -55,13 +44,6 @@ Vue.use(VueAuthenticate, {
 Vue.config.productionTip = false
 
 Vue.component('app-alert', AlertCmp)
-Vue.component('app-edit-email', EditEmail)
-Vue.component('app-edit-password', EditPassword)
-Vue.component('app-edit-application', EditApplication)
-Vue.component('app-setting-application', SettingApplication)
-Vue.component('app-edit-form', EditForm)
-Vue.component('app-create-section', CreateSection)
-Vue.component('app-create-question', CreateQuestion)
 
 /* eslint-disable no-new */
 function createApp () {

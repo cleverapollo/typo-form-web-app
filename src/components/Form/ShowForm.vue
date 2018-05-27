@@ -29,16 +29,16 @@
               <v-list>
                 <v-list-tile @click="">
                   <v-list-tile-title>
-                    <app-create-section
+                    <CreateSection
                       :parentSectionId="-1"
                       :formId="id"
-                    ></app-create-section>
+                    ></CreateSection>
                   </v-list-tile-title>
                 </v-list-tile>
 
                 <v-list-tile @click="">
                   <v-list-tile-title>
-                    <app-edit-form :form="form" :slug="slug"></app-edit-form>
+                    <EditForm :form="form" :slug="slug"></EditForm>
                   </v-list-tile-title>
                 </v-list-tile>
 
@@ -80,12 +80,16 @@
 
 <script>
   import FormView from './FormView'
+  import EditForm from './EditForm'
   import Submissions from './Submission/Submissions'
+  import CreateSection from './Section/CreateSection'
 
   export default {
     components: {
       Submissions,
-      FormView
+      FormView,
+      EditForm,
+      CreateSection
     },
     props: ['slug', 'id', 'view'],
     data () {

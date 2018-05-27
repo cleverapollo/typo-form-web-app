@@ -10,19 +10,19 @@ import ResetPassword from '@/components/Auth/ResetPassword'
 import AcceptInvitation from '@/components/Shared/AcceptInvitation'
 import AcceptJoin from '@/components/Shared/AcceptJoin'
 
-import Teams from '@/components/Team/Teams'
-import ShowTeam from '@/components/Team/ShowTeam'
+import Applications from '@/components/Application/Applications'
+import Application from '@/components/Application/Application'
 
 import Users from '@/components/User/Users'
 
-import Application from '@/components/Application/Application'
-import Applications from '@/components/Application/Applications'
-
-// Submissions
-import Submissions from '@/components/Form/Submission/Submissions'
+import Teams from '@/components/Team/Teams'
+import ShowTeam from '@/components/Team/ShowTeam'
 
 import Forms from '@/components/Form/Forms'
 import ShowForm from '@/components/Form/ShowForm'
+
+// Submissions
+import Submissions from '@/components/Form/Submission/Submissions'
 
 import {store} from '@/store'
 

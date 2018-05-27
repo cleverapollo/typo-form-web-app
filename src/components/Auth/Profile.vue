@@ -31,14 +31,14 @@
               <v-layout row>
                 <v-flex text-xs-center class="overflow-flex">
                   <template v-if="userIsAuthenticated">
-                    <app-edit-email></app-edit-email>
+                    <EditEmail></EditEmail>
                   </template>
                 </v-flex>
               </v-layout>
               <v-layout row>
                 <v-flex text-xs-center class="overflow-flex">
                   <template v-if="userIsAuthenticated">
-                    <app-edit-password></app-edit-password>
+                    <EditPassword></EditPassword>
                   </template>
                 </v-flex>
               </v-layout>
@@ -115,6 +115,8 @@
 </template>
 
 <script>
+  import EditEmail from './EditProfile/EditEmail'
+  import EditPassword from './EditProfile/EditPassword'
   export default {
     data () {
       return {
@@ -123,6 +125,10 @@
         email: '',
         editProfile: false
       }
+    },
+    components: {
+      EditEmail,
+      EditPassword
     },
     computed: {
       user () {

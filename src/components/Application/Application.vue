@@ -22,13 +22,13 @@
               <v-list>
                 <v-list-tile @click="">
                   <v-list-tile-title>
-                    <app-setting-application :application="application" class="my-1"></app-setting-application>
+                    <SettingApplication :application="application" class="my-1"></SettingApplication>
                   </v-list-tile-title>
                 </v-list-tile>
 
                 <v-list-tile @click="">
                   <v-list-tile-title>
-                    <app-edit-application :application="application" class="my-1"></app-edit-application>
+                    <EditApplication :application="application" class="my-1"></EditApplication>
                   </v-list-tile-title>
                 </v-list-tile>
 
@@ -65,6 +65,8 @@
 </template>
 
 <script>
+  import EditApplication from './EditApplication'
+  import SettingApplication from './SettingApplication'
   export default {
     props: ['slug'],
     data () {
@@ -77,6 +79,10 @@
           { title: 'Submissions', type: 'submissions', icon: 'assignment', admin: false }
         ]
       }
+    },
+    components: {
+      EditApplication,
+      SettingApplication
     },
     computed: {
       roles () {
