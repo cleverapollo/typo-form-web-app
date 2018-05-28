@@ -153,8 +153,7 @@
     methods: {
       onUpdateUser () {
         if (this.firstname.trim() === '' ||
-          this.lastname.trim() === '' ||
-          this.email.trim() === '') {
+          this.lastname.trim() === '') {
           return
         }
         this.editProfile = true

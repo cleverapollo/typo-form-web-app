@@ -138,12 +138,9 @@ export default {
     updateAuth ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      const updateObj = {}
-      if (payload.first_name) {
-        updateObj.first_name = payload.first_name
-      }
-      if (payload.last_name) {
-        updateObj.last_name = payload.last_name
+      const updateObj = {
+        first_name: payload.first_name,
+        last_name: payload.last_name
       }
       window.axios.put(USER_URL, updateObj)
         .then(response => {
@@ -160,12 +157,8 @@ export default {
     updateEmail ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      const updateObj = {}
-      if (payload.email) {
-        updateObj.email = payload.email
-      }
-      if (payload.password) {
-        updateObj.password = payload.password
+      const updateObj = {
+        email: payload.email
       }
       window.axios.put(EMAIL_UPDATE_URL, updateObj)
         .then(response => {
@@ -182,12 +175,8 @@ export default {
     updatePassword ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      const updateObj = {}
-      if (payload.newPassword) {
-        updateObj.newPassword = payload.newPassword
-      }
-      if (payload.password) {
-        updateObj.password = payload.password
+      const updateObj = {
+        password: payload.password
       }
       window.axios.put(PASSWORD_UPDATE_URL, updateObj)
         .then(response => {
@@ -203,15 +192,12 @@ export default {
     resetPassword ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      let obj = {}
+      let obj = {
+        email: payload.email
+      }
       if (payload.password) {
         obj.password = payload.password
-      }
-      if (payload.passwordConfirm) {
-        obj.password_confirmation = payload.passwordConfirm
-      }
-      if (payload.email) {
-        obj.email = payload.email
+        obj.password_confirmation = payload.password
       }
       let token = ''
       if (payload.token) {
