@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Home from '@/components/Home'
 
+// Profile
 import Profile from '@/components/Auth/Profile'
 import Register from '@/components/Auth/Register'
 import Login from '@/components/Auth/Login'
@@ -10,19 +10,24 @@ import ResetPassword from '@/components/Auth/ResetPassword'
 import AcceptInvitation from '@/components/Shared/AcceptInvitation'
 import AcceptJoin from '@/components/Shared/AcceptJoin'
 
+// Applications
 import Applications from '@/components/Application/Applications'
 import Application from '@/components/Application/Application'
 
+// Users
 import Users from '@/components/User/Users'
 
+// Teams
 import Teams from '@/components/Team/Teams'
 import ShowTeam from '@/components/Team/ShowTeam'
 
+// Forns
 import Forms from '@/components/Form/Forms'
 import ShowForm from '@/components/Form/ShowForm'
 
 // Submissions
 import Submissions from '@/components/Form/Submission/Submissions'
+import ShowSubmission from '@/components/Form/Submission/ShowSubmission'
 
 import {store} from '@/store'
 
@@ -97,7 +102,7 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
-      path: '/:slug/teams/show/:id',
+      path: '/:slug/teams/:id',
       name: 'ShowTeam',
       component: ShowTeam,
       props: true,
@@ -118,6 +123,13 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
+      path: '/:slug/forms/:id/:view',
+      name: 'ShowForm',
+      component: ShowForm,
+      props: true,
+      meta: {requiresAuth: true}
+    },
+    {
       path: '/:slug/submissions',
       name: 'Submissions',
       component: Submissions,
@@ -125,9 +137,9 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
-      path: '/:slug/forms/show/:id/:view',
-      name: 'ShowForm',
-      component: ShowForm,
+      path: '/:slug/submissions/:id',
+      name: 'ShowSubmission',
+      component: ShowSubmission,
       props: true,
       meta: {requiresAuth: true}
     },
