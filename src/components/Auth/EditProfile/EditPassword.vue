@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="350px" persistent v-model="editPassword" full-width>
+  <v-dialog width="600px" persistent v-model="editPassword" full-width>
     <v-btn large block slot="activator">Change Password</v-btn>
     <v-card>
       <v-container>
@@ -15,59 +15,40 @@
             </v-card-title>
           </v-flex>
         </v-layout>
-        <v-divider></v-divider>
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-text>
               <v-text-field
-                name="oldpassword"
-                label="Old Password"
-                id="oldpassword"
-                v-model="oldpassword"
+                name="password"
+                label="Password"
+                id="password"
+                v-model="password"
                 type="password"
-                required></v-text-field>
-              <v-text-field
-                name="newpassword"
-                label="New Password"
-                id="newpassword"
-                v-model="newpassword"
-                type="password"
-                required></v-text-field>
-              <v-text-field
-                name="newconfirmpassword"
-                label="Confirm Password"
-                id="newconfirmpassword"
-                v-model="newconfirmpassword"
-                type="password"
-                :rules="[comparePasswords]"
-                required></v-text-field>
+                required>
+              </v-text-field>
             </v-card-text>
           </v-flex>
         </v-layout>
         <v-divider></v-divider>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <v-card-actions>
-              <v-btn
-                flat
-                class="secondary"
-                @click="editPassword = false"
-              >
-                Close
-              </v-btn>
-              <v-btn
-                flat
-                class="primary"
-                @click="onSavePassword"
-                :disabled="loading"
-                :loading="loading"
-              >
-                Save
-                <span slot="loader" class="custom-loader">
-                  <v-icon light>cached</v-icon>
-                </span>
-              </v-btn>
-            </v-card-actions>
+        <v-layout row py-2>
+          <v-flex xs12 class="text-xs-right">
+            <v-btn
+              flat
+              @click="editPassword = false"
+            >
+              Close
+            </v-btn>
+            <v-btn
+              class="primary"
+              @click="onSavePassword"
+              :disabled="loading"
+              :loading="loading"
+            >
+              Save
+              <span slot="loader" class="custom-loader">
+                <v-icon light>cached</v-icon>
+              </span>
+            </v-btn>
           </v-flex>
         </v-layout>
       </v-container>
@@ -79,19 +60,16 @@
   export default {
     data () {
       return {
-        oldpassword: '',
-        newpassword: '',
-        newconfirmpassword: '',
+        password: '',
         editPassword: false
       }
     },
     methods: {
       onSavePassword () {
-        if (this.oldpassword === '' ||
-          this.newpassword !== this.newconfirmpassword) {
+        if (this.password === '') {
           return
         }
-        this.$store.dispatch('updatePassword', {password: this.oldpassword, newPassword: this.newpassword})
+        this.$store.dispatch('updatePassword', { password: this.password })
       },
       onDismissed () {
         this.$store.dispatch('clearError')
@@ -105,18 +83,13 @@
       },
       editPassword (value) {
         if (!value) {
-          this.oldpassword = ''
-          this.newpassword = ''
-          this.newconfirmpassword = ''
+          this.password = ''
         } else {
           this.$store.dispatch('clearError')
         }
       }
     },
     computed: {
-      comparePasswords () {
-        return this.newpassword !== this.newconfirmpassword ? 'Passwords do not match' : ''
-      },
       error () {
         return this.$store.getters.error
       },

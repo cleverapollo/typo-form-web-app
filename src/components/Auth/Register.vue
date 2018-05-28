@@ -58,17 +58,6 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field
-                      name="confirmPassword"
-                      label="Confirm Password"
-                      id="confirmPassword"
-                      v-model="confirmPassword"
-                      type="password"
-                      :rules="[comparePasswords]"></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs12>
                     <v-btn
                       block
                       class="info"
@@ -106,17 +95,13 @@
         firstname: '',
         lastname: '',
         email: '',
-        password: '',
-        confirmPassword: ''
+        password: ''
       }
     },
     components: {
       Oauth
     },
     computed: {
-      comparePasswords () {
-        return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
-      },
       user () {
         return this.$store.getters.user
       },

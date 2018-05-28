@@ -8,6 +8,9 @@
         </v-btn>
       </v-flex>
     </v-layout>
+
+    <!-- //Disabled Providers -->
+    <!--
     <v-layout row>
       <v-flex xs12 sm12 text-xs-center>
         <v-btn @click="auth('live')" block>
@@ -16,9 +19,6 @@
         </v-btn>
       </v-flex>
     </v-layout>
-
-    <!-- //Disabled Github and Facebook Auth -->
-    <!--
     <v-layout row>
       <v-flex xs12 sm12 text-xs-center>
         <v-btn @click="auth('facebook')" block>
@@ -99,6 +99,7 @@
           }
         }).catch(function (err) {
           this_.response = err
+          console.log(err)
         })
       }
     }

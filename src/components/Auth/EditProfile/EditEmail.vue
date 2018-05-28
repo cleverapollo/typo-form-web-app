@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="350px" persistent v-model="editEmail" full-width>
+  <v-dialog width="600px" persistent v-model="editEmail" full-width>
     <v-btn large block slot="activator">Change Email</v-btn>
     <v-card>
       <v-container>
@@ -15,17 +15,9 @@
             </v-card-title>
           </v-flex>
         </v-layout>
-        <v-divider></v-divider>
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-text>
-              <v-text-field
-                name="password"
-                label="Password"
-                id="editpassword"
-                v-model="password"
-                type="password"
-                required></v-text-field>
               <v-text-field
                 name="email"
                 label="Email"
@@ -37,19 +29,16 @@
           </v-flex>
         </v-layout>
         <v-divider></v-divider>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <v-card-actions>
+        <v-layout row py-2>
+          <v-flex xs12 class="text-xs-right">
               <v-btn
                 flat
-                class="secondary"
                 @click="editEmail = false"
               >
                 Close
               </v-btn>
               <v-btn
-                flat
-                class="primary"
+                color="primary"
                 @click="onSaveEmail"
                 :disabled="loading"
                 :loading="loading"
@@ -59,7 +48,6 @@
                   <v-icon light>cached</v-icon>
                 </span>
               </v-btn>
-            </v-card-actions>
           </v-flex>
         </v-layout>
       </v-container>
@@ -72,17 +60,15 @@
     data () {
       return {
         email: '',
-        password: '',
         editEmail: false
       }
     },
     methods: {
       onSaveEmail () {
-        if (this.email.trim() === '' ||
-          this.password === '') {
+        if (this.email.trim() === '') {
           return
         }
-        this.$store.dispatch('updateEmail', {email: this.email, password: this.password})
+        this.$store.dispatch('updateEmail', { email: this.email })
       },
       onDismissed () {
         this.$store.dispatch('clearError')
@@ -97,7 +83,6 @@
       editEmail (value) {
         if (!value) {
           this.email = ''
-          this.password = ''
         } else {
           this.$store.dispatch('clearError')
         }

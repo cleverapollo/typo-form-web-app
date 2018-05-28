@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/Home'
+// import Home from '@/components/Home'
 
 import Profile from '@/components/Auth/Profile'
 import Register from '@/components/Auth/Register'
@@ -74,9 +74,7 @@ const router = new Router({
     },
     {
       path: '/',
-      name: 'Home',
-      component: Home,
-      meta: {requiresAuth: true}
+      redirect: '/applications'
     },
     {
       path: '/applications',
@@ -143,13 +141,17 @@ const router = new Router({
   mode: 'history'
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth) && store.getters.user === null) {
-    next({
+// Redirect unauthenticated users
+router.afterEach((to, from) => {
+  if (!store.getters.user && to.meta.requiresAuth) {
+    router.push({
       path: '/login',
       query: {redirect: to.fullPath}
     })
   }
+})
+
+router.beforeEach((to, from, next) => {
   const favicon = document.getElementById('dyc-favicon')
   const head = document.head || document.getElementsByTagName('head')[0]
   const style = document.getElementById('dyc-css') || document.createElement('style')

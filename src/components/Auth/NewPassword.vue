@@ -35,17 +35,6 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field
-                      name="passwordConfirm"
-                      label="Confirm Password"
-                      id="passwordConfirm"
-                      v-model="passwordConfirm"
-                      type="password"
-                      :rules="[comparePasswords]"></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs12>
                     <v-btn
                       block
                       class="success"
@@ -74,14 +63,10 @@
     data () {
       return {
         email: '',
-        password: '',
-        passwordConfirm: ''
+        password: ''
       }
     },
     computed: {
-      comparePasswords () {
-        return this.password !== this.passwordConfirm ? 'Passwords do not match' : ''
-      },
       error () {
         return this.$store.getters.error
       },
