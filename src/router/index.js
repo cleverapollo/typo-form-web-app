@@ -21,7 +21,7 @@ import Users from '@/components/User/Users'
 import Teams from '@/components/Team/Teams'
 import ShowTeam from '@/components/Team/ShowTeam'
 
-// Forns
+// Forms
 import Forms from '@/components/Form/Forms'
 import ShowForm from '@/components/Form/ShowForm'
 
@@ -123,7 +123,7 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
-      path: '/:slug/forms/:id/:view',
+      path: '/:slug/forms/:id',
       name: 'ShowForm',
       component: ShowForm,
       props: true,

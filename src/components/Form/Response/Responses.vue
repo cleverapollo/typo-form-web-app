@@ -42,7 +42,7 @@
   import timeComponent from './components/Time'
 
   export default {
-    props: ['question', 'formId', 'submissionId', 'index', 'sectionId', 'isAdmin'],
+    props: ['question', 'formId', 'submissionId', 'index', 'sectionId'],
     components: {
       draggable
     },
@@ -139,9 +139,6 @@
         }) + 1
       },
       createResponse (args) {
-        if (this.isAdmin) {
-          return
-        }
         if (!this.submissionId) {
           return
         }
@@ -156,9 +153,6 @@
         })
       },
       updateResponse (args) {
-        if (this.isAdmin) {
-          return
-        }
         const answerId = args[0]
         const response = args[1]
         const id = args[2]
@@ -172,9 +166,6 @@
         })
       },
       deleteResponse (id) {
-        if (this.isAdmin) {
-          return
-        }
         this.$store.dispatch('deleteResponse', {
           submissionId: this.submissionId,
           questionId: this.question.id,

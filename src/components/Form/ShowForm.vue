@@ -1,149 +1,66 @@
 <template>
-  <div>
-    <v-layout row wrap v-if="loading">
-      <v-flex xs12 class="text-xs-center">
-        <v-progress-circular
-          indeterminate
-          class="primary--text"
-          :width="7"
-          :size="70"
-        ></v-progress-circular>
-      </v-flex>
-    </v-layout>
+  <v-layout row wrap v-if='form'>
+    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+      <v-layout row wrap>
+        <v-flex d-flex xs12>
+          <div class="subheading py-2 px-3">{{ form.name }}</div>
+          <v-menu offset-y bottom left class="text-xs-right">
+            <v-btn icon slot="activator">
+              <v-icon>more_vert</v-icon>
+            </v-btn>
 
-    <v-layout row wrap v-else>
-      <v-flex xs12>
-        <div v-if="form">
-          <v-card-title>
-            <h1 class="primary--text">{{ form.name }}</h1>
+            <v-list>
+              <v-list-tile @click="">
+                <v-list-tile-title>
+                  <CreateSection
+                    :parentSectionId="-1"
+                    :formId="id"
+                  ></CreateSection>
+                </v-list-tile-title>
+              </v-list-tile>
 
-            <v-spacer></v-spacer>
+              <v-list-tile @click="">
+                <v-list-tile-title>
+                  <EditForm :form="form" :slug="slug"></EditForm>
+                </v-list-tile-title>
+              </v-list-tile>
 
-            <v-btn @click=onBack class="primary">Back</v-btn>
-
-            <v-menu offset-y bottom left v-if="view === 'questions' && userIsAdmin">
-              <v-btn icon slot="activator">
-                <v-icon>more_vert</v-icon>
-              </v-btn>
-
-              <v-list>
-                <v-list-tile @click="">
-                  <v-list-tile-title>
-                    <CreateSection
-                      :parentSectionId="-1"
-                      :formId="id"
-                    ></CreateSection>
-                  </v-list-tile-title>
-                </v-list-tile>
-
-                <v-list-tile @click="">
-                  <v-list-tile-title>
-                    <EditForm :form="form" :slug="slug"></EditForm>
-                  </v-list-tile-title>
-                </v-list-tile>
-
-
-                <v-list-tile @click=onDeleteForm>
-                  <v-list-tile-title>Delete Form</v-list-tile-title>
-                </v-list-tile>
-              </v-list>
-            </v-menu>
-          </v-card-title>
-
-          <h3 class="pl-3">
-            <template v-if="form.period_start">Period: from {{ form.period_start.split(' ')[0] }}</template>
-            <template v-if="form.period_id"> for {{ period }}</template>
-            <template v-if="form.period_end"> to {{ form.period_end.split(' ')[0] }}</template>
-          </h3>
-
+              <v-list-tile @click=onDeleteForm>
+                <v-list-tile-title>Delete Form</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
+        </v-flex>
+        <v-flex d-flex xs12>
           <form-view
             :slug="slug"
             :formId="id"
             :submissionId="-1"
-            :isAdmin="userIsAdmin"
-            :view="view"
-            v-if="view === 'questions' && userIsAdmin"
           ></form-view>
-
-          <submissions
-            :slug="slug"
-            :formId="id"
-            :isAdmin="userIsAdmin"
-            :view="view"
-            v-else
-          ></submissions>
-        </div>
-      </v-flex>
-    </v-layout>
-  </div>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
   import FormView from './FormView'
   import EditForm from './EditForm'
-  import Submissions from './Submission/Submissions'
   import CreateSection from './Section/CreateSection'
 
   export default {
     components: {
-      Submissions,
       FormView,
       EditForm,
       CreateSection
     },
-    props: ['slug', 'id', 'view'],
-    data () {
-      return {
-        active: null
-      }
-    },
+    props: ['slug', 'id'],
     computed: {
-      roles () {
-        return this.$store.getters.roles
-      },
-      application () {
-        return this.$store.getters.loadedApplication(this.slug)
-      },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.application_role_id) === 'Admin'
-      },
       form () {
         return this.$store.getters.loadedForm(this.slug, parseInt(this.id))
-      },
-      loading () {
-        return this.$store.getters.loading
-      },
-      period () {
-        if (this.form.period_id) {
-          const periods = this.$store.getters.periods
-          const index = periods.findIndex(function (period) {
-            return period.id === this.form.period_id
-          }.bind(this))
-          return periods[index].period
-        }
-        return null
       }
     },
     methods: {
-      onBack () {
-        if (this.view === 'responses') {
-          this.$router.push('/' + this.slug + '/submissions')
-        } else {
-          this.$router.push('/' + this.slug + '/forms')
-        }
-      },
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
-      },
       onDeleteForm () {
         this.$store.dispatch('deleteForm', {
           slug: this.slug,
@@ -153,10 +70,8 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadSections', this.id)
-      this.$store.dispatch('loadSubmissions', this.id)
       this.$store.dispatch('loadValidations', this.id)
       this.$store.dispatch('loadTriggers', this.id)
       this.$store.dispatch('selectSection', null)

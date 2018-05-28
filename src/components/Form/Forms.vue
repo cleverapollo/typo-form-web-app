@@ -80,7 +80,7 @@
         return role ? role.name : 'undefined'
       },
       onLoadForm (id) {
-        return '/' + this.slug + '/forms/' + id + '/' + (this.$route.name === 'Forms' ? 'questions' : 'responses')
+        return '/' + this.slug + '/forms/' + id
       }
     },
     created: function () {

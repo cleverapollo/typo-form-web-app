@@ -20,7 +20,7 @@
             :formId="formId"
             :section="section"
             :list="children(item)"
-            :view="view"
+            :submissionId="submissionId"
             @section-clicked="sectionClicked"
           ></form-tree>
         </v-card-text>
@@ -32,7 +32,7 @@
 <script>
     export default {
       name: 'form-tree',
-      props: ['formId', 'list', 'section', 'view'],
+      props: ['formId', 'list', 'section', 'submissionId'],
       data () {
         return {
           opened: true
@@ -41,10 +41,7 @@
       methods: {
         children (item) {
           const children = this.$store.getters.loadedChildren(this.formId, item.id)
-          return children.filter(child => {
-            if (child.questions) return true
-            return false
-          })
+          return children.filter(child => { return child.questions })
         },
         hasChildren (item) {
           const items = this.children(item)
@@ -52,7 +49,7 @@
         },
         clickSection (item) {
           const children = this.children(item)
-          if (this.view === 'questions' || children.length === 0) {
+          if (this.submissionId === -1 || children.length === 0) {
             this.$emit('section-clicked', item)
           }
         },
