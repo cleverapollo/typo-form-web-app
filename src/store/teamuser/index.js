@@ -108,6 +108,18 @@ export default {
         })
       }
     },
+    loadedSubmissionTeamUsers (state) {
+      return (teamId) => {
+        if (!state.loadedTeamUsers[teamId]) {
+          return []
+        }
+        return state.loadedTeamUsers[teamId].map((user) => {
+          const userWithName = user
+          userWithName.name = user.first_name + ' ' + user.last_name
+          return userWithName
+        })
+      }
+    },
     invitedTeamUsers (state) {
       return (teamId) => {
         if (!state.invitedTeamUsers[teamId]) {

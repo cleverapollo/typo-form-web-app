@@ -107,6 +107,18 @@ export default {
         })
       }
     },
+    loadedSubmissionUsers (state) {
+      return (slug) => {
+        if (!state.loadedUsers[slug]) {
+          return []
+        }
+        return state.loadedUsers[slug].map((user) => {
+          const userWithName = user
+          userWithName.name = user.first_name + ' ' + user.last_name
+          return userWithName
+        })
+      }
+    },
     invitedUsers (state) {
       return (slug) => {
         if (!state.invitedUsers[slug]) {

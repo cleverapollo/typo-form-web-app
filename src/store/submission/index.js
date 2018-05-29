@@ -1,5 +1,6 @@
 const API_URL = process.env.API_URL
 const FORM_URL = `${API_URL}form/`
+const APPLICATION_URL = `${API_URL}application/`
 const SUBMISSION_URL = '/submission/'
 
 export default {
@@ -10,6 +11,24 @@ export default {
     setLoadedSubmissions (state, payload) {
       let submissions = Object.assign({}, state.loadedSubmissions)
       submissions[payload.formId] = payload.submissions
+      state.loadedSubmissions = submissions
+    },
+    setLoadedAllSubmissions (state, payload) {
+      let submissions = Object.assign({}, state.loadedSubmissions)
+      for (let i = 0; i < payload.submissions.length; i++) {
+        const submission = payload.submissions[i]
+        if (!submissions[submission.form.id]) {
+          submissions[submission.form.id] = []
+        }
+        const index = submissions[submission.form.id].findIndex(e => {
+          return e.id === submission.id
+        })
+        if (index === -1) {
+          submissions[submission.form.id].push(submission)
+        } else {
+          submissions[submission.form.id].splice(index, 1, submission)
+        }
+      }
       state.loadedSubmissions = submissions
     },
     createSubmission (state, payload) {
@@ -91,10 +110,33 @@ export default {
           }
         )
     },
+    loadAllSubmissions ({commit}, slug) {
+      commit('setLoading', true)
+      window.axios.get(APPLICATION_URL + slug + SUBMISSION_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              submissions: response['data']['submissions']
+            }
+            commit('setLoadedAllSubmissions', updateObj)
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
     createSubmission ({commit, getters}, payload) {
       let submission = {
         period_start: payload.periodStart,
         period_end: payload.periodEnd
+      }
+
+      if (payload.userId) {
+        submission.user_id = payload.userId
       }
 
       if (payload.teamId) {
@@ -173,6 +215,21 @@ export default {
         }
 
         return state.loadedSubmissions[formId]
+      }
+    },
+    loadedAllSubmissions (state, getters, rootState) {
+      return (slug) => {
+        let submissions = []
+        const forms = rootState.form.loadedForms[slug]
+        if (!forms) {
+          return []
+        }
+        for (var i = 0; i < forms.length; i++) {
+          if (state.loadedSubmissions[forms[i].id]) {
+            submissions = submissions.concat(state.loadedSubmissions[forms[i].id])
+          }
+        }
+        return submissions
       }
     },
     loadedSubmission (state) {

@@ -19,17 +19,6 @@
             ></v-select>
           </v-flex>
 
-          <!-- //Users -->
-          <v-flex xs12>
-            <v-select
-              :items="users"
-              item-value="id"
-              item-text="name"
-              v-model="userId"
-              label="User"
-            ></v-select>
-          </v-flex>
-
           <!-- //Teams -->
           <v-flex xs12>
             <v-select
@@ -38,6 +27,17 @@
               item-text="name"
               v-model="teamId"
               label="Team"
+            ></v-select>
+          </v-flex>
+
+          <!-- //Users -->
+          <v-flex xs12>
+            <v-select
+              :items="users"
+              item-value="id"
+              item-text="name"
+              v-model="userId"
+              label="User"
             ></v-select>
           </v-flex>
 
@@ -144,13 +144,27 @@
         })
       },
       users () {
-        return []
+        if (this.teamId) {
+          return this.$store.getters.loadedSubmissionTeamUsers(this.teamId)
+        }
+        return this.$store.getters.loadedSubmissionUsers(this.slug)
+      }
+    },
+    watch: {
+      teamId (value) {
+        if (value) {
+          this.$store.dispatch('loadTeamUsers', {slug: this.slug, teamId: value})
+        }
       }
     },
     methods: {
       save () {
         let data = {
-          // TODO: Create the data object for post
+          formId: this.formId,
+          teamId: this.teamId,
+          userId: this.userId,
+          periodStart: this.periodStart,
+          periodEnd: this.periodEnd
         }
         this.$store.dispatch('createSubmission', data)
           .then(response => {

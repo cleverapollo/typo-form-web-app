@@ -27,11 +27,11 @@
               :search="search"
             >
               <template slot="items" slot-scope="props">
-                <td>{{ props.item.name }}</td>
-                <td>{{ props.item.owner }}</td>
-                <td>{{ props.item.created_at }}</td>
-                <td>{{ props.item.updated_at }}</td>
-                <td>{{ props.item.status }}</td>
+                <td>{{ props.item.form.name }}</td>
+                <td>{{ props.item.user.first_name + ' ' + props.item.user.last_name }}</td>
+                <td>{{ props.item.created_at.date }}</td>
+                <td>{{ props.item.updated_at.date }}</td>
+                <td>{{ status(props.item.status_id) }}</td>
               </template>
               <v-alert slot="no-results" :value="true" color="error" icon="warning">
                 Your search for "{{ search }}" found no results.
@@ -80,16 +80,25 @@
     },
     computed: {
       submissions () {
-        return []
+        return this.$store.getters.loadedAllSubmissions(this.slug)
+      },
+      statuses () {
+        return this.$store.getters.statuses
       }
     },
     methods: {
       submissionUrl (id) {
         return '/' + this.slug + '/submissions/' + id
+      },
+      status (id) {
+        return this.statuses.find(e => { return e.id === id }).status
       }
     },
     created: function () {
+      this.$store.dispatch('loadUsers', this.slug)
+      this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadForms', this.slug)
+      this.$store.dispatch('loadAllSubmissions', this.slug)
     }
   }
 </script>
