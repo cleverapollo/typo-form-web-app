@@ -232,6 +232,22 @@ export default {
         return submissions
       }
     },
+    loadedApplicationSubmission (state, getters, rootState) {
+      return (slug, submissionId) => {
+        const forms = rootState.form.loadedForms[slug]
+        if (!forms) {
+          return null
+        }
+        for (var i = 0; i < forms.length; i++) {
+          if (state.loadedSubmissions[forms[i].id]) {
+            return state.loadedSubmissions[forms[i].id].find((submission) => {
+              return submission.id === submissionId
+            })
+          }
+        }
+        return null
+      }
+    },
     loadedSubmission (state) {
       return (formId, submissionId) => {
         if (!state.loadedSubmissions[formId]) {

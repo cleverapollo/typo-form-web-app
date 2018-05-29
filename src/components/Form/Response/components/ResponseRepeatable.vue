@@ -40,7 +40,7 @@
       </v-layout>
     </v-flex>
 
-    <v-flex xs12>
+    <v-flex xs12 v-if='computedAnswers.length && computedQuestions.length'>
       <v-btn dark class="primary" @click="createResponse">
         <v-icon>add</v-icon>
       </v-btn>

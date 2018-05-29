@@ -27,11 +27,13 @@
               :search="search"
             >
               <template slot="items" slot-scope="props">
-                <td>{{ props.item.form.name }}</td>
-                <td>{{ props.item.user.first_name + ' ' + props.item.user.last_name }}</td>
-                <td>{{ props.item.created_at.date }}</td>
-                <td>{{ props.item.updated_at.date }}</td>
-                <td>{{ status(props.item.status_id) }}</td>
+                <tr @click="onSubmission(props.item.id)">
+                  <td>{{ props.item.form.name }}</td>
+                  <td>{{ props.item.team ? props.item.team.name : props.item.user.first_name + ' ' + props.item.user.last_name }}</td>
+                  <td>{{ props.item.created_at.date }}</td>
+                  <td>{{ props.item.updated_at.date }}</td>
+                  <td>{{ status(props.item.status_id) }}</td>
+                </tr>
               </template>
               <v-alert slot="no-results" :value="true" color="error" icon="warning">
                 Your search for "{{ search }}" found no results.
@@ -87,8 +89,8 @@
       }
     },
     methods: {
-      submissionUrl (id) {
-        return '/' + this.slug + '/submissions/' + id
+      onSubmission (id) {
+        this.$router.push('/' + this.slug + '/submissions/' + id)
       },
       status (id) {
         return this.statuses.find(e => { return e.id === id }).status

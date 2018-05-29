@@ -15,7 +15,7 @@
           :answers="answers"
           :responses="responses"
           :question-id="question.id"
-          :form-id="formId"
+          form-id="formId"
           :submission-id="submissionId"
           @create-response="createResponse"
           @update-response="updateResponse"
@@ -78,13 +78,13 @@
         if (!this.submissionId) {
           return []
         }
-        let submission = this.$store.getters.loadedSubmission(parseInt(this.formId), parseInt(this.submissionId))
+        let submission = this.$store.getters.loadedSubmission(this.formId, parseInt(this.submissionId))
         return submission.responses.filter((response) => {
           return response.question_id === this.question.id
         })
       },
       allResponses () {
-        return this.$store.getters.loadedResponses(parseInt(this.formId), parseInt(this.submissionId))
+        return this.$store.getters.loadedResponses(this.formId, parseInt(this.submissionId))
       },
       questionTypes () {
         return this.$store.getters.questionTypes
@@ -110,7 +110,7 @@
         }
       },
       questionTriggers () {
-        return this.$store.getters.loadedQuestionTrigger(parseInt(this.formId), parseInt(this.question.id))
+        return this.$store.getters.loadedQuestionTrigger(this.formId, parseInt(this.question.id))
       },
       triggerTypes () {
         return this.$store.getters.triggerTypes
@@ -184,7 +184,7 @@
         })[0]
       },
       compareCondition (questionTrigger) {
-        let question = this.$store.getters.loadedQuestion(parseInt(this.formId), parseInt(this.sectionId), parseInt(questionTrigger.parent_question_id))
+        let question = this.$store.getters.loadedQuestion(this.formId, parseInt(this.sectionId), parseInt(questionTrigger.parent_question_id))
         let parentResponses = this.parentResponses(questionTrigger.parent_question_id)
         let triggerType = this.triggerType(question.question_type_id, questionTrigger.comparator_id)
 

@@ -4,12 +4,18 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <div class="subheading py-2 px-3">{{ submissionName }}</div>
-          <v-menu offset-y bottom left>
+          <v-menu offset-y bottom left class="text-xs-right">
             <v-btn icon slot="activator">
               <v-icon>more_vert</v-icon>
             </v-btn>
 
             <v-list>
+              <v-list-tile @click="">
+                <v-list-tile-title>
+                  <EditSubmission :submission="submission" :formId="formId"></EditSubmission>
+                </v-list-tile-title>
+              </v-list-tile>
+
               <v-list-tile @click=onDeleteSubmission>
                 <v-list-tile-title>Delete Submission</v-list-tile-title>
               </v-list-tile>
@@ -20,11 +26,13 @@
             </v-list>
           </v-menu>
         </v-flex>
-        <v-flex xs12>
-          <div class="subheading py-2 px-3 break-all">{{periodStart}} ~ {{periodEnd}}</div>
+        <v-flex xs6>
+          <div class="subheading py-2 px-3 break-all" v-if='periodStart || periodEnd'>{{periodStart}} ~ {{periodEnd}}</div>
+        </v-flex>
+        <v-flex xs6 class="text-xs-right">
           <v-progress-circular
             xs4
-            :size="120"
+            :size="80"
             :width="15"
             :rotate="-90"
             :value="progress"
@@ -37,7 +45,7 @@
           <form-view
             :slug="slug"
             :formId="formId"
-            :submissionId="submissionId"
+            :submissionId="id"
           ></form-view>
         </v-flex>
       </v-layout>
@@ -48,15 +56,20 @@
 <script>
   import * as _ from 'lodash'
   import FormView from '../FormView'
+  import EditSubmission from './EditSubmission'
 
   export default {
-    props: ['slug', 'formId', 'submissionId'],
+    props: ['slug', 'id'],
     components: {
-      FormView
+      FormView,
+      EditSubmission
     },
     computed: {
       submission () {
-        return this.$store.getters.loadedSubmission(this.formId, this.submissionId)
+        return this.$store.getters.loadedApplicationSubmission(this.slug, parseInt(this.id))
+      },
+      formId () {
+        return this.submission.form.id
       },
       statuses () {
         return this.$store.getters.statuses
@@ -98,7 +111,7 @@
           let questions = this.$store.getters.loadedQuestions(this.formId, section.id).filter(question => question.mandatory)
           questionCount += questions.length
           questions.forEach(function (question) {
-            let responses = this.$store.getters.loadedResponses(this.formId, this.submissionId).filter(response => response.question_id === question.id)
+            let responses = this.$store.getters.loadedResponses(this.formId, this.id).filter(response => response.question_id === question.id)
             responseCount += responses.length ? 1 : 0
           }, this)
         }, this)
@@ -111,7 +124,7 @@
         this.$store.dispatch('deleteSubmission',
           {
             formId: this.formId,
-            id: this.submissionId
+            id: this.id
           }
         )
       },
@@ -123,11 +136,19 @@
         this.$store.dispatch('updateSubmission',
           {
             formId: this.formId,
-            id: this.submissionId,
+            id: this.id,
             statusId: this.statuses[statusIndex].id
           }
         )
       }
+    },
+    created () {
+      this.$store.dispatch('loadForms', this.slug)
+      this.$store.dispatch('loadAllSubmissions', this.slug)
+      this.$store.dispatch('loadSections', this.id)
+      this.$store.dispatch('loadValidations', this.id)
+      this.$store.dispatch('loadTriggers', this.id)
+      this.$store.dispatch('selectSection', null)
     }
   }
 </script>

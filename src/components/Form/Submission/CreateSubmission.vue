@@ -99,7 +99,18 @@
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
             <v-btn flat @click.stop="close">Cancel</v-btn>
-            <v-btn color="primary" @click.stop="save">Save</v-btn>
+            <v-btn
+              flat
+              class="primary"
+              @click="save"
+              :disabled="loading"
+              :loading="loading"
+            >
+              Save
+              <span slot="loader" class="custom-loader">
+                <v-icon light>cached</v-icon>
+              </span>
+            </v-btn>
           </v-flex>
         </v-layout>
       </v-card-actions>
@@ -132,9 +143,6 @@
           }
         }
       },
-      loading () {
-        return this.$store.getters.loading
-      },
       teams () {
         return this.$store.getters.loadedTeams(this.slug)
       },
@@ -148,6 +156,9 @@
           return this.$store.getters.loadedSubmissionTeamUsers(this.teamId)
         }
         return this.$store.getters.loadedSubmissionUsers(this.slug)
+      },
+      loading () {
+        return this.$store.getters.loading
       }
     },
     watch: {
