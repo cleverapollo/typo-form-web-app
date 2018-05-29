@@ -22,7 +22,7 @@
     computed: {
       label () {
         if (this.icon) {
-          return '<img src="' + API_ORIGIN_URL + 'uploads/' + this.icon + '" class="icon-preview"/>'
+          return '<img src="' + this.icon + '" class="icon-preview"/>'
         } else {
           return 'Please Drag and Drop to upload Icon'
         }

@@ -174,7 +174,7 @@ router.beforeEach((to, from, next) => {
       .then(() => {
         const application = store.getters.loadedApplication(to.params['slug'])
 
-        favicon.href = application.icon ? process.env.API_ORIGIN_URL + 'uploads/' + application.icon : '/static/logo.png'
+        favicon.href = application.icon ? application.icon : '/static/logo.png'
         const css = application.css ? application.css : ''
         if (style.childNodes.length) {
           style.childNodes[0].textContent = css

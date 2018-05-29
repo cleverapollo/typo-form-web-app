@@ -134,7 +134,7 @@
                 <v-list-tile-content>
                   <div class="d-flex flex-row">
                     <div class="application-icon" v-if='application.icon'>
-                      <img :src="api_url + 'uploads/' + application.icon"/>
+                      <img :src="application.icon"/>
                     </div>
                     <div class="pl-3">{{application.name}}</div>
                   </div>
@@ -204,7 +204,7 @@
       },
       titleIcon () {
         const application = this.$store.getters.loadedApplication(this.$route.params['slug'])
-        return application && application.icon ? this.api_url + 'uploads/' + application.icon : ''
+        return application && application.icon ? application.icon : ''
       },
       titleLink () {
         if (this.$route.params['slug']) {

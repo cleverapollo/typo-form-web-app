@@ -14,7 +14,7 @@
                 <template v-for="(item, index) in sortApplications(applications)">
                   <v-list-tile :to="applicationUrl(item.slug)" :key="item.id" avatar>
                     <v-list-tile-avatar tile v-if="item.icon">
-                      <img :src="api_url + 'uploads/' + item.icon">
+                      <img :src="item.icon">
                     </v-list-tile-avatar>
                     <v-list-tile-avatar color="primary" v-else>
                       <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>

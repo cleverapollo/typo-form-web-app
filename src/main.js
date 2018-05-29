@@ -37,7 +37,8 @@ Vue.use(VueAuthenticate, {
     },
     live: {
       clientId: process.env.LIVE_CLIENT_ID,
-      redirectUri: process.env.REDIRECT_URL // Your client app URL
+      redirectUri: process.env.REDIRECT_URL, // Your client app URL
+      scope: ['wl.basic', 'wl.emails']
     }
   }
 })
