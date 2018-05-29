@@ -40,7 +40,12 @@
         .then(response => {
           this.message = response.data.data.message ? response.data.data.message : 'Invitation accepted.'
           this.alert = 'success'
-          // TODO: Redirect to application page
+          if (this.type === 'application') {
+            this.$router.push('/' + response.data.data.slug)
+          } else {
+            const application = this.$store.getters.loadedApplicationById(response.data.data.application_id)
+            this.$router.push('/' + application.slug + '/teams/' + response.data.data.id)
+          }
         })
         .catch(error => {
           this.message = error.response.data.message ? error.response.data.message : 'Error.'

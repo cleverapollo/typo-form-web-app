@@ -251,6 +251,13 @@ export default {
         })
       }
     },
+    loadedApplicationById (state) {
+      return (applicationId) => {
+        return state.loadedApplications.find((application) => {
+          return application.id === applicationId
+        })
+      }
+    },
     loadedApplicationEmail (state) {
       return (slug) => {
         const application = state.loadedApplications.find((application) => {
