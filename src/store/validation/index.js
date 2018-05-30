@@ -14,6 +14,9 @@ export default {
     },
     createValidation (state, payload) {
       let validations = Object.assign({}, state.loadedValidations)
+      if (!validations[payload.formId]) {
+        validations[payload.formId] = []
+      }
       validations[payload.formId].push(payload.validation)
       state.loadedValidations = validations
     },

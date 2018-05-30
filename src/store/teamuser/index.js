@@ -2,6 +2,7 @@ const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
 const TEAM_URL = `/team/`
 const USER_URL = `/user/`
+const INVITED_USER_URL = `invitedUser/`
 
 export default {
   state: {
@@ -33,6 +34,21 @@ export default {
         return e.id !== payload.id
       })
       state.loadedTeamUsers = users
+    },
+    updateInvitedTeamUser (state, payload) {
+      let users = Object.assign({}, state.invitedTeamUsers)
+      const index = users[payload.teamId].findIndex(user => {
+        return user.id === payload.user.id
+      })
+      users[payload.teamId][index].role_id = payload.user.role_id
+      state.invitedTeamUsers = users
+    },
+    deleteInvitedTeamUser (state, payload) {
+      let users = Object.assign({}, state.invitedTeamUsers)
+      users[payload.teamId] = users[payload.teamId].filter(e => {
+        return e.id !== payload.id
+      })
+      state.invitedTeamUsers = users
     }
   },
   actions: {
@@ -90,6 +106,40 @@ export default {
         .then(() => {
           commit('setLoading', false)
           commit('deleteTeamUser', payload)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    updateInvitedTeamUser ({commit}, payload) {
+      commit('setLoading', true)
+      const updateObj = {}
+      if (payload.roleId) {
+        updateObj.role_id = payload.roleId
+      }
+      window.axios.put(APPLICATION_URL + payload.slug + TEAM_URL + payload.teamId + USER_URL + INVITED_USER_URL + payload.id, updateObj)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              teamId: payload.teamId,
+              user: response['data']['user']
+            }
+            commit('updateInvitedTeamUser', updateObj)
+          }
+        )
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    deleteInvitedTeamUser ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.delete(APPLICATION_URL + payload.slug + TEAM_URL + payload.teamId + USER_URL + INVITED_USER_URL + payload.id)
+        .then(() => {
+          commit('setLoading', false)
+          commit('deleteInvitedTeamUser', payload)
         })
         .catch(error => {
           console.log(error)

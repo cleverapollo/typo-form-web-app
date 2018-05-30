@@ -76,8 +76,8 @@
                     <td>{{ getRole(props.item.role_id) }}</td>
                     <td>{{ props.item.created_at }}</td>
                     <td v-if='isApplicationAdmin' class="justify-center layout px-0">
-                      <EditUser :user="props.item" :slug="slug"></EditUser>
-                      <v-btn icon class="mx-0" @click="onDeleteUser(props.item.id)">
+                      <EditInvitedUser :user="props.item" :slug="slug"></EditInvitedUser>
+                      <v-btn icon class="mx-0" @click="onDeleteInvitedUser(props.item.id)">
                         <v-icon color="pink">delete</v-icon>
                       </v-btn>
                     </td>
@@ -110,6 +110,7 @@
 <script>
   import InviteApplication from '../Application/InviteApplication'
   import EditUser from './EditUser'
+  import EditInvitedUser from './EditInvitedUser'
   export default {
     props: ['slug'],
     data () {
@@ -121,7 +122,8 @@
     },
     components: {
       InviteApplication,
-      EditUser
+      EditUser,
+      EditInvitedUser
     },
     computed: {
       roles () {
@@ -187,6 +189,12 @@
                 })
             }
           })
+      },
+      onDeleteInvitedUser (userIndex) {
+        this.$store.dispatch('deleteInvitedUser', {
+          slug: this.slug,
+          id: userIndex
+        })
       }
     },
     created: function () {

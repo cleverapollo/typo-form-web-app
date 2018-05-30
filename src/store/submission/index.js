@@ -33,6 +33,9 @@ export default {
     },
     createSubmission (state, payload) {
       let submissions = Object.assign({}, state.loadedSubmissions)
+      if (!submissions[payload.formId]) {
+        submissions[payload.formId] = []
+      }
       submissions[payload.formId].push(payload.submission)
       state.loadedSubmissions = submissions
     },

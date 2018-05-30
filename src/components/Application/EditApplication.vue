@@ -121,14 +121,6 @@
         this.editedCSS = this.application.css
         this.editApplication = false
       }
-    },
-    computed: {
-      error () {
-        return this.$store.getters.error
-      },
-      loading () {
-        return this.$store.getters.loading
-      }
     }
   }
 </script>
