@@ -40,6 +40,7 @@
   import checkboxGrid from './components/CheckboxGrid'
   import dateComponent from './components/Date'
   import timeComponent from './components/Time'
+  import ContentBlock from './components/ContentBlock'
 
   export default {
     props: ['question', 'formId', 'submissionId', 'index', 'sectionId'],
@@ -63,7 +64,8 @@
           'Multiple choice grid': multipleChoiceGrid,
           'Checkbox grid': checkboxGrid,
           'Date': dateComponent,
-          'Time': timeComponent
+          'Time': timeComponent,
+          'Content Block': ContentBlock
         },
         hasValidation: false
       }

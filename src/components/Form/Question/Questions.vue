@@ -132,6 +132,7 @@
   import checkboxGrid from './components/CheckboxGrid'
   import dateComponent from './components/Date'
   import timeComponent from './components/Time'
+  import ContentBlock from './components/ContentBlock'
   import * as _ from 'lodash'
 
   import triggers from './Triggers'
@@ -159,7 +160,8 @@
           'Multiple choice grid': multipleChoiceGrid,
           'Checkbox grid': checkboxGrid,
           'Date': dateComponent,
-          'Time': timeComponent
+          'Time': timeComponent,
+          'Content Block': ContentBlock
         },
         ifRequireValidation: {
           'Short answer': true,
@@ -214,6 +216,10 @@
           {
             action: 'schedule',
             title: 'Time'
+          },
+          {
+            action: 'view_headline',
+            title: 'Content Block'
           }
         ],
         validationTypes: this.$store.getters.validationTypes,
