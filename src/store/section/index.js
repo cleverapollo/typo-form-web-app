@@ -16,6 +16,9 @@ export default {
     },
     createSection (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
+      if (!sections[payload.formId]) {
+        sections[payload.formId] = []
+      }
       sections[payload.formId].push(payload.section)
       state.loadedSections = sections
     },

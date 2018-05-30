@@ -69,7 +69,6 @@
     data () {
       return {
         createSubmission: false,
-        loading: false,
         search: '',
         headers: [
           { text: 'Submission', value: 'name', sortable: true, align: 'left' },

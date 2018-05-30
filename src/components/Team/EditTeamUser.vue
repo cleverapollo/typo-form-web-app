@@ -85,9 +85,6 @@
         return this.roles.filter((role) => {
           return role.name !== 'Super Admin'
         })
-      },
-      loading () {
-        return this.$store.getters.loading
       }
     }
   }

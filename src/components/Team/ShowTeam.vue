@@ -96,8 +96,8 @@
                     <td>{{ getRole(props.item.role_id) }}</td>
                     <td>{{ props.item.created_at }}</td>
                     <td v-if='isTeamAdmin' class="justify-center layout px-0">
-                      <EditTeamUser :user="props.item" :slug="slug" :teamId="id"></EditTeamUser>
-                      <v-btn icon class="mx-0" @click="onDeleteTeamUser(props.item.id)">
+                      <EditInvitedTeamUser :user="props.item" :slug="slug" :teamId="id"></EditInvitedTeamUser>
+                      <v-btn icon class="mx-0" @click="onDeleteInvitedTeamUser(props.item.id)">
                         <v-icon color="pink">delete</v-icon>
                       </v-btn>
                     </td>
@@ -130,6 +130,7 @@
   import InviteTeam from './InviteTeam'
   import EditTeam from './EditTeam'
   import EditTeamUser from './EditTeamUser'
+  import EditInvitedTeamUser from './EditInvitedTeamUser'
   export default {
     props: ['slug', 'id'],
     data () {
@@ -142,7 +143,8 @@
     components: {
       InviteTeam,
       EditTeam,
-      EditTeamUser
+      EditTeamUser,
+      EditInvitedTeamUser
     },
     computed: {
       roles () {
@@ -213,6 +215,13 @@
                 })
             }
           })
+      },
+      onDeleteInvitedTeamUser (teamUserId) {
+        this.$store.dispatch('deleteInvitedTeamUser', {
+          slug: this.slug,
+          teamId: this.team.id,
+          id: teamUserId
+        })
       },
       getRole (roleId) {
         const role = this.roles.find((role) => {

@@ -15,6 +15,9 @@ export default {
     },
     createForm (state, payload) {
       let forms = Object.assign({}, state.loadedForms)
+      if (!forms[payload.slug]) {
+        forms[payload.slug] = []
+      }
       forms[payload.slug].push(payload.form)
       state.loadedForms = forms
     },

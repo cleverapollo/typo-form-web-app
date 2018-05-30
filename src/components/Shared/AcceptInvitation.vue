@@ -26,9 +26,6 @@
       }
     },
     computed: {
-      error () {
-        return this.$store.getters.error
-      },
       user () {
         return this.$store.getters.user
       }

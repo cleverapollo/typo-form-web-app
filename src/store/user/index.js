@@ -1,6 +1,7 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
 const USER_URL = `/user/`
+const INVITED_USER_URL = `invitedUser/`
 
 export default {
   state: {
@@ -32,6 +33,21 @@ export default {
         return e.id !== payload.id
       })
       state.loadedUsers = users
+    },
+    updateInvitedUser (state, payload) {
+      let users = Object.assign({}, state.invitedUsers)
+      const index = users[payload.slug].findIndex(user => {
+        return user.id === payload.user.id
+      })
+      users[payload.slug][index].role_id = payload.user.role_id
+      state.invitedUsers = users
+    },
+    deleteInvitedUser (state, payload) {
+      let users = Object.assign({}, state.invitedUsers)
+      users[payload.slug] = users[payload.slug].filter(e => {
+        return e.id !== payload.id
+      })
+      state.invitedUsers = users
     }
   },
   actions: {
@@ -89,6 +105,40 @@ export default {
         .then(() => {
           commit('setLoading', false)
           commit('deleteUser', payload)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    updateInvitedUser ({commit}, payload) {
+      commit('setLoading', true)
+      const updateObj = {}
+      if (payload.roleId) {
+        updateObj.role_id = payload.roleId
+      }
+      window.axios.put(APPLICATION_URL + payload.slug + USER_URL + INVITED_USER_URL + payload.id, updateObj)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              slug: payload.slug,
+              user: response['data']['user']
+            }
+            commit('updateInvitedUser', updateObj)
+          }
+        )
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    deleteInvitedUser ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.delete(APPLICATION_URL + payload.slug + USER_URL + INVITED_USER_URL + payload.id)
+        .then(() => {
+          commit('setLoading', false)
+          commit('deleteInvitedUser', payload)
         })
         .catch(error => {
           console.log(error)

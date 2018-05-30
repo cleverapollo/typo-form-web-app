@@ -15,6 +15,9 @@ export default {
     },
     createTeam (state, payload) {
       let teams = Object.assign({}, state.loadedTeams)
+      if (!teams[payload.slug]) {
+        teams[payload.slug] = []
+      }
       teams[payload.slug].push(payload.team)
       state.loadedTeams = teams
     },

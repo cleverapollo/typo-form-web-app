@@ -14,6 +14,9 @@ export default {
     },
     createTrigger (state, payload) {
       let triggers = Object.assign({}, state.loadedTriggers)
+      if (!triggers[payload.formId]) {
+        triggers[payload.formId] = []
+      }
       triggers[payload.formId].push(payload.trigger)
       state.loadedTriggers = triggers
     },

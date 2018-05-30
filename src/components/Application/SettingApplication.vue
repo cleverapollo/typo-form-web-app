@@ -137,9 +137,6 @@
       forms () {
         return this.$store.getters.loadedForms(this.application.slug)
       },
-      error () {
-        return this.$store.getters.error
-      },
       loading () {
         return this.$store.getters.loading
       },

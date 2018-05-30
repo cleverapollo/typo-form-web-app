@@ -1,14 +1,14 @@
 <template>
-  <v-dialog persistent v-model="editUser" max-width="600px">
+  <v-dialog persistent v-model="editInvitedTeamUser" max-width="600px">
     <v-btn icon slot="activator" class="mx-0"><v-icon color="teal">edit</v-icon></v-btn>
     <v-card>
 
       <!-- //Title -->
       <v-card-title>
-        <div class="title mb-2 mt-2">Edit User</div>
+        <div class="title mb-2 mt-2">Edit Invited User</div>
       </v-card-title>
 
-      <!-- //Body -->
+      <!-- //Content -->
       <v-card-text>
         <v-layout row wrap>
           <v-flex xs12>
@@ -37,7 +37,7 @@
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
             <v-btn flat @click="onCancel">Cancel</v-btn>
-            <v-btn class="primary" @click="onSaveChanges">Save</v-btn>
+            <v-btn flat class="primary" @click="onSaveChanges">Save</v-btn>
           </v-flex>
         </v-layout>
       </v-card-actions>
@@ -47,32 +47,33 @@
 
 <script>
   export default {
-    props: ['user', 'slug'],
+    props: ['user', 'slug', 'teamId'],
     data () {
       return {
         id: this.user.id,
-        editUser: false,
-        editedEmail: this.user.email,
-        editedRole: this.user.application_role_id
+        editInvitedTeamUser: false,
+        editedEmail: this.user.invitee,
+        editedRole: this.user.role_id
       }
     },
     methods: {
       onSaveChanges () {
-        if (this.editedRole !== this.user.application_role_id) {
-          this.$store.dispatch('updateUser',
+        if (this.editedRole !== this.user.role_id) {
+          this.$store.dispatch('updateInvitedTeamUser',
             {
               slug: this.slug,
+              teamId: this.teamId,
               id: this.id,
               email: this.editedEmail,
-              applicationRoleId: this.editedRole
+              roleId: this.editedRole
             })
         }
-        this.editUser = false
+        this.editInvitedTeamUser = false
       },
       onCancel () {
-        this.editedEmail = this.user.email
-        this.editedRole = this.user.application_role_id
-        this.editUser = false
+        this.editedEmail = this.user.invitee
+        this.editedRole = this.user.role_id
+        this.editInvitedTeamUser = false
       }
     },
     computed: {
