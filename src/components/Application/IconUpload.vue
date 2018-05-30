@@ -11,7 +11,6 @@
   import 'vue2-dropzone/dist/vue2Dropzone.css'
 
   const API_URL = process.env.API_URL
-  const API_ORIGIN_URL = process.env.API_ORIGIN_URL
 
   export default {
     name: 'IconUpload',

@@ -58,7 +58,7 @@
                     <td>{{ props.item.email }}</td>
                     <td>{{ getRole(props.item.team_role_id) }}</td>
                     <td>{{ props.item.created_at.date }}</td>
-                    <td v-if='isTeamAdmin'>
+                    <td v-if='isTeamAdmin' class="justify-center layout px-0">
                       <EditTeamUser :user="props.item" :slug="slug" :teamId="id"></EditTeamUser>
                       <v-btn icon class="mx-0" @click="onDeleteTeamUser(props.item.id)">
                         <v-icon color="pink">delete</v-icon>
@@ -95,7 +95,7 @@
                     <td>{{ props.item.invitee }}</td>
                     <td>{{ getRole(props.item.role_id) }}</td>
                     <td>{{ props.item.created_at }}</td>
-                    <td v-if='isTeamAdmin'>
+                    <td v-if='isTeamAdmin' class="justify-center layout px-0">
                       <EditTeamUser :user="props.item" :slug="slug" :teamId="id"></EditTeamUser>
                       <v-btn icon class="mx-0" @click="onDeleteTeamUser(props.item.id)">
                         <v-icon color="pink">delete</v-icon>
@@ -114,8 +114,15 @@
       </v-layout>
     </v-flex>
 
+    <v-tooltip top>
+      <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="inviteUsers = true">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <span>Invite Users</span>
+    </v-tooltip>
+
     <!-- //Invite Team -->
-    <InviteTeam :slug="slug" :teamId="id"></InviteTeam>
+    <InviteTeam :slug="slug" :teamId="id" :visible="inviteUsers" @close="inviteUsers = false"></InviteTeam>
   </v-layout>
 </template>
 
@@ -128,7 +135,8 @@
     data () {
       return {
         userSearch: '',
-        invitedUserSearch: ''
+        invitedUserSearch: '',
+        inviteUsers: false
       }
     },
     components: {
@@ -164,7 +172,7 @@
           { text: 'Joined', value: 'created_at', sortable: true, align: 'left' }
         ]
         if (this.isTeamAdmin) {
-          defaultUserHeaders.push({ text: 'Action', sortable: false, align: 'left' })
+          defaultUserHeaders.push({ text: 'Action', sortable: false, align: 'center' })
         }
         return defaultUserHeaders
       },
@@ -175,7 +183,7 @@
           { text: 'Invited', value: 'created_at', sortable: true, align: 'left' }
         ]
         if (this.isTeamAdmin) {
-          defaultInvitedHeaders.push({ text: 'Action', sortable: false, align: 'left' })
+          defaultInvitedHeaders.push({ text: 'Action', sortable: false, align: 'center' })
         }
         return defaultInvitedHeaders
       },

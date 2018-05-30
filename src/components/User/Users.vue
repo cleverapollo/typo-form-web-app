@@ -38,7 +38,7 @@
                     <td>{{ props.item.email }}</td>
                     <td>{{ getRole(props.item.application_role_id) }}</td>
                     <td>{{ props.item.created_at.date }}</td>
-                    <td v-if='isApplicationAdmin'>
+                    <td v-if='isApplicationAdmin' class="justify-center layout px-0">
                       <EditUser :user="props.item" :slug="slug"></EditUser>
                       <v-btn icon class="mx-0" @click="onDeleteUser(props.item.id)">
                         <v-icon color="pink">delete</v-icon>
@@ -75,7 +75,7 @@
                     <td>{{ props.item.invitee }}</td>
                     <td>{{ getRole(props.item.role_id) }}</td>
                     <td>{{ props.item.created_at }}</td>
-                    <td v-if='isApplicationAdmin'>
+                    <td v-if='isApplicationAdmin' class="justify-center layout px-0">
                       <EditUser :user="props.item" :slug="slug"></EditUser>
                       <v-btn icon class="mx-0" @click="onDeleteUser(props.item.id)">
                         <v-icon color="pink">delete</v-icon>
@@ -148,7 +148,7 @@
           { text: 'Joined', value: 'created_at', sortable: true, align: 'left' }
         ]
         if (this.isApplicationAdmin) {
-          defaultUserHeaders.push({ text: 'Action', sortable: false, align: 'left' })
+          defaultUserHeaders.push({ text: 'Actions', sortable: false, align: 'center' })
         }
         return defaultUserHeaders
       },
@@ -159,7 +159,7 @@
           { text: 'Invited', value: 'created_at', sortable: true, align: 'left' }
         ]
         if (this.isApplicationAdmin) {
-          defaultInvitedHeaders.push({ text: 'Action', sortable: false, align: 'left' })
+          defaultInvitedHeaders.push({ text: 'Actions', sortable: false, align: 'center' })
         }
         return defaultInvitedHeaders
       },

@@ -34,8 +34,16 @@
       </v-layout>
     </v-flex>
 
+    <v-tooltip top>
+      <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="createTeam = true">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <span>Create Team</span>
+    </v-tooltip>
+
     <!-- //Create Team -->
-    <CreateTeam :slug="slug"></CreateTeam>
+    <CreateTeam :visible="createTeam" :slug="slug" @close="createTeam = false"></CreateTeam>
+
   </v-layout>
 </template>
 
@@ -45,6 +53,11 @@
   import CreateTeam from './CreateTeam'
   export default {
     props: ['slug'],
+    data () {
+      return {
+        createTeam: false
+      }
+    },
     components: {
       CreateTeam
     },

@@ -1,15 +1,14 @@
 <template>
-  <v-dialog v-model="inviteTeam" persistent max-width="600px">
-    <v-btn slot="activator" fixed dark bottom right fab router class="error">
-      <v-icon>add</v-icon>
-    </v-btn>
+  <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
+
+      <!-- //Title -->
       <v-card-title>
         <div class="title mb-2 mt-2">Invite Users</div>
       </v-card-title>
-      <v-card-text>
 
-        <!-- //Invitation -->
+      <!-- //Invitation -->
+      <v-card-text>
         <template v-for="(item, index) in invitations">
           <v-layout wrap>
             <v-flex xs12 sm6 d-flex>
@@ -45,32 +44,28 @@
             <v-btn flat @click.stop="addUser">Add another user</v-btn>
           </v-flex>
         </v-layout>
-
       </v-card-text>
+
+      <!-- //Actions -->
       <v-divider></v-divider>
       <v-card-actions>
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
             <v-btn flat @click.stop="close">Cancel</v-btn>
-            <v-btn color="primary" @click.stop="invite" :disabled="loading" :loading="loading">
-              Invite
-              <span slot="loader" class="custom-loader">
-                <v-icon light>cached</v-icon>
-              </span>
-            </v-btn>
+            <v-btn color="primary" @click.stop="invite">Invite</v-btn>
           </v-flex>
         </v-layout>
       </v-card-actions>
+
     </v-card>
   </v-dialog>
 </template>
 
 <script>
   export default {
-    props: ['slug', 'teamId'],
+    props: ['slug', 'teamId', 'visible'],
     data () {
       return {
-        inviteTeam: false,
         invitations: [{ email: '', team_role_id: '' }]
       }
     },
@@ -83,14 +78,21 @@
           return role.name !== 'Super Admin'
         })
       },
-      loading () {
-        return this.$store.getters.loading
+      show: {
+        get () {
+          return this.visible
+        },
+        set (value) {
+          if (!value) {
+            this.$emit('close')
+          }
+        }
       }
     },
     methods: {
       close () {
         this.invitations = [{ email: '', team_role_id: '' }]
-        this.inviteTeam = false
+        this.show = false
       },
       addUser () {
         this.invitations.push({ email: '', team_role_id: '' })
@@ -105,7 +107,7 @@
         if (!invitations.length) {
           return
         }
-        this.inviteTeam = false
+        this.show = false
         this.$store.dispatch('inviteTeam', {invitations: invitations, id: this.teamId, slug: this.slug})
       }
     }

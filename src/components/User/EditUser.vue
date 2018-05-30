@@ -2,18 +2,16 @@
   <v-dialog persistent v-model="editUser" max-width="600px">
     <v-btn icon slot="activator" class="mx-0"><v-icon color="teal">edit</v-icon></v-btn>
     <v-card>
-      <v-container>
+
+      <!-- //Title -->
+      <v-card-title>
+        <div class="title mb-2 mt-2">Edit User</div>
+      </v-card-title>
+
+      <!-- //Body -->
+      <v-card-text>
         <v-layout row wrap>
           <v-flex xs12>
-            <v-card-title>
-              <h2>Edit User</h2>
-            </v-card-title>
-          </v-flex>
-        </v-layout>
-        <v-divider></v-divider>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <v-card-text>
               <v-text-field
                 name="email"
                 label="Email"
@@ -29,36 +27,20 @@
                 label="Role"
                 single-line
               ></v-select>
-            </v-card-text>
           </v-flex>
         </v-layout>
-        <v-divider></v-divider>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <v-card-actions>
-              <v-btn
-                flat
-                class="secondary"
-                @click="onCancel"
-              >
-                Close
-              </v-btn>
-              <v-btn 
-                flat 
-                class="primary" 
-                @click="onSaveChanges"
-                :disabled="loading"
-                :loading="loading"
-              >
-                Save
-                <span slot="loader" class="custom-loader">
-                  <v-icon light>cached</v-icon>
-                </span>
-              </v-btn>
-            </v-card-actions>
+      </v-card-text>
+
+      <!-- //Actions -->
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-layout row py-2>
+          <v-flex xs12 class="text-xs-right">
+            <v-btn flat @click="onCancel">Cancel</v-btn>
+            <v-btn class="primary" @click="onSaveChanges">Save</v-btn>
           </v-flex>
         </v-layout>
-      </v-container>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

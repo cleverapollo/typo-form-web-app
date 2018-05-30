@@ -1,9 +1,13 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
+
+      <!-- //Title -->
       <v-card-title>
         <div class="title mb-2 mt-2">Create Application</div>
       </v-card-title>
+
+      <!-- //Content -->
       <v-card-text>
         <v-layout row>
           <v-flex xs12>
@@ -16,6 +20,8 @@
           </v-flex>
         </v-layout>
       </v-card-text>
+
+      <!-- //Actions -->
       <v-divider></v-divider>
       <v-card-actions>
         <v-layout row py-2>
@@ -25,6 +31,7 @@
           </v-flex>
         </v-layout>
       </v-card-actions>
+      
     </v-card>
   </v-dialog>
 </template>
