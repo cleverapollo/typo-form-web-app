@@ -1,33 +1,38 @@
 <template>
-  <div>
-    <v-layout row class="p-2">
-      <v-flex xs8 offset-xs2>
-        <v-layout row>
-          <v-flex v-for="n in end.id" :key="n" v-if="n+1!=start.id">
-            <span class="optionLabel">{{ n }}</span>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
-    <v-layout row style='p-2'>
-      <v-flex xs2 class="text-center">{{ start.title }}</v-flex>
-      <v-flex xs8>
-        <v-layout row>
-          <v-radio-group v-model="optionModel" row>
-            <v-radio v-for="n in end.id" :key="n" v-if="n+1!=start.id" :value="checked(n)"
-                     @change="onSave(n)"></v-radio>
-          </v-radio-group>
-        </v-layout>
-      </v-flex>
-      <v-flex xs2 class="text-center">{{ end.title }}</v-flex>
-    </v-layout>
-  </div>
+  <v-layout row wrap>
+    <v-flex xs12 class="mb-3">
+      <div class="subheading">{{ question }}</div>
+    </v-flex>
+    <v-flex xs12>
+      <v-layout row class="pa-2">
+        <v-flex xs8 offset-xs2>
+          <v-layout row>
+            <v-flex v-for="n in end.id" :key="n" v-if="n+1!=start.id">
+              <span class="optionLabel">{{ n }}</span>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+      <v-layout row style='p-2'>
+        <v-flex xs2 class="text-center">{{ start.title }}</v-flex>
+        <v-flex xs8>
+          <v-layout row>
+            <v-radio-group v-model="optionModel" row>
+              <v-radio v-for="n in end.id" :key="n" v-if="n+1!=start.id" :value="checked(n)"
+                       @change="onSave(n)"></v-radio>
+            </v-radio-group>
+          </v-layout>
+        </v-flex>
+        <v-flex xs2 class="text-center">{{ end.title }}</v-flex>
+      </v-layout>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
   export default {
     name: 'linear-scale',
-    props: ['answers', 'responses'],
+    props: ['question', 'answers', 'responses'],
     data () {
       return {
         optionModel: 'checked'

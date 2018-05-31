@@ -1,9 +1,16 @@
 <template>
-  <div v-on:click="startedUploading">
-    <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"
-                  v-on:vdropzone-drop="startedUploading"
-                  v-on:vdropzone-success="onUploaded"></vue-dropzone>
-  </div>
+  <v-layout row wrap>
+    <v-flex xs12 class="mb-3">
+      <div class="subheading">{{ question }}</div>
+    </v-flex>
+    <v-flex xs12>
+      <div v-on:click="startedUploading">
+        <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"
+                      v-on:vdropzone-drop="startedUploading"
+                      v-on:vdropzone-success="onUploaded"></vue-dropzone>
+      </div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -14,7 +21,7 @@
 
   export default {
     name: 'fileupload',
-    props: ['submissionId', 'responses'],
+    props: ['question', 'submissionId', 'responses'],
     components: {
       vueDropzone: vue2Dropzone
     },

@@ -14,7 +14,7 @@
       >
         <v-text-field
           slot="activator"
-          label="Picker in time"
+          :label="question"
           v-model="time"
           prepend-icon="access_time"
           readonly
@@ -28,7 +28,7 @@
 <script>
   export default {
     name: 'time-component',
-    props: ['answers', 'responses'],
+    props: ['question', 'answers', 'responses'],
     data () {
       return {
         timeCnt: 0,

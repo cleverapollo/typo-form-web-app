@@ -1,18 +1,25 @@
 <template>
-  <v-layout column>
-    <v-flex xs10 offset-xs2 class="pb-3">
-      <v-layout row>
-        <v-flex v-for='(column, index) in computedColumns' :key='"ColumnString " + index'>
-          {{ column.answer }}
-        </v-flex>
-      </v-layout>
+  <v-layout row wrap>
+    <v-flex xs12>
+      <div class="subheading">{{ question }}</div>
     </v-flex>
-    <v-flex>
-      <v-layout row v-for='(row, index) in computedRows' :key='"row " + index'>
-        <v-flex xs2>
-          {{ row.answer }}
+    <v-flex xs12>
+      <v-layout column>
+        <v-flex xs10 offset-xs2 class="pb-3">
+          <v-layout row>
+            <v-flex v-for='(column, index) in computedColumns' :key='"ColumnString " + index'>
+              {{ column.answer }}
+            </v-flex>
+          </v-layout>
         </v-flex>
-        <v-checkbox v-for='(column, index2) in computedColumns' :key='"column " + index2' v-model="checkAnswers[index]" :value="column.id" @change="onSave(row.id, column.id)"></v-checkbox>
+        <v-flex>
+          <v-layout row v-for='(row, index) in computedRows' :key='"row " + index'>
+            <v-flex xs2>
+              {{ row.answer }}
+            </v-flex>
+            <v-checkbox v-for='(column, index2) in computedColumns' :key='"column " + index2' v-model="checkAnswers[index]" :value="column.id" @change="onSave(row.id, column.id)"></v-checkbox>
+          </v-layout>
+        </v-flex>
       </v-layout>
     </v-flex>
   </v-layout>
@@ -21,7 +28,7 @@
 <script>
   export default {
     name: 'checkbox-grid',
-    props: ['answers', 'responses', 'submissionId'],
+    props: ['question', 'answers', 'responses', 'submissionId'],
     data () {
       return {
         checkAnswers: []

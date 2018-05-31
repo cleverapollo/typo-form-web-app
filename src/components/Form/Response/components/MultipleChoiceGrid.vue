@@ -1,22 +1,29 @@
 <template>
-  <v-layout column>
-    <v-flex xs10 offset-xs2 class="pb-3">
-      <v-layout row>
-        <v-flex v-for='(column, index) in computedColumns' :key='"OptionString " + index'>{{ column.answer }}</v-flex>
-      </v-layout>
+  <v-layout row wrap>
+    <v-flex xs12>
+      <div class="subheading">{{ question }}</div>
     </v-flex>
-    <v-flex>
-      <v-layout row v-for='(row, index) in computedRows' :key='"row " + index'>
-        <v-flex xs2>
+    <v-flex xs12>
+      <v-layout column>
+        <v-flex xs10 offset-xs2 class="pb-3">
           <v-layout row>
-            <h3>{{row.answer}}</h3>
+            <v-flex v-for='(column, index) in computedColumns' :key='"OptionString " + index'>{{ column.answer }}</v-flex>
           </v-layout>
         </v-flex>
-        <v-flex xs10>
-          <v-radio-group v-model="checkAnswers[index]" row class="pt-0 pb-0">
-            <v-radio v-for='(column, index2) in computedColumns' :key='"column " + index2'
-                     :value="column.id" @change="onSave(row.id, column.id)"></v-radio>
-          </v-radio-group>
+        <v-flex>
+          <v-layout row v-for='(row, index) in computedRows' :key='"row " + index'>
+            <v-flex xs2>
+              <v-layout row>
+                <h3>{{row.answer}}</h3>
+              </v-layout>
+            </v-flex>
+            <v-flex xs10>
+              <v-radio-group v-model="checkAnswers[index]" row class="pt-0 pb-0">
+                <v-radio v-for='(column, index2) in computedColumns' :key='"column " + index2'
+                         :value="column.id" @change="onSave(row.id, column.id)"></v-radio>
+              </v-radio-group>
+            </v-flex>
+          </v-layout>
         </v-flex>
       </v-layout>
     </v-flex>
@@ -26,7 +33,7 @@
 <script>
   export default {
     name: 'multiple-choice-grid',
-    props: ['answers', 'responses', 'submissionId'],
+    props: ['question', 'answers', 'responses', 'submissionId'],
     data () {
       return {
         checkAnswers: []

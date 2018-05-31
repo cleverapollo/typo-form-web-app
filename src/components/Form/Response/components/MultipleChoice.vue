@@ -1,19 +1,26 @@
 <template>
-  <v-radio-group v-model="optionModel" column>
-    <v-radio 
-      color="info"
-      v-for='(answer, index) in answers' 
-      :key='"Option " + index' 
-      :label="answer.answer"
-      :value="checked(answer.id)" @change="onSave(answer.id)">
-    </v-radio>
-  </v-radio-group>
+  <v-layout row wrap>
+    <v-flex xs12>
+      <div class="subheading">{{ question }}</div>
+    </v-flex>
+    <v-flex xs12>
+      <v-radio-group v-model="optionModel" column>
+        <v-radio 
+          color="info"
+          v-for='(answer, index) in answers' 
+          :key='"Option " + index' 
+          :label="answer.answer"
+          :value="checked(answer.id)" @change="onSave(answer.id)">
+        </v-radio>
+      </v-radio-group>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
   export default {
     name: 'multiple-choice',
-    props: ['answers', 'responses'],
+    props: ['question', 'answers', 'responses'],
     data () {
       return {
         optionModel: 'checked'

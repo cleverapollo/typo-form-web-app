@@ -1,6 +1,9 @@
 <template>
-  <div>
-    <v-layout>
+  <v-layout row wrap>
+    <v-flex xs12>
+      <div class="subheading">{{ question }}</div>
+    </v-flex>
+    <v-flex xs12>
       <v-select
         v-bind:items="computedOptions"
         v-model="selectedOption"
@@ -11,14 +14,14 @@
         single-line
         bottom
       ></v-select>
-    </v-layout>
-  </div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
   export default {
     name: 'dropdown',
-    props: ['answers', 'responses', 'submissionId'],
+    props: ['question', 'answers', 'responses', 'submissionId'],
     data () {
       return {
         selectedOption: null

@@ -2,7 +2,7 @@
   <v-layout row>
     <v-flex xs12>
       <v-text-field
-        label="Message"
+        :label="question"
         :value="message"
         counter
         max="120"
@@ -21,7 +21,7 @@
   export default {
     name: 'paragraph',
     mixins: [validationMixin],
-    props: ['answers', 'responses'],
+    props: ['question', 'answers', 'responses'],
     methods: {
       onSave (value) {
         if (this.responses.length) {

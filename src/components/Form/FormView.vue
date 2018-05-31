@@ -34,7 +34,7 @@
     </v-flex>
 
     <!-- //Next / Prev Button -->
-    <v-flex xs12>
+    <v-flex xs12 v-if="section">
       <v-layout row wrap>
         <v-flex xs2>
           <v-btn color="info" @click="prev()">Prev</v-btn>
@@ -119,6 +119,9 @@
       },
       prev () {
         let rtSection = this.$store.getters.loadSelectedSection()
+        if (!rtSection) {
+          return
+        }
         let slibings = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.parent_section_id), element => {
           return element.order
         })
@@ -167,6 +170,9 @@
       },
       next () {
         let rtSection = this.$store.getters.loadSelectedSection()
+        if (!rtSection) {
+          return
+        }
         let slibings = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.parent_section_id), element => {
           return element.order
         })

@@ -14,7 +14,7 @@
       >
         <v-text-field
           slot="activator"
-          label="MM/DD/YYYY"
+          :label="question"
           v-model="dateFormatted"
           prepend-icon="event"
           @blur="date = parseDate(dateFormatted)"
@@ -30,7 +30,7 @@
 <script>
   export default {
     name: 'date-component',
-    props: ['answers', 'responses'],
+    props: ['question', 'answers', 'responses'],
     data () {
       return {
         menu: false,
