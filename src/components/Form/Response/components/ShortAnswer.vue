@@ -1,14 +1,11 @@
 <template>
-  <v-layout row>
-    <v-flex xs6>
-      <v-text-field
-        name="short-answer"
-        :value="message"
-        @change="onSave($event)"
-        :rules="[validate]"
-      ></v-text-field>
-    </v-flex>
-  </v-layout>
+  <v-text-field
+    name="short-answer"
+    :label="question"
+    :value="message"
+    @change="onSave($event)"
+    :rules="[validate]"
+  ></v-text-field>
 </template>
 
 <script>
@@ -17,7 +14,7 @@
   export default {
     name: 'short-answer',
     mixins: [validationMixin],
-    props: ['answers', 'responses'],
+    props: ['question', 'answers', 'responses'],
     methods: {
       onSave (value) {
         if (this.responses.length) {

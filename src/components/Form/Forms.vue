@@ -35,7 +35,14 @@
     </v-flex>
 
     <!-- //Create Form -->
-    <CreateForm :slug="slug" v-if="userIsApplicationAdmin"></CreateForm>
+    <v-tooltip top>
+      <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="createForm = true">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <span>Create Form</span>
+    </v-tooltip>
+
+    <CreateForm :slug="slug" :visible="createForm" v-if="userIsApplicationAdmin" @close="createForm = false"></CreateForm>
   </v-layout>
 </template>
 
@@ -44,6 +51,11 @@
   import CreateForm from './CreateForm'
   export default {
     props: ['slug'],
+    data () {
+      return {
+        createForm: false
+      }
+    },
     components: {
       CreateForm
     },

@@ -1,26 +1,39 @@
 <template>
-  <div>
-    <v-layout row wrap>
-      <v-flex xs12 sm3>
-        <form-tree
-          :formId="formId"
-          :section="section"
-          :list="list"
-          :submissionId="submissionId"
-          @section-clicked="sectionClicked"
-        ></form-tree>
-      </v-flex>
+  <v-layout row>
 
-      <v-flex xs12 sm9>
-        <sections
-          :section="section"
-          :formId="formId"
-          :submissionId="submissionId"
-          v-if="section"
-        ></sections>
-      </v-flex>
-    </v-layout>
-  </div>
+    <!-- //Form Container -->
+    <v-flex xs12>
+      <v-card>
+        <v-card-text>
+          <v-layout row>
+
+            <!-- //Setions -->
+            <v-flex xs12 sm3>
+              <form-tree
+                :formId="formId"
+                :section="section"
+                :list="list"
+                :submissionId="submissionId"
+                @section-clicked="sectionClicked"
+              ></form-tree>
+            </v-flex>
+
+            <!-- //Questions -->
+            <v-flex xs12 sm9>
+              <sections
+                :section="section"
+                :formId="formId"
+                :submissionId="submissionId"
+                v-if="section"
+              ></sections>
+            </v-flex>
+
+          </v-layout>
+        </v-card-text>
+      </v-card>
+    </v-flex>
+
+  </v-layout>
 </template>
 
 <script>

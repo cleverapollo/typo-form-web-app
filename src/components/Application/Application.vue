@@ -20,15 +20,6 @@
               </v-btn>
 
               <v-list>
-
-                <!-- 
-                <v-list-tile @click="">
-                  <v-list-tile-title>
-                    <SettingApplication :application="application" class="my-1"></SettingApplication>
-                  </v-list-tile-title>
-                </v-list-tile>
-                -->
-
                 <v-list-tile @click="">
                   <v-list-tile-title>
                     <EditApplication :application="application" class="my-1"></EditApplication>

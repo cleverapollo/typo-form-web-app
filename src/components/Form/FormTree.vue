@@ -1,5 +1,7 @@
 <template>
-  <v-expansion-panel class="mt-1">
+
+  <!--
+  <v-expansion-panel>
     <v-expansion-panel-content
       v-for="item in list"
       :key="item.id"
@@ -14,7 +16,7 @@
         {{ item.name }}
       </div>
 
-      <v-card v-if="!hasChildren(item)">
+      <v-card flat v-if="!hasChildren(item)">
         <v-card-text>
           <form-tree
             :formId="formId"
@@ -27,6 +29,21 @@
       </v-card>
     </v-expansion-panel-content>
   </v-expansion-panel>
+  -->
+
+  <v-list>
+    <v-list-group
+      v-for="(item, index) in list"
+      :key="item.id"
+    >
+      <v-list-tile slot="activator" @click="clickSection(item)">
+        <v-list-tile-content>
+          <v-list-tile-title>{{ index + 1 }}. {{ item.name }}</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list-group>
+  </v-list>
+
 </template>
 
 <script>

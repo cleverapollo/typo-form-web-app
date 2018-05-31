@@ -50,7 +50,7 @@
       <v-btn slot="activator" fixed dark bottom right fab router class="red" @click.stop="createSubmission = true">
         <v-icon>add</v-icon>
       </v-btn>
-      <span>Add Submission</span>
+      <span>Create Submission</span>
     </v-tooltip>
 
     <!-- //Create Submission -->

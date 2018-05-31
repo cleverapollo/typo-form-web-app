@@ -1,5 +1,7 @@
 <template>
-  <v-card active-class="active-section" class="ma-1">
+  <v-card flat active-class="active-section">
+
+    <!--
     <v-toolbar :class="{ 'handle': submissionId === -1 }">
       <v-toolbar-title>Section</v-toolbar-title>
 
@@ -34,6 +36,7 @@
         </v-list>
       </v-menu>
     </v-toolbar>
+    -->
 
     <v-card-title>
       <v-flex>
@@ -47,7 +50,7 @@
           </template>
 
           <template v-else>
-            <h1 @click="setEditMode">{{ editedName }}</h1>
+            <div class="title" @click="setEditMode">{{ editedName }}</div>
           </template>
         </div>
       </v-flex>
@@ -59,9 +62,33 @@
           @change="changeRepeatable($event)"
         ></v-switch>
       </v-flex>
+
+      <v-menu offset-y bottom left v-if="submissionId === -1">
+        <v-btn icon slot="activator">
+          <v-icon>more_vert</v-icon>
+        </v-btn>
+
+        <v-list>
+          <v-list-tile @click="" v-if="includeSection || !includeQuestion">
+            <v-list-tile-title>
+              <CreateSection :parentSectionId="section.id" :formId="formId"></CreateSection>
+            </v-list-tile-title>
+          </v-list-tile>
+
+          <v-list-tile @click="deleteSection">
+            <v-list-tile-title>Delete Section</v-list-tile-title>
+          </v-list-tile>
+
+          <v-list-tile v-show="!hasRepeatableQuestions" @click="" v-if="!includeSection || includeQuestion">
+            <v-list-tile-title>
+              <CreateQuestion :sectionId="section.id" :formId="formId"></CreateQuestion>
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </v-card-title>
 
-    <v-card-text class="px-0" v-show="expanded">
+    <v-card-text v-show="expanded">
       <div v-if="hasRepeatableQuestions">
         <div v-if="submissionId === -1">
           <question-repeatable
@@ -139,7 +166,7 @@
         <div slot="footer" v-if="isSectionEmpty">
           <v-card>
             <v-card-title>
-              <h3>There is no questions</h3>
+              <h3>This section has no questions.</h3>
             </v-card-title>
           </v-card>
         </div>

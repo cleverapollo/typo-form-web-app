@@ -145,9 +145,9 @@
     created () {
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadAllSubmissions', this.slug)
-      this.$store.dispatch('loadSections', this.id)
-      this.$store.dispatch('loadValidations', this.id)
-      this.$store.dispatch('loadTriggers', this.id)
+      this.$store.dispatch('loadSections', this.formId)
+      this.$store.dispatch('loadValidations', this.formId)
+      this.$store.dispatch('loadTriggers', this.formId)
       this.$store.dispatch('selectSection', null)
     }
   }

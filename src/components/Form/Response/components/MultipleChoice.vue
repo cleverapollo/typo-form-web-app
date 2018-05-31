@@ -1,7 +1,12 @@
 <template>
   <v-radio-group v-model="optionModel" column>
-    <v-radio class="pt-2 pb-2" v-for='(answer, index) in answers' :key='"Option " + index' :label="answer.answer"
-             :value="checked(answer.id)" @change="onSave(answer.id)"></v-radio>
+    <v-radio 
+      color="info"
+      v-for='(answer, index) in answers' 
+      :key='"Option " + index' 
+      :label="answer.answer"
+      :value="checked(answer.id)" @change="onSave(answer.id)">
+    </v-radio>
   </v-radio-group>
 </template>
 
