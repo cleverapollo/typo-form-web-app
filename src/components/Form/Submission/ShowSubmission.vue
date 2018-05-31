@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap v-if='submission'>
-    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+    <v-flex sm12 md10 offset-md1 xl8 offset-xl2>
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <div class="subheading py-2 px-3">{{ submissionName }}</div>
@@ -69,6 +69,9 @@
         return this.$store.getters.loadedApplicationSubmission(this.slug, parseInt(this.id))
       },
       formId () {
+        if (!this.submission) {
+          return null
+        }
         return this.submission.form.id
       },
       statuses () {
@@ -145,9 +148,12 @@
     created () {
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadAllSubmissions', this.slug)
-      this.$store.dispatch('loadSections', this.formId)
-      this.$store.dispatch('loadValidations', this.formId)
-      this.$store.dispatch('loadTriggers', this.formId)
+        .then(() => {
+          console.log(this.id)
+          this.$store.dispatch('loadSections', this.formId)
+          this.$store.dispatch('loadValidations', this.formId)
+          this.$store.dispatch('loadTriggers', this.formId)
+        })
       this.$store.dispatch('selectSection', null)
     }
   }

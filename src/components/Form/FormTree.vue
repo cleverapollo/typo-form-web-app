@@ -41,6 +41,11 @@
           <v-list-tile-title>{{ index + 1 }}. {{ item.name }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
+      <v-list-tile v-for="subItem in children(item)" :key="subItem.name"  @click="clickSection(subItem)">
+        <v-list-tile-content>
+          <v-list-tile-title>{{ subItem.name }}</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
     </v-list-group>
   </v-list>
 

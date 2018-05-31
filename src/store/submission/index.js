@@ -115,22 +115,26 @@ export default {
     },
     loadAllSubmissions ({commit}, slug) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + slug + SUBMISSION_URL)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              submissions: response['data']['submissions']
+      return new Promise((resolve, reject) => {
+        window.axios.get(APPLICATION_URL + slug + SUBMISSION_URL)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const updateObj = {
+                submissions: response['data']['submissions']
+              }
+              commit('setLoadedAllSubmissions', updateObj)
+              resolve(response)
             }
-            commit('setLoadedAllSubmissions', updateObj)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     },
     createSubmission ({commit, getters}, payload) {
       let submission = {
@@ -243,9 +247,12 @@ export default {
         }
         for (var i = 0; i < forms.length; i++) {
           if (state.loadedSubmissions[forms[i].id]) {
-            return state.loadedSubmissions[forms[i].id].find((submission) => {
+            const submission = state.loadedSubmissions[forms[i].id].find((submission) => {
               return submission.id === submissionId
             })
+            if (submission) {
+              return submission
+            }
           }
         }
         return null

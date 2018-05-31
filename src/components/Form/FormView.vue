@@ -1,5 +1,5 @@
 <template>
-  <v-layout row>
+  <v-layout row wrap>
 
     <!-- //Form Container -->
     <v-flex xs12>
@@ -8,7 +8,7 @@
           <v-layout row>
 
             <!-- //Setions -->
-            <v-flex xs12 sm3>
+            <v-flex xs12 class="sm3" v-if='list.length > 1'>
               <form-tree
                 :formId="formId"
                 :section="section"
@@ -19,7 +19,7 @@
             </v-flex>
 
             <!-- //Questions -->
-            <v-flex xs12 sm9>
+            <v-flex xs12 :class='"sm" + (list.length === 1 ? 12 : 9)'>
               <sections
                 :section="section"
                 :formId="formId"
@@ -31,6 +31,18 @@
           </v-layout>
         </v-card-text>
       </v-card>
+    </v-flex>
+
+    <!-- //Next / Prev Button -->
+    <v-flex xs12>
+      <v-layout row wrap>
+        <v-flex xs2>
+          <v-btn color="info" @click="prev()">Prev</v-btn>
+        </v-flex>
+        <v-flex xs2 offset-xs8 text-xs-right>
+          <v-btn color="info" @click="next()">Next</v-btn>
+        </v-flex>
+      </v-layout>
     </v-flex>
 
   </v-layout>
@@ -104,6 +116,103 @@
         }
 
         return ptSection
+      },
+      prev () {
+        let rtSection = this.$store.getters.loadSelectedSection()
+        let slibings = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.parent_section_id), element => {
+          return element.order
+        })
+        let index = slibings.findIndex(section => {
+          return section.id === rtSection.id
+        })
+        if (index) {
+          rtSection = slibings[index - 1]
+        } else if (rtSection.parent_section_id) {
+          if (this.view === 'questions') {
+            rtSection = this.$store.getters.loadedSection(this.formId, rtSection.parent_section_id)
+          } else {
+            while (!index) {
+              if (!rtSection.parent_section_id) {
+                break
+              }
+              rtSection = this.$store.getters.loadedSection(this.formId, rtSection.parent_section_id)
+              slibings = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.parent_section_id), element => {
+                return element.order
+              })
+              index = slibings.findIndex(section => {
+                return section.id === rtSection.id
+              })
+            }
+            if (rtSection.parent_section_id || index) {
+              rtSection = slibings[index - 1]
+            } else {
+              rtSection = this.getChildSection(this.list[0])
+            }
+          }
+        }
+        let repeat = true
+        while (repeat) {
+          let children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
+          if (children.length > 0) {
+            if (children[0].answers) {
+              repeat = false
+            } else {
+              rtSection = children[children.length - 1]
+            }
+          } else {
+            repeat = false
+          }
+        }
+        this.$store.dispatch('selectSection', rtSection)
+      },
+      next () {
+        let rtSection = this.$store.getters.loadSelectedSection()
+        let slibings = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.parent_section_id), element => {
+          return element.order
+        })
+        let index = slibings.findIndex(section => {
+          return section.id === rtSection.id
+        })
+        if (index < slibings.length - 1) {
+          rtSection = slibings[index + 1]
+        } else if (rtSection.parent_section_id) {
+          if (this.view === 'questions') {
+            rtSection = this.$store.getters.loadedSection(this.formId, rtSection.parent_section_id)
+          } else {
+            while (index === slibings.length - 1) {
+              if (!rtSection.parent_section_id) {
+                break
+              }
+              rtSection = this.$store.getters.loadedSection(this.formId, rtSection.parent_section_id)
+              slibings = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.parent_section_id), element => {
+                return element.order
+              })
+              index = slibings.findIndex(section => {
+                return section.id === rtSection.id
+              })
+            }
+            if (rtSection.parent_section_id || index !== slibings.length - 1) {
+              rtSection = slibings[index + 1]
+            } else {
+              rtSection = this.list[this.list.length - 1]
+              let repeat = true
+              while (repeat) {
+                let children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
+                if (children.length > 0) {
+                  if (children[0].answers) {
+                    repeat = false
+                  } else {
+                    rtSection = children[children.length - 1]
+                  }
+                } else {
+                  repeat = false
+                }
+              }
+            }
+          }
+        }
+        rtSection = this.getChildSection(rtSection)
+        this.$store.dispatch('selectSection', rtSection)
       }
     }
   }
