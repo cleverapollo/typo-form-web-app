@@ -38,7 +38,7 @@
                     <td>{{ props.item.email }}</td>
                     <td>{{ getRole(props.item.application_role_id) }}</td>
                     <td>{{ props.item.created_at.date }}</td>
-                    <td v-if='isApplicationAdmin' class="justify-center layout px-0">
+                    <td v-if='userIsApplicationAdmin' class="justify-center layout px-0">
                       <EditUser :user="props.item" :slug="slug"></EditUser>
                       <v-btn icon class="mx-0" @click="onDeleteUser(props.item.id)">
                         <v-icon color="pink">delete</v-icon>
@@ -75,7 +75,7 @@
                     <td>{{ props.item.invitee }}</td>
                     <td>{{ getRole(props.item.role_id) }}</td>
                     <td>{{ props.item.created_at }}</td>
-                    <td v-if='isApplicationAdmin' class="justify-center layout px-0">
+                    <td v-if='userIsApplicationAdmin' class="justify-center layout px-0">
                       <EditInvitedUser :user="props.item" :slug="slug"></EditInvitedUser>
                       <v-btn icon class="mx-0" @click="onDeleteInvitedUser(props.item.id)">
                         <v-icon color="pink">delete</v-icon>
@@ -95,8 +95,8 @@
     </v-flex>
 
     <!-- //Action Button -->
-    <v-tooltip top>
-      <v-btn slot="activator" fixed dark bottom right fab router class="red" @click.stop="inviteApplication = true" v-if="isApplicationAdmin">
+    <v-tooltip top v-if="userIsApplicationAdmin">
+      <v-btn slot="activator" fixed dark bottom right fab router class="red" @click.stop="inviteApplication = true">
         <v-icon>add</v-icon>
       </v-btn>
       <span>Invite Users</span>
@@ -132,8 +132,23 @@
       application () {
         return this.$store.getters.loadedApplication(this.slug)
       },
-      isApplicationAdmin () {
-        return this.application && this.application.application_role_id <= 2
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      userIsApplicationAdmin () {
+        return this.userIsAdmin || this.isSuperUser
+      },
+      userIsAdmin () {
+        if (!this.userIsAuthenticated || !this.application) {
+          return false
+        }
+        return this.getRole(this.application.application_role_id) === 'Admin'
+      },
+      isSuperUser () {
+        if (!this.userIsAuthenticated) {
+          return false
+        }
+        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       users () {
         return this.$store.getters.loadedUsers(this.slug)
@@ -149,7 +164,7 @@
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
           { text: 'Joined', value: 'created_at', sortable: true, align: 'left' }
         ]
-        if (this.isApplicationAdmin) {
+        if (this.userIsApplicationAdmin) {
           defaultUserHeaders.push({ text: 'Actions', sortable: false, align: 'center' })
         }
         return defaultUserHeaders
@@ -160,7 +175,7 @@
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
           { text: 'Invited', value: 'created_at', sortable: true, align: 'left' }
         ]
-        if (this.isApplicationAdmin) {
+        if (this.userIsApplicationAdmin) {
           defaultInvitedHeaders.push({ text: 'Actions', sortable: false, align: 'center' })
         }
         return defaultInvitedHeaders

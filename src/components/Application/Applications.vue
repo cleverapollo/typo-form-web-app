@@ -66,11 +66,26 @@
       applications () {
         return this.$store.getters.loadedApplications
       },
+      roles () {
+        return this.$store.getters.roles
+      },
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
       isSuperUser () {
-        return this.$store.getters.user && this.$store.getters.user.role_id === 1
+        if (!this.userIsAuthenticated) {
+          return false
+        }
+        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
       getFirstLetter (word) {
         return word.length > 0 ? word.trim().substring(0, 1).toUpperCase() : ''
       },

@@ -114,7 +114,7 @@
       </v-layout>
     </v-flex>
 
-    <v-tooltip top>
+    <v-tooltip top v-if="isTeamAdmin">
       <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="inviteUsers = true">
         <v-icon>add</v-icon>
       </v-btn>
@@ -154,7 +154,22 @@
         return this.$store.getters.loadedTeam(this.slug, parseInt(this.id))
       },
       isTeamAdmin () {
-        return this.team && this.getRole(this.team.team_role_id) === 'Admin'
+        return this.userIsAdmin || this.isSuperUser
+      },
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      userIsAdmin () {
+        if (!this.userIsAuthenticated || !this.team) {
+          return false
+        }
+        return this.getRole(this.team.team_role_id) === 'Admin'
+      },
+      isSuperUser () {
+        if (!this.userIsAuthenticated) {
+          return false
+        }
+        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       users () {
         return this.$store.getters.loadedTeamUsers(parseInt(this.id))

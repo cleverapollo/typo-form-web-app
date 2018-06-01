@@ -70,10 +70,19 @@
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsApplicationAdmin () {
+        return this.userIsAdmin || this.isSuperUser
+      },
+      userIsAdmin () {
         if (!this.userIsAuthenticated || !this.application) {
           return false
         }
-        return this.getRole(this.application.application_role_id) === 'Admin' && this.$route.name === 'Forms'
+        return this.getRole(this.application.application_role_id) === 'Admin'
+      },
+      isSuperUser () {
+        if (!this.userIsAuthenticated) {
+          return false
+        }
+        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       forms () {
         return _.sortBy(this.$store.getters.loadedForms(this.slug), element => {
