@@ -13,13 +13,13 @@
           </v-layout>
         </v-flex>
       </v-layout>
-      <v-layout row style='p-2'>
+      <v-layout row class='pa-2'>
         <v-flex xs2 class="text-center">{{ start.title }}</v-flex>
         <v-flex xs8>
           <v-layout row>
             <v-radio-group v-model="optionModel" row>
-              <v-radio v-for="n in end.id" :key="n" v-if="n+1!=start.id" :value="checked(n)"
-                       @change="onSave(n)"></v-radio>
+              <v-radio v-for="n in end.id" :key="n" v-if="n+1!=start.id" :value="n"
+                      @change="onSave(n)"></v-radio>
             </v-radio-group>
           </v-layout>
         </v-flex>
@@ -35,7 +35,7 @@
     props: ['question', 'answers', 'responses'],
     data () {
       return {
-        optionModel: 'checked'
+        optionModel: this.responses.length ? parseInt(this.responses[0].response) : 0
       }
     },
     computed: {
@@ -69,14 +69,6 @@
       }
     },
     methods: {
-      checked (index) {
-        if (this.responses.length) {
-          if (parseInt(this.responses[0].response) === index) {
-            return 'checked'
-          }
-        }
-        return 'unchecked'
-      },
       onSave (value) {
         if (this.responses.length) {
           this.$emit('update-response', [null, value, this.responses[0].id])

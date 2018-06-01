@@ -144,7 +144,7 @@
         const answerId = args[0]
         const response = args[1]
         this.$store.dispatch('createResponse', {
-          submissionId: this.submissionId,
+          submissionId: parseInt(this.submissionId),
           questionId: this.question.id,
           formId: this.formId,
           answerId: answerId,
@@ -156,7 +156,7 @@
         const response = args[1]
         const id = args[2]
         this.$store.dispatch('updateResponse', {
-          submissionId: this.submissionId,
+          submissionId: parseInt(this.submissionId),
           questionId: this.question.id,
           formId: this.formId,
           answerId: answerId,
@@ -166,7 +166,7 @@
       },
       deleteResponse (id) {
         this.$store.dispatch('deleteResponse', {
-          submissionId: this.submissionId,
+          submissionId: parseInt(this.submissionId),
           questionId: this.question.id,
           formId: this.formId,
           id: id

@@ -62,17 +62,6 @@
         }
         this.checkAnswers = ex
       },
-      checked (answerId, response) {
-        if (this.responses.length) {
-          const objs = this.responses.filter((obj) => {
-            return parseInt(obj.response) === response && obj.answer_id === answerId
-          })
-          if (objs.length) {
-            return 'check'
-          }
-        }
-        return 'unchecked'
-      },
       isNew (answerId) {
         const index = this.responses.findIndex((response) => {
           return response.answer_id === answerId

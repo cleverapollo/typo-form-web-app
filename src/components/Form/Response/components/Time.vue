@@ -1,6 +1,6 @@
 <template>
   <v-layout row>
-    <v-flex xs4>
+    <v-flex xs12>
       <v-menu
         lazy
         :close-on-content-click="false"
