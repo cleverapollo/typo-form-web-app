@@ -149,7 +149,6 @@
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadAllSubmissions', this.slug)
         .then(() => {
-          console.log(this.id)
           this.$store.dispatch('loadSections', this.formId)
           this.$store.dispatch('loadValidations', this.formId)
           this.$store.dispatch('loadTriggers', this.formId)

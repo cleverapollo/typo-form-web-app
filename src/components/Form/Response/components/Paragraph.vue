@@ -8,7 +8,6 @@
         max="120"
         full-width
         multi-line
-        single-line
         @change="onSave($event)"
       ></v-text-field>
     </v-flex>
