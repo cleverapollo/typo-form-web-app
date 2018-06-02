@@ -1,80 +1,82 @@
 <template>
   <v-container>
-    <v-text-field
-      label="Question"
-      single-line
-      @blur="checkUpdateName"
-      v-model="editedName"
-    ></v-text-field>
+    <form>
+      <v-text-field
+        label="Question"
+        single-line
+        @blur="checkUpdateName"
+        v-model="editedName"
+      ></v-text-field>
 
-    <v-text-field
-      label="Description"
-      v-model="editedDescription"
-      single-line
-      @blur="checkUpdateDescription"
-    ></v-text-field>
+      <v-text-field
+        label="Description"
+        v-model="editedDescription"
+        single-line
+        @blur="checkUpdateDescription"
+      ></v-text-field>
 
-    <v-select
-      :items="menuItems"
-      item-text="title"
-      item-value="title"
-      v-model="questionTypeString"
-      auto
-      persistent-hint
-      hint=" "
-      @change="updateQuestionType"
-    >
-      <template slot="selection" slot-scope="data">
-        <v-list-tile-avatar>
-          <v-icon v-text="data.item.action"></v-icon>
-        </v-list-tile-avatar>
-
-        <v-list-tile-content style="color: black">
-          <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
-        </v-list-tile-content>
-      </template>
-
-      <template slot="item" slot-scope="data">
-        <template v-if="typeof data.item !== 'object'">
-          <v-list-tile-content v-text="data.item"></v-list-tile-content>
-        </template>
-
-        <template v-else>
+      <v-select
+        :items="menuItems"
+        item-text="title"
+        item-value="title"
+        v-model="questionTypeString"
+        auto
+        persistent-hint
+        hint=" "
+        @change="updateQuestionType"
+      >
+        <template slot="selection" slot-scope="data">
           <v-list-tile-avatar>
             <v-icon v-text="data.item.action"></v-icon>
           </v-list-tile-avatar>
 
-          <v-list-tile-content>
+          <v-list-tile-content style="color: black">
             <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
           </v-list-tile-content>
         </template>
-      </template>
-    </v-select>
 
-    <v-select
-      :items="grids"
-      v-model="questionWidth"
-      label="Question Width"
-      single-line
-      @change="updateQuestionWidth($event)"
-    ></v-select>
+        <template slot="item" slot-scope="data">
+          <template v-if="typeof data.item !== 'object'">
+            <v-list-tile-content v-text="data.item"></v-list-tile-content>
+          </template>
 
-    <component
-      :is="questionComponent"
-      :question-id="question.id"
-      :form-id="formId"
-      :answers="answers"
-      :has-validation="mandatory && hasValidation"
-      @create-answer="createAnswer"
-      @delete-answer="deleteAnswer"
-      @delete-answers="deleteAnswers"
-      @change-answer="changeAnswer"
-      @update-answer="updateAnswer"
-      @move-answer="moveAnswer"
-      @create-validation="createValidation"
-      @update-validation="updateValidation"
-      @remove-validation="removeValidation"
-    ></component>
+          <template v-else>
+            <v-list-tile-avatar>
+              <v-icon v-text="data.item.action"></v-icon>
+            </v-list-tile-avatar>
+
+            <v-list-tile-content>
+              <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
+            </v-list-tile-content>
+          </template>
+        </template>
+      </v-select>
+
+      <v-select
+        :items="grids"
+        v-model="questionWidth"
+        label="Question Width"
+        single-line
+        @change="updateQuestionWidth($event)"
+      ></v-select>
+
+      <component
+        :is="questionComponent"
+        :question-id="question.id"
+        :form-id="formId"
+        :answers="answers"
+        :has-validation="mandatory && hasValidation"
+        @create-answer="createAnswer"
+        @delete-answer="deleteAnswer"
+        @delete-answers="deleteAnswers"
+        @change-answer="changeAnswer"
+        @update-answer="updateAnswer"
+        @move-answer="moveAnswer"
+        @create-validation="createValidation"
+        @update-validation="updateValidation"
+        @remove-validation="removeValidation"
+      ></component>
+    </form>
 
     <triggers :formId="formId" :sectionId="sectionId" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
 
