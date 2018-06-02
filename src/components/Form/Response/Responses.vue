@@ -88,6 +88,9 @@
       questionTypes () {
         return this.$store.getters.questionTypes
       },
+      comparators () {
+        return this.$store.getters.comparators
+      },
       questionTypeString: {
         get: function () {
           const index = _.findIndex(this.questionTypes, type => {
@@ -188,6 +191,12 @@
         })
         return questionType ? questionType.type : 'undefined'
       },
+      getComparator (comparatorId) {
+        const comparator = this.comparators.find((comparator) => {
+          return comparator.id === comparatorId
+        })
+        return comparator ? comparator.comparator : 'undefined'
+      },
       compareCondition (questionTrigger) {
         let question = this.$store.getters.loadedAllQuestion(this.formId, parseInt(questionTrigger.parent_question_id))
         let parentResponses = this.parentResponses(questionTrigger.parent_question_id)
@@ -228,8 +237,9 @@
         }
 
         answer = answer ? answer.toString() : null
-        switch (comparatorID) {
-          case 1:
+        const comparator = this.getComparator(comparatorID)
+        switch (comparator) {
+          case 'equals':
             if (!answerF) {
               if (questionValue === value) {
                 return true
@@ -242,7 +252,7 @@
               }
             }
             break
-          case 2:
+          case 'less than':
             if (!answerF) {
               if (questionValue < value) {
                 return true
@@ -253,7 +263,7 @@
               }
             }
             break
-          case 3:
+          case 'greater than':
             if (!answerF) {
               if (questionValue > value) {
                 return true
@@ -264,7 +274,7 @@
               }
             }
             break
-          case 4:
+          case 'less than or equal to':
             if (!answerF) {
               if (questionValue <= value) {
                 return true
@@ -275,7 +285,7 @@
               }
             }
             break
-          case 5:
+          case 'greater than or equal to':
             if (!answerF) {
               if (questionValue >= value) {
                 return true
@@ -286,10 +296,10 @@
               }
             }
             break
-          case 6:
-            if (questionTypeID === 4) {
+          case 'contain':
+            if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
               return questionAnswer === answer
-            } else if (questionTypeID === 9) {
+            } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid') {
               return questionAnswer === answer && questionValue === value
             } else {
               if (!answerF) {
@@ -302,25 +312,25 @@
                 }
               }
             }
-          case 7:
+          case 'starts with':
             if (!answerF) {
               return _.startsWith(questionValue, value)
             } else {
               return _.startsWith(questionAnswer, answer)
             }
-          case 8:
+          case 'ends with':
             if (!answerF) {
               return _.endsWith(questionValue, value)
             } else {
               return _.endsWith(questionAnswer, answer)
             }
-          case 9:
+          case 'is null':
             if (parentResponses.length > 0) {
               return false
             } else {
               return true
             }
-          case 10:
+          case 'is not null':
             if (parentResponses.length > 0) {
               return true
             } else {
