@@ -99,21 +99,24 @@
       }
     },
     computed: {
+      parentQuestion () {
+        return this.$store.getters.loadedAllQuestion(this.formId, this.parentQuestionId)
+      },
+      answers () {
+        return this.parentQuestion.answers
+      },
       trueAnswers () {
-        return this.$store.getters.loadedAnswers(this.formId, this.sectionId, this.parentQuestionId).filter(e => {
+        return this.answers.filter(e => {
           return e.parameter
         })
       },
       falseAnswers () {
-        return this.$store.getters.loadedAnswers(this.formId, this.sectionId, this.parentQuestionId).filter(e => {
+        return this.answers.filter(e => {
           return !e.parameter
         })
       },
-      answers () {
-        return this.$store.getters.loadedAnswers(this.formId, this.sectionId, this.parentQuestionId)
-      },
       parentQuestionType () {
-        return this.$store.getters.loadedQuestion(this.formId, this.sectionId, this.parentQuestionId).question_type_id
+        return this.parentQuestion.question_type_id
       },
       triggerTypes () {
         return this.$store.getters.triggerTypes.filter(e => {

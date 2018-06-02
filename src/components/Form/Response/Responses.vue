@@ -182,8 +182,14 @@
           return triggerType.question_type_id === questionTypeId && triggerType.comparator_id === comparatorId
         })[0]
       },
+      getQuestionType (questionTypeId) {
+        const questionType = this.questionTypes.find((questionType) => {
+          return questionType.id === questionTypeId
+        })
+        return questionType ? questionType.type : 'undefined'
+      },
       compareCondition (questionTrigger) {
-        let question = this.$store.getters.loadedQuestion(this.formId, parseInt(this.sectionId), parseInt(questionTrigger.parent_question_id))
+        let question = this.$store.getters.loadedAllQuestion(this.formId, parseInt(questionTrigger.parent_question_id))
         let parentResponses = this.parentResponses(questionTrigger.parent_question_id)
         let triggerType = this.triggerType(question.question_type_id, questionTrigger.comparator_id)
 
@@ -197,14 +203,14 @@
         let questionAnswer = ''
         let questionValue = ''
         if (parentResponses.length > 0) {
-          if (questionTypeID === 4) {
+          if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
             let filteredResponses = parentResponses.filter(function (parentResponse) {
               return parentResponse.answer_id === answer
             })
             if (filteredResponses.length > 0) {
               questionAnswer = answer.toString()
             }
-          } else if (questionTypeID === 9) {
+          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid') {
             let filteredResponses = parentResponses.filter(function (parentResponse) {
               return parentResponse.answer_id === answer && parentResponse.response === value
             })

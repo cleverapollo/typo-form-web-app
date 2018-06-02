@@ -236,7 +236,7 @@
         return this.$store.getters.loadedSection(this.formId, this.sectionId)
       },
       questionOptions () {
-        return this.section.questions.filter((question) => { return question.id !== this.question.id })
+        return this.$store.getters.loadedAllQuestions(this.formId).filter((question) => { return question.id !== this.question.id })
       },
       answers () {
         return _.sortBy(this.question.answers, element => {

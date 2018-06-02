@@ -174,6 +174,18 @@ export default {
         })
       }
     },
+    loadedAllQuestions (state, getters, rootState) {
+      return (formId) => {
+        if (!rootState.section.loadedSections[formId]) {
+          return []
+        }
+        let questions = []
+        for (let i = 0; i < rootState.section.loadedSections[formId].length; i++) {
+          questions = questions.concat(rootState.section.loadedSections[formId][i].questions)
+        }
+        return questions
+      }
+    },
     loadedQuestion (state, getters, rootState) {
       return (formId, sectionId, questionId) => {
         if (!rootState.section.loadedSections[formId]) {
@@ -188,6 +200,19 @@ export default {
         return section.questions.find((question) => {
           return question.id === questionId
         })
+      }
+    },
+    loadedAllQuestion (state, getters, rootState) {
+      return (formId, questionId) => {
+        if (!rootState.section.loadedSections[formId]) {
+          return null
+        }
+        for (let i = 0; i < rootState.section.loadedSections[formId].length; i++) {
+          return rootState.section.loadedSections[formId][i].questions.find((question) => {
+            return question.id === questionId
+          })
+        }
+        return null
       }
     }
   }

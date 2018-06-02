@@ -34,7 +34,7 @@
     </v-flex>
 
     <!-- //Next / Prev Button -->
-    <v-flex xs12 v-if="section">
+    <v-flex xs12 v-if="section && submissionId !== -1">
       <v-layout row wrap>
         <v-flex xs2>
           <v-btn color="info" @click="prev()">Prev</v-btn>
