@@ -8,7 +8,7 @@
           <v-layout row>
 
             <!-- //Setions -->
-            <v-flex xs12 class="sm3" v-if='list.length > 1'>
+            <v-flex xs12 class="sm3" v-if='sections.length'>
               <form-tree
                 :formId="formId"
                 :section="section"
@@ -19,7 +19,7 @@
             </v-flex>
 
             <!-- //Questions -->
-            <v-flex xs12 :class='"sm" + (list.length === 1 ? 12 : 9)'>
+            <v-flex xs12 :class='"sm" + (sections.length ? 9 : 12)'>
               <sections
                 :section="section"
                 :formId="formId"
@@ -37,10 +37,10 @@
     <v-flex xs12 v-if="section && submissionId !== -1">
       <v-layout row wrap>
         <v-flex xs2>
-          <v-btn color="info" @click="prev()">Prev</v-btn>
+          <v-btn color="info" @click="prev()" :disabled="prevAble">Prev</v-btn>
         </v-flex>
         <v-flex xs2 offset-xs8 text-xs-right>
-          <v-btn color="info" @click="next()">Next</v-btn>
+          <v-btn color="info" @click="next()" :disabled="nextAble">Next</v-btn>
         </v-flex>
       </v-layout>
     </v-flex>
@@ -60,6 +60,9 @@
       FormTree
     },
     computed: {
+      sections () {
+        return this.$store.getters.loadedSections(this.formId)
+      },
       list: {
         get () {
           return _.sortBy(this.$store.getters.loadedChildren(this.formId, null), element => {
@@ -70,6 +73,18 @@
           // TODO: draggable
         }
       },
+      prevAble () {
+        if (!this.list.length || !this.section) {
+          return false
+        }
+        return this.section === this.getFirstChildSection(this.list[0])
+      },
+      nextAble () {
+        if (!this.list.length || !this.section) {
+          return false
+        }
+        return this.section === this.getLastChildSection(this.list[this.list.length - 1])
+      },
       section () {
         let rtSection = this.$store.getters.loadSelectedSection()
         if (!rtSection) {
@@ -78,7 +93,7 @@
             if (this.view === 'questions') {
               rtSection = sections[0]
             } else {
-              rtSection = this.getChildSection(sections[0])
+              rtSection = this.getFirstChildSection(sections[0])
             }
             this.$store.dispatch('selectSection', rtSection)
           }
@@ -86,7 +101,7 @@
           if (this.view === 'responses') {
             const children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
             if (children.length > 0 && children[0].questions) {
-              rtSection = this.getChildSection(rtSection)
+              rtSection = this.getFirstChildSection(rtSection)
               this.$store.dispatch('selectSection', rtSection)
             }
           }
@@ -98,7 +113,7 @@
       sectionClicked: function (item) {
         this.$store.dispatch('selectSection', item)
       },
-      getChildSection (rtSection) {
+      getFirstChildSection (rtSection) {
         let repeat = true
         let ptSection = rtSection
 
@@ -109,6 +124,25 @@
               repeat = false
             } else {
               ptSection = children[0]
+            }
+          } else {
+            repeat = false
+          }
+        }
+
+        return ptSection
+      },
+      getLastChildSection (rtSection) {
+        let repeat = true
+        let ptSection = rtSection
+
+        while (repeat) {
+          let children = this.$store.getters.loadedChildren(this.formId, ptSection.id)
+          if (children.length > 0) {
+            if (children[children.length - 1].answers) {
+              repeat = false
+            } else {
+              ptSection = children[children.length - 1]
             }
           } else {
             repeat = false
@@ -149,23 +183,11 @@
             if (rtSection.parent_section_id || index) {
               rtSection = slibings[index - 1]
             } else {
-              rtSection = this.getChildSection(this.list[0])
+              rtSection = this.getFirstChildSection(this.list[0])
             }
           }
         }
-        let repeat = true
-        while (repeat) {
-          let children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
-          if (children.length > 0) {
-            if (children[0].answers) {
-              repeat = false
-            } else {
-              rtSection = children[children.length - 1]
-            }
-          } else {
-            repeat = false
-          }
-        }
+        rtSection = this.getLastChildSection(rtSection)
         this.$store.dispatch('selectSection', rtSection)
       },
       next () {
@@ -201,23 +223,11 @@
               rtSection = slibings[index + 1]
             } else {
               rtSection = this.list[this.list.length - 1]
-              let repeat = true
-              while (repeat) {
-                let children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
-                if (children.length > 0) {
-                  if (children[0].answers) {
-                    repeat = false
-                  } else {
-                    rtSection = children[children.length - 1]
-                  }
-                } else {
-                  repeat = false
-                }
-              }
+              rtSection = this.getLastChildSection(rtSection)
             }
           }
         }
-        rtSection = this.getChildSection(rtSection)
+        rtSection = this.getFirstChildSection(rtSection)
         this.$store.dispatch('selectSection', rtSection)
       }
     }
