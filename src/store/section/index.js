@@ -349,9 +349,7 @@ export default {
         if (!state.loadedSections[formId]) {
           return []
         }
-        return state.loadedSections[formId].sort((sectionA, sectionB) => {
-          return sectionA.order > sectionB.order
-        })
+        return state.loadedSections[formId]
       }
     },
     loadedSection (state) {

@@ -53,8 +53,10 @@
       </v-select>
 
       <v-select
-        :items="grids"
+        :items="questionWidths"
         v-model="questionWidth"
+        item-text="text"
+        item-value="value"
         label="Question Width"
         single-line
         @change="updateQuestionWidth($event)"
@@ -231,8 +233,15 @@
       }
     },
     computed: {
-      grids () {
-        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      questionWidths () {
+        let questionWidths = []
+        for (let i = 1; i <= 12; i++) {
+          questionWidths.push({
+            value: i,
+            text: Math.round((100 * i) / 12) + ' %'
+          })
+        }
+        return questionWidths
       },
       section () {
         return this.$store.getters.loadedSection(this.formId, this.sectionId)
