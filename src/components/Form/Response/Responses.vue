@@ -152,6 +152,8 @@
           formId: this.formId,
           answerId: answerId,
           response: response
+        }).then((response) => {
+          this.updateSubmission()
         })
       },
       updateResponse (args) {
@@ -165,6 +167,8 @@
           answerId: answerId,
           response: response,
           id: id
+        }).then((response) => {
+          this.updateSubmission()
         })
       },
       deleteResponse (id) {
@@ -173,7 +177,31 @@
           questionId: this.question.id,
           formId: this.formId,
           id: id
+        }).then((response) => {
+          this.updateSubmission()
         })
+      },
+      updateSubmission () {
+        this.$store.dispatch('updateSubmission', {
+          id: parseInt(this.submissionId),
+          formId: this.formId,
+          progress: this.progress()
+        })
+      },
+      progress () {
+        const sections = this.$store.getters.loadedSections(this.formId)
+        let questionCount = 0
+        let responseCount = 0
+        sections.forEach(function (section) {
+          let questions = this.$store.getters.loadedQuestions(this.formId, section.id).filter(question => question.mandatory)
+          questionCount += questions.length
+          questions.forEach(function (question) {
+            let responses = this.$store.getters.loadedResponses(this.formId, this.id).filter(response => response.question_id === question.id)
+            responseCount += responses.length ? 1 : 0
+          }, this)
+        }, this)
+
+        return questionCount !== 0 ? responseCount * 100 / questionCount : 0
       },
       parentResponses (questionId) {
         return this.allResponses.filter((response) => {

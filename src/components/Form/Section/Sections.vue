@@ -361,6 +361,8 @@
           answerId: answerId,
           response: response,
           order: order
+        }).then((response) => {
+          this.updateSubmission()
         })
       },
       updateResponse (args) {
@@ -377,6 +379,8 @@
           response: response,
           id: id,
           order: order
+        }).then((response) => {
+          this.updateSubmission()
         })
       },
       deleteResponse (args) {
@@ -385,7 +389,31 @@
           questionId: args[1],
           formId: this.formId,
           id: args[0]
+        }).then((response) => {
+          this.updateSubmission()
         })
+      },
+      updateSubmission () {
+        this.$store.dispatch('updateSubmission', {
+          id: parseInt(this.submissionId),
+          formId: this.formId,
+          progress: this.progress()
+        })
+      },
+      progress () {
+        const sections = this.$store.getters.loadedSections(this.formId)
+        let questionCount = 0
+        let responseCount = 0
+        sections.forEach(function (section) {
+          let questions = this.$store.getters.loadedQuestions(this.formId, section.id).filter(question => question.mandatory)
+          questionCount += questions.length
+          questions.forEach(function (question) {
+            let responses = this.$store.getters.loadedResponses(this.formId, this.id).filter(response => response.question_id === question.id)
+            responseCount += responses.length ? 1 : 0
+          }, this)
+        }, this)
+
+        return questionCount !== 0 ? responseCount * 100 / questionCount : 0
       },
       setEditMode () {
         if (this.submissionId === -1) {

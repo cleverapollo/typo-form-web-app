@@ -36,24 +36,28 @@ export default {
         response.order = payload.order
       }
 
-      window.axios.post(SUBMISSION_URL + payload.submissionId + RESPONSE_URL, response)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const createdObj = {
-              formId: payload.formId,
-              submissionId: payload.submissionId,
-              response: response['data']['response']
+      return new Promise((resolve, reject) => {
+        window.axios.post(SUBMISSION_URL + payload.submissionId + RESPONSE_URL, response)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const createdObj = {
+                formId: payload.formId,
+                submissionId: payload.submissionId,
+                response: response['data']['response']
+              }
+              commit('createResponse', createdObj)
+              resolve(response)
             }
-            commit('createResponse', createdObj)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     },
     updateResponse ({commit}, payload) {
       commit('setLoading', true)
@@ -71,35 +75,48 @@ export default {
         updateObj.order = payload.order
       }
 
-      window.axios.put(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + payload.id, updateObj)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              formId: payload.formId,
-              submissionId: payload.submissionId,
-              oldId: payload.id,
-              response: response['data']['response']
+      return new Promise((resolve, reject) => {
+        window.axios.put(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + payload.id, updateObj)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const updateObj = {
+                formId: payload.formId,
+                submissionId: payload.submissionId,
+                oldId: payload.id,
+                response: response['data']['response']
+              }
+              commit('updateResponse', updateObj)
+              resolve(response)
             }
-            commit('updateResponse', updateObj)
-          }
-        )
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
+          )
+          .catch(
+            error => {
+              console.log(error)
+              commit('setLoading', false)
+              reject(error)
+            }
+          )
+      })
     },
     deleteResponse ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + payload.id)
-        .then(() => {
-          commit('setLoading', false)
-          commit('deleteResponse', payload)
-        })
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
+
+      return new Promise((resolve, reject) => {
+        window.axios.delete(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + payload.id)
+          .then(response => {
+            commit('setLoading', false)
+            commit('deleteResponse', payload)
+            resolve(response)
+          })
+          .catch(
+            error => {
+              console.log(error)
+              commit('setLoading', false)
+              reject(error)
+            }
+          )
+      })
     }
   },
   getters: {

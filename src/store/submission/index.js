@@ -170,6 +170,7 @@ export default {
     },
     updateSubmission ({commit}, payload) {
       commit('setLoading', true)
+      console.log(payload)
 
       let submission = {}
 
@@ -183,6 +184,10 @@ export default {
 
       if (payload.periodEnd) {
         submission.period_end = payload.periodEnd
+      }
+
+      if (payload.progress !== undefined) {
+        submission.progress = payload.progress
       }
 
       window.axios.put(FORM_URL + payload.formId + SUBMISSION_URL + payload.id, submission)
