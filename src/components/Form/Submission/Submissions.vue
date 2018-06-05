@@ -30,8 +30,8 @@
                 <tr @click="onSubmission(props.item.id)">
                   <td>{{ props.item.form.name }}</td>
                   <td>{{ props.item.team ? props.item.team.name : props.item.user.first_name + ' ' + props.item.user.last_name }}</td>
-                  <td>{{ props.item.created_at.date }}</td>
-                  <td>{{ props.item.updated_at.date }}</td>
+                  <td>{{ props.item.created_at.date | moment }}</td>
+                  <td>{{ props.item.updated_at.date | moment }}</td>
                   <td>{{ status(props.item.status_id) }}</td>
                 </tr>
               </template>
@@ -60,6 +60,7 @@
 
 <script>
   import CreateSubmission from './CreateSubmission'
+  import moment from 'moment'
 
   export default {
     props: ['slug'],
@@ -100,6 +101,11 @@
       this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadAllSubmissions', this.slug)
+    },
+    filters: {
+      moment: function (date) {
+        return moment(date).format('YYYY-MM-DD HH:MM A')
+      }
     }
   }
 </script>

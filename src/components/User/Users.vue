@@ -37,7 +37,7 @@
                     <td>{{ props.item.last_name }}</td>
                     <td>{{ props.item.email }}</td>
                     <td>{{ getRole(props.item.application_role_id) }}</td>
-                    <td>{{ props.item.created_at.date }}</td>
+                    <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='userIsApplicationAdmin' class="justify-center layout px-0">
                       <EditUser :user="props.item" :slug="slug"></EditUser>
                       <v-btn icon class="mx-0" @click="onDeleteUser(props.item.id)">
@@ -111,6 +111,7 @@
   import InviteApplication from '../Application/InviteApplication'
   import EditUser from './EditUser'
   import EditInvitedUser from './EditInvitedUser'
+  import moment from 'moment'
   export default {
     props: ['slug'],
     data () {
@@ -214,6 +215,11 @@
     },
     created: function () {
       this.$store.dispatch('loadUsers', this.slug)
+    },
+    filters: {
+      moment: function (date) {
+        return moment(date).format('YYYY-MM-DD HH:MM A')
+      }
     }
   }
 </script>

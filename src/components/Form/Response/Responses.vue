@@ -3,7 +3,10 @@
     
     <v-layout row wrap question-head>
       <v-flex xs12>
-        <div class="body-2">{{ editedName }}</div>
+        <div class="body-2">
+          {{ editedName }}
+          <span v-if="question.mandatory">*</span>
+        </div>
       </v-flex>
       <v-flex xs12>
         <div class="body-1 grey--text text--darken-1" v-if='editedDescription'>
@@ -18,6 +21,7 @@
       :responses="responses"
       :question-id="question.id"
       :question="editedName"
+      :mandatory="question.mandatory"
       form-id="formId"
       :submission-id="submissionId"
       @create-response="createResponse"

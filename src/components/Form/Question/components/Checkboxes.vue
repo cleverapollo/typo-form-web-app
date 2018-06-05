@@ -3,7 +3,6 @@
     <v-layout row v-for='(answer, index) in list' :key='"Option " + index' class='answer' :class='"answer" + answer.id'>
       <v-flex xs10 style='min-width: 120px'>
         <v-text-field
-          :disabled='!answer.parameter'
           prepend-icon='check_box_outline_blank'
           :value='answer.answer'
           @change='updateAnswer(answer.id, $event)'
@@ -156,9 +155,9 @@
         this.$emit('create-answer', ['Option 1', true])
       } else if (this.answers.length === 2 && this.answers[0].answer.substr(0, 11) === 'LinearScale' && this.answers[1].answer.substr(0, 11) === 'LinearScale') {
         this.$emit('delete-answers')
-      } else {
-        const lastAnswer = this.answers[this.answers.length - 1]
-        if (!lastAnswer.parameter && lastAnswer.answer !== 'Other...') {
+      } else if (this.answers.length > 1) {
+        const lastAnswer = this.answers[this.answers.length - 2]
+        if (!lastAnswer.parameter) {
           this.$emit('change-answer')
         }
       }

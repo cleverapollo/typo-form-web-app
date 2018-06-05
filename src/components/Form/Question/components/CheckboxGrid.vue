@@ -133,9 +133,6 @@
         } else {
           const lastAnswer = this.answers[this.answers.length - 1]
           const firstAnswer = this.answers[0]
-          if (!lastAnswer.parameter && lastAnswer.answer === 'Other...') {
-            this.$emit('change-answer')
-          }
           if (lastAnswer.parameter) {
             this.createAnswer(false)
           }

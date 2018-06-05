@@ -1,5 +1,5 @@
 <template>
-  <v-layout column wrap class="pl-3 pr-3">
+  <v-layout wrap class="pl-3 pr-3">
     <v-flex xs8 offset-xs2 class="pb-3">
       <v-layout row>
         <v-flex class="pl-2" v-for="(column, index) in computedAnswers" :key="'ColumnString ' + index">

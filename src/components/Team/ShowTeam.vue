@@ -57,7 +57,7 @@
                     <td>{{ props.item.last_name }}</td>
                     <td>{{ props.item.email }}</td>
                     <td>{{ getRole(props.item.team_role_id) }}</td>
-                    <td>{{ props.item.created_at.date }}</td>
+                    <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='isTeamAdmin' class="justify-center layout px-0">
                       <EditTeamUser :user="props.item" :slug="slug" :teamId="id"></EditTeamUser>
                       <v-btn icon class="mx-0" @click="onDeleteTeamUser(props.item.id)">
@@ -131,6 +131,7 @@
   import EditTeam from './EditTeam'
   import EditTeamUser from './EditTeamUser'
   import EditInvitedTeamUser from './EditInvitedTeamUser'
+  import moment from 'moment'
   export default {
     props: ['slug', 'id'],
     data () {
@@ -248,6 +249,11 @@
     created: function () {
       this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadTeamUsers', {slug: this.slug, teamId: this.id})
+    },
+    filters: {
+      moment: function (date) {
+        return moment(date).format('YYYY-MM-DD HH:MM A')
+      }
     }
   }
 </script>

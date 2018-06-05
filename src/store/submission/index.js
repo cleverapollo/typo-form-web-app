@@ -170,7 +170,6 @@ export default {
     },
     updateSubmission ({commit}, payload) {
       commit('setLoading', true)
-      console.log(payload)
 
       let submission = {}
 

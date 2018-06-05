@@ -89,38 +89,35 @@
     </v-card-title>
 
     <v-card-text v-show="expanded">
-      <div v-if="hasRepeatableQuestions">
-        <div v-if="submissionId === -1">
-          <question-repeatable
-            :questions="section.questions"
-            :min-rows="section.min_rows"
-            :max-rows="section.max_rows"
-            @update-limitation="updateRepeatableLimitation"
-            @create-question="createQuestion"
-            @delete-question="deleteQuestion"
-            @update-question="updateQuestion"
-            @create-answer="createAnswer"
-            @delete-answer="deleteAnswer"
-            @update-answer="updateAnswer"
-            @move-answer="moveAnswer"
-            @move-question="moveQuestion"
-          >
-          </question-repeatable>
-        </div>
-
-        <div v-else>
-          <response-repeatable
-            :questions="section.questions"
-            :min-rows="section.min_rows"
-            :max-rows="section.max_rows"
-            :responses="responses"
-            @create-response="createResponse"
-            @update-response="updateResponse"
-            @delete-response="deleteResponse"
-          >
-          </response-repeatable>
-        </div>
-      </div>
+      <template v-if="hasRepeatableQuestions">
+        <question-repeatable
+          :questions="section.questions"
+          :min-rows="section.min_rows"
+          :max-rows="section.max_rows"
+          @update-limitation="updateRepeatableLimitation"
+          @create-question="createQuestion"
+          @delete-question="deleteQuestion"
+          @update-question="updateQuestion"
+          @create-answer="createAnswer"
+          @delete-answer="deleteAnswer"
+          @update-answer="updateAnswer"
+          @move-answer="moveAnswer"
+          @move-question="moveQuestion"
+          v-if="submissionId === -1"
+        >
+        </question-repeatable>
+        <response-repeatable
+          :questions="section.questions"
+          :min-rows="section.min_rows"
+          :max-rows="section.max_rows"
+          :responses="responses"
+          @create-response="createResponse"
+          @update-response="updateResponse"
+          @delete-response="deleteResponse"
+          v-else
+        >
+        </response-repeatable>
+      </template>
 
       <draggable
         v-else
