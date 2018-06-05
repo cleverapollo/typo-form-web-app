@@ -1,12 +1,25 @@
 <template>
   <v-layout row wrap justify-space-around>
     <v-flex xs5 style="min-width: 130px">
-      <v-text-field label="Minimum rows count" @change="updateRowsCount" v-model="minRowsInput" :rules="[validateMinRows]"></v-text-field>
+      <v-text-field
+        label="Minimum rows count"
+        @change="updateRowsCount"
+        v-model="minRowsInput"
+        :rules="[validateMinRows]">
+      </v-text-field>
 
       <h3 class="pt-4">Rows</h3>
 
-      <draggable v-model="computedQuestions" class="dragArea1" :options="{draggable: '.repeatableItem'}" style="min-height: 100px" @end="checkEnd">
-        <v-layout row v-for="(question, index) in computedQuestions" :key="'Option ' + index" class="repeatableItem" :class="'item' + question.id">
+      <draggable
+        v-model="computedQuestions"
+        class="dragArea1"
+        :options="{draggable: '.repeatableItem'}"
+        style="min-height: 100px"
+        @end="checkEnd">
+        <v-layout row v-for="(question, index) in computedQuestions"
+          :key="'Option ' + index"
+          class="repeatableItem"
+          :class="'item' + question.id">
           <v-flex style="max-width: 20px; min-width: 20px" class="mt-4">
             {{index+1}}.
           </v-flex>
@@ -41,12 +54,27 @@
     </v-flex>
 
     <v-flex xs5 style="min-width: 130px">
-      <v-text-field label="Maximum rows count" @change="updateRowsCount" v-model="maxRowsInput" :rules="[validateMaxRows]"></v-text-field>
+      <v-text-field
+        label="Maximum rows count"
+        @change="updateRowsCount"
+        v-model="maxRowsInput"
+        :rules="[validateMaxRows]">
+      </v-text-field>
 
       <h3 class="pt-4">Columns</h3>
 
-      <draggable v-model="computedAnswers" class="dragArea2" :options="{draggable:'.repeatableItem'}" style="min-height: 100px" @end="checkEnd">
-        <v-layout row v-for="(answer, index) in computedAnswers" :key="'Option ' + index" class="repeatableItem" :class="'item' + answer.id">
+      <draggable
+        v-model="computedAnswers"
+        class="dragArea2"
+        :options="{draggable:'.repeatableItem'}"
+        style="min-height: 100px"
+        @end="checkEnd">
+        <v-layout
+          row
+          v-for="(answer, index) in computedAnswers"
+          :key="'Option ' + index"
+          class="repeatableItem"
+          :class="'item' + answer.id">
           <v-flex xs10 style="min-width: 100px">
             <v-text-field
               prepend-icon="radio_button_unchecked"
@@ -81,27 +109,19 @@
 
   export default {
     name: 'question-repeatable',
-    props: {
-      'questions': {
-        type: Array,
-        default: function () {
-          return []
-        }
-      },
-      'minRows': {
-        default: ''
-      },
-      'maxRows': {
-        default: ''
-      }
-    },
+    props: ['section', 'formId'],
     components: {
       draggable
     },
     data () {
       return {
-        minRowsCount: this.minRows,
-        maxRowsCount: this.maxRows
+        minRowsCount: this.section.minRows,
+        maxRowsCount: this.section.maxRows
+      }
+    },
+    watch: {
+      section (value) {
+        console.log(value)
       }
     },
     methods: {
@@ -200,6 +220,9 @@
       }
     },
     computed: {
+      questions () {
+        return this.$store.getters.loadedSection(this.formId, this.section.id).questions
+      },
       computedQuestions: {
         get () {
           return this.questions.filter((question) => {

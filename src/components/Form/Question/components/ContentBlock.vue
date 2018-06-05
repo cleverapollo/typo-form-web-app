@@ -1,46 +1,80 @@
 <template>
-  <div>
-    <v-layout row>
-      <v-flex xs12>
-        <v-text-field
-          name='content-block'
-          multiple
-          :value='message'
-          @change='updateAnswer(answers[0].id, $event)'
-        ></v-text-field>
-      </v-flex>
+  <v-container>
+    <v-text-field
+      label="Content Block"
+      v-model="editedDescription"
+      multi-line
+      @blur="updateQuestion"
+    ></v-text-field>
+
+    <triggers :formId="formId" :sectionId="sectionId" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
+
+    <v-divider></v-divider>
+
+    <v-layout pa-3 class="card_actions">
+      <v-spacer></v-spacer>
+      <v-btn color="grey darken-2" flat icon @click="duplicateQuestion">
+        <v-icon>content_copy</v-icon>
+      </v-btn>
+      <v-btn color="grey darken-2" flat icon @click="deleteQuestion">
+        <v-icon>delete</v-icon>
+      </v-btn>
     </v-layout>
-  </div>
+  </v-container>
 </template>
 
 <script>
+  import triggers from '../Triggers'
   export default {
-    props: {
-      'answers': {
-        default: function () {
-          return []
-        }
-      }
+    props: ['question', 'formId', 'sectionId', 'index'],
+    components: {
+      triggers
     },
-    methods: {
-      updateAnswer (index, value) {
-        this.$emit('update-answer', [index, value])
-      }
-    },
-    mounted () {
-      if (this.answers.length > 1) {
-        this.$emit('delete-answers')
-      } else if (!this.answers.length) {
-        this.$emit('create-answer', ['', true])
+    data () {
+      return {
+        editedDescription: this.question.description
       }
     },
     computed: {
-      message () {
-        if (this.answers.length) {
-          return this.answers[0].answer
-        }
-        return ''
+      questionOptions () {
+        return this.$store.getters.loadedAllQuestions(this.formId).filter((question) => { return question.id !== this.question.id })
+      }
+    },
+    methods: {
+      updateQuestion () {
+        this.$store.dispatch('updateQuestion', {
+          formId: this.formId,
+          sectionId: this.sectionId,
+          id: this.question.id,
+          question: 'Content Block',
+          description: this.editedDescription
+        })
+      },
+      duplicateQuestion () {
+        this.$store.dispatch('duplicateQuestion', {
+          formId: this.formId,
+          sectionId: this.sectionId,
+          id: this.question.id
+        })
+      },
+      deleteQuestion () {
+        this.$store.dispatch('deleteQuestion', {
+          formId: this.formId,
+          sectionId: this.sectionId,
+          id: this.question.id
+        })
+      }
+    },
+    mounted () {
+      if (this.question.answers.length) {
+        this.$emit('delete-answers')
       }
     }
   }
 </script>
+
+<style scoped>
+  .card_actions .btn, .card_actions>* {
+    margin: 0 4px;
+  }
+</style>
