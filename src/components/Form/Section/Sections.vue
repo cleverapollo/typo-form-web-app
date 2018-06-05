@@ -84,6 +84,10 @@
               <CreateQuestion :sectionId="section.id" :formId="formId"></CreateQuestion>
             </v-list-tile-title>
           </v-list-tile>
+
+          <v-list-tile v-show="!hasRepeatableQuestions" @click="createContentBlock" v-if="!includeSection || includeQuestion">
+            <v-list-tile-title>Create Content Block</v-list-tile-title>
+          </v-list-tile>
         </v-list>
       </v-menu>
     </v-card-title>
@@ -92,9 +96,8 @@
       <div v-if="hasRepeatableQuestions">
         <div v-if="submissionId === -1">
           <question-repeatable
-            :questions="section.questions"
-            :min-rows="section.min_rows"
-            :max-rows="section.max_rows"
+            :section="section"
+            :form-id="formId"
             @update-limitation="updateRepeatableLimitation"
             @create-question="createQuestion"
             @delete-question="deleteQuestion"
@@ -149,18 +152,33 @@
               :formId="formId"
               :sectionId="section.id"
               :index="index + 1"
-              v-if="element.answers"
+              v-if="element.answers && getQuestionType(element.question_type_id) !== 'Content Block'"
             ></questions>
+
+            <QuestionContentBlock
+              :question="element"
+              :formId="formId"
+              :sectionId="section.id"
+              :index="index + 1"
+              v-if="element.answers && getQuestionType(element.question_type_id) === 'Content Block'"
+            ></QuestionContentBlock>
           </v-flex>
 
-          <responses
-            :question="element"
-            :formId="formId"
-            :sectionId="section.id"
-            :index="index + 1"
-            :submissionId="submissionId"
-            v-else
-          ></responses>
+          <template v-else>
+            <responses
+              :question="element"
+              :formId="formId"
+              :sectionId="section.id"
+              :index="index + 1"
+              :submissionId="submissionId"
+              v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
+            ></responses>
+
+            <ResponseContentBlock
+              :question="element"
+              v-if="getQuestionType(element.question_type_id) === 'Content Block'"
+            ></ResponseContentBlock>
+          </template>
         </div>
 
         <div slot="footer" v-if="isSectionEmpty">
@@ -181,6 +199,8 @@
   import responses from '../Response/Responses'
   import questionRepeatable from '../Question/components/QuestionRepeatable'
   import ResponseRepeatable from '../Response/components/ResponseRepeatable'
+  import QuestionContentBlock from '../Question/components/ContentBlock'
+  import ResponseContentBlock from '../Response/components/ContentBlock'
   import CreateSection from './CreateSection'
   import CreateQuestion from '../Question/CreateQuestion'
   import * as _ from 'lodash'
@@ -195,7 +215,9 @@
       questionRepeatable,
       ResponseRepeatable,
       CreateSection,
-      CreateQuestion
+      CreateQuestion,
+      QuestionContentBlock,
+      ResponseContentBlock
     },
     data () {
       return {
@@ -268,9 +290,18 @@
           }
         })
         return includeQuestion
+      },
+      questionTypes () {
+        return this.$store.getters.questionTypes
       }
     },
     methods: {
+      getQuestionType (questionTypeId) {
+        const questionType = this.questionTypes.find((questionType) => {
+          return questionType.id === questionTypeId
+        })
+        return questionType ? questionType.type : 'undefined'
+      },
       changeRepeatable (value) {
         this.$store.dispatch('deleteQuestions', {
           formId: this.formId,
@@ -294,6 +325,19 @@
           description: questionDescription,
           questionTypeId: questionType,
           mandatory: mandatory
+        })
+      },
+      createContentBlock () {
+        const questionType = this.questionTypes.find((questionType) => {
+          return questionType.type === 'Content Block'
+        })
+        this.$store.dispatch('createQuestion', {
+          formId: this.formId,
+          sectionId: this.section.id,
+          question: 'Content Block',
+          description: '',
+          questionTypeId: questionType.id,
+          mandatory: false
         })
       },
       deleteQuestion (id) {
