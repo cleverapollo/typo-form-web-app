@@ -14,7 +14,6 @@
       >
         <v-text-field
           slot="activator"
-          :label="question"
           v-model="dateFormatted"
           prepend-icon="event"
           @blur="date = parseDate(dateFormatted)"

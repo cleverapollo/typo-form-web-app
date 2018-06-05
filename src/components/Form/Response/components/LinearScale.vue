@@ -1,8 +1,5 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 class="mb-3">
-      <div class="subheading">{{ question }}</div>
-    </v-flex>
     <v-flex xs12>
       <v-layout row class="pa-2">
         <v-flex xs8 offset-xs2>
@@ -18,8 +15,13 @@
         <v-flex xs8>
           <v-layout row>
             <v-radio-group v-model="optionModel" row>
-              <v-radio v-for="n in end.id" :key="n" v-if="n+1!=start.id" :value="n"
-                      @change="onSave(n)"></v-radio>
+              <v-radio
+                color="info"
+                v-for="n in end.id" 
+                :key="n" v-if="n+1!=start.id" 
+                :value="n"
+                @change="onSave(n)
+              "></v-radio>
             </v-radio-group>
           </v-layout>
         </v-flex>

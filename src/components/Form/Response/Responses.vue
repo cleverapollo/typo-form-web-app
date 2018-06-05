@@ -1,12 +1,16 @@
 <template>
-  <v-flex :class='"xs" + (question.width ? question.width : 12)'>
+  <v-flex :class='"xs" + (question.width ? question.width : 12)' question-group>
     
-    <!--
-    <div class="subheading">{{ editedName }}</div>
-    <p v-if='editedDescription'>
-      {{ editedDescription }}
-    </p>
-    -->
+    <v-layout row wrap question-head>
+      <v-flex xs12>
+        <div class="body-2">{{ editedName }}</div>
+      </v-flex>
+      <v-flex xs12>
+        <div class="body-1 grey--text text--darken-1" v-if='editedDescription'>
+          {{ editedDescription }}
+        </div>
+      </v-flex>
+    </v-layout>
 
     <component
       :is="questionComponent"
@@ -377,5 +381,17 @@
 <style scoped>
   .error {
     color: red;
+  }
+  .question-group .question-head {
+    padding-bottom:5px;
+  }
+  .question-group >>> .input-group.input-group--text-field {
+    padding-top:0px;
+  }
+  .question-group {
+    margin-bottom:30px;
+  }
+  .question-group >>> .input-group__details {
+    min-height:auto;
   }
 </style>

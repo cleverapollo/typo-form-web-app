@@ -1,18 +1,13 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <div class="subheading">{{ question }}</div>
-    </v-flex>
-    <v-flex xs12>
       <v-select
         v-bind:items="computedOptions"
         v-model="selectedOption"
         item-text="answer"
         item-value="id"
         @change="onSave($event)"
-        label="Select"
-        single-line
-        bottom
+        autocomplete
       ></v-select>
     </v-flex>
   </v-layout>

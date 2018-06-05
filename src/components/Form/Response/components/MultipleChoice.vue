@@ -1,10 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <div class="subheading">{{ question }}</div>
-    </v-flex>
-    <v-flex xs12>
-      <v-radio-group v-model="optionModel" column>
+      <v-radio-group v-model="optionModel">
         <v-radio 
           color="info"
           v-for='(answer, index) in answers' 
@@ -37,3 +34,9 @@
     }
   }
 </script>
+
+<style scoped>
+  .input-group.radio-group {
+    padding-top:0px;
+  }
+</style>

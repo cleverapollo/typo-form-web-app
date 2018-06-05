@@ -1,8 +1,5 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 class="mb-3">
-      <div class="subheading">{{ question }}</div>
-    </v-flex>
     <v-flex xs12>
       <div v-on:click="startedUploading">
         <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"

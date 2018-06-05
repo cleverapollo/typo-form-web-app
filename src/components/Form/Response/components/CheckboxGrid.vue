@@ -1,11 +1,8 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <div class="subheading">{{ question }}</div>
-    </v-flex>
-    <v-flex xs12>
       <v-layout column>
-        <v-flex xs10 offset-xs2 class="pb-3">
+        <v-flex xs9 offset-xs3 class="pb-3">
           <v-layout row>
             <v-flex v-for='(column, index) in computedColumns' :key='"ColumnString " + index'>
               {{ column.answer }}
@@ -14,10 +11,17 @@
         </v-flex>
         <v-flex>
           <v-layout row v-for='(row, index) in computedRows' :key='"row " + index'>
-            <v-flex xs2>
-              {{ row.answer }}
+            <v-flex xs3>
+              <div class="body-2">{{row.answer}}</div>
             </v-flex>
-            <v-checkbox v-for='(column, index2) in computedColumns' :key='"column " + index2' v-model="checkAnswers[index]" :value="column.id" @change="onSave(row.id, column.id)"></v-checkbox>
+            <v-checkbox
+              color="info"
+              v-for='(column, index2) in computedColumns' 
+              :key='"column " + index2' 
+              v-model="checkAnswers[index]" 
+              :value="column.id" 
+              @change="onSave(row.id, column.id)"
+            ></v-checkbox>
           </v-layout>
         </v-flex>
       </v-layout>

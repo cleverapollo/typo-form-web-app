@@ -14,7 +14,6 @@
       >
         <v-text-field
           slot="activator"
-          :label="question"
           v-model="time"
           prepend-icon="access_time"
           readonly

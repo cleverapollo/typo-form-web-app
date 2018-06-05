@@ -2,12 +2,9 @@
   <v-layout row>
     <v-flex xs12>
       <v-text-field
-        :label="question"
         :value="message"
         counter
-        max="120"
-        full-width
-        multi-line
+        textarea
         @change="onSave($event)"
       ></v-text-field>
     </v-flex>
@@ -40,3 +37,14 @@
     }
   }
 </script>
+
+<style scoped>
+  .question-group .input-group.input-group--textarea {
+    padding-top: 0px;
+  }
+
+  .question-group .input-group.input-group--textarea .input-group__input {
+    border: 1px solid rgba(0,0,0,.42);
+    padding: 15px;
+  }
+</style>

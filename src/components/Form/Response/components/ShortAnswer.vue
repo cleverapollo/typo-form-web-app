@@ -1,11 +1,14 @@
 <template>
-  <v-text-field
-    name="short-answer"
-    :label="question"
-    :value="message"
-    @change="onSave($event)"
-    :rules="[validate]"
-  ></v-text-field>
+  <v-layout row>
+    <v-flex xs12>
+      <v-text-field
+        name="short-answer"
+        :value="message"
+        @change="onSave($event)"
+        :rules="[validate]"
+      ></v-text-field>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
