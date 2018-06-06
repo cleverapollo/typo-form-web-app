@@ -158,7 +158,7 @@
           let questions = this.$store.getters.loadedQuestions(this.formId, section.id).filter(question => question.mandatory)
           questionCount += questions.length
           questions.forEach(function (question) {
-            let responses = this.$store.getters.loadedResponses(this.formId, this.id).filter(response => response.question_id === question.id)
+            let responses = this.$store.getters.loadedResponses(this.formId, parseInt(this.id)).filter(response => response.question_id === question.id)
             responseCount += responses.length ? 1 : 0
           }, this)
         }, this)

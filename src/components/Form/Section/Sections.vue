@@ -129,14 +129,15 @@
         :options="{group: 'parent', draggable: '.item', handle: '.handle'}"
         @end="checkEnd"
         style="min-height: 100px"
+        class="layout row wrap"
       >
-        <div
+        <template
           v-for="(element, index) in list"
-          :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id"
           :class="(isSection(element)  ? 'section' : 'question') + element.id"
           class="pb-2 item"
         >
-          <v-flex v-if="submissionId === -1">
+          <v-flex v-if="submissionId === -1"
+          :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id">
             <sections
               :section="element"
               :formId="formId"
@@ -168,15 +169,17 @@
               :sectionId="section.id"
               :index="index + 1"
               :submissionId="submissionId"
+              :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id"
               v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
             ></responses>
 
             <ResponseContentBlock
               :question="element"
+              :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id"
               v-if="getQuestionType(element.question_type_id) === 'Content Block'"
             ></ResponseContentBlock>
           </template>
-        </div>
+        </template>
 
         <div slot="footer" v-if="isSectionEmpty">
           <v-card>
@@ -452,7 +455,7 @@
           let questions = this.$store.getters.loadedQuestions(this.formId, section.id).filter(question => question.mandatory)
           questionCount += questions.length
           questions.forEach(function (question) {
-            let responses = this.$store.getters.loadedResponses(this.formId, this.id).filter(response => response.question_id === question.id)
+            let responses = this.$store.getters.loadedResponses(this.formId, parseInt(this.id)).filter(response => response.question_id === question.id)
             responseCount += responses.length ? 1 : 0
           }, this)
         }, this)
