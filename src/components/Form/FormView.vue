@@ -1,62 +1,25 @@
 <template>
   <v-layout row wrap>
 
-    <!-- //Form/Submission Layout -->
-    <v-flex xs12>
-      <v-card>
+    <!-- //Setions -->
+    <v-flex xs12 class="sm3" v-if='sections.length > 1'>
+      <form-tree
+        :formId="formId"
+        :section="section"
+        :list="list"
+        :submissionId="submissionId"
+        @section-clicked="sectionClicked"
+      ></form-tree>
+    </v-flex>
 
-        <!-- //Header -->
-        <v-card-title>
-
-        </v-card-title>
-
-        <v-card-text>
-          <v-layout row wrap>
-
-            <!-- //Setions -->
-            <v-flex xs12 class="sm3" v-if='sections.length'>
-              <form-tree
-                :formId="formId"
-                :section="section"
-                :list="list"
-                :submissionId="submissionId"
-                @section-clicked="sectionClicked"
-              ></form-tree>
-            </v-flex>
-
-            <!-- //Questions -->
-            <v-flex xs12 :class='"sm" + (sections.length ? 9 : 12)'>
-              <sections
-                :section="section"
-                :formId="formId"
-                :submissionId="submissionId"
-                v-if="section"
-              ></sections>
-            </v-flex>
-
-          </v-layout>
-        </v-card-text>
-
-        <!-- //Footer -->
-        <v-divider></v-divider>
-        <v-card-actions>
-
-          <!-- //Navigation Controls -->
-          <v-flex xs12 v-if="section">
-            <v-layout row wrap>
-              <v-flex xs12 md3 pa-2>
-                <v-btn class="ma-0" block color="info" @click="prev()" :disabled="prevAble">Prev</v-btn>
-              </v-flex>
-              <v-spacer></v-spacer>
-              <v-flex xs12 md3 pa-2 ma-0>
-                <v-btn class="ma-0" block color="info" @click="next()" :disabled="nextAble">Next</v-btn>
-              </v-flex>
-            </v-layout>
-          </v-flex>
-
-        </v-card-actions>
-
-      </v-card>
+    <!-- //Questions -->
+    <v-flex xs12 :class='"sm" + (sections.length > 1 ? 9 : 12)'>
+      <sections
+        :section="section"
+        :formId="formId"
+        :submissionId="submissionId"
+        v-if="section"
+      ></sections>
     </v-flex>
 
   </v-layout>
@@ -86,18 +49,6 @@
         set (value) {
           // TODO: draggable
         }
-      },
-      prevAble () {
-        if (!this.list.length || !this.section) {
-          return false
-        }
-        return this.section === this.getFirstChildSection(this.list[0])
-      },
-      nextAble () {
-        if (!this.list.length || !this.section) {
-          return false
-        }
-        return this.section === this.getLastChildSection(this.list[this.list.length - 1])
       },
       section () {
         let rtSection = this.$store.getters.loadSelectedSection()
@@ -247,9 +198,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .expansion-panel .card__text {
-    padding-right: 0 !important;
-  }
-</style>

@@ -3,51 +3,93 @@
     <v-flex sm12 md10 offset-md1 xl8 offset-xl2>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <div class="subheading py-2 px-3">{{ submissionName }}</div>
-          <v-menu offset-y bottom left class="text-xs-right">
-            <v-btn icon slot="activator">
-              <v-icon>more_vert</v-icon>
-            </v-btn>
+          <div class="subheading py-2 px-3">{{ submission.form.name }}</div>
+        </v-flex>
 
-            <v-list>
-              <v-list-tile @click="">
-                <v-list-tile-title>
-                  <EditSubmission :submission="submission" :formId="formId"></EditSubmission>
-                </v-list-tile-title>
-              </v-list-tile>
+        <!-- //Submission Layout -->
+        <v-flex xs12>
+          <v-card>
 
-              <v-list-tile @click=onDeleteSubmission>
-                <v-list-tile-title>Delete Submission</v-list-tile-title>
-              </v-list-tile>
+            <!-- //Header -->
+            <v-card-title>
+              <v-layout row wrap>
+                <v-flex d-flex xs12>
+                  <div class="subheading">{{ submissionOwner }}</div>
 
-              <v-list-tile @click=onSendSubmission v-if="sendAble">
-                <v-list-tile-title>Send Submission</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
+                  <!-- //Menu -->
+                  <v-menu offset-y bottom left class="text-xs-right">
+                    <v-btn icon slot="activator">
+                      <v-icon>more_vert</v-icon>
+                    </v-btn>
+
+                    <v-list>
+                      <v-list-tile @click="">
+                        <v-list-tile-title>
+                          <EditSubmission :submission="submission" :formId="formId"></EditSubmission>
+                        </v-list-tile-title>
+                      </v-list-tile>
+
+                      <v-list-tile @click=onDeleteSubmission>
+                        <v-list-tile-title>Delete Submission</v-list-tile-title>
+                      </v-list-tile>
+
+                      <v-list-tile @click=onSendSubmission v-if="sendAble">
+                        <v-list-tile-title>Send Submission</v-list-tile-title>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
+                </v-flex>
+
+                <!-- //Submission Information -->
+                <v-flex xs6>
+                  <div class="subheading py-2 px-3 break-all" v-if='periodStart || periodEnd'>{{periodStart}} ~ {{periodEnd}}</div>
+                </v-flex>
+
+                <!-- //Progress -->
+                <v-flex xs12>
+                  <v-progress-linear
+                    :value="progress"
+                    color="success"
+                    height="10"
+                  >
+                    {{ progress.toFixed(0) }}
+                  </v-progress-linear>
+                </v-flex>
+
+              </v-layout>
+            </v-card-title>
+            <v-divider></v-divider>
+
+            <!-- //Form Content -->
+            <v-card-text>
+              <v-layout row wrap>
+
+                <v-flex d-flex xs12>
+                  <form-view
+                    :slug="slug"
+                    :formId="formId"
+                    :submissionId="id"
+                  ></form-view>
+                </v-flex>
+
+              </v-layout>
+            </v-card-text>
+
+            <!-- //Footer -->
+            <v-divider></v-divider>
+            <v-card-actions>
+
+              <formNavigation
+                :slug="slug"
+                :formId="formId"
+                :submissionId="id"
+              ></formNavigation>
+
+            </v-card-actions>
+
+          </v-card>
         </v-flex>
-        <v-flex xs6>
-          <div class="subheading py-2 px-3 break-all" v-if='periodStart || periodEnd'>{{periodStart}} ~ {{periodEnd}}</div>
-        </v-flex>
-        <v-flex xs6 class="text-xs-right">
-          <v-progress-circular
-            xs4
-            :size="80"
-            :width="15"
-            :rotate="-90"
-            :value="progress"
-            color="primary"
-          >
-            {{ progress.toFixed(2) }}
-          </v-progress-circular>
-        </v-flex>
-        <v-flex d-flex xs12>
-          <form-view
-            :slug="slug"
-            :formId="formId"
-            :submissionId="id"
-          ></form-view>
-        </v-flex>
+
       </v-layout>
     </v-flex>
   </v-layout>
@@ -57,12 +99,14 @@
   import * as _ from 'lodash'
   import FormView from '../FormView'
   import EditSubmission from './EditSubmission'
+  import FormNavigation from '../FormNavigation'
 
   export default {
     props: ['slug', 'id'],
     components: {
       FormView,
-      EditSubmission
+      EditSubmission,
+      FormNavigation
     },
     computed: {
       submission () {
@@ -99,7 +143,7 @@
 
         return (this.progress === 100)
       },
-      submissionName () {
+      submissionOwner () {
         if (this.submission.team == null) {
           return this.submission.user.first_name + ' ' + this.submission.user.last_name
         } else {

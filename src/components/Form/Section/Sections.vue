@@ -49,7 +49,7 @@
             ></v-text-field>
           </template>
 
-          <template v-else>
+          <template v-else-if="sections.length > 1">
             <div class="title" @click="setEditMode">{{ editedName }}</div>
           </template>
         </div>
@@ -235,6 +235,9 @@
       }
     },
     computed: {
+      sections () {
+        return this.$store.getters.loadedSections(this.formId)
+      },
       list: {
         get () {
           return _.sortBy(this.$store.getters.loadedChildren(this.formId, this.section.id), element => {

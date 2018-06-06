@@ -4,40 +4,77 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <div class="subheading py-2 px-3">{{ form.name }}</div>
-          <v-menu offset-y bottom left class="text-xs-right">
-            <v-btn icon slot="activator">
-              <v-icon>more_vert</v-icon>
-            </v-btn>
+        </v-flex>
 
-            <v-list>
-              <v-list-tile @click="">
-                <v-list-tile-title>
-                  <CreateSection
-                    :parentSectionId="-1"
+        <!-- //Form Layout -->
+        <v-flex xs12>
+          <v-card>
+
+            <!-- //Header -->
+            <v-card-title>
+              <v-layout row wrap>
+                <v-flex d-flex xs12>
+                  <div class="subheading py-2 px-3">Edit Form</div>
+                  <v-menu offset-y bottom left class="text-xs-right">
+                    <v-btn icon slot="activator">
+                      <v-icon>more_vert</v-icon>
+                    </v-btn>
+
+                    <v-list>
+                      <v-list-tile @click="">
+                        <v-list-tile-title>
+                          <CreateSection
+                            :parentSectionId="-1"
+                            :formId="id"
+                          ></CreateSection>
+                        </v-list-tile-title>
+                      </v-list-tile>
+
+                      <v-list-tile @click="">
+                        <v-list-tile-title>
+                          <EditForm :form="form" :slug="slug"></EditForm>
+                        </v-list-tile-title>
+                      </v-list-tile>
+
+                      <v-list-tile @click=onDeleteForm>
+                        <v-list-tile-title>Delete Form</v-list-tile-title>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
+                </v-flex>
+              </v-layout>
+            </v-card-title>
+            <v-divider></v-divider>
+
+            <v-card-text>
+              <v-layout row wrap>
+
+                <v-flex d-flex xs12>
+                  <form-view
+                    :slug="slug"
                     :formId="id"
-                  ></CreateSection>
-                </v-list-tile-title>
-              </v-list-tile>
+                    :submissionId="-1"
+                  ></form-view>
+                </v-flex>
 
-              <v-list-tile @click="">
-                <v-list-tile-title>
-                  <EditForm :form="form" :slug="slug"></EditForm>
-                </v-list-tile-title>
-              </v-list-tile>
+              </v-layout>
+            </v-card-text>
 
-              <v-list-tile @click=onDeleteForm>
-                <v-list-tile-title>Delete Form</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
+            <!-- //Footer -->
+            <v-divider></v-divider>
+            <v-card-actions>
+
+              <formNavigation
+                :slug="slug"
+                :formId="id"
+                :submissionId="-1"
+              ></formNavigation>
+
+            </v-card-actions>
+
+          </v-card>
         </v-flex>
-        <v-flex d-flex xs12>
-          <form-view
-            :slug="slug"
-            :formId="id"
-            :submissionId="-1"
-          ></form-view>
-        </v-flex>
+
       </v-layout>
     </v-flex>
   </v-layout>
@@ -47,12 +84,14 @@
   import FormView from './FormView'
   import EditForm from './EditForm'
   import CreateSection from './Section/CreateSection'
+  import FormNavigation from './FormNavigation'
 
   export default {
     components: {
       FormView,
       EditForm,
-      CreateSection
+      CreateSection,
+      FormNavigation
     },
     props: ['slug', 'id'],
     computed: {
