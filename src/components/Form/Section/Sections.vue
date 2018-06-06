@@ -55,13 +55,15 @@
         </div>
       </v-flex>
 
-      <v-flex style="min-width: 130px; max-width: 130px;" class="mt-4" v-if="submissionId === -1">
-        <v-switch
-          label="Repeatable"
-          v-model="hasRepeatableQuestions"
-          @change="changeRepeatable($event)"
-        ></v-switch>
-      </v-flex>
+      <!--
+        <v-flex style="min-width: 130px; max-width: 130px;" class="mt-4" v-if="submissionId === -1">
+          <v-switch
+            label="Repeatable"
+            v-model="hasRepeatableQuestions"
+            @change="changeRepeatable($event)"
+          ></v-switch>
+        </v-flex>
+      -->
 
       <v-menu offset-y bottom left v-if="submissionId === -1">
         <v-btn icon slot="activator">
@@ -93,37 +95,38 @@
     </v-card-title>
 
     <v-card-text v-show="expanded">
-      <template v-if="hasRepeatableQuestions">
-        <question-repeatable
-          :section="section"
-          :form-id="formId"
-          @update-limitation="updateRepeatableLimitation"
-          @create-question="createQuestion"
-          @delete-question="deleteQuestion"
-          @update-question="updateQuestion"
-          @create-answer="createAnswer"
-          @delete-answer="deleteAnswer"
-          @update-answer="updateAnswer"
-          @move-answer="moveAnswer"
-          @move-question="moveQuestion"
-          v-if="submissionId === -1"
-        >
-        </question-repeatable>
-        <response-repeatable
-          :questions="section.questions"
-          :min-rows="section.min_rows"
-          :max-rows="section.max_rows"
-          :responses="responses"
-          @create-response="createResponse"
-          @update-response="updateResponse"
-          @delete-response="deleteResponse"
-          v-else
-        >
-        </response-repeatable>
-      </template>
+      <!--
+        <template v-if="hasRepeatableQuestions">
+          <question-repeatable
+            :section="section"
+            :form-id="formId"
+            @update-limitation="updateRepeatableLimitation"
+            @create-question="createQuestion"
+            @delete-question="deleteQuestion"
+            @update-question="updateQuestion"
+            @create-answer="createAnswer"
+            @delete-answer="deleteAnswer"
+            @update-answer="updateAnswer"
+            @move-answer="moveAnswer"
+            @move-question="moveQuestion"
+            v-if="submissionId === -1"
+          >
+          </question-repeatable>
+          <response-repeatable
+            :questions="section.questions"
+            :min-rows="section.min_rows"
+            :max-rows="section.max_rows"
+            :responses="responses"
+            @create-response="createResponse"
+            @update-response="updateResponse"
+            @delete-response="deleteResponse"
+            v-else
+          >
+          </response-repeatable>
+        </template>
+      -->
 
       <draggable
-        v-else
         v-model="list"
         :class="'section' + section.id"
         :options="{group: 'parent', draggable: '.item', handle: '.handle'}"
@@ -136,8 +139,10 @@
           :class="(isSection(element)  ? 'section' : 'question') + element.id"
           class="pb-2 item"
         >
-          <v-flex v-if="submissionId === -1"
-          :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id">
+          <v-flex
+            xs12
+            v-if="submissionId === -1"
+            :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id">
             <sections
               :section="element"
               :formId="formId"
@@ -197,8 +202,8 @@
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions'
   import responses from '../Response/Responses'
-  import questionRepeatable from '../Question/components/QuestionRepeatable'
-  import ResponseRepeatable from '../Response/components/ResponseRepeatable'
+  // import questionRepeatable from '../Question/components/QuestionRepeatable'
+  // import ResponseRepeatable from '../Response/components/ResponseRepeatable'
   import QuestionContentBlock from '../Question/components/ContentBlock'
   import ResponseContentBlock from '../Response/components/ContentBlock'
   import CreateSection from './CreateSection'
@@ -212,8 +217,8 @@
       draggable,
       questions,
       responses,
-      questionRepeatable,
-      ResponseRepeatable,
+      // questionRepeatable,
+      // ResponseRepeatable,
       CreateSection,
       CreateQuestion,
       QuestionContentBlock,
