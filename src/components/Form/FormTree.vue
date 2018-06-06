@@ -52,37 +52,37 @@
 </template>
 
 <script>
-    export default {
-      name: 'form-tree',
-      props: ['formId', 'list', 'section', 'submissionId'],
-      data () {
-        return {
-          opened: true
+  export default {
+    name: 'form-tree',
+    props: ['formId', 'list', 'section', 'submissionId'],
+    data () {
+      return {
+        opened: true
+      }
+    },
+    methods: {
+      children (item) {
+        const children = this.$store.getters.loadedChildren(this.formId, item.id)
+        return children.filter(child => { return child.questions })
+      },
+      hasChildren (item) {
+        const items = this.children(item)
+        return (items.length === 0)
+      },
+      clickSection (item) {
+        const children = this.children(item)
+        if (this.submissionId === -1 || children.length === 0) {
+          this.$emit('section-clicked', item)
         }
       },
-      methods: {
-        children (item) {
-          const children = this.$store.getters.loadedChildren(this.formId, item.id)
-          return children.filter(child => { return child.questions })
-        },
-        hasChildren (item) {
-          const items = this.children(item)
-          return (items.length === 0)
-        },
-        clickSection (item) {
-          const children = this.children(item)
-          if (this.submissionId === -1 || children.length === 0) {
-            this.$emit('section-clicked', item)
-          }
-        },
-        sectionClicked (item) {
-          this.$emit('section-clicked', item)
-        },
-        active (item) {
-          return (this.section && item.id === this.section.id) ? 'active' : ''
-        }
+      sectionClicked (item) {
+        this.$emit('section-clicked', item)
+      },
+      active (item) {
+        return (this.section && item.id === this.section.id) ? 'active' : ''
       }
     }
+  }
 </script>
 
 <style scoped>
