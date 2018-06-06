@@ -9,8 +9,8 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex>
-          <v-layout row v-for='(row, index) in computedRows' :key='"row " + index'>
+        <v-flex multiple-choice-grid>
+          <v-layout pa-2 question-row row v-for='(row, index) in computedRows' :key='"row " + index'>
             <v-flex xs3>
               <div class="body-2">{{row.answer}}</div>
             </v-flex>
@@ -102,3 +102,9 @@
     }
   }
 </script>
+
+<style scoped>
+  .multiple-choice-grid .question-row:nth-child(even) {
+    background: #f5f5f5;
+  }
+</style>

@@ -41,7 +41,7 @@
           <v-list-tile-title>{{ index + 1 }}. {{ item.name }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-for="subItem in children(item)" :key="subItem.name"  @click="clickSection(subItem)">
+      <v-list-tile v-for="subItem in children(item)" :key="subItem.name" @click="clickSection(subItem)">
         <v-list-tile-content>
           <v-list-tile-title>{{ subItem.name }}</v-list-tile-title>
         </v-list-tile-content>
@@ -86,15 +86,8 @@
 </script>
 
 <style scoped>
-  .list--group .list__tile {
-    padding-left: 15px !important;
-  }
-
-  .expansion-panel__header {
-    border-bottom: 1px solid rgba(0, 0, 0, .12);
-  }
-
-  .expansion-panel__header .active {
-    color: #1976D2 !important;
+  .list__group {
+    background: #f5f5f5;
+    border-bottom:4px solid white;
   }
 </style>

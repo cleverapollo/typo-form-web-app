@@ -1,11 +1,17 @@
 <template>
   <v-layout row wrap>
 
-    <!-- //Form Container -->
+    <!-- //Form/Submission Layout -->
     <v-flex xs12>
       <v-card>
+
+        <!-- //Header -->
+        <v-card-title>
+
+        </v-card-title>
+
         <v-card-text>
-          <v-layout row>
+          <v-layout row wrap>
 
             <!-- //Setions -->
             <v-flex xs12 class="sm3" v-if='sections.length'>
@@ -30,19 +36,27 @@
 
           </v-layout>
         </v-card-text>
-      </v-card>
-    </v-flex>
 
-    <!-- //Next / Prev Button -->
-    <v-flex xs12 v-if="section && submissionId !== -1">
-      <v-layout row wrap>
-        <v-flex xs2>
-          <v-btn color="info" @click="prev()" :disabled="prevAble">Prev</v-btn>
-        </v-flex>
-        <v-flex xs2 offset-xs8 text-xs-right>
-          <v-btn color="info" @click="next()" :disabled="nextAble">Next</v-btn>
-        </v-flex>
-      </v-layout>
+        <!-- //Footer -->
+        <v-divider></v-divider>
+        <v-card-actions>
+
+          <!-- //Navigation Controls -->
+          <v-flex xs12 v-if="section">
+            <v-layout row wrap>
+              <v-flex xs12 md3 pa-2>
+                <v-btn class="ma-0" block color="info" @click="prev()" :disabled="prevAble">Prev</v-btn>
+              </v-flex>
+              <v-spacer></v-spacer>
+              <v-flex xs12 md3 pa-2 ma-0>
+                <v-btn class="ma-0" block color="info" @click="next()" :disabled="nextAble">Next</v-btn>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+
+        </v-card-actions>
+
+      </v-card>
     </v-flex>
 
   </v-layout>

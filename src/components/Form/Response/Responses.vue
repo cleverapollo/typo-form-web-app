@@ -1,11 +1,11 @@
 <template>
-  <v-flex :class='"xs" + (question.width ? question.width : 12)' question-group>
+  <v-flex xs12 :class='"sm" + (question.width ? question.width : 12)' question-group>
     
     <v-layout row wrap question-head>
       <v-flex xs12>
         <div class="body-2">
           {{ editedName }}
-          <span v-if="question.mandatory">*</span>
+          <span v-if="question.mandatory" class="red--text">*</span>
         </div>
       </v-flex>
       <v-flex xs12>
@@ -397,5 +397,12 @@
   }
   .question-group >>> .input-group__details {
     min-height:auto;
+  }
+  .question-group >>> .input-group.input-group--textarea {
+    padding-top: 0px;
+  }
+  .question-group >>> .input-group.input-group--textarea .input-group__input {
+    border: 1px solid rgba(0,0,0,.42);
+    padding: 15px;
   }
 </style>

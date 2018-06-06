@@ -37,14 +37,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .question-group .input-group.input-group--textarea {
-    padding-top: 0px;
-  }
-
-  .question-group .input-group.input-group--textarea .input-group__input {
-    border: 1px solid rgba(0,0,0,.42);
-    padding: 15px;
-  }
-</style>
