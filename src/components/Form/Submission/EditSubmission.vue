@@ -1,68 +1,73 @@
 <template>
-  <v-dialog width="350px" persistent v-model="editSubmission">
+  <v-dialog width="600px" persistent v-model="editSubmission">
     <div slot="activator">
       Edit Submission
     </div>
     <v-card>
       <v-card-title>
-        <h2>Edit Submission</h2>
+        <div class="title mb-2 mt-2">Edit Sumission</div>
       </v-card-title>
 
       <v-card-text>
         <v-layout row wrap>
+          
           <!-- //Period Start -->
           <v-flex xs12 sm6>
-            <v-menu
-              ref="periodStartMenu"
-              :close-on-content-click="false"
-              v-model="periodStartMenu"
-              :nudge-right="40"
+
+            <v-dialog
+              ref="periodStartDialog"
+              v-model="periodStartModal"
               :return-value.sync="periodStart"
+              persistent
               lazy
-              transition="scale-transition"
-              offset-y
               full-width
-              min-width="290px"
+              width="290px"
             >
               <v-text-field
                 slot="activator"
                 v-model="periodStart"
-                label="Start Date"
                 prepend-icon="event"
                 readonly
               ></v-text-field>
-              <v-date-picker v-model="periodStart" @input="$refs.periodStartMenu.save(periodStart)"></v-date-picker>
-            </v-menu>
+              <v-date-picker v-model="periodStart" scrollable>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary" @click="periodStartModal = false">Cancel</v-btn>
+                <v-btn flat color="primary" @click="$refs.periodStartDialog.save(periodStart)">OK</v-btn>
+              </v-date-picker>
+            </v-dialog>
+
           </v-flex>
 
           <!-- //Period End -->
           <v-flex xs12 sm6>
-            <v-menu
-              ref="periodEndMenu"
-              :close-on-content-click="false"
-              v-model="periodEndMenu"
-              :nudge-right="40"
+
+            <v-dialog
+              ref="periodEndDialog"
+              v-model="periodEndModal"
               :return-value.sync="periodEnd"
+              persistent
               lazy
-              transition="scale-transition"
-              offset-y
               full-width
-              min-width="290px"
+              width="290px"
             >
               <v-text-field
                 slot="activator"
                 v-model="periodEnd"
-                label="End Date"
                 prepend-icon="event"
                 readonly
               ></v-text-field>
-              <v-date-picker v-model="periodEnd" @input="$refs.periodEndMenu.save(periodEnd)"></v-date-picker>
-            </v-menu>
+              <v-date-picker v-model="periodEnd" scrollable>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary" @click="periodEndModal = false">Cancel</v-btn>
+                <v-btn flat color="primary" @click="$refs.periodEndDialog.save(periodEnd)">OK</v-btn>
+              </v-date-picker>
+            </v-dialog>
+
           </v-flex>
         </v-layout>
       </v-card-text>
+      
       <v-divider></v-divider>
-
       <v-card-actions>
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
@@ -93,9 +98,9 @@
       return {
         id: this.submission.id,
         editSubmission: false,
-        periodStartMenu: false,
+        periodStartModal: false,
         periodStart: this.submission.period_start ? this.submission.period_start.substring(0, 10) : null,
-        periodEndMenu: false,
+        periodEndModal: false,
         periodEnd: this.submission.period_end ? this.submission.period_end.substring(0, 10) : null
       }
     },

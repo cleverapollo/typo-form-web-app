@@ -1,16 +1,15 @@
 <template>
   <v-layout row>
     <v-flex xs12>
-      <v-menu
+
+      <v-dialog
+        ref="dialog"
+        v-model="modal"
+        :return-value.sync="time"
+        persistent
         lazy
-        :close-on-content-click="false"
-        v-model="menu"
-        transition="scale-transition"
-        offset-y
         full-width
-        :nudge-right="40"
-        max-width="290px"
-        min-width="290px"
+        width="290px"
       >
         <v-text-field
           slot="activator"
@@ -18,8 +17,13 @@
           prepend-icon="access_time"
           readonly
         ></v-text-field>
-        <v-time-picker v-model="time" autosave></v-time-picker>
-      </v-menu>
+        <v-time-picker v-model="time">
+          <v-spacer></v-spacer>
+          <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="$refs.dialog.save(time)">OK</v-btn>
+        </v-time-picker>
+      </v-dialog>
+
     </v-flex>
   </v-layout>
 </template>
@@ -31,7 +35,7 @@
     data () {
       return {
         timeCnt: 0,
-        menu: false,
+        modal: false,
         time: this.responses.length ? this.responses[0].response : null
       }
     },

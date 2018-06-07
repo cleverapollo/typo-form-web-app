@@ -104,7 +104,7 @@
     },
     filters: {
       moment: function (date) {
-        return moment(date).format('YYYY-MM-DD HH:MM A')
+        return moment(date).format('YYYY-MM-DD h:MM A')
       }
     }
   }

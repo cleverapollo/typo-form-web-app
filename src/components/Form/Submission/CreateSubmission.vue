@@ -43,52 +43,56 @@
 
           <!-- //Period Start -->
           <v-flex xs12 sm6>
-            <v-menu
-              ref="periodStartMenu"
-              :close-on-content-click="false"
-              v-model="periodStartMenu"
-              :nudge-right="40"
+
+            <v-dialog
+              ref="periodStartDialog"
+              v-model="periodStartModal"
               :return-value.sync="periodStart"
+              persistent
               lazy
-              transition="scale-transition"
-              offset-y
               full-width
-              min-width="290px"
+              width="290px"
             >
               <v-text-field
                 slot="activator"
                 v-model="periodStart"
-                label="Start Date"
                 prepend-icon="event"
                 readonly
               ></v-text-field>
-              <v-date-picker v-model="periodStart" @input="$refs.periodStartMenu.save(periodStart)"></v-date-picker>
-            </v-menu>
+              <v-date-picker v-model="periodStart" scrollable>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary" @click="periodStartModal = false">Cancel</v-btn>
+                <v-btn flat color="primary" @click="$refs.periodStartDialog.save(periodStart)">OK</v-btn>
+              </v-date-picker>
+            </v-dialog>
+
           </v-flex>
 
           <!-- //Period End -->
           <v-flex xs12 sm6>
-            <v-menu
-              ref="periodEndMenu"
-              :close-on-content-click="false"
-              v-model="periodEndMenu"
-              :nudge-right="40"
+
+            <v-dialog
+              ref="periodEndDialog"
+              v-model="periodEndModal"
               :return-value.sync="periodEnd"
+              persistent
               lazy
-              transition="scale-transition"
-              offset-y
               full-width
-              min-width="290px"
+              width="290px"
             >
               <v-text-field
                 slot="activator"
                 v-model="periodEnd"
-                label="End Date"
                 prepend-icon="event"
                 readonly
               ></v-text-field>
-              <v-date-picker v-model="periodEnd" @input="$refs.periodEndMenu.save(periodEnd)"></v-date-picker>
-            </v-menu>
+              <v-date-picker v-model="periodEnd" scrollable>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary" @click="periodEndModal = false">Cancel</v-btn>
+                <v-btn flat color="primary" @click="$refs.periodEndDialog.save(periodEnd)">OK</v-btn>
+              </v-date-picker>
+            </v-dialog>
+
           </v-flex>
 
         </v-layout>
@@ -126,8 +130,8 @@
         formId: null,
         periodStart: null,
         periodEnd: null,
-        periodStartMenu: false,
-        periodEndMenu: false,
+        periodStartModal: false,
+        periodEndModal: false,
         teamId: null,
         userId: null
       }

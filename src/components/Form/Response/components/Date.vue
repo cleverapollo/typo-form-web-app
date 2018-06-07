@@ -1,63 +1,53 @@
 <template>
   <v-layout row>
     <v-flex xs12>
-      <v-menu
+
+      <v-dialog
+        ref="dialog"
+        v-model="modal"
+        :return-value.sync="date"
+        persistent
         lazy
-        :close-on-content-click="false"
-        v-model="menu"
-        transition="scale-transition"
-        offset-y
         full-width
-        :nudge-right="40"
-        max-width="290px"
-        min-width="290px"
+        width="290px"
       >
         <v-text-field
           slot="activator"
-          v-model="dateFormatted"
+          v-model="date"
           prepend-icon="event"
-          @blur="date = parseDate(dateFormatted)"
           readonly
         ></v-text-field>
-        <v-date-picker v-model="date" @input="dateFormatted = formatDate($event)" no-title scrollable>
+        <v-date-picker v-model="date" scrollable>
+          <v-spacer></v-spacer>
+          <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
         </v-date-picker>
-      </v-menu>
+      </v-dialog>
+
     </v-flex>
+
+
   </v-layout>
 </template>
 
 <script>
+  import moment from 'moment'
   export default {
     name: 'date-component',
     props: ['question', 'answers', 'responses'],
     data () {
       return {
-        menu: false,
-        date: this.responses.length ? this.parseDate(this.responses[0].response) : '',
-        dateFormatted: this.responses.length ? this.responses[0].response : '',
+        date: this.responses.length ? this.formatDate(this.responses[0].response) : null,
         modal: false
       }
     },
     methods: {
-      formatDate (date) {
-        if (!date) {
-          return null
-        }
-
-        const [year, month, day] = date.split('-')
-        return `${month}/${day}/${year}`
-      },
-      parseDate (date) {
-        if (!date) {
-          return null
-        }
-
-        const [month, day, year] = date.split('/')
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      formatDate (value) {
+        return moment(value).format('YYYY-MM-DD')
       }
     },
     watch: {
-      dateFormatted (value) {
+      date (value) {
         if (value) {
           if (this.responses.length) {
             this.$emit('update-response', [null, value, this.responses[0].id])
