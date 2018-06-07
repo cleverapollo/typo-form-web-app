@@ -57,6 +57,7 @@
                 slot="activator"
                 v-model="periodStart"
                 prepend-icon="event"
+                label="Period Start"
                 readonly
               ></v-text-field>
               <v-date-picker v-model="periodStart" scrollable>
@@ -84,6 +85,7 @@
                 slot="activator"
                 v-model="periodEnd"
                 prepend-icon="event"
+                label="Period End"
                 readonly
               ></v-text-field>
               <v-date-picker v-model="periodEnd" scrollable>

@@ -11,15 +11,15 @@
           <v-card>
 
             <!-- //Header -->
-            <v-card-title>
+            <v-card-title class="info white--text">
               <v-layout row wrap>
                 <v-flex d-flex xs12>
-                  <div class="subheading">{{ submissionOwner }}</div>
+                  <div class="title pt-3">{{ submissionOwner }}</div>
 
                   <!-- //Menu -->
                   <v-menu offset-y bottom left class="text-xs-right">
                     <v-btn icon slot="activator">
-                      <v-icon>more_vert</v-icon>
+                      <v-icon class="white--text">more_vert</v-icon>
                     </v-btn>
 
                     <v-list>
@@ -40,9 +40,17 @@
                   </v-menu>
                 </v-flex>
 
-                <!-- //Submission Information -->
-                <v-flex xs6>
-                  <div class="subheading py-2 px-3 break-all" v-if='periodStart || periodEnd'>{{periodStart}} ~ {{periodEnd}}</div>
+              </v-layout>
+            </v-card-title>
+            
+            <!-- // Submission Information -->
+            <v-card-text>
+              <v-layout row wrap>
+                <v-flex xs12 sm6>
+                  <div class="body">Last Saved: {{ lastSaved }}</div>
+                </v-flex>
+                <v-flex xs12 sm6>
+                  <div class="body text-sm-right" v-if='periodStart || periodEnd'>Period: {{ submissionPeriod }}</div>
                 </v-flex>
 
                 <!-- //Progress -->
@@ -55,9 +63,8 @@
                     {{ progress.toFixed(0) }}
                   </v-progress-linear>
                 </v-flex>
-
               </v-layout>
-            </v-card-title>
+            </v-card-text>
             <v-divider></v-divider>
 
             <!-- //Form Content -->
@@ -97,6 +104,7 @@
 
 <script>
   import * as _ from 'lodash'
+  import moment from 'moment'
   import FormView from '../FormView'
   import EditSubmission from './EditSubmission'
   import FormNavigation from '../FormNavigation'
@@ -164,6 +172,18 @@
         }, this)
 
         return questionCount !== 0 ? responseCount * 100 / questionCount : 0
+      },
+      submissionPeriod () {
+        if (this.periodStart && this.periodEnd) {
+          return moment(this.periodStart).format('MMM Do YYYY') + ' - ' + moment(this.periodEnd).format('MMM Do YYYY')
+        } else if (this.periodStart || this.periodEnd) {
+          return this.periodStart ? moment(this.periodStart).format('MMM Do YYYY') : moment(this.periodEnd).format('MMM Do YYYY')
+        } else {
+          return null
+        }
+      },
+      lastSaved () {
+        return moment(this.submission.updated_at.date).format('MMM Do YYYY h:mm A')
       }
     },
     methods: {

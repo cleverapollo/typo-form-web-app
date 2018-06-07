@@ -109,6 +109,7 @@
         }
         this.show = false
         this.$store.dispatch('inviteApplication', {invitations: invitations, slug: this.slug})
+        this.invitations = [{ email: '', application_role_id: '' }]
       }
     }
   }

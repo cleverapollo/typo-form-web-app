@@ -27,6 +27,7 @@
                 slot="activator"
                 v-model="periodStart"
                 prepend-icon="event"
+                label="Period Start"
                 readonly
               ></v-text-field>
               <v-date-picker v-model="periodStart" scrollable>
@@ -54,6 +55,7 @@
                 slot="activator"
                 v-model="periodEnd"
                 prepend-icon="event"
+                label="Period End"
                 readonly
               ></v-text-field>
               <v-date-picker v-model="periodEnd" scrollable>
@@ -71,7 +73,7 @@
       <v-card-actions>
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
-            <v-btn flat @click.stop="onCancel">Close</v-btn>
+            <v-btn flat @click.stop="onCancel">Cancel</v-btn>
             <v-btn
               flat
               class="primary"
