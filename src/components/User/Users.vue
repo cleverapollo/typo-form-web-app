@@ -73,8 +73,8 @@
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.invitee }}</td>
-                    <td>{{ getRole(props.item.role_id) }}</td>
-                    <td>{{ props.item.created_at }}</td>
+                    <td>{{ getRole(props.item.application_role_id) }}</td>
+                    <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='userIsApplicationAdmin' class="justify-center layout px-0">
                       <EditInvitedUser :user="props.item" :slug="slug"></EditInvitedUser>
                       <v-btn icon class="mx-0" @click="onDeleteInvitedUser(props.item.id)">

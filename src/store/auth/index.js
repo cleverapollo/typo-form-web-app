@@ -85,14 +85,14 @@ export default {
       return new Promise((resolve, reject) => {
         window.axios.get(USER_URL)
           .then(
-            response => {
+            (response) => {
               commit('setLoading', false)
               commit('setUser', response['data']['user'])
               resolve(response)
             }
           )
           .catch(
-            error => {
+            (error) => {
               commit('setLoading', false)
               commit('setUser', null)
               delete window.axios.defaults.headers.common['api_token']

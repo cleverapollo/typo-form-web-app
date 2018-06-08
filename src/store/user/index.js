@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
 const USER_URL = `/user/`
-const INVITED_USER_URL = `invitedUser/`
+const INVITED_USER_URL = `/invited/`
 
 export default {
   state: {
@@ -39,7 +39,7 @@ export default {
       const index = users[payload.slug].findIndex(user => {
         return user.id === payload.user.id
       })
-      users[payload.slug][index].role_id = payload.user.role_id
+      users[payload.slug][index].application_role_id = payload.user.application_role_id
       state.invitedUsers = users
     },
     deleteInvitedUser (state, payload) {
@@ -115,9 +115,9 @@ export default {
       commit('setLoading', true)
       const updateObj = {}
       if (payload.roleId) {
-        updateObj.role_id = payload.roleId
+        updateObj.application_role_id = payload.roleId
       }
-      window.axios.put(APPLICATION_URL + payload.slug + USER_URL + INVITED_USER_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.slug + INVITED_USER_URL + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -135,7 +135,7 @@ export default {
     },
     deleteInvitedUser ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.slug + USER_URL + INVITED_USER_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.slug + INVITED_USER_URL + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteInvitedUser', payload)

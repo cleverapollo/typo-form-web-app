@@ -25,7 +25,7 @@
                     <v-list>
                       <v-list-tile @click="">
                         <v-list-tile-title>
-                          <EditSubmission :submission="submission" :formId="formId"></EditSubmission>
+                          <EditSubmission :slug="slug" :submission="submission" :formId="formId"></EditSubmission>
                         </v-list-tile-title>
                       </v-list-tile>
 
@@ -194,6 +194,9 @@
             id: this.id
           }
         )
+          .then(() => {
+            this.$router.push('/' + this.slug + '/submissions')
+          })
       },
       onSendSubmission: function () {
         const statusIndex = _.findIndex(this.statuses, status => {
@@ -210,6 +213,8 @@
       }
     },
     created () {
+      this.$store.dispatch('loadUsers', this.slug)
+      this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadAllSubmissions', this.slug)
         .then(() => {

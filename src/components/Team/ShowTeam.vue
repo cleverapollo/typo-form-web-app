@@ -93,8 +93,8 @@
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.invitee }}</td>
-                    <td>{{ getRole(props.item.role_id) }}</td>
-                    <td>{{ props.item.created_at }}</td>
+                    <td>{{ getRole(props.item.team_role_id) }}</td>
+                    <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='isTeamAdmin' class="justify-center layout px-0">
                       <EditInvitedTeamUser :user="props.item" :slug="slug" :teamId="id"></EditInvitedTeamUser>
                       <v-btn icon class="mx-0" @click="onDeleteInvitedTeamUser(props.item.id)">
