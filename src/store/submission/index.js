@@ -17,17 +17,11 @@ export default {
       let submissions = Object.assign({}, state.loadedSubmissions)
       for (let i = 0; i < payload.submissions.length; i++) {
         const submission = payload.submissions[i]
-        if (!submissions[submission.form.id]) {
-          submissions[submission.form.id] = []
-        }
-        const index = submissions[submission.form.id].findIndex(e => {
-          return e.id === submission.id
-        })
-        if (index === -1) {
-          submissions[submission.form.id].push(submission)
-        } else {
-          submissions[submission.form.id].splice(index, 1, submission)
-        }
+        submissions[submission.form.id] = []
+      }
+      for (let i = 0; i < payload.submissions.length; i++) {
+        const submission = payload.submissions[i]
+        submissions[submission.form.id].push(submission)
       }
       state.loadedSubmissions = submissions
     },
@@ -189,7 +183,7 @@ export default {
       }
 
       if (payload.progress !== undefined) {
-        submission.progress = payload.progress
+        submission.progress = parseInt(payload.progress)
       }
 
       window.axios.put(FORM_URL + payload.formId + SUBMISSION_URL + payload.id, submission)

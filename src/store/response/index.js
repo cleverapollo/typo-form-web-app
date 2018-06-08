@@ -78,7 +78,7 @@ export default {
       return new Promise((resolve, reject) => {
         window.axios.put(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + payload.id, updateObj)
           .then(
-            response => {
+            (response) => {
               commit('setLoading', false)
               const updateObj = {
                 formId: payload.formId,
@@ -91,7 +91,7 @@ export default {
             }
           )
           .catch(
-            error => {
+            (error) => {
               console.log(error)
               commit('setLoading', false)
               reject(error)

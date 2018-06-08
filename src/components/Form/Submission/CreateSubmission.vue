@@ -31,7 +31,7 @@
           </v-flex>
 
           <!-- //Users -->
-          <v-flex xs12>
+          <v-flex xs12 v-if="userIsApplicationAdmin">
             <v-select
               :items="users"
               item-value="id"
@@ -127,6 +127,7 @@
 <script>
   import * as _ from 'lodash'
   export default {
+    props: ['visible', 'slug'],
     data () {
       return {
         formId: null,
@@ -157,6 +158,9 @@
           return element.name.toLowerCase()
         })
       },
+      roles () {
+        return this.$store.getters.roles
+      },
       users () {
         if (this.teamId) {
           return this.$store.getters.loadedSubmissionTeamUsers(this.teamId)
@@ -165,6 +169,27 @@
       },
       loading () {
         return this.$store.getters.loading
+      },
+      application () {
+        return this.$store.getters.loadedApplication(this.slug)
+      },
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      userIsApplicationAdmin () {
+        return this.userIsAdmin || this.isSuperUser
+      },
+      userIsAdmin () {
+        if (!this.userIsAuthenticated || !this.application) {
+          return false
+        }
+        return this.getRole(this.application.application_role_id) === 'Admin'
+      },
+      isSuperUser () {
+        if (!this.userIsAuthenticated) {
+          return false
+        }
+        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       }
     },
     watch: {
@@ -175,6 +200,12 @@
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
       save () {
         let data = {
           formId: this.formId,
@@ -201,7 +232,6 @@
         this.userId = null
         this.show = false
       }
-    },
-    props: ['visible', 'slug']
+    }
   }
 </script>

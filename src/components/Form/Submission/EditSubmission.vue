@@ -1,6 +1,18 @@
 <template>
   <v-dialog width="600px" persistent v-model="editSubmission">
-    <div slot="activator">
+    <v-btn
+      icon
+      slot="activator"
+      class="mx-0"
+      v-if="btnRect"
+    >
+      <v-icon color="teal">
+        edit
+      </v-icon>
+    </v-btn>
+    <div
+      slot="activator"
+      v-else>
       Edit Submission
     </div>
     <v-card>
@@ -117,7 +129,7 @@
 
 <script>
   export default {
-    props: ['slug', 'submission', 'formId'],
+    props: ['slug', 'submission', 'formId', 'btnRect'],
     data () {
       return {
         id: this.submission.id,
