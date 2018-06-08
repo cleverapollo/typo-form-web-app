@@ -3,15 +3,14 @@
     <form>
       <v-text-field
         label="Question"
-        single-line
         @blur="checkUpdateName"
         v-model="editedName"
+        required
       ></v-text-field>
 
       <v-text-field
         label="Description"
         v-model="editedDescription"
-        single-line
         @blur="checkUpdateDescription"
       ></v-text-field>
 
@@ -20,10 +19,12 @@
         item-text="title"
         item-value="title"
         v-model="questionTypeString"
+        label="Question Type"
         auto
         persistent-hint
         hint=" "
         @change="updateQuestionType"
+        required
       >
         <template slot="selection" slot-scope="data">
           <v-list-tile-avatar>
@@ -58,8 +59,8 @@
         item-text="text"
         item-value="value"
         label="Question Width"
-        single-line
         @change="updateQuestionWidth($event)"
+        required
       ></v-select>
 
       <component
@@ -85,12 +86,20 @@
     <v-divider></v-divider>
     <v-layout pa-3 class="card_actions">
       <v-spacer></v-spacer>
-      <v-btn color="grey darken-2" flat icon @click="duplicateQuestion">
-        <v-icon>content_copy</v-icon>
-      </v-btn>
-      <v-btn color="grey darken-2" flat icon @click="deleteQuestion">
-        <v-icon>delete</v-icon>
-      </v-btn>
+
+      <v-tooltip top>
+        <v-btn slot="activator" color="grey darken-2" flat icon @click="duplicateQuestion">
+          <v-icon>content_copy</v-icon>
+        </v-btn>
+        <span>Duplicate Question</span>
+      </v-tooltip>
+
+      <v-tooltip top>
+        <v-btn slot="activator" color="grey darken-2" flat icon @click="deleteQuestion">
+          <v-icon>delete</v-icon>
+        </v-btn>
+        <span>Delete Question</span>
+      </v-tooltip>
 
       <div class="v-divider">&nbsp</div>
 

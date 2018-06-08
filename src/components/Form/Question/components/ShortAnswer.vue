@@ -1,14 +1,5 @@
 <template>
   <div>
-    <v-layout row>
-      <v-flex xs6>
-        <v-text-field
-          name='short-answer'
-          value='Short answer text'
-          disabled
-        ></v-text-field>
-      </v-flex>
-    </v-layout>
     <v-layout v-if='hasValidation' row>
       <v-flex xs4>
         <v-select

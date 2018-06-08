@@ -3,7 +3,7 @@
     <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <div class="subheading py-2 px-3">{{ form.name }}</div>
+          <div class="subheading py-2 px-3">Edit Form</div>
         </v-flex>
 
         <!-- //Form Layout -->
@@ -11,13 +11,15 @@
           <v-card>
 
             <!-- //Header -->
-            <v-card-title>
+            <v-card-title class="info white--text">
               <v-layout row wrap>
                 <v-flex d-flex xs12>
-                  <div class="subheading py-2 px-3">Edit Form</div>
+                  <div class="title pt-3">{{ form.name }}</div>
+
+                  <!-- //Menu -->
                   <v-menu offset-y bottom left class="text-xs-right">
                     <v-btn icon slot="activator">
-                      <v-icon>more_vert</v-icon>
+                      <v-icon class="white--text">more_vert</v-icon>
                     </v-btn>
 
                     <v-list>
