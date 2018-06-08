@@ -10,6 +10,28 @@
 
       <v-card-text>
         <v-layout row wrap>
+
+          <!-- //Teams -->
+          <v-flex xs12>
+            <v-select
+              :items="teams"
+              item-value="id"
+              item-text="name"
+              v-model="teamId"
+              label="Team"
+            ></v-select>
+          </v-flex>
+
+          <!-- //Users -->
+          <v-flex xs12>
+            <v-select
+              :items="users"
+              item-value="id"
+              item-text="name"
+              v-model="userId"
+              label="User"
+            ></v-select>
+          </v-flex>
           
           <!-- //Period Start -->
           <v-flex xs12 sm6>
@@ -95,7 +117,7 @@
 
 <script>
   export default {
-    props: ['submission', 'formId'],
+    props: ['slug', 'submission', 'formId'],
     data () {
       return {
         id: this.submission.id,
@@ -103,7 +125,9 @@
         periodStartModal: false,
         periodStart: this.submission.period_start ? this.submission.period_start.substring(0, 10) : null,
         periodEndModal: false,
-        periodEnd: this.submission.period_end ? this.submission.period_end.substring(0, 10) : null
+        periodEnd: this.submission.period_end ? this.submission.period_end.substring(0, 10) : null,
+        teamId: this.submission.team ? this.submission.team.id : null,
+        userId: this.submission.user ? this.submission.user.id : null
       }
     },
     methods: {
@@ -113,6 +137,8 @@
         let submissionData = {
           id: this.id,
           formId: this.formId,
+          teamId: this.teamId,
+          userId: this.userId,
           periodStart: this.periodStart,
           periodEnd: this.periodEnd
         }
@@ -123,11 +149,29 @@
         this.editSubmission = false
         this.periodStart = this.submission.period_start ? this.submission.period_start.substring(0, 10) : null
         this.periodEnd = this.submission.period_end ? this.submission.period_end.substring(0, 10) : null
+        this.teamId = this.submission.team ? this.submission.team.id : null
+        this.userId = this.submission.user ? this.submission.user.id : null
       }
     },
     computed: {
       loading () {
         return this.$store.getters.loading
+      },
+      teams () {
+        return this.$store.getters.loadedTeams(this.slug)
+      },
+      users () {
+        if (this.teamId) {
+          return this.$store.getters.loadedSubmissionTeamUsers(this.teamId)
+        }
+        return this.$store.getters.loadedSubmissionUsers(this.slug)
+      }
+    },
+    watch: {
+      teamId (value) {
+        if (value) {
+          this.$store.dispatch('loadTeamUsers', {slug: this.slug, teamId: value})
+        }
       }
     }
   }

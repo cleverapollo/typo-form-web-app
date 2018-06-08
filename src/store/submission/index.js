@@ -171,7 +171,10 @@ export default {
     updateSubmission ({commit}, payload) {
       commit('setLoading', true)
 
-      let submission = {}
+      let submission = {
+        team_id: payload.teamId,
+        user_id: payload.userId
+      }
 
       if (payload.statusId) {
         submission.status_id = payload.statusId
@@ -207,15 +210,19 @@ export default {
     },
     deleteSubmission ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + payload.formId + SUBMISSION_URL + payload.id)
-        .then(() => {
-          commit('setLoading', false)
-          commit('deleteSubmission', payload)
-        })
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
+      return new Promise((resolve, reject) => {
+        window.axios.delete(FORM_URL + payload.formId + SUBMISSION_URL + payload.id)
+          .then((response) => {
+            commit('setLoading', false)
+            commit('deleteSubmission', payload)
+            resolve(response)
+          })
+          .catch(error => {
+            console.log(error)
+            commit('setLoading', false)
+            reject(error)
+          })
+      })
     }
   },
   getters: {

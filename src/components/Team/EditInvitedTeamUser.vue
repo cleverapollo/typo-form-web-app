@@ -53,12 +53,12 @@
         id: this.user.id,
         editInvitedTeamUser: false,
         editedEmail: this.user.invitee,
-        editedRole: this.user.role_id
+        editedRole: this.user.team_role_id
       }
     },
     methods: {
       onSaveChanges () {
-        if (this.editedRole !== this.user.role_id) {
+        if (this.editedRole !== this.user.team_role_id) {
           this.$store.dispatch('updateInvitedTeamUser',
             {
               slug: this.slug,
@@ -72,7 +72,7 @@
       },
       onCancel () {
         this.editedEmail = this.user.invitee
-        this.editedRole = this.user.role_id
+        this.editedRole = this.user.team_role_id
         this.editInvitedTeamUser = false
       }
     },
