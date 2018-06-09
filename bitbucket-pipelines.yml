@@ -13,6 +13,7 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - npm install
           - npm test
+          - node build/build.js
           - apt-get update && apt-get install -y python-dev
           - curl -O https://bootstrap.pypa.io/get-pip.py
           - python get-pip.py
