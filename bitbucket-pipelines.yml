@@ -17,5 +17,5 @@ pipelines:
           - curl -O https://bootstrap.pypa.io/get-pip.py
           - python get-pip.py
           - pip install awsebcli --upgrade
-          - eb init $APPLICATION_NAME -r $AWS_DEFAULT_REGION -p "Node"
-          - eb deploy $APPLICATION_ENVIRONMENT
+          - eb init "Informed 365 Web Application" -r "us-east-1" -p "Node"
+          - eb deploy "Informed365WebApplication-env-1"
