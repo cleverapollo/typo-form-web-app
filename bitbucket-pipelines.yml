@@ -19,4 +19,4 @@ pipelines:
           - python get-pip.py
           - pip install awsebcli --upgrade
           - eb init "Informed 365 Web Application" -p node.js --platform node.js --region us-east-1
-          - eb deploy "Informed365WebApplication-env-1" --timeout 20
+          - eb deploy "Informed365WebApplication-environment" --timeout 20
