@@ -61,15 +61,10 @@ export default {
     },
     updateResponse ({commit}, payload) {
       commit('setLoading', true)
-      const updateObj = {}
-      if (payload.response) {
-        updateObj.response = payload.response
-      }
-      if (payload.answerId) {
-        updateObj.answer_id = payload.answerId
-      }
-      if (payload.questionId) {
-        updateObj.question_id = payload.questionId
+      const updateObj = {
+        response: payload.response,
+        answer_id: payload.answerId,
+        question_id: payload.questionId
       }
       if (payload.order) {
         updateObj.order = payload.order

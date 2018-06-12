@@ -62,7 +62,8 @@ export default {
         question_id: payload.questionId,
         parent_question_id: payload.parentQuestionId,
         comparator_id: payload.comparatorId,
-        operator: payload.operator
+        operator: payload.operator,
+        value: ''
       }
       window.axios.post(FORM_URL + payload.formId + TRIGGER_URL, trigger)
         .then(
