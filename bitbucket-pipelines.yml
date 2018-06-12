@@ -3,7 +3,7 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: node:8.9.3
+image: node:8.11.1
 
 pipelines:
   default:
@@ -19,4 +19,4 @@ pipelines:
           - python get-pip.py
           - pip install awsebcli --upgrade
           - eb init "Informed 365 Web Application" -p node.js --platform node.js --region us-east-1
-          - eb deploy "Informed365WebApplication-env-1"
+          - eb deploy "Informed365WebApplication-env-1" --timeout 20
