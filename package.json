@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "start": "npm run dev",
+    "start": "node server.js",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
@@ -16,6 +16,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "dotenv": "^5.0.1",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
     "lodash": "^4.17.5",
     "moment": "^2.22.2",
     "vue": "^2.5.2",
