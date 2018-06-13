@@ -35,6 +35,7 @@
     <v-list-group
       v-for="(item, index) in list"
       :key="item.id"
+      v-if="!isSectionTrigger(item) || submissionId === -1"
     >
       <v-list-tile slot="activator" @click="clickSection(item)">
         <v-list-tile-content>
@@ -52,15 +53,29 @@
 </template>
 
 <script>
+  import TriggerMixin from './TriggerMixin.js'
+  import * as _ from 'lodash'
   export default {
     name: 'form-tree',
     props: ['formId', 'list', 'section', 'submissionId'],
+    mixins: [TriggerMixin],
     data () {
       return {
         opened: true
       }
     },
     methods: {
+      isSectionTrigger (item) {
+        let questions = item.questions
+        const $this = this
+        let hideSectionTrigger = true
+        _.forEach(questions, function (question) {
+          if ($this.isTrigger(question)) {
+            hideSectionTrigger = false
+          }
+        })
+        return hideSectionTrigger
+      },
       children (item) {
         const children = this.$store.getters.loadedChildren(this.formId, item.id)
         return children.filter(child => { return child.questions })
