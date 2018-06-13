@@ -4,7 +4,6 @@ module.exports = {
   NODE_ENV: '"production"',
   APP_NAME: JSON.stringify(process.env.APP_NAME),
   API_URL: JSON.stringify(process.env.API_URL),
-  API_ORIGIN_URL: JSON.stringify(process.env.API_ORIGIN_URL),
 
   GITHUB_CLIENT_ID: JSON.stringify(process.env.GITHUB_CLIENT_ID),
   GITHUB_CLIENT_SECRET: JSON.stringify(process.env.GITHUB_CLIENT_SECRET),
