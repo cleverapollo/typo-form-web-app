@@ -6,15 +6,16 @@
 image: node:8.11.1
 
 pipelines:
-  default:
-    - step:
-        script: # Modify the commands below to build your repository.
-          - npm install
-          - npm test
-          - npm run build
-          - apt-get update && apt-get install -y python-dev
-          - curl -O https://bootstrap.pypa.io/get-pip.py
-          - python get-pip.py
-          - pip install awsebcli --upgrade
-          - eb init "Informed 365 Web Application" -p node.js --platform node.js --region us-east-1
-          - eb deploy "Informed365WebApplication-environment" --timeout 20
+  branches:
+    master:
+      - step:
+          script: # Modify the commands below to build your repository.
+            - npm install
+            - npm test
+            - npm run build
+            - apt-get update && apt-get install -y python-dev
+            - curl -O https://bootstrap.pypa.io/get-pip.py
+            - python get-pip.py
+            - pip install awsebcli --upgrade
+            - eb init "Informed 365 Web Application" -p node.js --platform node.js --region us-east-1
+            - eb deploy "Informed365WebApplication-environment" --timeout 20
