@@ -27,7 +27,7 @@
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
             <v-btn flat @click.stop="close">Cancel</v-btn>
-            <v-btn color="primary" @click.stop="save">Save</v-btn>
+            <v-btn color="primary" @click.stop="save" :disabled="disabled">Save</v-btn>
           </v-flex>
         </v-layout>
       </v-card-actions>
@@ -53,6 +53,9 @@
             this.$emit('close')
           }
         }
+      },
+      disabled () {
+        return this.name.length === 0
       }
     },
     methods: {
@@ -62,6 +65,7 @@
         }
         this.$store.dispatch('createApplication', data)
           .then(response => {
+            console.log(response)
             this.reset()
           })
       },

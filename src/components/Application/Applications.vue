@@ -5,10 +5,9 @@
         <v-flex d-flex xs12>
           <div class="subheading py-2 px-3">Applications</div>
         </v-flex>
-        <v-flex d-flex xs12>
+        <v-flex d-flex xs12 v-if="applications.length">
           <v-card>
             <v-list one-line>
-              <template v-if="applications.length">
 
                 <!-- //Application List -->
                 <template v-for="(item, index) in sortApplications(applications)">
@@ -25,15 +24,18 @@
                   </v-list-tile>
                   <v-divider v-if="index < applications.length -1"></v-divider>
                 </template>
-              </template>
-
-              <!-- //No Applications -->
-              <template v-else>
-                <div class="text-xs-center">No applications available.</div>
-              </template>
+  
             </v-list>
           </v-card>
         </v-flex>
+
+        <!-- //No Applications -->
+        <v-flex xs12 pa-2 v-else>
+          <v-alert value="true" type="info">
+              It looks like you don't have access to any applications yet. Any application that you have been invitied into will display once you accept the invitation.
+          </v-alert>
+        </v-flex>
+
       </v-layout>
     </v-flex>
 
