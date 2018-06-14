@@ -70,22 +70,31 @@ export default {
         )
     },
     createForm ({commit, getters}, payload) {
+      commit('setLoading', true)
       const form = {
         name: payload.name
       }
-      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL, form)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const createObj = {
-              slug: payload.slug,
-              form: response['data']['form']
+      return new Promise((resolve, reject) => {
+        window.axios.post(APPLICATION_URL + payload.slug + FORM_URL, form)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const createObj = {
+                slug: payload.slug,
+                form: response['data']['form']
+              }
+              commit('createForm', createObj)
+              resolve(response)
             }
-            commit('createForm', createObj)
-          }
-        ).catch(function () {
-          commit('setLoading', false)
-        })
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     },
     updateForm ({commit}, payload) {
       commit('setLoading', true)

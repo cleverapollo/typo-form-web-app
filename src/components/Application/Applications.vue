@@ -9,21 +9,21 @@
           <v-card>
             <v-list one-line>
 
-                <!-- //Application List -->
-                <template v-for="(item, index) in sortApplications(applications)">
-                  <v-list-tile :to="applicationUrl(item.slug)" :key="item.id" avatar>
-                    <v-list-tile-avatar tile v-if="item.icon">
-                      <img :src="item.icon">
-                    </v-list-tile-avatar>
-                    <v-list-tile-avatar color="primary" v-else>
-                      <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
-                    </v-list-tile-avatar>
-                    <v-list-tile-content>
-                      <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-divider v-if="index < applications.length -1"></v-divider>
-                </template>
+              <!-- //Application List -->
+              <template v-for="(item, index) in sortApplications(applications)">
+                <v-list-tile :to="applicationUrl(item.slug)" :key="item.id" avatar>
+                  <v-list-tile-avatar tile v-if="item.icon">
+                    <img :src="item.icon">
+                  </v-list-tile-avatar>
+                  <v-list-tile-avatar color="primary" v-else>
+                    <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+                <v-divider v-if="index < applications.length -1"></v-divider>
+              </template>
   
             </v-list>
           </v-card>
@@ -32,7 +32,7 @@
         <!-- //No Applications -->
         <v-flex xs12 pa-2 v-else>
           <v-alert value="true" type="info">
-              It looks like you don't have access to any applications yet. Any application that you have been invitied into will display once you accept the invitation.
+            It looks like you don't have access to any applications yet. Any application that you have been invitied into will display once you accept the invitation.
           </v-alert>
         </v-flex>
 

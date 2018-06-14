@@ -1,5 +1,10 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600">
+
+    <v-alert :value="error" type="info">
+      {{ errorString }}
+    </v-alert>
+
     <v-card>
 
       <!-- //Title -->
@@ -9,17 +14,17 @@
 
       <!-- //Content -->
       <v-card-text>
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-text-field
-                name="name"
-                label="Name"
-                id="name"
-                v-model="name"
-                required>
-              </v-text-field>
-            </v-flex>
-          </v-layout>
+        <v-layout row wrap>
+          <v-flex xs12>
+            <v-text-field
+              name="name"
+              label="Name"
+              id="name"
+              v-model="name"
+              required>
+            </v-text-field>
+          </v-flex>
+        </v-layout>
       </v-card-text>
 
       <!-- //Actions -->
@@ -28,7 +33,7 @@
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
             <v-btn flat @click.stop="close">Cancel</v-btn>
-            <v-btn flat class="primary" @click.stop="save">Save</v-btn>
+            <v-btn class="primary" @click.stop="save" :disabled="!formIsValid">Save</v-btn>
           </v-flex>
         </v-layout>
       </v-card-actions>
@@ -42,7 +47,9 @@
     props: ['slug', 'visible'],
     data () {
       return {
-        name: ''
+        name: '',
+        error: false,
+        errorString: ''
       }
     },
     computed: {
@@ -71,7 +78,15 @@
           name: this.name
         }
         this.$store.dispatch('createForm', formData)
-        this.close()
+          .then(response => {
+            this.close()
+          })
+          .catch(
+            error => {
+              this.errorString = error.response.data.name[0]
+              this.error = true
+            }
+          )
       },
       close () {
         this.name = ''

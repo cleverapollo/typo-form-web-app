@@ -1,5 +1,10 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600px">
+
+    <v-alert :value="error" type="info">
+      {{ errorString }}
+    </v-alert>
+
     <v-card>
 
       <!-- //Title -->
@@ -38,9 +43,12 @@
 
 <script>
   export default {
+    props: ['visible'],
     data () {
       return {
-        name: ''
+        name: '',
+        error: false,
+        errorString: ''
       }
     },
     computed: {
@@ -65,9 +73,14 @@
         }
         this.$store.dispatch('createApplication', data)
           .then(response => {
-            console.log(response)
             this.reset()
           })
+          .catch(
+            error => {
+              this.errorString = error.response.data.name[0]
+              this.error = true
+            }
+          )
       },
       close () {
         this.reset()
@@ -75,8 +88,8 @@
       reset () {
         this.name = ''
         this.show = false
+        this.error = false
       }
-    },
-    props: ['visible']
+    }
   }
 </script>

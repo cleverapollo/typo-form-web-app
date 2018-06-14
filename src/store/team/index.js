@@ -59,29 +59,35 @@ export default {
         )
     },
     createTeam ({commit, getters}, payload) {
+      commit('setLoading', true)
       const team = {
         name: payload.name,
         description: payload.description
       }
-      window.axios.post(APPLICATION_URL + payload.slug + TEAM_URL, team)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const createObj = {
-              slug: payload.slug,
-              team: response['data']['team']
+      return new Promise((resolve, reject) => {
+        window.axios.post(APPLICATION_URL + payload.slug + TEAM_URL, team)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const createObj = {
+                slug: payload.slug,
+                team: response['data']['team']
+              }
+              commit('createTeam', createObj)
+              resolve(response)
             }
-            commit('createTeam', createObj)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     },
     inviteTeam ({commit, getters}, payload) {
+      commit('setLoading', true)
       const team = {
         invitations: payload.invitations
       }

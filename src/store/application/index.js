@@ -96,21 +96,27 @@ export default {
       const application = {
         name: payload.name
       }
-      window.axios.post(APPLICATION_URL, application)
-        .then(
-          response => {
-            commit('setLoading', false)
-            commit('createApplication', response['data']['application'])
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+      commit('setLoading', true)
+      return new Promise((resolve, reject) => {
+        window.axios.post(APPLICATION_URL, application)
+          .then(
+            response => {
+              commit('setLoading', false)
+              commit('createApplication', response['data']['application'])
+              resolve(response)
+            }
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     },
     inviteApplication ({commit, getters}, payload) {
+      commit('setLoading', true)
       const application = {
         invitations: payload.invitations
       }

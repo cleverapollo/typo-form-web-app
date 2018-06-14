@@ -5,32 +5,33 @@
         <v-flex d-flex xs12>
           <div class="subheading py-2 px-3">Teams</div>
         </v-flex>
-        <v-flex d-flex xs12>
+        <v-flex d-flex xs12 v-if="teams.length">
           <v-card>
             <v-list one-line>
-              <template v-if="teams.length">
 
-                <!-- //Team List -->
-                <template v-for="(item, index) in teams">
-                  <v-list-tile :to="onLoadTeam(item.id)" :key="item.id" avatar>
-                    <v-list-tile-avatar color="primary">
-                      <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
-                    </v-list-tile-avatar>
-                    <v-list-tile-content>
-                      <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-divider v-if="index < teams.length -1"></v-divider>
-                </template>
-              </template>
-
-              <!-- //No Teams -->
-              <template v-else>
-                <div class="text-xs-center">No teams available.</div>
+              <!-- //Team List -->
+              <template v-for="(item, index) in teams">
+                <v-list-tile :to="onLoadTeam(item.id)" :key="item.id" avatar>
+                  <v-list-tile-avatar color="primary">
+                    <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+                <v-divider v-if="index < teams.length -1"></v-divider>
               </template>
             </v-list>
           </v-card>
         </v-flex>
+
+        <!-- //No Teams -->
+        <v-flex xs12 pa-2 v-else>
+          <v-alert value="true" type="info">
+            It looks like you don't have access to any teams yet. Any team that you have been invitied into will display once you accept the invitation.
+          </v-alert>
+        </v-flex>
+
       </v-layout>
     </v-flex>
 

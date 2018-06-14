@@ -1,5 +1,10 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600">
+
+    <v-alert :value="error" type="info">
+      {{ errorString }}
+    </v-alert>
+
     <v-card>
 
       <!-- //Title -->
@@ -39,7 +44,7 @@
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
             <v-btn flat @click.stop="close">Cancel</v-btn>
-            <v-btn color="primary" @click.stop="save">Save</v-btn>
+            <v-btn color="primary" @click.stop="save" :disabled="!validForm">Save</v-btn>
           </v-flex>
         </v-layout>
       </v-card-actions>
@@ -54,7 +59,9 @@
     data () {
       return {
         name: '',
-        description: ''
+        description: '',
+        error: false,
+        errorString: ''
       }
     },
     computed: {
@@ -83,7 +90,15 @@
           description: this.description
         }
         this.$store.dispatch('createTeam', teamData)
-        this.reset()
+          .then(response => {
+            this.reset()
+          })
+          .catch(
+            error => {
+              this.errorString = error.response.data.name[0]
+              this.error = true
+            }
+          )
       },
       close () {
         this.reset()
@@ -92,6 +107,7 @@
         this.name = ''
         this.description = ''
         this.show = false
+        this.error = false
       }
     }
   }

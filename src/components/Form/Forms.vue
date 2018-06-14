@@ -5,32 +5,34 @@
         <v-flex d-flex xs12>
           <div class="subheading py-2 px-3">Forms</div>
         </v-flex>
-        <v-flex d-flex xs12>
+        <v-flex d-flex xs12 v-if="forms.length">
           <v-card>
             <v-list one-line>
-              <template v-if="forms.length">
 
-                <!-- //Form List -->
-                <template v-for="(item, index) in forms">
-                  <v-list-tile :to="onLoadForm(item.id)" :key="item.id" avatar>
-                    <v-list-tile-avatar color="primary">
-                      <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
-                    </v-list-tile-avatar>
-                    <v-list-tile-content>
-                      <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-divider v-if="index < forms.length -1"></v-divider>
-                </template>
+              <!-- //Form List -->
+              <template v-for="(item, index) in forms">
+                <v-list-tile :to="onLoadForm(item.id)" :key="item.id" avatar>
+                  <v-list-tile-avatar color="primary">
+                    <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+                <v-divider v-if="index < forms.length -1"></v-divider>
               </template>
 
-              <!-- //No Forms -->
-              <template v-else>
-                <div class="text-xs-center">No forms available.</div>
-              </template>
             </v-list>
           </v-card>
         </v-flex>
+
+        <!-- //No Forms -->
+        <v-flex xs12 pa-2 v-else>
+          <v-alert value="true" type="info">
+            It looks like you don't have access to any forms yet.
+          </v-alert>
+        </v-flex>
+
       </v-layout>
     </v-flex>
 
