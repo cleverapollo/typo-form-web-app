@@ -1,4 +1,55 @@
 <template>
+  <v-layout row wrap>
+    <v-flex d-flex xs12>
+      <v-layout row-wrap>
+        <v-flex d-flex xs12>
+          <div class="subheading py-2 px-3">Dashboard</div>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+  
+    <v-flex xs12>
+      <v-layout row wrap>
+        <v-flex xs12>
+          <v-container fluid grid-list-md>
+            <v-layout row wrap>
+
+              <v-flex
+                pointer
+                @click="onList(item.type)"
+                v-for="item in items"
+                v-if="!item.admin || userIsApplicationAdmin"
+                :key="item.title"
+                sm12 md3>
+                <v-card :color="item.color" class="white--text">
+                  <v-container fluid grid-list-lg>
+                    <v-layout row>
+                      <v-flex xs3>
+                        <v-icon
+                          class="display-3">
+                          {{item.icon}}
+                        </v-icon>
+                      </v-flex>
+                      <v-flex xs9 text-xs-right>
+                        <div class="display-2">
+                          <countTo :startVal="countToStart" :endVal="getPropertyCount(item.type)" :duration="countToDuration"></countTo>
+                        </div>
+                        <div class="medium">{{ item.title }}</div>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card>
+              </v-flex>
+
+            </v-layout>
+          </v-container>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+
+  </v-layout>
+
+<!-- 
   <v-container>
     <v-layout row wrap v-if="loading">
       <v-flex xs12 class="text-xs-center">
@@ -56,27 +107,31 @@
       </v-flex>
     </v-layout>
   </v-container>
+-->
 </template>
 
 <script>
   import EditApplication from './EditApplication'
   import SettingApplication from './SettingApplication'
+  import countTo from 'vue-count-to'
   export default {
     props: ['slug'],
     data () {
       return {
-        api_url: process.env.API_ORIGIN_URL,
         items: [
-          { title: 'Users', type: 'users', icon: 'person', admin: true },
-          { title: 'Teams', type: 'teams', icon: 'people', admin: false },
-          { title: 'Forms', type: 'forms', icon: 'content_paste', admin: true },
-          { title: 'Submissions', type: 'submissions', icon: 'assignment', admin: false }
-        ]
+          { title: 'Submissions', type: 'submissions', icon: 'assignment', color: 'green', admin: false },
+          { title: 'Forms', type: 'forms', icon: 'content_paste', color: 'orange', admin: true },
+          { title: 'Users', type: 'users', icon: 'person', color: 'blue', admin: true },
+          { title: 'Teams', type: 'teams', icon: 'people', color: 'purple', admin: false }
+        ],
+        countToStart: 0,
+        countToDuration: 3000
       }
     },
     components: {
       EditApplication,
-      SettingApplication
+      SettingApplication,
+      countTo
     },
     computed: {
       roles () {
@@ -108,6 +163,18 @@
       },
       joinURL () {
         return window.origin + '/join/application/' + this.application.share_token
+      },
+      usersCount () {
+        return this.$store.getters.loadedUsers(this.slug).length
+      },
+      teamsCount () {
+        return this.$store.getters.loadedTeams(this.slug).length
+      },
+      submissionsCount () {
+        return this.$store.getters.loadedAllSubmissions(this.slug).length
+      },
+      formsCount () {
+        return this.$store.getters.loadedForms(this.slug).length
       }
     },
     methods: {
@@ -125,11 +192,30 @@
       },
       onList (type) {
         this.$router.push('/' + this.slug + '/' + type)
+      },
+      getPropertyCount (type) {
+        switch (type) {
+          case 'users': return this.usersCount
+          case 'teams': return this.teamsCount
+          case 'forms': return this.formsCount
+          case 'submissions': return this.submissionsCount
+          default: return 0
+        }
       }
     },
     created () {
+      this.$store.dispatch('loadUsers', this.slug)
+      this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadForms', this.slug)
+      this.$store.dispatch('loadAllSubmissions', this.slug)
       this.$store.dispatch('loadApplicationEmail', this.slug)
     }
   }
 </script>
+
+
+<style scoped>
+  .pointer {
+    cursor: pointer;
+  }
+</style>
