@@ -1,15 +1,17 @@
 <template>
   <v-layout row wrap>
-    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+    <v-flex d-flex xs12>
       <v-layout row wrap>
+
+        <!-- //Title -->
         <v-flex d-flex xs12>
           <div class="subheading py-2 px-3">Forms</div>
         </v-flex>
+
+        <!-- //Form List -->
         <v-flex d-flex xs12 v-if="forms.length">
           <v-card>
             <v-list one-line>
-
-              <!-- //Form List -->
               <template v-for="(item, index) in forms">
                 <v-list-tile :to="onLoadForm(item.id)" :key="item.id" avatar>
                   <v-list-tile-avatar color="primary">
