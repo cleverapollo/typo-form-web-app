@@ -1,0 +1,234 @@
+const API_URL = process.env.API_URL
+const API_ORIGIN_URL = process.env.API_ORIGIN_URL
+const REGISTER_URL = `${API_URL}register`
+const LOGIN_URL = `${API_URL}login`
+const LOGOUT_URL = `${API_URL}logout`
+const USER_URL = `${API_URL}user/`
+const SOCIAL_URL = `${API_ORIGIN_URL}auth/signin`
+const PASSWORD_RESET_URL = `${API_URL}password/reset/`
+const EMAIL_UPDATE_URL = `${API_URL}user/update-email`
+const PASSWORD_UPDATE_URL = `${API_URL}user/update-password`
+
+export default {
+  state: {
+    user: null
+  },
+  mutations: {
+    setUser (state, payload) {
+      state.user = payload
+    }
+  },
+  actions: {
+    signUserUp ({commit}, payload) {
+      commit('setLoading', true)
+      commit('clearError')
+      window.axios.post(REGISTER_URL, payload)
+        .then(
+          response => window.axios.post(LOGIN_URL, payload)
+            .then(
+              response => {
+                commit('setLoading', false)
+                const user = response['data']['user']
+                localStorage.setItem('token', user['api_token'])
+                window.axios.defaults.headers.common['api_token'] = user['api_token']
+                commit('setUser', user)
+              }
+            )
+            .catch(
+              error => {
+                commit('setLoading', false)
+                commit('setUser', null)
+                if (typeof (error.response.data) !== 'string') {
+                  commit('setError', error.response.data)
+                  console.log(error.response.data)
+                }
+              }
+            )
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            if (typeof (error.response.data) !== 'string') {
+              commit('setError', error.response.data)
+              console.log(error.response.data)
+            }
+          }
+        )
+    },
+    signUserIn ({commit}, payload) {
+      commit('setLoading', true)
+      commit('clearError')
+      window.axios.post(LOGIN_URL, payload)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const user = response['data']['user']
+            localStorage.setItem('token', user['api_token'])
+            window.axios.defaults.headers.common['api_token'] = user['api_token']
+            commit('setUser', user)
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            commit('setUser', null)
+            if (typeof (error.response.data) !== 'string') {
+              commit('setError', error.response.data)
+              console.log(error.response.data)
+            }
+          }
+        )
+    },
+    autoSignIn ({commit}) {
+      commit('setLoading', true)
+      commit('clearError')
+      return new Promise((resolve, reject) => {
+        window.axios.get(USER_URL)
+          .then(
+            (response) => {
+              commit('setLoading', false)
+              commit('setUser', response['data']['user'])
+              resolve(response)
+            }
+          )
+          .catch(
+            (error) => {
+              commit('setLoading', false)
+              commit('setUser', null)
+              delete window.axios.defaults.headers.common['api_token']
+              reject(error)
+              if (typeof (error.response.data) !== 'string') {
+                console.log(error.response.data)
+              }
+            }
+          )
+      })
+    },
+    authSignIn ({commit}, payload) {
+      commit('setLoading', true)
+      commit('clearError')
+      window.axios.post(SOCIAL_URL, payload)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const user = response['data']['user']
+            localStorage.setItem('token', user['api_token'])
+            window.axios.defaults.headers.common['api_token'] = user['api_token']
+            commit('setUser', user)
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            commit('setUser', null)
+            if (typeof (error.response.data) !== 'string') {
+              commit('setError', error.response.data)
+              console.log(error.response.data)
+            }
+          }
+        )
+    },
+    logout ({commit}) {
+      commit('clearError')
+      window.axios.post(LOGOUT_URL)
+      delete window.axios.defaults.headers.common['api_token']
+      commit('setUser', null)
+      localStorage.removeItem('token')
+    },
+    updateAuth ({commit}, payload) {
+      commit('setLoading', true)
+      commit('clearError')
+      const updateObj = {
+        first_name: payload.first_name,
+        last_name: payload.last_name
+      }
+      window.axios.put(USER_URL, updateObj)
+        .then(response => {
+          commit('setLoading', false)
+          commit('setUser', response['data']['user'])
+          commit('clearError')
+        })
+        .catch(error => {
+          console.log(error.response.data)
+          commit('setLoading', false)
+          commit('setError', error.response.data)
+        })
+    },
+    updateEmail ({commit}, payload) {
+      commit('setLoading', true)
+      commit('clearError')
+      const updateObj = {
+        email: payload.email
+      }
+      window.axios.put(EMAIL_UPDATE_URL, updateObj)
+        .then(response => {
+          commit('setLoading', false)
+          commit('setUser', response['data']['user'])
+          commit('clearError')
+        })
+        .catch(error => {
+          console.log(error.response.data)
+          commit('setLoading', false)
+          commit('setError', error.response.data)
+        })
+    },
+    updatePassword ({commit}, payload) {
+      commit('setLoading', true)
+      commit('clearError')
+      const updateObj = {
+        password: payload.password
+      }
+      window.axios.put(PASSWORD_UPDATE_URL, updateObj)
+        .then(response => {
+          commit('setLoading', false)
+          commit('clearError')
+        })
+        .catch(error => {
+          console.log(error.response.data)
+          commit('setLoading', false)
+          commit('setError', error.response.data)
+        })
+    },
+    resetPassword ({commit}, payload) {
+      commit('setLoading', true)
+      commit('clearError')
+      let obj = {
+        email: payload.email
+      }
+      if (payload.password) {
+        obj.password = payload.password
+        obj.password_confirmation = payload.password
+      }
+      let token = ''
+      if (payload.token) {
+        token = payload.token
+        obj.token = payload.token
+      }
+      return new Promise((resolve, reject) => {
+        window.axios.post(PASSWORD_RESET_URL + token, obj)
+          .then(response => {
+            commit('setLoading', false)
+            commit('clearError')
+            resolve(response)
+          })
+          .catch(error => {
+            console.log(error.response.data)
+            commit('setLoading', false)
+            commit('setError', error.response.data)
+            reject(error)
+          })
+      })
+    },
+    destroyUser ({commit}) {
+      commit('clearError')
+      window.axios.delete(USER_URL)
+      commit('setUser', null)
+      localStorage.removeItem('token')
+    }
+  },
+  getters: {
+    user (state) {
+      return state.user
+    }
+  }
+}
