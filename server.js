@@ -4,14 +4,14 @@ const app = express()
 const port = process.env.PORT || 8080
 const router = express.Router()
 
-app.use(express.static(`dist`))
+app.use(express.static(`${__dirname}/dist`))
 
 app.engine('.html', require('ejs').renderFile)
 
-app.set('views', `dist`)
+app.set('views', `${__dirname}/dist`)
 
 router.get('/*', (req, res, next) => {
-	res.sendFile(`dist/index.html`)
+	res.sendFile(`${__dirname}/dist/index.html`)
 })
 
 app.use('/', router)
