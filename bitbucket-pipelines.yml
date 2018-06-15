@@ -7,7 +7,7 @@ image: node:8.11.1
 
 pipelines:
   branches:
-    master:
+    develop:
       - step:
           script: # Modify the commands below to build your repository.
             - apt-get update && apt-get install -y python-dev
