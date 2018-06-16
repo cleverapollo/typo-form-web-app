@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
-const TEAM_URL = `/team/`
-const USER_URL = `/user/`
+const TEAM_URL = `/team`
+const USER_URL = `/user`
 
 export default {
   state: {
@@ -91,10 +91,10 @@ export default {
       const team = {
         invitations: payload.invitations
       }
-      window.axios.post(APPLICATION_URL + payload.slug + TEAM_URL + payload.id + '/invite', team)
+      window.axios.post(APPLICATION_URL + payload.slug + TEAM_URL + '/' + payload.id + '/invite', team)
         .then(
           response => {
-            window.axios.get(APPLICATION_URL + payload.slug + TEAM_URL + payload.id + USER_URL)
+            window.axios.get(APPLICATION_URL + payload.slug + TEAM_URL + '/' + payload.id + USER_URL)
               .then(
                 response => {
                   commit('setLoading', false)
@@ -135,7 +135,7 @@ export default {
       if (payload.description) {
         updateObj.description = payload.description
       }
-      window.axios.put(APPLICATION_URL + payload.slug + TEAM_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.slug + TEAM_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -153,7 +153,7 @@ export default {
     },
     deleteTeam ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.slug + TEAM_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.slug + TEAM_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteTeam', payload)

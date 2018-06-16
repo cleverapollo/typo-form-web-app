@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
 const FORM_URL = `${API_URL}form/`
-const VALIDATION_URL = '/validation/'
+const VALIDATION_URL = '/validation'
 
 export default {
   state: {
@@ -93,7 +93,7 @@ export default {
       if (payload.validationData) {
         updateObj.validation_data = payload.validationData
       }
-      window.axios.put(FORM_URL + payload.formId + VALIDATION_URL + payload.id, updateObj)
+      window.axios.put(FORM_URL + payload.formId + VALIDATION_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -111,7 +111,7 @@ export default {
     },
     deleteValidation ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + payload.formId + VALIDATION_URL + payload.id)
+      window.axios.delete(FORM_URL + payload.formId + VALIDATION_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteValidation', payload)

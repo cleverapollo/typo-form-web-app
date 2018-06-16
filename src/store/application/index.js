@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
-const APPLICATION_URL = `${API_URL}application/`
-const USER_URL = `/user/`
-const EMAIL_URL = `/application-email/`
+const APPLICATION_URL = `${API_URL}application`
+const USER_URL = `/user`
+const EMAIL_URL = `/application-email`
 
 export default {
   state: {
@@ -59,7 +59,7 @@ export default {
     loadApplication ({commit}, slug) {
       commit('setLoading', true)
       return new Promise((resolve, reject) => {
-        window.axios.get(APPLICATION_URL + slug)
+        window.axios.get(APPLICATION_URL + '/' + slug)
           .then(
             response => {
               commit('setLoading', false)
@@ -120,10 +120,10 @@ export default {
       const application = {
         invitations: payload.invitations
       }
-      window.axios.post(APPLICATION_URL + payload.slug + '/invite', application)
+      window.axios.post(APPLICATION_URL + '/' + payload.slug + '/invite', application)
         .then(
           response => {
-            window.axios.get(APPLICATION_URL + payload.slug + USER_URL)
+            window.axios.get(APPLICATION_URL + '/' + payload.slug + USER_URL)
               .then(
                 response => {
                   commit('setLoading', false)
@@ -168,7 +168,7 @@ export default {
         updateObj.icon = payload.icon
       }
       return new Promise((resolve, reject) => {
-        window.axios.put(APPLICATION_URL + payload.slug, updateObj)
+        window.axios.put(APPLICATION_URL + '/' + payload.slug, updateObj)
           .then(response => {
             commit('setLoading', false)
             const updateObject = {
@@ -187,7 +187,7 @@ export default {
     },
     deleteApplication ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.slug)
+      window.axios.delete(APPLICATION_URL + '/' + payload.slug)
         .then(() => {
           commit('setLoading', false)
           commit('deleteApplication', payload)
@@ -199,7 +199,7 @@ export default {
     },
     loadApplicationEmail ({commit}, slug) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + slug + EMAIL_URL)
+      window.axios.get(APPLICATION_URL + '/' + slug + EMAIL_URL)
         .then(
           response => {
             commit('setLoading', false)
@@ -229,7 +229,7 @@ export default {
       if (payload.body) {
         updateObj.body = payload.body
       }
-      window.axios.put(APPLICATION_URL + payload.slug + EMAIL_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + '/' + payload.slug + EMAIL_URL + '/' + payload.id, updateObj)
         .then(response => {
           commit('setLoading', false)
           const updateObject = {

@@ -1,8 +1,8 @@
 const API_URL = process.env.API_URL
 const QUESTION_URL = `${API_URL}question/`
-const ANSWER_URL = '/answer/'
-const CHANGE_URL = 'delete'
-const MOVE_URL = '/move/'
+const ANSWER_URL = '/answer'
+const CHANGE_URL = '/delete'
+const MOVE_URL = '/move'
 
 export default {
   actions: {
@@ -59,7 +59,7 @@ export default {
       if (payload.answer) {
         updateObj.answer = payload.answer
       }
-      window.axios.put(QUESTION_URL + payload.questionId + ANSWER_URL + payload.id, updateObj)
+      window.axios.put(QUESTION_URL + payload.questionId + ANSWER_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -83,7 +83,7 @@ export default {
       if (payload.order) {
         updateObj.order = payload.order
       }
-      window.axios.post(QUESTION_URL + payload.questionId + ANSWER_URL + payload.id + MOVE_URL, updateObj)
+      window.axios.post(QUESTION_URL + payload.questionId + ANSWER_URL + '/' + payload.id + MOVE_URL, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -102,7 +102,7 @@ export default {
     },
     deleteAnswer ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(QUESTION_URL + payload.questionId + ANSWER_URL + payload.id)
+      window.axios.delete(QUESTION_URL + payload.questionId + ANSWER_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteAnswer', payload)

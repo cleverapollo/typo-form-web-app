@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
-const FORM_URL = `/form/`
-const SETTING_URL = `auto/`
+const FORM_URL = `/form`
+const SETTING_URL = `auto`
 
 export default {
   state: {
@@ -115,7 +115,7 @@ export default {
         headers: {'content-type': 'multipart/form-data'}
       }
 
-      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + payload.id, formData, config)
+      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + '/' + payload.id, formData, config)
         .then(
           response => {
             commit('setLoading', false)
@@ -133,7 +133,7 @@ export default {
     },
     deleteForm ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.slug + FORM_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.slug + FORM_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteForm', payload)
@@ -148,7 +148,7 @@ export default {
       const updateObj = {
         form_ids: payload.formIds
       }
-      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + SETTING_URL, updateObj)
+      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + '/' + SETTING_URL, updateObj)
         .then(
           response => {
             commit('setLoading', false)

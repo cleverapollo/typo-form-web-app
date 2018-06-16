@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
-const USER_URL = `/user/`
+const USER_URL = `/user`
 const INVITED_USER_URL = `/invited/`
 
 export default {
@@ -83,7 +83,7 @@ export default {
       if (payload.applicationRoleId) {
         updateObj.application_role_id = payload.applicationRoleId
       }
-      window.axios.put(APPLICATION_URL + payload.slug + USER_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.slug + USER_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -101,7 +101,7 @@ export default {
     },
     deleteUser ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.slug + USER_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.slug + USER_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteUser', payload)

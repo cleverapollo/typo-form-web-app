@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
 const TEAM_URL = `/team/`
-const USER_URL = `/user/`
+const USER_URL = `/user`
 const INVITED_USER_URL = `/invited/`
 
 export default {
@@ -84,7 +84,7 @@ export default {
       if (payload.teamRoleId) {
         updateObj.team_role_id = payload.teamRoleId
       }
-      window.axios.put(APPLICATION_URL + payload.slug + TEAM_URL + payload.teamId + USER_URL + payload.id, updateObj)
+      window.axios.put(APPLICATION_URL + payload.slug + TEAM_URL + payload.teamId + USER_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -102,7 +102,7 @@ export default {
     },
     deleteTeamUser ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.slug + TEAM_URL + payload.teamId + USER_URL + payload.id)
+      window.axios.delete(APPLICATION_URL + payload.slug + TEAM_URL + payload.teamId + USER_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteTeamUser', payload)

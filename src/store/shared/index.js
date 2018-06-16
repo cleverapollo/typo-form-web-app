@@ -1,13 +1,13 @@
 const API_URL = process.env.API_URL
 const INVITATION_URL = `${API_URL}invitation/`
 const JOIN_URL = `${API_URL}join/`
-const QUESTION_TYPE_URL = `${API_URL}question-type/`
-const ROLE_URL = `${API_URL}role/`
-const PERIOD_URL = `${API_URL}period/`
-const STATUS_URL = `${API_URL}status/`
-const VALIDATION_TYPE_URL = `${API_URL}validation-type/`
-const COMPARATOR_URL = `${API_URL}comparator/`
-const TRIGGER_TYPE_URL = `${API_URL}trigger-type/`
+const QUESTION_TYPE_URL = `${API_URL}question-type`
+const ROLE_URL = `${API_URL}role`
+const PERIOD_URL = `${API_URL}period`
+const STATUS_URL = `${API_URL}status`
+const VALIDATION_TYPE_URL = `${API_URL}validation-type`
+const COMPARATOR_URL = `${API_URL}comparator`
+const TRIGGER_TYPE_URL = `${API_URL}trigger-type`
 
 export default {
   state: {

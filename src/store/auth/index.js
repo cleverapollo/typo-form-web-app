@@ -3,9 +3,9 @@ const API_ORIGIN_URL = process.env.API_ORIGIN_URL
 const REGISTER_URL = `${API_URL}register`
 const LOGIN_URL = `${API_URL}login`
 const LOGOUT_URL = `${API_URL}logout`
-const USER_URL = `${API_URL}user/`
+const USER_URL = `${API_URL}user`
 const SOCIAL_URL = `${API_ORIGIN_URL}auth/signin`
-const PASSWORD_RESET_URL = `${API_URL}password/reset/`
+const PASSWORD_RESET_URL = `${API_URL}password/reset`
 const EMAIL_UPDATE_URL = `${API_URL}user/update-email`
 const PASSWORD_UPDATE_URL = `${API_URL}user/update-password`
 
@@ -201,7 +201,7 @@ export default {
       }
       let token = ''
       if (payload.token) {
-        token = payload.token
+        token = '/' + payload.token
         obj.token = payload.token
       }
       return new Promise((resolve, reject) => {

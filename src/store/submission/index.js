@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const FORM_URL = `${API_URL}form/`
 const APPLICATION_URL = `${API_URL}application/`
-const SUBMISSION_URL = '/submission/'
+const SUBMISSION_URL = '/submission'
 
 export default {
   state: {
@@ -186,7 +186,7 @@ export default {
         submission.progress = parseInt(payload.progress)
       }
 
-      window.axios.put(FORM_URL + payload.formId + SUBMISSION_URL + payload.id, submission)
+      window.axios.put(FORM_URL + payload.formId + SUBMISSION_URL + '/' + payload.id, submission)
         .then(
           response => {
             commit('setLoading', false)
@@ -205,7 +205,7 @@ export default {
     deleteSubmission ({commit}, payload) {
       commit('setLoading', true)
       return new Promise((resolve, reject) => {
-        window.axios.delete(FORM_URL + payload.formId + SUBMISSION_URL + payload.id)
+        window.axios.delete(FORM_URL + payload.formId + SUBMISSION_URL + '/' + payload.id)
           .then((response) => {
             commit('setLoading', false)
             commit('deleteSubmission', payload)

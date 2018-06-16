@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const FORM_URL = `${API_URL}form/`
-const SECTION_URL = '/section/'
-const MOVE_URL = '/move/'
+const SECTION_URL = '/section'
+const MOVE_URL = '/move'
 
 export default {
   state: {
@@ -287,7 +287,7 @@ export default {
       if (payload.max_rows !== undefined) {
         updateObj.max_rows = payload.max_rows
       }
-      window.axios.put(FORM_URL + payload.formId + SECTION_URL + payload.id, updateObj)
+      window.axios.put(FORM_URL + payload.formId + SECTION_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -309,7 +309,7 @@ export default {
         parent_section_id: payload.parentSectionId,
         order: payload.order
       }
-      window.axios.post(FORM_URL + payload.formId + SECTION_URL + payload.sectionId + MOVE_URL, moveObj)
+      window.axios.post(FORM_URL + payload.formId + SECTION_URL + '/' + payload.sectionId + MOVE_URL, moveObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -329,7 +329,7 @@ export default {
     },
     deleteSection ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + payload.formId + SECTION_URL + payload.id)
+      window.axios.delete(FORM_URL + payload.formId + SECTION_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteSection', payload)

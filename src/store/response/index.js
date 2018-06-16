@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
 const SUBMISSION_URL = `${API_URL}submission/`
-const RESPONSE_URL = '/response/'
+const RESPONSE_URL = '/response'
 
 export default {
   actions: {
@@ -71,7 +71,7 @@ export default {
       }
 
       return new Promise((resolve, reject) => {
-        window.axios.put(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + payload.id, updateObj)
+        window.axios.put(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + '/' + payload.id, updateObj)
           .then(
             (response) => {
               commit('setLoading', false)
@@ -98,7 +98,7 @@ export default {
       commit('setLoading', true)
 
       return new Promise((resolve, reject) => {
-        window.axios.delete(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + payload.id)
+        window.axios.delete(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + '/' + payload.id)
           .then(response => {
             commit('setLoading', false)
             commit('deleteResponse', payload)

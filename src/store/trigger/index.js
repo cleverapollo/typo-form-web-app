@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL
 const FORM_URL = `${API_URL}form/`
-const TRIGGER_URL = '/trigger/'
+const TRIGGER_URL = '/trigger'
 
 export default {
   state: {
@@ -101,7 +101,7 @@ export default {
       if (payload.operator) {
         updateObj.operator = payload.operator
       }
-      window.axios.put(FORM_URL + payload.formId + TRIGGER_URL + payload.id, updateObj)
+      window.axios.put(FORM_URL + payload.formId + TRIGGER_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -119,7 +119,7 @@ export default {
     },
     deleteTrigger ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + payload.formId + TRIGGER_URL + payload.id)
+      window.axios.delete(FORM_URL + payload.formId + TRIGGER_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteTrigger', payload)

@@ -1,7 +1,7 @@
 const API_URL = process.env.API_URL
 const SECTION_URL = `${API_URL}section/`
-const QUESTION_URL = '/question/'
-const MOVE_URL = '/move/'
+const QUESTION_URL = '/question'
+const MOVE_URL = '/move'
 
 export default {
   actions: {
@@ -71,7 +71,7 @@ export default {
       if (payload.width) {
         updateObj.width = payload.width
       }
-      window.axios.put(SECTION_URL + payload.sectionId + QUESTION_URL + payload.id, updateObj)
+      window.axios.put(SECTION_URL + payload.sectionId + QUESTION_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -90,7 +90,7 @@ export default {
     },
     duplicateQuestion ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.post(SECTION_URL + payload.sectionId + QUESTION_URL + payload.id)
+      window.axios.post(SECTION_URL + payload.sectionId + QUESTION_URL + '/' + payload.id)
         .then(
           response => {
             commit('setLoading', false)
@@ -113,7 +113,7 @@ export default {
         parent_section_id: payload.parentSectionId,
         order: payload.order
       }
-      window.axios.post(SECTION_URL + payload.oldParentSectionId + QUESTION_URL + payload.questionId + MOVE_URL, moveObj)
+      window.axios.post(SECTION_URL + payload.oldParentSectionId + QUESTION_URL + '/' + payload.questionId + MOVE_URL, moveObj)
         .then(
           response => {
             commit('setLoading', false)
@@ -134,7 +134,7 @@ export default {
     },
     deleteQuestion ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(SECTION_URL + payload.sectionId + QUESTION_URL + payload.id)
+      window.axios.delete(SECTION_URL + payload.sectionId + QUESTION_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteQuestion', payload)
