@@ -37,7 +37,7 @@
           url: API_URL + 'file',
           thumbnailWidth: 150,
           dictDefaultMessage: this.label,
-          headers: {'api_token': localStorage.getItem('token')}
+          headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')}
         }
       }
     },
