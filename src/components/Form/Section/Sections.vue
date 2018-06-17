@@ -55,15 +55,13 @@
         </div>
       </v-flex>
 
-      <!--
-        <v-flex style="min-width: 130px; max-width: 130px;" class="mt-4" v-if="submissionId === -1">
-          <v-switch
-            label="Repeatable"
-            v-model="hasRepeatableQuestions"
-            @change="changeRepeatable($event)"
-          ></v-switch>
-        </v-flex>
-      -->
+      <v-flex style="min-width: 130px; max-width: 130px;" class="mt-4" v-if="submissionId === -1">
+        <v-switch
+          label="Repeatable"
+          v-model="hasRepeatableQuestions"
+          @change="changeRepeatable($event)"
+        ></v-switch>
+      </v-flex>
 
       <v-menu offset-y bottom left v-if="submissionId === -1">
         <v-btn icon slot="activator">
@@ -95,38 +93,41 @@
     </v-card-title>
 
     <v-card-text v-show="expanded">
-      <!--
-        <template v-if="hasRepeatableQuestions">
-          <question-repeatable
-            :section="section"
-            :form-id="formId"
-            @update-limitation="updateRepeatableLimitation"
-            @create-question="createQuestion"
-            @delete-question="deleteQuestion"
-            @update-question="updateQuestion"
-            @create-answer="createAnswer"
-            @delete-answer="deleteAnswer"
-            @update-answer="updateAnswer"
-            @move-answer="moveAnswer"
-            @move-question="moveQuestion"
-            v-if="submissionId === -1"
-          >
-          </question-repeatable>
-          <response-repeatable
-            :questions="section.questions"
-            :min-rows="section.min_rows"
-            :max-rows="section.max_rows"
-            :responses="responses"
-            @create-response="createResponse"
-            @update-response="updateResponse"
-            @delete-response="deleteResponse"
-            v-else
-          >
-          </response-repeatable>
-        </template>
-      -->
+      <v-layout row wrap justify-space-around v-if="hasRepeatableQuestions && submissionId === -1">
+        <v-flex xs5 style="min-width: 130px">
+          <v-text-field
+            label="Minimum rows count"
+            @change="updateRowsCount"
+            v-model="min_rows"
+            :rules="[validateMinRows]">
+          </v-text-field>
+        </v-flex>
+
+        <v-flex xs5 style="min-width: 130px">
+          <v-text-field
+            label="Maximum rows count"
+            @change="updateRowsCount"
+            v-model="max_rows"
+            :rules="[validateMaxRows]">
+          </v-text-field>
+        </v-flex>
+      </v-layout>
+
+      <template v-if="submissionId !== -1 && hasRepeatableQuestions">
+        <response-repeatable
+          :questions="section.questions"
+          :min-rows="section.min_rows"
+          :max-rows="section.max_rows"
+          :responses="responses"
+          @create-response="createResponse"
+          @update-response="updateResponse"
+          @delete-response="deleteResponse"
+        >
+        </response-repeatable>
+      </template>
 
       <draggable
+        v-else
         v-model="list"
         :class="'section' + section.id"
         :options="{group: 'parent', draggable: '.item', handle: '.handle'}"
@@ -202,8 +203,8 @@
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions'
   import responses from '../Response/Responses'
-  // import questionRepeatable from '../Question/components/QuestionRepeatable'
-  // import ResponseRepeatable from '../Response/components/ResponseRepeatable'
+  import questionRepeatable from '../Question/components/QuestionRepeatable'
+  import ResponseRepeatable from '../Response/components/ResponseRepeatable'
   import QuestionContentBlock from '../Question/components/ContentBlock'
   import ResponseContentBlock from '../Response/components/ContentBlock'
   import CreateSection from './CreateSection'
@@ -219,8 +220,8 @@
       draggable,
       questions,
       responses,
-      // questionRepeatable,
-      // ResponseRepeatable,
+      questionRepeatable,
+      ResponseRepeatable,
       CreateSection,
       CreateQuestion,
       QuestionContentBlock,
@@ -315,13 +316,6 @@
     },
     methods: {
       changeRepeatable (value) {
-        this.$store.dispatch('deleteQuestions', {
-          formId: this.formId,
-          sectionId: this.section.id
-        })
-        if (value) {
-          this.createQuestion(['Answers', 'This question contains answers', 1, true])
-        }
         this.updateSection()
       },
       createQuestion (args) {
@@ -491,9 +485,8 @@
       checkNameUpdate: function () {
         if (this.editedName !== this.section.name) {
           this.updateSection()
-        } else {
-          this.editMode = false
         }
+        this.editMode = false
       },
       moveAnswer (args) {
         const questionId = args[0]
@@ -577,10 +570,34 @@
             })
         }
       },
-      updateRepeatableLimitation (limitation) {
-        this.min_rows = limitation.min_rows || this.min_rows
-        this.max_rows = limitation.max_rows || this.max_rows
-        this.updateSection()
+      validateMinRows (value) {
+        this.minRowsInput = parseInt(value)
+        if (isNaN(this.minRowsInput)) {
+          this.minRowsInput = ''
+        }
+        if (this.maxRowsInput && this.minRowsInput > this.maxRowsInput) {
+          return 'Minimum rows count is set bigger than maximum rows count.'
+        } else {
+          return true
+        }
+      },
+      validateMaxRows (value) {
+        this.maxRowsInput = parseInt(value)
+        if (isNaN(this.maxRowsInput)) {
+          this.maxRowsInput = ''
+        }
+        if (this.minRowsInput && this.minRowsInput > this.maxRowsInput) {
+          return 'Maximum rows count is set smaller than minimum rows count.'
+        } else {
+          return true
+        }
+      },
+      updateRowsCount () {
+        if (this.validateMinRows(this.minRowsInput) === true && this.validateMaxRows(this.maxRowsInput) === true) {
+          this.min_rows = this.min_rows
+          this.max_rows = this.max_rows
+          this.updateSection()
+        }
       }
     }
   }
