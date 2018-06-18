@@ -362,6 +362,16 @@ export default {
         })
       }
     },
+    loadedChildrenSection (state) {
+      return (formId, parentSectionId) => {
+        if (!state.loadedSections[formId]) {
+          return []
+        }
+        return state.loadedSections[formId].filter((section) => {
+          return section.parent_section_id === parentSectionId
+        })
+      }
+    },
     loadedChildren (state) {
       return (formId, parentSectionId) => {
         if (!state.loadedSections[formId]) {

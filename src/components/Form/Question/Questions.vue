@@ -229,10 +229,6 @@
           {
             action: 'schedule',
             title: 'Time'
-          },
-          {
-            action: 'view_headline',
-            title: 'Content Block'
           }
         ],
         validationTypes: this.$store.getters.validationTypes,

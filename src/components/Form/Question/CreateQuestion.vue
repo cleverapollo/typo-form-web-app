@@ -121,7 +121,7 @@
         return this.$store.getters.loading
       },
       questionTypes () {
-        return this.$store.getters.questionTypes
+        return this.$store.getters.questionTypes.filter(e => { return e.type !== 'Content Block' })
       }
     }
   }

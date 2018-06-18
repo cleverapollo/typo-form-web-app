@@ -37,7 +37,11 @@
         if (!this.list.length || !this.section) {
           return false
         }
-        return this.section === this.getFirstChildSection(this.list[0])
+        if (this.submissionId === -1) {
+          return this.section === this.sections[0]
+        } else {
+          return this.section === this.getFirstChildSection(this.list[0])
+        }
       },
       nextAble () {
         if (!this.list.length || !this.section) {
@@ -50,7 +54,7 @@
         if (!rtSection) {
           const sections = this.list
           if (sections.length) {
-            if (this.view === 'questions') {
+            if (this.submissionId === -1) {
               rtSection = sections[0]
             } else {
               rtSection = this.getFirstChildSection(sections[0])
@@ -58,7 +62,7 @@
             this.$store.dispatch('selectSection', rtSection)
           }
         } else {
-          if (this.view === 'responses') {
+          if (this.submissionId !== -1) {
             const children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
             if (children.length > 0 && children[0].questions) {
               rtSection = this.getFirstChildSection(rtSection)
@@ -113,24 +117,29 @@
         if (!rtSection) {
           return
         }
-        let slibings = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.parent_section_id), element => {
+        let slibings = _.sortBy(this.$store.getters.loadedChildrenSection(this.formId, rtSection.parent_section_id), element => {
           return element.order
         })
         let index = slibings.findIndex(section => {
           return section.id === rtSection.id
         })
-        if (index) {
-          rtSection = slibings[index - 1]
-        } else if (rtSection.parent_section_id) {
-          if (this.view === 'questions') {
+        if (this.submissionId === -1) {
+          if (index) {
+            rtSection = slibings[index - 1]
+            rtSection = this.getLastChildSection(rtSection)
+          } else if (rtSection.parent_section_id) {
             rtSection = this.$store.getters.loadedSection(this.formId, rtSection.parent_section_id)
-          } else {
+          }
+        } else {
+          if (index) {
+            rtSection = slibings[index - 1]
+          } else if (rtSection.parent_section_id) {
             while (!index) {
               if (!rtSection.parent_section_id) {
                 break
               }
               rtSection = this.$store.getters.loadedSection(this.formId, rtSection.parent_section_id)
-              slibings = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.parent_section_id), element => {
+              slibings = _.sortBy(this.$store.getters.loadedChildrenSection(this.formId, rtSection.parent_section_id), element => {
                 return element.order
               })
               index = slibings.findIndex(section => {
@@ -142,9 +151,9 @@
             } else {
               rtSection = this.getFirstChildSection(this.list[0])
             }
+            rtSection = this.getLastChildSection(rtSection)
           }
         }
-        rtSection = this.getLastChildSection(rtSection)
         this.$store.dispatch('selectSection', rtSection)
       },
       next () {
@@ -152,24 +161,27 @@
         if (!rtSection) {
           return
         }
-        let slibings = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.parent_section_id), element => {
+        let slibings = _.sortBy(this.$store.getters.loadedChildrenSection(this.formId, rtSection.parent_section_id), element => {
           return element.order
         })
         let index = slibings.findIndex(section => {
           return section.id === rtSection.id
         })
-        if (index < slibings.length - 1) {
-          rtSection = slibings[index + 1]
-        } else if (rtSection.parent_section_id) {
-          if (this.view === 'questions') {
-            rtSection = this.$store.getters.loadedSection(this.formId, rtSection.parent_section_id)
-          } else {
+        if (this.submissionId === -1) {
+          let children = _.sortBy(this.$store.getters.loadedChildrenSection(this.formId, rtSection.id), element => {
+            return element.order
+          })
+          if (children.length) {
+            rtSection = children[0]
+          } else if (index < slibings.length - 1) {
+            rtSection = slibings[index + 1]
+          } else if (rtSection.parent_section_id) {
             while (index === slibings.length - 1) {
               if (!rtSection.parent_section_id) {
                 break
               }
               rtSection = this.$store.getters.loadedSection(this.formId, rtSection.parent_section_id)
-              slibings = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.parent_section_id), element => {
+              slibings = _.sortBy(this.$store.getters.loadedChildrenSection(this.formId, rtSection.parent_section_id), element => {
                 return element.order
               })
               index = slibings.findIndex(section => {
@@ -183,8 +195,31 @@
               rtSection = this.getLastChildSection(rtSection)
             }
           }
+        } else {
+          if (index < slibings.length - 1) {
+            rtSection = slibings[index + 1]
+          } else if (rtSection.parent_section_id) {
+            while (index === slibings.length - 1) {
+              if (!rtSection.parent_section_id) {
+                break
+              }
+              rtSection = this.$store.getters.loadedSection(this.formId, rtSection.parent_section_id)
+              slibings = _.sortBy(this.$store.getters.loadedChildrenSection(this.formId, rtSection.parent_section_id), element => {
+                return element.order
+              })
+              index = slibings.findIndex(section => {
+                return section.id === rtSection.id
+              })
+            }
+            if (rtSection.parent_section_id || index !== slibings.length - 1) {
+              rtSection = slibings[index + 1]
+            } else {
+              rtSection = this.list[this.list.length - 1]
+              rtSection = this.getLastChildSection(rtSection)
+            }
+          }
+          rtSection = this.getFirstChildSection(rtSection)
         }
-        rtSection = this.getFirstChildSection(rtSection)
         this.$store.dispatch('selectSection', rtSection)
       }
     }

@@ -208,9 +208,12 @@ export default {
           return null
         }
         for (let i = 0; i < rootState.section.loadedSections[formId].length; i++) {
-          return rootState.section.loadedSections[formId][i].questions.find((question) => {
+          let question = rootState.section.loadedSections[formId][i].questions.find((question) => {
             return question.id === questionId
           })
+          if (question) {
+            return question
+          }
         }
         return null
       }
