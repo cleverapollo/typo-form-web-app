@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600px">
 
-    <v-alert :value="error" type="info">
+    <v-alert :value="error" type="error">
       {{ errorString }}
     </v-alert>
 
