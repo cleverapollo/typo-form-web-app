@@ -116,7 +116,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <template v-if="userIsAuthenticated">
-        <v-menu offset-y left>
+        <v-menu offset-y left class="hidden-sm-and-down">
           <v-btn
             icon
             slot="activator">
@@ -143,9 +143,12 @@
             </template>
           </v-list>
         </v-menu>
+
+        <!-- //Not yet enabled
         <v-btn icon>
           <v-icon>notifications</v-icon>
         </v-btn>
+        -->
         <v-menu offset-y left>
           <v-btn
             icon
@@ -175,7 +178,7 @@
       </template>
     </v-toolbar>
     <v-content class="border-bottom">
-      <v-container fluid>
+      <v-container fluid :class="{'px-0': $vuetify.breakpoint.xsOnly }">
         <router-view></router-view>
       </v-container>
     </v-content>
@@ -224,8 +227,8 @@
             { title: 'Users', path: 'users', icon: 'person', admin: true },
             { title: 'Teams', path: 'teams', icon: 'people', admin: false },
             { title: 'Forms', path: 'forms', icon: 'content_paste', admin: true },
-            { title: 'Submissions', path: 'submissions', icon: 'assignment', admin: false },
-            { title: 'Settings', path: 'settings', icon: 'settings', admin: true }
+            { title: 'Submissions', path: 'submissions', icon: 'assignment', admin: false }
+            // ,{ title: 'Settings', path: 'settings', icon: 'settings', admin: true }
         ]
       },
       accountItems () {

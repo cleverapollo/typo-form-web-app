@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+    <v-flex d-flex xs12>
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <div class="subheading py-2 px-3">Teams</div>
