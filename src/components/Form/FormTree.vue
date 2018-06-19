@@ -68,10 +68,10 @@
       isSectionTrigger (item) {
         let questions = item.questions
         const $this = this
-        let hideSectionTrigger = true
+        let hideSectionTrigger = false
         _.forEach(questions, function (question) {
-          if ($this.isTrigger(question)) {
-            hideSectionTrigger = false
+          if (!$this.isTrigger(question)) {
+            hideSectionTrigger = true
           }
         })
         return hideSectionTrigger

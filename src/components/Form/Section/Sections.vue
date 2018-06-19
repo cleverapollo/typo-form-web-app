@@ -69,7 +69,7 @@
         </v-btn>
 
         <v-list>
-          <v-list-tile @click="" v-if="includeSection || !includeQuestion">
+          <v-list-tile v-show="!hasRepeatableQuestions" @click="" v-if="includeSection || !includeQuestion">
             <v-list-tile-title>
               <CreateSection :parentSectionId="section.id" :formId="formId"></CreateSection>
             </v-list-tile-title>
@@ -79,7 +79,7 @@
             <v-list-tile-title>Delete Section</v-list-tile-title>
           </v-list-tile>
 
-          <v-list-tile v-show="!hasRepeatableQuestions" @click="" v-if="!includeSection || includeQuestion">
+          <v-list-tile @click="" v-if="!includeSection || includeQuestion">
             <v-list-tile-title>
               <CreateQuestion :sectionId="section.id" :formId="formId"></CreateQuestion>
             </v-list-tile-title>
@@ -93,6 +93,7 @@
     </v-card-title>
 
     <v-card-text v-show="expanded">
+      <!-- Repeatable
       <v-layout row wrap justify-space-around v-if="hasRepeatableQuestions && submissionId === -1">
         <v-flex xs5 style="min-width: 130px">
           <v-text-field
@@ -125,9 +126,9 @@
         >
         </response-repeatable>
       </template>
+      -->
 
       <draggable
-        v-else
         v-model="list"
         :class="'section' + section.id"
         :options="{group: 'parent', draggable: '.item', handle: '.handle'}"

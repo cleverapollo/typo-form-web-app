@@ -33,12 +33,6 @@
                   <td>{{ props.item.created_at.date | moment }}</td>
                   <td>{{ props.item.updated_at.date | moment }}</td>
                   <td>{{ status(props.item.status_id) }}</td>
-                  <td class="justify-center layout px-0">
-                    <EditSubmission :slug="slug" :submission="props.item" :formId="props.item.form.id" :btnRect="true"></EditSubmission>
-                    <v-btn icon class="mx-0" @click="onDeleteSubmission(props.item.form.id, props.item.id)">
-                      <v-icon color="pink">delete</v-icon>
-                    </v-btn>
-                  </td>
                 </tr>
               </template>
               <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -66,14 +60,12 @@
 
 <script>
   import CreateSubmission from './CreateSubmission'
-  import EditSubmission from './EditSubmission'
   import moment from 'moment'
 
   export default {
     props: ['slug'],
     components: {
-      CreateSubmission,
-      EditSubmission
+      CreateSubmission
     },
     data () {
       return {
@@ -84,8 +76,7 @@
           { text: 'Owner', value: 'owner', sortable: true, align: 'left' },
           { text: 'Created', value: 'created_at', sortable: true, align: 'left' },
           { text: 'Modified', value: 'updated_at', sortable: true, align: 'left' },
-          { text: 'Status', value: 'status', sortable: true, align: 'left' },
-          { text: 'Actions', sortable: false, align: 'center' }
+          { text: 'Status', value: 'status', sortable: true, align: 'left' }
         ]
       }
     },
