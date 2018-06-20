@@ -190,7 +190,6 @@
     data () {
       return {
         drawer: null,
-        api_url: process.env.API_ORIGIN_URL,
         app_name: process.env.APP_NAME
       }
     },

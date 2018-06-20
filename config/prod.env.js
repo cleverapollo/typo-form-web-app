@@ -3,7 +3,8 @@ require('dotenv').config()
 module.exports = {
   NODE_ENV: '"production"',
   APP_NAME: JSON.stringify(process.env.APP_NAME),
-  API_URL: JSON.stringify(process.env.PRODUCTION_API_URL),
+  API_ORIGIN_URL: JSON.stringify(process.env.API_URL),
+  API_URL: JSON.stringify(process.env.API_URL + 'api/'),
 
   GITHUB_CLIENT_ID: JSON.stringify(process.env.GITHUB_CLIENT_ID),
   GITHUB_CLIENT_SECRET: JSON.stringify(process.env.GITHUB_CLIENT_SECRET),
