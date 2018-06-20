@@ -30,7 +30,7 @@ export default {
                 commit('setLoading', false)
                 const user = response['data']['user']
                 localStorage.setItem('token', user['api_token'])
-                window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + user['api_token']
+                window.axios.defaults.headers.common['API-Token'] = user['api_token']
                 commit('setUser', user)
               }
             )
@@ -64,7 +64,7 @@ export default {
             commit('setLoading', false)
             const user = response['data']['user']
             localStorage.setItem('token', user['api_token'])
-            window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + user['api_token']
+            window.axios.defaults.headers.common['API-Token'] = user['api_token']
             commit('setUser', user)
           }
         )
@@ -95,7 +95,7 @@ export default {
             (error) => {
               commit('setLoading', false)
               commit('setUser', null)
-              delete window.axios.defaults.headers.common['Authorization']
+              delete window.axios.defaults.headers.common['API-Token']
               reject(error)
               if (typeof (error.response.data) !== 'string') {
                 console.log(error.response.data)
@@ -113,7 +113,7 @@ export default {
             commit('setLoading', false)
             const user = response['data']['user']
             localStorage.setItem('token', user['api_token'])
-            window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + user['api_token']
+            window.axios.defaults.headers.common['API-Token'] = user['api_token']
             commit('setUser', user)
           }
         )
@@ -131,7 +131,7 @@ export default {
     logout ({commit}) {
       commit('clearError')
       window.axios.post(LOGOUT_URL)
-      delete window.axios.defaults.headers.common['Authorization']
+      delete window.axios.defaults.headers.common['API-Token']
       commit('setUser', null)
       localStorage.removeItem('token')
     },

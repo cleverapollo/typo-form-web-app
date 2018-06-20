@@ -63,7 +63,7 @@ function createApp () {
 }
 
 if (localStorage.getItem('token')) {
-  window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
+  window.axios.defaults.headers.common['API-Token'] = localStorage.getItem('token')
   store.dispatch('autoSignIn').finally(() => createApp())
 } else {
   createApp()
