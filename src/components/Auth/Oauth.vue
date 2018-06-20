@@ -61,7 +61,6 @@
         if (this.$auth.isAuthenticated()) {
           this.$auth.logout()
         }
-
         this.response = null
 
         var this_ = this
