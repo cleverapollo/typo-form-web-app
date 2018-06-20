@@ -78,7 +78,7 @@
       onCreatePassword () {
         this.$store.dispatch('resetPassword', {email: this.email, token: this.token, password: this.password})
           .then(response => {
-            this.$router.push('/signin')
+            this.$router.push('/login')
           })
       },
       onDismissed () {
