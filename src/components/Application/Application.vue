@@ -7,7 +7,6 @@
         <v-flex d-flex xs12>
           <div class="subheading py-2 px-3">Dashboard</div>
 
-          <!--
           <v-spacer></v-spacer>
           <v-menu offset-y bottom left v-if="userIsApplicationAdmin">
             <v-btn icon slot="activator">
@@ -26,7 +25,6 @@
               </v-list-tile>
             </v-list>
           </v-menu>
-        -->
 
         </v-flex>
       </v-layout>
