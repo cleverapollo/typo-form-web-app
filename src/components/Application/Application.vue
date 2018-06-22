@@ -8,7 +8,7 @@
           <div class="subheading py-2 px-3">Dashboard</div>
 
           <v-spacer></v-spacer>
-          <v-menu offset-y bottom left v-if="userIsApplicationAdmin">
+          <v-menu offset-y bottom left v-if="userIsApplicationAdmin" class="text-xs-right">
             <v-btn icon slot="activator">
               <v-icon>more_vert</v-icon>
             </v-btn>
