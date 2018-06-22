@@ -44,11 +44,13 @@
               multi-line></v-text-field>
           </v-flex>
         </v-layout>
+        <!--
         <v-layout row>
           <v-flex xs12 class="ph-2">
             <upload-icon :icon='icon' @update-icon="updateIcon"></upload-icon>
           </v-flex>
         </v-layout>
+        -->
       </v-card-text>
 
       <!-- //Actions -->
@@ -67,7 +69,7 @@
 </template>
 
 <script>
-  import uploadIcon from './IconUpload'
+  // import uploadIcon from './IconUpload'
 
   export default {
     props: {
@@ -79,9 +81,9 @@
         default: true
       }
     },
-    components: {
+    /* components: {
       uploadIcon
-    },
+    }, */
     data () {
       return {
         id: this.application.id,
