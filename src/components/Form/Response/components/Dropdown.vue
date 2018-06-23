@@ -6,7 +6,7 @@
         v-model="selectedOption"
         item-text="answer"
         item-value="id"
-        @change="onSave($event)"
+        @change="onSave()"
         autocomplete
       ></v-select>
     </v-flex>
@@ -19,28 +19,16 @@
     props: ['question', 'answers', 'responses', 'submissionId'],
     data () {
       return {
-        selectedOption: null
-      }
-    },
-    watch: {
-      submissionId (value) {
-        if (this.responses.length) {
-          this.selectedOption = parseInt(this.responses[0].response)
-        }
+        selectedOption: this.responses.length ? this.responses[0].answer_id : ''
       }
     },
     methods: {
-      onSave (value) {
+      onSave () {
         if (this.responses.length) {
-          this.$emit('update-response', [null, value, this.responses[0].id])
+          this.$emit('update-response', [this.selectedOption, null, this.responses[0].id])
         } else {
-          this.$emit('create-response', [null, value])
+          this.$emit('create-response', [this.selectedOption, null])
         }
-      }
-    },
-    mounted () {
-      if (this.responses.length) {
-        this.selectedOption = parseInt(this.responses[0].response)
       }
     },
     computed: {

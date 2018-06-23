@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12 :class='"sm" + (question.width ? question.width : 12)' question-group pa-3 v-if="isTrigger">
+  <v-flex xs12 :class='"sm" + (question.width ? question.width : 12)' question-group pa-3 v-if="isTrigger()">
     
     <v-layout row wrap question-head>
       <v-flex xs12>

@@ -304,6 +304,9 @@
         return includeQuestion
       },
       isSectionTrigger () {
+        if (!this.section.questions.length) {
+          return false
+        }
         let questions = this.section.questions
         const $this = this
         let hideSectionTrigger = true

@@ -17,7 +17,7 @@
     </div>
     <v-card>
       <v-card-title>
-        <div class="title mb-2 mt-2">Edit Sumission</div>
+        <div class="title mb-2 mt-2">Edit Submission</div>
       </v-card-title>
 
       <v-card-text>

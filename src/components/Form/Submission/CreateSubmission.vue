@@ -2,7 +2,7 @@
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
       <v-card-title>
-        <div class="title mb-2 mt-2">Create Sumission</div>
+        <div class="title mb-2 mt-2">Create Submission</div>
       </v-card-title>
       <v-card-text>
 
