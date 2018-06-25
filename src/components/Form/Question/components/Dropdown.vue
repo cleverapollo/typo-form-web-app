@@ -1,7 +1,7 @@
 <template>
   <draggable v-model='list' class='dragArea' :options='{draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
     <v-layout row v-for='(answer, index) in list' :key='"Option " + index' class='answer' :class='"answer" + answer.id'>
-      <v-flex style='max-width: 20px; min-width: 20px' class='mt-4'>
+      <v-flex style='max-width: 30px; min-width: 30px' class='mt-4'>
         {{index+1}}.
       </v-flex>
       <v-flex xs10 style='min-width: 60px'>
@@ -100,7 +100,7 @@
     computed: {
       list: {
         get () {
-          return this.answers.sort((a, b) => { return a.order > b.order })
+          return this.answers
         },
         set (value) {
           // TODO: Drggable components

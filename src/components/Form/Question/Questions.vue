@@ -252,7 +252,10 @@
         return this.$store.getters.loadedSection(this.formId, this.sectionId)
       },
       questionOptions () {
-        return this.$store.getters.loadedAllQuestions(this.formId).filter((question) => { return question.id !== this.question.id })
+        const allQuestions = this.$store.getters.loadedAllQuestions(this.formId).filter((question) => { return question.id !== this.question.id })
+        return _.sortBy(allQuestions, element => {
+          return element.id
+        })
       },
       answers () {
         return _.sortBy(this.question.answers, element => {

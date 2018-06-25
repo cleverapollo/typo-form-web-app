@@ -146,7 +146,6 @@
       rows: {
         get () {
           return this.answers.filter(e => { return !e.parameter })
-          .sort((a, b) => { return a.order > b.order })
         },
         set (value) {
           // TODO: draggable
@@ -155,7 +154,6 @@
       columns: {
         get () {
           return this.answers.filter(e => { return e.parameter })
-          .sort((a, b) => { return a.order > b.order })
         },
         set (value) {
           // TODO: draggable
