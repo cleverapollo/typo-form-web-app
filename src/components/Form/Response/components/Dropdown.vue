@@ -6,7 +6,7 @@
         v-model="selectedOption"
         item-text="answer"
         item-value="id"
-        @change="onSave()"
+        @change="onSave($event)"
         autocomplete
       ></v-select>
     </v-flex>
@@ -23,11 +23,14 @@
       }
     },
     methods: {
-      onSave () {
+      onSave (value) {
+        if (typeof (value) === 'object') {
+          return
+        }
         if (this.responses.length) {
-          this.$emit('update-response', [this.selectedOption, null, this.responses[0].id])
+          this.$emit('update-response', [value, null, this.responses[0].id])
         } else {
-          this.$emit('create-response', [this.selectedOption, null])
+          this.$emit('create-response', [value, null])
         }
       }
     },
