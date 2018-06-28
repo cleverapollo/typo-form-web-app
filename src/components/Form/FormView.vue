@@ -29,9 +29,11 @@
   import * as _ from 'lodash'
   import sections from './Section/Sections'
   import FormTree from './FormTree'
+  import SectionOperation from './SectionOperation.js'
 
   export default {
     props: ['slug', 'formId', 'submissionId'],
+    mixins: [SectionOperation],
     components: {
       sections,
       FormTree
@@ -52,50 +54,25 @@
       },
       section () {
         let rtSection = this.$store.getters.loadSelectedSection()
-        if (!rtSection) {
-          const sections = this.list
-          if (sections.length) {
-            if (this.view === 'questions') {
-              rtSection = sections[0]
-            } else {
-              rtSection = this.getFirstChildSection(sections[0])
-            }
-            this.$store.dispatch('selectSection', rtSection)
-          }
-        } else {
-          if (this.view === 'responses') {
-            const children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
-            if (children.length > 0 && children[0].questions) {
-              rtSection = this.getFirstChildSection(rtSection)
-              this.$store.dispatch('selectSection', rtSection)
-            }
-          }
+        const sections = this.list
+        // If rtSection is null, then select first section
+        if (!rtSection && sections.length) {
+          rtSection = sections[0]
+          rtSection = this.getFirstChildSection(this.formId, rtSection)
         }
+        // If rtSection is triggered, then select its parent section
+        rtSection = this.getParentSection(this.formId, rtSection)
+        // if view is respones, then select first section which has questions
+        if (this.submissionId !== -1) {
+          rtSection = this.getFirstChildSection(this.formId, rtSection)
+        }
+        this.$store.dispatch('selectSection', rtSection)
         return rtSection
       }
     },
     methods: {
       sectionClicked: function (item) {
         this.$store.dispatch('selectSection', item)
-      },
-      getFirstChildSection (rtSection) {
-        let repeat = true
-        let ptSection = rtSection
-
-        while (repeat) {
-          let children = this.$store.getters.loadedChildren(this.formId, ptSection.id)
-          if (children.length > 0) {
-            if (children[0].answers) {
-              repeat = false
-            } else {
-              ptSection = children[0]
-            }
-          } else {
-            repeat = false
-          }
-        }
-
-        return ptSection
       }
     }
   }

@@ -23,7 +23,7 @@
             :section="section"
             :list="children(item)"
             :submissionId="submissionId"
-            @section-clicked="sectionClicked"
+            @section-clicked="clickSection"
           ></form-tree>
         </v-card-text>
       </v-card>
@@ -42,7 +42,7 @@
           <v-list-tile-title>{{ index + 1 }}. {{ item.name }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-for="subItem in children(item)" :key="subItem.name" @click="clickSection(subItem)">
+      <v-list-tile v-for="subItem in children(item)" :key="subItem.name" @click="clickSection(subItem)" v-if="!isSectionTrigger(subItem) || submissionId === -1">
         <v-list-tile-content>
           <v-list-tile-title>{{ subItem.name }}</v-list-tile-title>
         </v-list-tile-content>
@@ -65,36 +65,18 @@
       }
     },
     methods: {
-      isSectionTrigger (item) {
-        if (!item.questions.length) {
-          return false
-        }
-        let questions = item.questions
-        const $this = this
-        let hideSectionTrigger = true
-        _.forEach(questions, function (question) {
-          if ($this.isTrigger(question)) {
-            hideSectionTrigger = false
-          }
-        })
-        return hideSectionTrigger
-      },
       children (item) {
-        const children = this.$store.getters.loadedChildren(this.formId, item.id)
-        return children.filter(child => { return child.questions })
+        return _.sortBy(this.$store.getters.loadedChildrenSection(this.formId, item.id), element => {
+          return element.order
+        })
       },
       hasChildren (item) {
-        const items = this.children(item)
-        return (items.length === 0)
+        return this.children(item).length === 0
       },
       clickSection (item) {
-        const children = this.children(item)
-        if (this.submissionId === -1 || children.length === 0) {
+        if (this.submissionId === -1 || this.hasChildren(item)) {
           this.$emit('section-clicked', item)
         }
-      },
-      sectionClicked (item) {
-        this.$emit('section-clicked', item)
       },
       active (item) {
         return (this.section && item.id === this.section.id) ? 'active' : ''

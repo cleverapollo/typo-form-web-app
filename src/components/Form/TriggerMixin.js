@@ -1,23 +1,6 @@
 import * as _ from 'lodash'
 export default {
   computed: {
-    progress () {
-      const sections = this.$store.getters.loadedSections(this.formId)
-      let questionCount = 0
-      let responseCount = 0
-      sections.forEach(function (section) {
-        let questions = this.$store.getters.loadedQuestions(this.formId, section.id).filter(question => question.mandatory && this.isTrigger(question))
-        questionCount += questions.length
-        questions.forEach(function (question) {
-          if (this.isTrigger(question)) {
-            let responses = this.$store.getters.loadedResponses(this.formId, parseInt(this.submissionId)).filter(response => response.question_id === question.id)
-            responseCount += responses.length ? 1 : 0
-          }
-        }, this)
-      }, this)
-
-      return questionCount !== 0 ? responseCount * 100 / questionCount : 0
-    },
     allResponses () {
       return this.$store.getters.loadedResponses(this.formId, parseInt(this.submissionId))
     },
@@ -32,6 +15,35 @@ export default {
     }
   },
   methods: {
+    progress (formId, submissionId) {
+      const sections = this.$store.getters.loadedSections(formId)
+      let questionCount = 0
+      let responseCount = 0
+      sections.forEach(function (section) {
+        let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question))
+        questionCount += questions.length
+        questions.forEach(function (question) {
+          let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
+          responseCount += responses.length ? 1 : 0
+        }, this)
+      }, this)
+
+      return questionCount !== 0 ? responseCount * 100 / questionCount : 0
+    },
+    isSectionTrigger (item) {
+      if (!item || !item.questions.length) {
+        return false
+      }
+      let questions = item.questions
+      const $this = this
+      let hideSectionTrigger = true
+      _.forEach(questions, function (question) {
+        if (!$this.isTrigger(question)) {
+          hideSectionTrigger = false
+        }
+      })
+      return hideSectionTrigger
+    },
     getComparator (comparatorId) {
       const comparator = this.comparators.find((comparator) => {
         return comparator.id === comparatorId
@@ -46,20 +58,29 @@ export default {
     },
     isTrigger (question) {
       let questionTriggers = this.$store.getters.loadedQuestionTrigger(this.formId, question.id)
-      const $this = this
-      let triggerF = false
+      if (!questionTriggers.length) {
+        return false
+      }
+
       let tempF = true
+      let index = 0
 
-      _.forEach(questionTriggers, function (questionTrigger) {
-        if (questionTrigger.operator === 1) {
-          triggerF |= tempF && $this.compareCondition(questionTrigger)
-          tempF = true
-        } else {
-          tempF &= $this.compareCondition(questionTrigger)
+      while (index < questionTriggers.length) {
+        const questionTrigger = questionTriggers[index]
+        const parentQuestion = this.$store.getters.loadedAllQuestion(this.formId, parseInt(questionTrigger.parent_question_id))
+        if (this.isTrigger(parentQuestion)) {
+          return true
         }
-      })
-
-      return triggerF || tempF
+        tempF = tempF && this.compareCondition(questionTrigger)
+        if (questionTrigger.operator === 1) {
+          if (tempF) {
+            return false
+          }
+          tempF = true
+        }
+        index++
+      }
+      return !tempF
     },
     compareCondition (questionTrigger) {
       let question = this.$store.getters.loadedAllQuestion(this.formId, parseInt(questionTrigger.parent_question_id))
