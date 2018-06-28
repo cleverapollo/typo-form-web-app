@@ -3,7 +3,6 @@
     <v-flex xs12>
       <v-text-field
         :value="message"
-        counter
         textarea
         @change="onSave($event)"
       ></v-text-field>
