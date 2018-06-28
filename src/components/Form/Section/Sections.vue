@@ -1,5 +1,5 @@
 <template>
-  <v-card flat active-class="active-section" v-if="!isSectionTrigger || submissionId === -1">
+  <v-card flat active-class="active-section" v-if="!isSectionTrigger(section) || submissionId === -1">
 
     <!--
     <v-toolbar :class="{ 'handle': submissionId === -1 }">
@@ -18,7 +18,7 @@
         </v-btn>
 
         <v-list>
-          <v-list-tile @click="" v-if="includeSection || !includeQuestion">
+          <v-list-tile @click="" v-if="!includeQuestion">
             <v-list-tile-title>
               <CreateSection :parentSectionId="section.id" :formId="formId"></CreateSection>
             </v-list-tile-title>
@@ -28,7 +28,7 @@
             <v-list-tile-title>Delete Section</v-list-tile-title>
           </v-list-tile>
 
-          <v-list-tile v-show="!hasRepeatableQuestions" @click="" v-if="!includeSection || includeQuestion">
+          <v-list-tile v-show="!hasRepeatableQuestions" @click="" v-if="!includeSection">
             <v-list-tile-title>
               <CreateQuestion :sectionId="section.id" :formId="formId"></CreateQuestion>
             </v-list-tile-title>
@@ -69,7 +69,7 @@
         </v-btn>
 
         <v-list>
-          <v-list-tile v-show="!hasRepeatableQuestions" @click="" v-if="includeSection || !includeQuestion">
+          <v-list-tile @click="" v-if="!includeQuestion && !hasRepeatableQuestions">
             <v-list-tile-title>
               <CreateSection :parentSectionId="section.id" :formId="formId"></CreateSection>
             </v-list-tile-title>
@@ -79,13 +79,13 @@
             <v-list-tile-title>Delete Section</v-list-tile-title>
           </v-list-tile>
 
-          <v-list-tile @click="" v-if="!includeSection || includeQuestion">
+          <v-list-tile @click="" v-if="!includeSection">
             <v-list-tile-title>
               <CreateQuestion :sectionId="section.id" :formId="formId"></CreateQuestion>
             </v-list-tile-title>
           </v-list-tile>
 
-          <v-list-tile v-show="!hasRepeatableQuestions" @click="createContentBlock" v-if="!includeSection || includeQuestion">
+          <v-list-tile @click="createContentBlock" v-if="!includeSection">
             <v-list-tile-title>Create Content Block</v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -131,20 +131,20 @@
       <draggable
         v-model="list"
         :class="'section' + section.id"
-        :options="{group: 'parent', draggable: '.item', handle: '.handle'}"
+        :options="{group: 'parent', draggable: '.item'}"
         @end="checkEnd"
         style="min-height: 100px"
         class="layout row wrap"
       >
         <template
           v-for="(element, index) in list"
-          :class="(isSection(element)  ? 'section' : 'question') + element.id"
+          :class="(element.questions  ? 'section' : 'question') + element.id"
           class="pb-2 item"
         >
           <v-flex
             xs12
             v-if="submissionId === -1"
-            :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id">
+            :key="(element.questions  ? 'section ' : 'question ') + element.id">
             <sections
               :section="element"
               :formId="formId"
@@ -176,13 +176,13 @@
               :sectionId="section.id"
               :index="index + 1"
               :submissionId="submissionId"
-              :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id"
+              :key="'Question ' + element.id"
               v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
             ></responses>
 
             <ResponseContentBlock
               :question="element"
-              :key="(isSection(element)  ? 'Section ' : 'Question ') + element.id"
+              :key="'Question ' + element.id"
               v-if="getQuestionType(element.question_type_id) === 'Content Block'"
             ></ResponseContentBlock>
           </template>
@@ -263,9 +263,6 @@
       isSectionEmpty () {
         return !this.list.length
       },
-      repeatable () {
-        return this.section.repeatable
-      },
       responses () {
         if (!this.submissionId) {
           return []
@@ -275,10 +272,7 @@
           const questions = this.section.questions.filter((question) => {
             return question.id === response.question_id
           })
-          if (questions.length) {
-            return true
-          }
-          return false
+          return questions.length
         })
 
         return _.sortBy(responses, element => {
@@ -286,36 +280,16 @@
         })
       },
       includeSection () {
-        var includeSection = false
-        this.list.forEach(function (item) {
-          if (item.questions) {
-            includeSection = true
-          }
-        })
-        return includeSection
-      },
-      includeQuestion () {
-        var includeQuestion = false
-        this.list.forEach(function (item) {
-          if (item.answers) {
-            includeQuestion = true
-          }
-        })
-        return includeQuestion
-      },
-      isSectionTrigger () {
-        if (!this.section.questions.length) {
+        if (this.list.length) {
           return false
         }
-        let questions = this.section.questions
-        const $this = this
-        let hideSectionTrigger = true
-        _.forEach(questions, function (question) {
-          if ($this.isTrigger(question)) {
-            hideSectionTrigger = false
-          }
-        })
-        return hideSectionTrigger
+        return !!this.list[0].questions
+      },
+      includeQuestion () {
+        if (this.list.length) {
+          return false
+        }
+        return !!this.list[0].answers
       }
     },
     methods: {
@@ -451,7 +425,7 @@
         this.$store.dispatch('updateSubmission', {
           id: parseInt(this.submissionId),
           formId: this.formId,
-          progress: this.progress
+          progress: this.progress(parseInt(this.formId), parseInt(this.submissionId))
         })
       },
       setEditMode () {
@@ -461,9 +435,6 @@
       },
       toggleExpand () {
         this.expanded = !this.expanded
-      },
-      isSection (element) {
-        return element.questions !== undefined
       },
       updateSection () {
         if (this.editedName.trim() === '') {
@@ -486,7 +457,7 @@
           id: this.section.id
         })
       },
-      checkNameUpdate: function () {
+      checkNameUpdate () {
         if (this.editedName !== this.section.name) {
           this.updateSection()
         }
@@ -575,31 +546,29 @@
         }
       },
       validateMinRows (value) {
-        this.minRowsInput = parseInt(value)
-        if (isNaN(this.minRowsInput)) {
-          this.minRowsInput = ''
+        this.min_rows = parseInt(value)
+        if (isNaN(this.min_rows)) {
+          this.min_rows = ''
         }
-        if (this.maxRowsInput && this.minRowsInput > this.maxRowsInput) {
+        if (this.max_rows && this.min_rows > this.max_rows) {
           return 'Minimum rows count is set bigger than maximum rows count.'
         } else {
           return true
         }
       },
       validateMaxRows (value) {
-        this.maxRowsInput = parseInt(value)
-        if (isNaN(this.maxRowsInput)) {
-          this.maxRowsInput = ''
+        this.max_rows = parseInt(value)
+        if (isNaN(this.max_rows)) {
+          this.max_rows = ''
         }
-        if (this.minRowsInput && this.minRowsInput > this.maxRowsInput) {
+        if (this.min_rows && this.min_rows > this.max_rows) {
           return 'Maximum rows count is set smaller than minimum rows count.'
         } else {
           return true
         }
       },
       updateRowsCount () {
-        if (this.validateMinRows(this.minRowsInput) === true && this.validateMaxRows(this.maxRowsInput) === true) {
-          this.min_rows = this.min_rows
-          this.max_rows = this.max_rows
+        if (this.validateMinRows(this.min_rows) && this.validateMaxRows(this.max_rows)) {
           this.updateSection()
         }
       }

@@ -56,11 +56,11 @@
                 <!-- //Progress -->
                 <v-flex xs12>
                   <v-progress-linear
-                    :value="progress"
+                    :value="progressNumber"
                     color="success"
                     height="10"
                   >
-                    {{ progress.toFixed(0) }}
+                    {{ progressNumber.toFixed(0) }}
                   </v-progress-linear>
                 </v-flex>
               </v-layout>
@@ -75,7 +75,7 @@
                   <form-view
                     :slug="slug"
                     :formId="formId"
-                    :submissionId="id"
+                    :submissionId="submissionId"
                   ></form-view>
                 </v-flex>
 
@@ -89,7 +89,7 @@
               <formNavigation
                 :slug="slug"
                 :formId="formId"
-                :submissionId="id"
+                :submissionId="submissionId"
               ></formNavigation>
 
             </v-card-actions>
@@ -119,11 +119,11 @@
       FormNavigation
     },
     computed: {
-      submission () {
-        return this.$store.getters.loadedApplicationSubmission(this.slug, parseInt(this.id))
+      submissionId () {
+        return parseInt(this.id)
       },
-      allResponses () {
-        return this.$store.getters.loadedResponses(this.formId, parseInt(this.id))
+      submission () {
+        return this.$store.getters.loadedApplicationSubmission(this.slug, this.submissionId)
       },
       formId () {
         if (!this.submission) {
@@ -140,6 +140,9 @@
       periodEnd () {
         return this.submission.period_end ? this.submission.period_end.substring(0, 10) : ''
       },
+      progressNumber () {
+        return this.progress(parseInt(this.formId), this.submissionId)
+      },
       sendAble () {
         if (new Date(this.periodStart).getTime() - new Date().getTime() > 0 || new Date(this.periodEnd).getTime() - new Date().getTime() < 0) {
           return false
@@ -154,7 +157,7 @@
           }
         }
 
-        return (this.progress === 100)
+        return this.progressNumber === 100
       },
       submissionOwner () {
         if (this.submission.team == null) {
@@ -162,23 +165,6 @@
         } else {
           return this.submission.team.name
         }
-      },
-      progress () {
-        const sections = this.$store.getters.loadedSections(this.formId)
-        let questionCount = 0
-        let responseCount = 0
-        sections.forEach(function (section) {
-          let questions = this.$store.getters.loadedQuestions(this.formId, section.id).filter(question => question.mandatory && this.isTrigger(question))
-          questionCount += questions.length
-          questions.forEach(function (question) {
-            if (this.isTrigger(question)) {
-              let responses = this.$store.getters.loadedResponses(this.formId, parseInt(this.id)).filter(response => response.question_id === question.id)
-              responseCount += responses.length ? 1 : 0
-            }
-          }, this)
-        }, this)
-
-        return questionCount !== 0 ? responseCount * 100 / questionCount : 0
       },
       submissionPeriod () {
         if (this.periodStart && this.periodEnd) {
@@ -198,7 +184,7 @@
         this.$store.dispatch('deleteSubmission',
           {
             formId: this.formId,
-            id: this.id
+            id: this.submissionId
           }
         )
           .then(() => {
@@ -213,27 +199,10 @@
         this.$store.dispatch('updateSubmission',
           {
             formId: this.formId,
-            id: this.id,
+            id: this.this.submissionId,
             statusId: this.statuses[statusIndex].id
           }
         )
-      },
-      isTrigger (question) {
-        let questionTriggers = this.$store.getters.loadedQuestionTrigger(this.formId, question.id)
-        const $this = this
-        let triggerF = false
-        let tempF = true
-
-        _.forEach(questionTriggers, function (questionTrigger) {
-          if (questionTrigger.operator === 1) {
-            triggerF |= tempF && $this.compareCondition(questionTrigger)
-            tempF = true
-          } else {
-            tempF &= $this.compareCondition(questionTrigger)
-          }
-        })
-
-        return triggerF || tempF
       }
     },
     created () {

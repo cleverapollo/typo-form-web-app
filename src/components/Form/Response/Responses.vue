@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12 :class='"sm" + (question.width ? question.width : 12)' question-group pa-3 v-if="isTrigger()">
+  <v-flex xs12 :class='"sm" + (question.width ? question.width : 12)' question-group pa-3 v-if="!isTrigger(question)">
     
     <v-layout row wrap question-head>
       <v-flex xs12>
@@ -92,6 +92,9 @@
           return response.question_id === this.question.id
         })
       },
+      questionTypes () {
+        return this.$store.getters.questionTypes
+      },
       questionTypeString: {
         get: function () {
           const index = _.findIndex(this.questionTypes, type => {
@@ -111,28 +114,9 @@
         get: function () {
           return this.questionsComponentsMap[this.questionTypeString]
         }
-      },
-      questionTriggers () {
-        return this.$store.getters.loadedQuestionTrigger(this.formId, parseInt(this.question.id))
       }
     },
     methods: {
-      isTrigger () {
-        const $this = this
-        let triggerF = false
-        let tempF = true
-
-        _.forEach(this.questionTriggers, function (questionTrigger) {
-          if (questionTrigger.operator === 1) {
-            triggerF |= tempF && $this.compareCondition(questionTrigger)
-            tempF = true
-          } else {
-            tempF &= $this.compareCondition(questionTrigger)
-          }
-        })
-
-        return triggerF || tempF
-      },
       setQuestionType (str) {
         this.questionTypeId = _.findIndex(this.questionTypes, type => {
           return type.type === str
@@ -183,7 +167,7 @@
         this.$store.dispatch('updateSubmission', {
           id: parseInt(this.submissionId),
           formId: this.formId,
-          progress: this.progress
+          progress: this.progress(parseInt(this.formId), parseInt(this.submissionId))
         })
       }
     }

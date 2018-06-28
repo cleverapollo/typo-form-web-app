@@ -16,11 +16,12 @@
 
 <script>
   import TriggerMixin from './TriggerMixin.js'
+  import SectionOperation from './SectionOperation.js'
   import * as _ from 'lodash'
   export default {
     name: 'formNavigation',
     props: ['slug', 'formId', 'submissionId'],
-    mixins: [TriggerMixin],
+    mixins: [TriggerMixin, SectionOperation],
     computed: {
       sections () {
         return this.$store.getters.loadedSections(this.formId)
@@ -52,10 +53,13 @@
                 repeat = false
               } else {
                 let index = 0
-                while (this.isSectionTrigger(children[index])) {
+                while (index < children.length) {
+                  if (!this.isSectionTrigger(children[index])) {
+                    ptSection = children[index]
+                    break
+                  }
                   index++
                 }
-                ptSection = children[index]
               }
             } else {
               repeat = false
@@ -80,10 +84,13 @@
               repeat = false
             } else {
               let index = children.length - 1
-              while (this.isSectionTrigger(children[index])) {
+              while (index > -1) {
+                if (!this.isSectionTrigger(children[index])) {
+                  ptSection = children[index]
+                  break
+                }
                 index--
               }
-              ptSection = children[index]
             }
           } else {
             repeat = false
@@ -101,7 +108,7 @@
             if (this.submissionId === -1) {
               rtSection = sections[0]
             } else {
-              rtSection = this.getFirstChildSection(sections[0])
+              rtSection = this.getFirstChildSection(this.formId, sections[0])
             }
             this.$store.dispatch('selectSection', rtSection)
           }
@@ -109,7 +116,7 @@
           if (this.submissionId !== -1) {
             const children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
             if (children.length > 0 && children[0].questions) {
-              rtSection = this.getFirstChildSection(rtSection)
+              rtSection = this.getFirstChildSection(this.formId, rtSection)
               this.$store.dispatch('selectSection', rtSection)
             }
           }
@@ -118,58 +125,6 @@
       }
     },
     methods: {
-      isSectionTrigger (item) {
-        if (!item.questions.length) {
-          return false
-        }
-        let questions = item.questions
-        const $this = this
-        let hideSectionTrigger = true
-        _.forEach(questions, function (question) {
-          if ($this.isTrigger(question)) {
-            hideSectionTrigger = false
-          }
-        })
-        return hideSectionTrigger
-      },
-      getFirstChildSection (rtSection) {
-        let repeat = true
-        let ptSection = rtSection
-
-        while (repeat) {
-          let children = this.$store.getters.loadedChildren(this.formId, ptSection.id)
-          if (children.length > 0) {
-            if (children[0].answers) {
-              repeat = false
-            } else {
-              ptSection = children[0]
-            }
-          } else {
-            repeat = false
-          }
-        }
-
-        return ptSection
-      },
-      getLastChildSection (rtSection) {
-        let repeat = true
-        let ptSection = rtSection
-
-        while (repeat) {
-          let children = this.$store.getters.loadedChildren(this.formId, ptSection.id)
-          if (children.length > 0) {
-            if (children[children.length - 1].answers) {
-              repeat = false
-            } else {
-              ptSection = children[children.length - 1]
-            }
-          } else {
-            repeat = false
-          }
-        }
-
-        return ptSection
-      },
       prev (rtSection) {
         if (!rtSection) {
           return
@@ -184,7 +139,7 @@
           if (this.submissionId === -1) {
             if (index) {
               rtSection = slibings[index - 1]
-              rtSection = this.getLastChildSection(rtSection)
+              rtSection = this.getLastChildSection(this.formId, rtSection)
             } else if (rtSection.parent_section_id) {
               rtSection = this.$store.getters.loadedSection(this.formId, rtSection.parent_section_id)
             }
@@ -207,9 +162,9 @@
               if (rtSection.parent_section_id || index) {
                 rtSection = slibings[index - 1]
               } else {
-                rtSection = this.getFirstChildSection(this.list[0])
+                rtSection = this.getFirstChildSection(this.formId, this.list[0])
               }
-              rtSection = this.getLastChildSection(rtSection)
+              rtSection = this.getLastChildSection(this.formId, rtSection)
             }
           }
         } while (this.isSectionTrigger(rtSection) && this.submissionId !== -1)
@@ -251,7 +206,7 @@
                 rtSection = slibings[index + 1]
               } else {
                 rtSection = this.list[this.list.length - 1]
-                rtSection = this.getLastChildSection(rtSection)
+                rtSection = this.getLastChildSection(this.formId, rtSection)
               }
             }
           } else {
@@ -274,10 +229,10 @@
                 rtSection = slibings[index + 1]
               } else {
                 rtSection = this.list[this.list.length - 1]
-                rtSection = this.getLastChildSection(rtSection)
+                rtSection = this.getLastChildSection(this.formId, rtSection)
               }
             }
-            rtSection = this.getFirstChildSection(rtSection)
+            rtSection = this.getFirstChildSection(this.formId, rtSection)
           }
         } while (this.isSectionTrigger(rtSection) && this.submissionId !== -1)
         this.$store.dispatch('selectSection', rtSection)
