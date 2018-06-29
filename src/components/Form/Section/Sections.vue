@@ -136,15 +136,12 @@
         style="min-height: 100px"
         class="layout row wrap"
       >
-        <template
-          v-for="(element, index) in list"
-          :class="(element.questions  ? 'section' : 'question') + element.id"
-          class="pb-2 item"
-        >
+        <template v-for="(element, index) in list">
           <v-flex
             xs12
-            v-if="submissionId === -1"
-            :key="(element.questions  ? 'section ' : 'question ') + element.id">
+            class="item"
+            :class="'element' + element.id"
+            v-if="submissionId === -1">
             <sections
               :section="element"
               :formId="formId"
@@ -157,6 +154,7 @@
               :formId="formId"
               :sectionId="section.id"
               :index="index + 1"
+              :key="'question' + element.id"
               v-if="element.answers && getQuestionType(element.question_type_id) !== 'Content Block'"
             ></questions>
 
@@ -176,13 +174,11 @@
               :sectionId="section.id"
               :index="index + 1"
               :submissionId="submissionId"
-              :key="'Question ' + element.id"
               v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
             ></responses>
 
             <ResponseContentBlock
               :question="element"
-              :key="'Question ' + element.id"
               v-if="getQuestionType(element.question_type_id) === 'Content Block'"
             ></ResponseContentBlock>
           </template>
@@ -280,13 +276,13 @@
         })
       },
       includeSection () {
-        if (this.list.length) {
+        if (!this.list.length) {
           return false
         }
         return !!this.list[0].questions
       },
       includeQuestion () {
-        if (this.list.length) {
+        if (!this.list.length) {
           return false
         }
         return !!this.list[0].answers
@@ -502,48 +498,30 @@
 
         const elementClass = evt.item.className
         const parentClass = evt.to.className
-        let parentSectionId = parentClass.substr(7)
-        if (parentSectionId === '') {
-          parentSectionId = null
-        } else {
-          parentSectionId = parseInt(parentSectionId)
-        }
+        const parentSectionId = parseInt(parentClass.substr(23))
 
         const children = _.sortBy(this.$store.getters.loadedChildren(this.formId, parentSectionId), element => {
           return element.order
         })
 
-        let order = 0
-        if (children.length === 0) {
-          order = 1
-        } else if (children.length === newIndex) {
+        let order = 1
+        if (children.length === newIndex) {
           order = children[newIndex - 1].order + 1
         } else {
           order = children[newIndex].order
         }
 
-        if (elementClass.includes('section')) {
-          const elementId = parseInt(elementClass.substr(17))
-          this.$store.dispatch('moveSection',
-            {
-              formId: this.formId,
-              sectionId: elementId,
-              parentSectionId: parentSectionId,
-              order: order
-            })
-        } else {
-          const oldparentClass = evt.from.className
-          const oldParentSectionId = parseInt(oldparentClass.substr(7))
-          const elementId = parseInt(elementClass.substr(18))
-          this.$store.dispatch('moveQuestion',
-            {
-              formId: this.formId,
-              questionId: elementId,
-              oldParentSectionId: oldParentSectionId,
-              parentSectionId: parentSectionId,
-              order: order
-            })
-        }
+        const oldparentClass = evt.from.className
+        const oldParentSectionId = parseInt(oldparentClass.substr(23))
+        const elementId = parseInt(elementClass.substr(22))
+        this.$store.dispatch('moveQuestion',
+          {
+            formId: this.formId,
+            questionId: elementId,
+            oldParentSectionId: oldParentSectionId,
+            parentSectionId: parentSectionId,
+            order: order
+          })
       },
       validateMinRows (value) {
         this.min_rows = parseInt(value)

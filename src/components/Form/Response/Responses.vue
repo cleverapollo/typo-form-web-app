@@ -22,7 +22,7 @@
       :question-id="question.id"
       :question="editedName"
       :mandatory="question.mandatory"
-      form-id="formId"
+      :form-id="formId"
       :submission-id="submissionId"
       @create-response="createResponse"
       @update-response="updateResponse"
@@ -32,7 +32,6 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
   import * as _ from 'lodash'
   import shortAnswer from './components/ShortAnswer'
   import paragraph from './components/Paragraph'
@@ -51,9 +50,6 @@
   export default {
     props: ['question', 'formId', 'submissionId', 'index', 'sectionId'],
     mixins: [TriggerMixin],
-    components: {
-      draggable
-    },
     data () {
       return {
         editedName: this.question.question,
