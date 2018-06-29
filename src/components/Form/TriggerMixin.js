@@ -34,6 +34,13 @@ export default {
       if (!item || !item.questions.length) {
         return false
       }
+      let section = this.$store.getters.loadedSection(this.formId, item.parent_section_id)
+      if (this.isSectionTrigger(section)) {
+        return true
+      }
+      if (this.isTrigger(item)) {
+        return true
+      }
       let questions = item.questions
       const $this = this
       let hideSectionTrigger = true
@@ -57,7 +64,21 @@ export default {
       return questionType ? questionType.type : 'undefined'
     },
     isTrigger (question) {
+      if (!question) {
+        return false
+      }
+      let type = (question.questions ? 'Section' : 'Question')
       let questionTriggers = this.$store.getters.loadedQuestionTrigger(this.formId, question.id)
+      questionTriggers = questionTriggers.filter((trigger) => {
+        if (type === 'Section') {
+          return trigger.type === 'Section'
+        } else {
+          return trigger.type !== 'Section'
+        }
+      })
+      questionTriggers = _.sortBy(questionTriggers, element => {
+        return element.order
+      })
       if (!questionTriggers.length) {
         return false
       }

@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import triggers from '../Triggers'
+  import triggers from '../../Triggers'
   export default {
     props: ['question', 'formId', 'sectionId', 'index'],
     components: {

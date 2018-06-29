@@ -6,7 +6,7 @@
       </v-layout>
 
       <template v-for='(item, index) in triggers'>
-        <trigger :formId="formId" :sectionId="sectionId" :question="question" :trigger="item" :questionOptions="questionOptions" :isLast="isLast(index)"></trigger>
+        <trigger :formId="formId" :trigger="item" :questionOptions="questionOptions" :isLast="isLast(index)"></trigger>
         <v-divider v-if='!isLast(index)'></v-divider>
       </template>
 
@@ -22,14 +22,25 @@
 
 <script>
   import trigger from './Trigger'
+  import * as _ from 'lodash'
   export default {
-    props: ['formId', 'sectionId', 'question', 'questionOptions'],
+    props: ['formId', 'question', 'questionOptions', 'type'],
     components: {
       trigger
     },
     computed: {
       triggers () {
-        return this.$store.getters.loadedQuestionTrigger(this.formId, this.question.id)
+        let triggers = this.$store.getters.loadedQuestionTrigger(this.formId, this.question.id)
+        triggers = triggers.filter((trigger) => {
+          if (this.type === 'Section') {
+            return trigger.type === 'Section'
+          } else {
+            return trigger.type !== 'Section'
+          }
+        })
+        return _.sortBy(triggers, element => {
+          return element.order
+        })
       }
     },
     methods: {
@@ -39,7 +50,8 @@
           questionId: this.question.id,
           parentQuestionId: this.questionOptions[0].id,
           comparatorId: 1,
-          operator: 0
+          operator: 0,
+          type: this.type
         })
       },
       isLast (index) {
