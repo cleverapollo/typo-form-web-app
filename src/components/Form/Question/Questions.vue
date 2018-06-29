@@ -81,7 +81,7 @@
       ></component>
     </form>
 
-    <triggers :formId="formId" :sectionId="sectionId" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
+    <triggers :formId="formId" :question="question" :questionOptions="questionOptions" type="Question" v-if="questionOptions.length > 0"></triggers>
 
     <v-divider></v-divider>
     <v-layout pa-3 class="card_actions">
@@ -148,7 +148,7 @@
   import ContentBlock from './components/ContentBlock'
   import * as _ from 'lodash'
 
-  import triggers from './Triggers'
+  import triggers from '../Triggers'
 
   export default {
     props: ['question', 'formId', 'sectionId', 'index'],

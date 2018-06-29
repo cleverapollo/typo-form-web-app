@@ -31,7 +31,6 @@ export default {
           }
           return true
         } else if (this.activeValidationType === 'Words') {
-          console.log(value, value.split(' ').length, this.minValue, this.maxValue)
           if (value.split(' ').length < this.minValue) {
             return `At least ${this.minValue} words are required here.`
           } else if (value.split(' ').length > this.maxValue && this.maxValue !== 0) {

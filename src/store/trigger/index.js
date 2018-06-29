@@ -59,6 +59,7 @@ export default {
     },
     createTrigger ({commit, getters}, payload) {
       const trigger = {
+        type: payload.type,
         question_id: payload.questionId,
         parent_question_id: payload.parentQuestionId,
         comparator_id: payload.comparatorId,
@@ -86,6 +87,9 @@ export default {
     updateTrigger ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
+      if (payload.type) {
+        updateObj.type = payload.type
+      }
       if (payload.parentQuestionId) {
         updateObj.parent_question_id = payload.parentQuestionId
       }

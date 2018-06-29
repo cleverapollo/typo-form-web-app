@@ -128,6 +128,8 @@
       </template>
       -->
 
+      <triggers :formId="formId" :question="section" :questionOptions="questionOptions" type="Section" v-if="questionOptions.length > 0 && submissionId === -1"></triggers>
+
       <draggable
         v-model="list"
         :class="'section' + section.id"
@@ -208,6 +210,7 @@
   import CreateQuestion from '../Question/CreateQuestion'
   import * as _ from 'lodash'
   import TriggerMixin from '../TriggerMixin.js'
+  import triggers from '../Triggers'
 
   export default {
     name: 'sections',
@@ -222,7 +225,8 @@
       CreateSection,
       CreateQuestion,
       QuestionContentBlock,
-      ResponseContentBlock
+      ResponseContentBlock,
+      triggers
     },
     data () {
       return {
@@ -286,6 +290,12 @@
           return false
         }
         return !!this.list[0].answers
+      },
+      questionOptions () {
+        const allQuestions = this.$store.getters.loadedAllQuestions(this.formId)
+        return _.sortBy(allQuestions, element => {
+          return element.id
+        })
       }
     },
     methods: {

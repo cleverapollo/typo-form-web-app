@@ -85,7 +85,7 @@
 
 <script>
   export default {
-    props: ['formId', 'sectionId', 'question', 'trigger', 'questionOptions', 'isLast'],
+    props: ['formId', 'trigger', 'questionOptions', 'isLast'],
     data () {
       return {
         parentQuestionId: this.trigger.parent_question_id,
