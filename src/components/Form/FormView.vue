@@ -61,7 +61,7 @@
           rtSection = this.getFirstChildSection(this.formId, rtSection)
         }
         // If rtSection is triggered, then select its parent section
-        rtSection = this.getParentSection(this.formId, rtSection)
+        // rtSection = this.getParentSection(this.formId, rtSection)
         // if view is respones, then select first section which has questions
         if (this.submissionId !== -1) {
           rtSection = this.getFirstChildSection(this.formId, rtSection)
