@@ -9,6 +9,7 @@
           v-model="parentQuestionId"
           label="Parent Question"
           single-line
+          autocomplete
           @change="updateParentQuestion($event)"
         ></v-select>
       </v-flex>
@@ -140,6 +141,9 @@
     },
     methods: {
       updateParentQuestion (value) {
+        if (typeof (value) === 'object') {
+          return
+        }
         this.parentQuestionId = value
         this.updateTrigger()
       },

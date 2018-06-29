@@ -36,17 +36,17 @@ export default {
       this.$emit('update-validation', vType, min, max)
     },
     updateMinCount (value) {
-      if (parseInt(value) < parseInt(this.maxInput)) {
+      if (parseInt(value) < parseInt(this.maxInput) || parseInt(this.maxInput) === 0) {
         this.updateValidation('', value, this.maxInput)
       }
     },
     updateMaxCount (value) {
-      if (parseInt(value) > parseInt(this.minInput)) {
+      if (parseInt(value) > parseInt(this.minInput) || parseInt(value) === 0) {
         this.updateValidation('', this.minInput, value)
       }
     },
     updateActiveValidationType (value) {
-      this.updateValidation(value)
+      this.updateValidation(value, this.minInput, this.maxInput)
     },
     removeValidation () {
       this.$emit('remove-validation')
@@ -62,7 +62,7 @@ export default {
       }
     },
     validateMinInput (value) {
-      if (parseInt(value) > parseInt(this.maxInput)) {
+      if (parseInt(value) > parseInt(this.maxInput) && parseInt(this.maxInput) !== 0) {
         return 'Minimum count is set bigger than maximum count.'
       } else {
         this.minInput = value
@@ -70,7 +70,7 @@ export default {
       }
     },
     validateMaxInput (value) {
-      if (parseInt(value) < parseInt(this.minInput)) {
+      if (parseInt(value) < parseInt(this.minInput) && parseInt(value) !== 0) {
         return 'Maximum count is set smaller than minimum count.'
       } else {
         this.maxInput = value
@@ -103,7 +103,7 @@ export default {
       let minVal
       if (validations && validations.length && validations.length === 1) {
         const validationData = validations[0].validation_data
-        minVal = validationData.split(',')[0] || 0
+        minVal = parseInt(validationData.split(',')[0]) || 0
       } else {
         minVal = 0
       }
@@ -117,7 +117,7 @@ export default {
       let maxVal
       if (validations && validations.length && validations.length === 1) {
         const validationData = validations[0].validation_data
-        maxVal = validationData.split(',')[1] || 0
+        maxVal = parseInt(validationData.split(',')[1]) || 0
       } else {
         maxVal = 0
       }

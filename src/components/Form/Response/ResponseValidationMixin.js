@@ -3,7 +3,7 @@ import * as _ from 'lodash'
 export default {
   props: {
     'formId': {
-      type: String,
+      type: Number,
       required: true
     },
     'questionId': {
@@ -15,15 +15,27 @@ export default {
     validate (value) {
       if (this.activeValidationType) {
         if (this.activeValidationType === 'Number') {
-          if (this._isNumeric(value)) {
-            return true
+          if (!this._isNumeric(value)) {
+            return 'Only numerical values are allowed here.'
+          } else if (parseInt(value) < this.minValue) {
+            return `At least ${this.minValue} value is required here.`
+          } else if (parseInt(value) > this.maxValue && this.maxValue !== 0) {
+            return `${this.maxValue} value is allowed here at most.`
           }
-          return 'Only numerical values are allowed here.'
-        } else if (this.activeValidationType === 'Text') {
+          return true
+        } else if (this.activeValidationType === 'Letters') {
           if (value.length < this.minValue) {
             return `At least ${this.minValue} letters are required here.`
-          } else if (value.length > this.maxValue) {
+          } else if (value.length > this.maxValue && this.maxValue !== 0) {
             return `${this.maxValue} letters are allowed here at most.`
+          }
+          return true
+        } else if (this.activeValidationType === 'Words') {
+          console.log(value, value.split(' ').length, this.minValue, this.maxValue)
+          if (value.split(' ').length < this.minValue) {
+            return `At least ${this.minValue} words are required here.`
+          } else if (value.split(' ').length > this.maxValue && this.maxValue !== 0) {
+            return `${this.maxValue} letters words allowed here at most.`
           }
           return true
         } else if (this.activeValidationType === 'Email') {
@@ -34,7 +46,7 @@ export default {
         } else if (this.activeValidationType === 'Checkbox') {
           if (this.responses.length < this.minValue) {
             return `Please check at least ${this.minValue} answers.`
-          } else if (this.responses.length > this.maxValue) {
+          } else if (this.responses.length > this.maxValue && this.maxValue !== 0) {
             return `${this.maxValue} answers are allowed here at most.`
           }
           return true
@@ -77,7 +89,7 @@ export default {
       let minVal
       if (validations && validations.length && validations.length === 1) {
         const validationData = validations[0].validation_data
-        minVal = validationData.split(',')[0] || 0
+        minVal = parseInt(validationData.split(',')[0]) || 0
       } else {
         minVal = 0
       }
@@ -88,7 +100,7 @@ export default {
       let maxVal
       if (validations && validations.length && validations.length === 1) {
         const validationData = validations[0].validation_data
-        maxVal = validationData.split(',')[1] || 0
+        maxVal = parseInt(validationData.split(',')[1]) || 0
       } else {
         maxVal = 0
       }
