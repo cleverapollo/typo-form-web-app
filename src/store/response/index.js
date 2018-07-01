@@ -94,6 +94,30 @@ export default {
           )
       })
     },
+    deleteSectionResponse ({commit}, payload) {
+      commit('setLoading', true)
+
+      return new Promise((resolve, reject) => {
+        window.axios.delete(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + '/section/' + payload.sectionId + '/' + payload.order)
+          .then(response => {
+            commit('setLoading', false)
+            const createObj = {
+              formId: payload.formId,
+              submissionId: payload.submissionId,
+              responses: response['data']['responses']
+            }
+            commit('setLoadedResponses', createObj)
+            resolve(response)
+          })
+          .catch(
+            error => {
+              console.log(error)
+              commit('setLoading', false)
+              reject(error)
+            }
+          )
+      })
+    },
     deleteResponse ({commit}, payload) {
       commit('setLoading', true)
 

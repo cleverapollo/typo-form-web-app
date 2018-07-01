@@ -20,11 +20,19 @@ export default {
       let questionCount = 0
       let responseCount = 0
       sections.forEach(function (section) {
+        let sectionCount = 1
+        if (section.repeatable) {
+          sectionCount = section.repeatable
+        }
         let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question))
-        questionCount += questions.length
+        questionCount += questions.length * sectionCount
         questions.forEach(function (question) {
           let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
-          responseCount += responses.length ? 1 : 0
+          let responseLength = 1
+          if (section.repeatable) {
+            responseLength = responses.length
+          }
+          responseCount += responses.length ? responseLength : 0
         }, this)
       }, this)
 

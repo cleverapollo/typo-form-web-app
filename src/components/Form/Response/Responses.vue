@@ -48,7 +48,7 @@
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
-    props: ['question', 'formId', 'submissionId', 'index', 'sectionId'],
+    props: ['question', 'formId', 'submissionId', 'index', 'sectionId', 'order'],
     mixins: [TriggerMixin],
     data () {
       return {
@@ -85,7 +85,7 @@
         }
         let submission = this.$store.getters.loadedSubmission(this.formId, parseInt(this.submissionId))
         return submission.responses.filter((response) => {
-          return response.question_id === this.question.id
+          return response.question_id === this.question.id && response.order === this.order
         })
       },
       questionTypes () {
@@ -129,7 +129,8 @@
           questionId: this.question.id,
           formId: this.formId,
           answerId: answerId,
-          response: response
+          response: response,
+          order: this.order
         }).then((response) => {
           this.updateSubmission()
         })
@@ -144,7 +145,8 @@
           formId: this.formId,
           answerId: answerId,
           response: response,
-          id: id
+          id: id,
+          order: this.order
         }).then((response) => {
           this.updateSubmission()
         })

@@ -93,7 +93,6 @@
     </v-card-title>
 
     <v-card-text v-show="expanded">
-      <!-- Repeatable
       <v-layout row wrap justify-space-around v-if="hasRepeatableQuestions && submissionId === -1">
         <v-flex xs5 style="min-width: 130px">
           <v-text-field
@@ -114,20 +113,6 @@
         </v-flex>
       </v-layout>
 
-      <template v-if="submissionId !== -1 && hasRepeatableQuestions">
-        <response-repeatable
-          :questions="section.questions"
-          :min-rows="section.min_rows"
-          :max-rows="section.max_rows"
-          :responses="responses"
-          @create-response="createResponse"
-          @update-response="updateResponse"
-          @delete-response="deleteResponse"
-        >
-        </response-repeatable>
-      </template>
-      -->
-
       <triggers :formId="formId" :question="section" :questionOptions="questionOptions" type="Section" v-if="questionOptions.length > 0 && submissionId === -1"></triggers>
 
       <draggable
@@ -137,6 +122,7 @@
         @end="checkEnd"
         style="min-height: 100px"
         class="layout row wrap"
+        v-if="submissionId === -1 || !hasRepeatableQuestions"
       >
         <template v-for="(element, index) in list">
           <v-flex
@@ -194,6 +180,43 @@
           </v-card>
         </div>
       </draggable>
+
+      <template v-else v-for="order in hasRepeatableQuestions">
+
+        <template v-for="(element, index) in list">
+          <responses
+            :question="element"
+            :formId="formId"
+            :sectionId="section.id"
+            :index="index + 1"
+            :submissionId="submissionId"
+            :order="order"
+            v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
+          ></responses>
+
+          <ResponseContentBlock
+            :question="element"
+            v-if="getQuestionType(element.question_type_id) === 'Content Block'"
+          ></ResponseContentBlock>
+        </template>
+
+        <v-layout row wrap v-if='hasRepeatableQuestions > section.min_rows'>
+          <v-flex xs12 sm1 offset-sm11 text-xs-center>
+            <v-btn dark fab color="error" @click="removeSection(order)">
+              <v-icon dark>delete</v-icon>
+            </v-btn>
+          </v-flex>
+        </v-layout>
+
+      </template>
+
+      <v-layout wrap v-if='hasRepeatableQuestions < section.max_rows'>
+        <v-btn dark block color="primary" @click="addSection">
+          <v-icon dark>add</v-icon>
+          Add
+        </v-btn>
+      </v-layout>
+
     </v-card-text>
   </v-card>
 </template>
@@ -202,7 +225,6 @@
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions'
   import responses from '../Response/Responses'
-  import questionRepeatable from '../Question/components/QuestionRepeatable'
   import ResponseRepeatable from '../Response/components/ResponseRepeatable'
   import QuestionContentBlock from '../Question/components/ContentBlock'
   import ResponseContentBlock from '../Response/components/ContentBlock'
@@ -220,7 +242,6 @@
       draggable,
       questions,
       responses,
-      questionRepeatable,
       ResponseRepeatable,
       CreateSection,
       CreateQuestion,
@@ -299,6 +320,18 @@
       }
     },
     methods: {
+      addSection () {
+        this.hasRepeatableQuestions += 1
+        this.updateSection()
+      },
+      removeSection (order) {
+        if (this.hasRepeatableQuestions === 1) {
+          return
+        }
+        this.hasRepeatableQuestions -= 1
+        this.deleteSectionResponse(order)
+        this.updateSection()
+      },
       changeRepeatable (value) {
         this.updateSection()
       },
@@ -423,6 +456,16 @@
           questionId: args[1],
           formId: this.formId,
           id: args[0]
+        }).then((response) => {
+          this.updateSubmission()
+        })
+      },
+      deleteSectionResponse (order) {
+        this.$store.dispatch('deleteSectionResponse', {
+          submissionId: parseInt(this.submissionId),
+          formId: this.formId,
+          sectionId: this.section.id,
+          order: order
         }).then((response) => {
           this.updateSubmission()
         })
@@ -556,7 +599,7 @@
         }
       },
       updateRowsCount () {
-        if (this.validateMinRows(this.min_rows) && this.validateMaxRows(this.max_rows)) {
+        if (this.validateMinRows(this.min_rows) === true && this.validateMaxRows(this.max_rows) === true) {
           this.updateSection()
         }
       }
