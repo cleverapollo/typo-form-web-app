@@ -279,7 +279,7 @@ export default {
         updateObj.parent_section_id = payload.parentSectionId
       }
       if (payload.repeatable !== undefined) {
-        updateObj.repeatable = payload.repeatable
+        updateObj.repeatable = 0 + payload.repeatable
       }
       if (payload.min_rows) {
         updateObj.min_rows = payload.min_rows
