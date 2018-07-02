@@ -162,11 +162,13 @@
               :sectionId="section.id"
               :index="index + 1"
               :submissionId="submissionId"
+              :key="'question' + element.id"
               v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
             ></responses>
 
             <ResponseContentBlock
               :question="element"
+              :key="'question' + element.id"
               v-if="getQuestionType(element.question_type_id) === 'Content Block'"
             ></ResponseContentBlock>
           </template>
@@ -181,36 +183,46 @@
         </div>
       </draggable>
 
-      <template v-else v-for="order in hasRepeatableQuestions">
+      <v-layout
+        row
+        wrap
+        v-else
+        v-for="order in hasRepeatableQuestions"
+        :key="'repeat' + order"
+      >
 
         <template v-for="(element, index) in list">
-          <responses
-            :question="element"
-            :formId="formId"
-            :sectionId="section.id"
-            :index="index + 1"
-            :submissionId="submissionId"
-            :order="order"
-            v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
-          ></responses>
+          <v-flex xs12 :class="'sm' + (list.length === 1 ? 11 : 12 )"
+            :key="'question' + element.id + '-' + order">
+            <responses
+              :question="element"
+              :formId="formId"
+              :sectionId="section.id"
+              :index="index + 1"
+              :submissionId="submissionId"
+              :order="order"
+              :hide="list.length === 1 && order > 1"
+              v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
+            ></responses>
 
-          <ResponseContentBlock
-            :question="element"
-            v-if="getQuestionType(element.question_type_id) === 'Content Block'"
-          ></ResponseContentBlock>
+            <ResponseContentBlock
+              :question="element"
+              v-if="getQuestionType(element.question_type_id) === 'Content Block'"
+            ></ResponseContentBlock>
+          </v-flex>
         </template>
 
-        <v-layout row wrap v-if='hasRepeatableQuestions > section.min_rows'>
-          <v-flex xs12 sm1 offset-sm11 text-xs-center>
-            <v-btn dark fab color="error" @click="removeSection(order)">
-              <v-icon dark>delete</v-icon>
+        <template v-if='hasRepeatableQuestions > section.min_rows'>
+          <v-flex xs12 sm1 :class="'offset-sm' + (list.length === 1 ? 0 : 11 ) + (list.length === 1 && order === 1 ? ' mt-4' : '')" text-xs-center>
+            <v-btn dark fab small color="error" @click="removeSection(order)">
+              <v-icon>close</v-icon>
             </v-btn>
           </v-flex>
-        </v-layout>
+        </template>
 
-      </template>
+      </v-layout>
 
-      <v-layout wrap v-if='hasRepeatableQuestions < section.max_rows'>
+      <v-layout wrap v-if='hasRepeatableQuestions < section.max_rows || !section.max_rows'>
         <v-btn dark block color="primary" @click="addSection">
           <v-icon dark>add</v-icon>
           Add

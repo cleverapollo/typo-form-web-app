@@ -1,7 +1,7 @@
 <template>
   <v-flex xs12 :class='"sm" + (question.width ? question.width : 12)' question-group pa-3 v-if="!isTrigger(question)">
     
-    <v-layout row wrap question-head>
+    <v-layout row wrap question-head v-if="this.hide !== true">
       <v-flex xs12>
         <div class="body-2">
           {{ editedName }}
@@ -48,7 +48,7 @@
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
-    props: ['question', 'formId', 'submissionId', 'index', 'sectionId', 'order'],
+    props: ['question', 'formId', 'submissionId', 'index', 'sectionId', 'order', 'hide'],
     mixins: [TriggerMixin],
     data () {
       return {
