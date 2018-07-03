@@ -32,7 +32,7 @@ export default {
         answer_id: payload.answerId
       }
 
-      if (payload.order) {
+      if (payload.order !== undefined) {
         response.order = payload.order
       }
 

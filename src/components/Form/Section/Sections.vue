@@ -163,6 +163,7 @@
               :index="index + 1"
               :submissionId="submissionId"
               :key="'question' + element.id"
+              :order="0"
               v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
             ></responses>
 
@@ -222,10 +223,10 @@
 
       </v-layout>
 
-      <v-layout wrap v-if='hasRepeatableQuestions < section.max_rows || !section.max_rows'>
+      <v-layout wrap v-if='submissionId !== -1 && hasRepeatableQuestions && (hasRepeatableQuestions < section.max_rows || !section.max_rows)'>
         <v-btn dark block color="primary" @click="addSection">
           <v-icon dark>add</v-icon>
-          Add
+          Add Repeatable Component
         </v-btn>
       </v-layout>
 
