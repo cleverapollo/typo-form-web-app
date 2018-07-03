@@ -36,12 +36,12 @@
         </v-layout>
         <v-layout row wrap>
           <v-flex xs12>
-            <v-text-field
+            <v-textarea
               name="css"
               label="CSS"
               id="css"
-              v-model="editedCSS"
-              multi-line></v-text-field>
+              v-model="editedCSS">
+            </v-textarea>
           </v-flex>
         </v-layout>
         <!--
