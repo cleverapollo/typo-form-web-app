@@ -163,7 +163,7 @@
               :index="index + 1"
               :submissionId="submissionId"
               :key="'question' + element.id"
-              :order="0"
+              :order="1"
               v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
             ></responses>
 
