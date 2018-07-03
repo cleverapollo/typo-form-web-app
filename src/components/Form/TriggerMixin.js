@@ -156,6 +156,9 @@ export default {
       const comparator = this.getComparator(comparatorID)
       switch (comparator) {
         case 'equals':
+          if (questionTrigger.id === 12) {
+            console.log(answerF, questionValue, value)
+          }
           if (!answerF) {
             if (questionValue === value) {
               return true

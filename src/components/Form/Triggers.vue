@@ -13,7 +13,7 @@
       <v-layout wrap>
         <v-btn dark block color="primary" @click="createTrigger">
           <v-icon dark>add</v-icon>
-          Add
+          Add Trigger
         </v-btn>
       </v-layout>
     </v-flex>
