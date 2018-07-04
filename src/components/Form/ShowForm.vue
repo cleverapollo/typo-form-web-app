@@ -15,6 +15,7 @@
               <v-layout row wrap>
                 <v-flex d-flex xs12>
                   <div class="title pt-3">{{ form.name }}</div>
+                  <v-spacer></v-spacer>
 
                   <!-- //Menu -->
                   <v-menu offset-y bottom left class="text-xs-right">
