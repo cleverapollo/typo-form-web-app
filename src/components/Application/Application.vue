@@ -48,10 +48,7 @@
                   <v-container fluid grid-list-lg>
                     <v-layout row>
                       <v-flex xs3>
-                        <v-icon
-                          class="display-3">
-                          {{item.icon}}
-                        </v-icon>
+                        <v-icon size="65">{{ item.icon }}</v-icon>
                       </v-flex>
                       <v-flex xs9 text-xs-right>
                         <div class="display-2">

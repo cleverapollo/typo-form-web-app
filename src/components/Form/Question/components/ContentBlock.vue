@@ -1,11 +1,10 @@
 <template>
   <v-container>
-    <v-text-field
+    <v-textarea
       label="Content Block"
       v-model="editedDescription"
-      multi-line
       @blur="updateQuestion"
-    ></v-text-field>
+    ></v-textarea>
 
     <triggers :formId="formId" :sectionId="sectionId" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
 

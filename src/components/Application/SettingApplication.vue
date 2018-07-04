@@ -48,13 +48,12 @@
           </v-flex>
           <v-flex xs12>
             <v-card-text>
-              <v-text-field
+              <v-textarea
                 id="body"
                 name="body"
                 label="Body"
                 v-model="emailBody"
-                multi-line
-              ></v-text-field>
+              ></v-textarea>
             </v-card-text>
           </v-flex>
         </v-layout>
