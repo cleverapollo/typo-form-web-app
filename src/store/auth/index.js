@@ -133,6 +133,7 @@ export default {
       window.axios.post(LOGOUT_URL)
       delete window.axios.defaults.headers.common['API-Token']
       commit('setUser', null)
+      commit('setLoadedApplications', [])
       localStorage.removeItem('token')
     },
     updateAuth ({commit}, payload) {
