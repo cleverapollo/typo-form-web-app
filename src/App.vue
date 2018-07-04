@@ -187,6 +187,7 @@
 
 <script>
   export default {
+    name: 'App',
     data () {
       return {
         drawer: null,
@@ -194,11 +195,11 @@
       }
     },
     computed: {
+      roles () {
+        return this.$store.getters.roles
+      },
       user () {
         return this.$store.getters.user
-      },
-      userIsAuthenticated () {
-        return this.user !== null && this.user !== undefined
       },
       title () {
         const application = this.$store.getters.loadedApplication(this.$route.params['slug'])
@@ -242,11 +243,44 @@
             { title: 'Register', path: 'register', icon: 'person_add' }
         ]
       },
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
       userIsApplicationAdmin () {
-        return this.application && this.application.application_role_id <= 2
+        return this.userIsAdmin || this.isSuperUser
+      },
+      userIsAdmin () {
+        if (!this.userIsAuthenticated || !this.application) {
+          return false
+        }
+        return this.getRole(this.application.application_role_id) === 'Admin'
+      },
+      isSuperUser () {
+        if (!this.userIsAuthenticated) {
+          return false
+        }
+        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       copyright () {
         return new Date().getFullYear() + ' ' + process.env.APP_NAME
+      }
+    },
+    methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
+      onLogout () {
+        this.$store.dispatch('logout')
+        this.$router.push('/login')
+      },
+      applicationURL (path) {
+        return '/' + this.application.slug + '/' + path
+      },
+      rootURL (path) {
+        return '/' + path
       }
     },
     created () {
@@ -260,20 +294,7 @@
         this.$store.dispatch('loadTriggerTypes')
         this.$store.dispatch('loadApplications')
       }
-    },
-    methods: {
-      onLogout () {
-        this.$store.dispatch('logout')
-        this.$router.push('/login')
-      },
-      applicationURL (path) {
-        return '/' + this.application.slug + '/' + path
-      },
-      rootURL (path) {
-        return '/' + path
-      }
-    },
-    name: 'App'
+    }
   }
 </script>
 
