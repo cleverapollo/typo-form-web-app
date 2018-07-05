@@ -1,7 +1,9 @@
 <template>
   <v-container>
-    <v-layout row wrap>
-      <v-flex xs12 sm4 offset-sm1>
+    <v-layout wrap>
+
+      <!-- //Question -->
+      <v-flex xs12 sm3 d-flex>
         <v-select
           :items="questionOptions"
           item-text="question"
@@ -13,7 +15,9 @@
           @change="updateParentQuestion($event)"
         ></v-select>
       </v-flex>
-      <v-flex xs12 sm4 offset-sm2>
+
+      <!-- //Question Comparator -->
+      <v-flex xs12 sm3 offset-sm1 d-flex>
         <v-select
           :items="comparators"
           item-text="comparator"
@@ -24,9 +28,9 @@
           @change="updateComparator($event)"
         ></v-select>
       </v-flex>
-    </v-layout>
-    <v-layout row wrap>
-      <v-flex xs12 sm4 offset-sm1>
+
+      <!-- //Selected Answer -->
+      <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.answer'>
         <v-select
           :items="parentQuestionType == 8 || parentQuestionType == 9 ? trueAnswers : answers"
           item-text="answer"
@@ -35,33 +39,44 @@
           label="Parent Answer"
           single-line
           @change="updateParentAnswer($event)"
-          v-if='selectedTriggerType && selectedTriggerType.answer'
         ></v-select>
       </v-flex>
-      <v-flex xs12 sm4 offset-sm2 v-if="parentQuestionType == 8 || parentQuestionType == 9">
-        <v-select
-          :items="falseAnswers"
-          item-text="answer"
-          item-value="id"
-          v-model="value"
-          label="Value"
-          single-line
-          @change="updateValue($event)"
-          v-if='selectedTriggerType && selectedTriggerType.value'
-        ></v-select>
+
+      <!-- //User Input -->
+      <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.value'>
+        <v-flex xs12 v-if="parentQuestionType == 8 || parentQuestionType == 9">
+          <v-select
+            :items="falseAnswers"
+            item-text="answer"
+            item-value="id"
+            v-model="value"
+            label="Value"
+            single-line
+            @change="updateValue($event)"
+          ></v-select>
+        </v-flex>
+        <v-flex xs12 v-else>
+          <v-text-field
+            label="Value"
+            type="text"
+            v-model="value"
+            @change="updateValue($event)"
+          ></v-text-field>
+        </v-flex>
       </v-flex>
-      <v-flex xs12 sm4 offset-sm2 v-else>
-        <v-text-field
-          label="Value"
-          type="text"
-          v-model="value"
-          @change="updateValue($event)"
-          v-if='selectedTriggerType && selectedTriggerType.value'
-        ></v-text-field>
+
+      <!-- //Delete Logic -->
+      <v-spacer></v-spacer>
+      <v-flex xs12 sm1 text-xs-center text-sm-right>
+        <v-btn flat icon @click="deleteTrigger()" class="mt-3">
+          <v-icon>close</v-icon>
+        </v-btn>
       </v-flex>
     </v-layout>
+
+    <!-- // Comparator Join -->
     <v-layout row wrap>
-      <v-flex xs12 sm2 offset-sm4>
+      <v-flex xs12 sm3 offset-sm4>
         <v-select
           :items="operators"
           item-text="operator"
@@ -73,12 +88,7 @@
           v-if='!isLast'
         ></v-select>
       </v-flex>
-      <v-flex xs12 sm1 offset-sm1 text-xs-center>
-        <v-btn fab dark small color="error"
-               @click="deleteTrigger()">
-          <v-icon dark>remove</v-icon>
-        </v-btn>
-      </v-flex>
+
     </v-layout>
   </v-container>
 </template>
