@@ -2,7 +2,7 @@
   <v-layout wrap>
     <v-flex xs12>
       <v-layout wrap>
-        <h3>Trigger Parent Questions</h3>
+        <h3>Question Logic</h3>
       </v-layout>
 
       <template v-for='(item, index) in triggers'>
@@ -13,7 +13,7 @@
       <v-layout wrap>
         <v-btn dark block color="primary" @click="createTrigger">
           <v-icon dark>add</v-icon>
-          Add Trigger
+          Add Logic
         </v-btn>
       </v-layout>
     </v-flex>
