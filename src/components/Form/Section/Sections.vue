@@ -114,7 +114,143 @@
       </v-layout>
 
       <triggers :formId="formId" :question="section" :questionOptions="questionOptions" type="Section" v-if="questionOptions.length > 0 && submissionId === -1"></triggers>
+      
+      <!-- //Form -->
+      <template v-if="submissionId == -1">
+        <v-flex xs12>
 
+          <v-expansion-panel popout>
+            <draggable
+              v-model="list"
+              class="layout row wrap">
+              <v-expansion-panel-content
+                v-for="(element,index) in list"
+                :key="index"
+              >
+                <div slot="header">
+                  <h3>
+                    <v-icon class="item">drag_handle</v-icon>
+                    {{index + 1 }}. {{ element.question }}
+                  </h3>
+                </div>
+                <v-card>
+                  <v-card-text>
+
+                  <v-flex
+                    xs12
+                    class="item"
+                    :class="'element' + element.id">
+                    <sections
+                      :section="element"
+                      :formId="formId"
+                      :submissionId="submissionId"
+                      v-if="element.questions"
+                    ></sections>
+
+                    <questions
+                      :question="element"
+                      :formId="formId"
+                      :sectionId="section.id"
+                      :index="index + 1"
+                      :key="'question' + element.id"
+                      v-if="element.answers && getQuestionType(element.question_type_id) !== 'Content Block'"
+                    ></questions>
+
+                    <QuestionContentBlock
+                      :question="element"
+                      :formId="formId"
+                      :sectionId="section.id"
+                      :index="index + 1"
+                      v-if="element.answers && getQuestionType(element.question_type_id) === 'Content Block'"
+                    ></QuestionContentBlock>
+                  </v-flex>
+
+                  </v-card-text>
+                </v-card> 
+              </v-expansion-panel-content>
+            </draggable>
+          </v-expansion-panel>
+
+        </v-flex>
+      </template>
+
+      <!-- //Submission -->
+      <template v-else>
+
+        <!-- //Standard -->
+        <template v-if="!hasRepeatableQuestions">
+          <template v-for="(element, index) in list">
+              <responses
+                :question="element"
+                :formId="formId"
+                :sectionId="section.id"
+                :index="index + 1"
+                :submissionId="submissionId"
+                :key="'question' + element.id"
+                :order="1"
+                :status="status"
+                v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
+              ></responses>
+
+              <ResponseContentBlock
+                :question="element"
+                :key="'question' + element.id"
+                v-if="getQuestionType(element.question_type_id) === 'Content Block'"
+              ></ResponseContentBlock>
+            </template>
+        </template>
+
+        <!-- //Repeatable -->
+        <template v-else>
+          <v-layout
+            row
+            wrap
+            v-for="order in hasRepeatableQuestions"
+            :key="'repeat' + order"
+          >
+
+            <template v-for="(element, index) in list">
+              <responses
+                :question="element"
+                :formId="formId"
+                :sectionId="section.id"
+                :index="index + 1"
+                :submissionId="submissionId"
+                :order="order"
+                :hide="list.length === 1 && order > 1"
+                :key="'question' + element.id + '-' + order"
+                :status="status"
+                v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
+              ></responses>
+
+              <ResponseContentBlock
+                :question="element"
+                :key="'question' + element.id + '-' + order"
+                v-if="getQuestionType(element.question_type_id) === 'Content Block'"
+              ></ResponseContentBlock>
+            </template>
+
+            <template v-if='hasRepeatableQuestions > section.min_rows'>
+              <v-flex xs12 sm1 offset-sm11 text-xs-center>
+                <v-btn dark fab small color="error" @click="removeSection(order)" :disabled="status === 'Closed'">
+                  <v-icon>close</v-icon>
+                </v-btn>
+              </v-flex>
+            </template>
+
+          </v-layout>
+
+          <v-layout wrap v-if='submissionId !== -1 && hasRepeatableQuestions && (hasRepeatableQuestions < section.max_rows || !section.max_rows)'>
+            <v-btn dark block color="primary" @click="addSection" :disabled="status === 'Closed'">
+              <v-icon dark>add</v-icon>
+              Add {{section.name}}
+            </v-btn>
+          </v-layout>
+        </template>
+
+      </template>
+
+<!--
       <draggable
         v-model="list"
         :class="'section' + section.id"
@@ -230,6 +366,8 @@
           Add {{section.name}}
         </v-btn>
       </v-layout>
+
+-->
 
     </v-card-text>
   </v-card>
@@ -569,6 +707,7 @@
           })
       },
       checkEnd: function (evt) {
+        console.log(evt)
         if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
           return
         }
