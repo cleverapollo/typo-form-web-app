@@ -40,7 +40,7 @@
 
     <!-- //Create Form -->
     <v-tooltip top>
-      <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="createForm = true">
+      <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="createForm = true" v-if="userIsApplicationAdmin">
         <v-icon>add</v-icon>
       </v-btn>
       <span>Create Form</span>

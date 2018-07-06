@@ -1,77 +1,80 @@
 <template>
-  <v-container>
-    <v-layout wrap>
+  <v-layout row wrap>
 
-      <!-- //Question -->
-      <v-flex xs12 sm4 offset-sm1>
-        <v-autocomplete
-          :items="questionOptions"
-          item-text="question"
-          item-value="id"
-          v-model="parentQuestionId"
-          label="Parent Question"
-          single-line
-          @change="updateParentQuestion($event)"
-        ></v-autocomplete>
-      </v-flex>
+    <v-flex xs12>
+      <v-layout wrap>
 
-      <!-- //Question Comparator -->
-      <v-flex xs12 sm3 offset-sm1 d-flex>
-        <v-select
-          :items="comparators"
-          item-text="comparator"
-          item-value="id"
-          v-model="comparatorId"
-          label="Comparator"
-          single-line
-          @change="updateComparator($event)"
-        ></v-select>
-      </v-flex>
-
-      <!-- //Selected Answer -->
-      <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.answer'>
-        <v-select
-          :items="parentQuestionType == 8 || parentQuestionType == 9 ? trueAnswers : answers"
-          item-text="answer"
-          item-value="id"
-          v-model="parentAnswerId"
-          label="Parent Answer"
-          single-line
-          @change="updateParentAnswer($event)"
-        ></v-select>
-      </v-flex>
-
-      <!-- //User Input -->
-      <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.value'>
-        <v-flex xs12 v-if="parentQuestionType == 8 || parentQuestionType == 9">
-          <v-select
-            :items="falseAnswers"
-            item-text="answer"
+        <!-- //Question -->
+        <v-flex xs12 sm3>
+          <v-autocomplete
+            :items="questionOptions"
+            item-text="question"
             item-value="id"
-            v-model="value"
-            label="Value"
+            v-model="parentQuestionId"
+            label="Parent Question"
             single-line
-            @change="updateValue($event)"
+            @change="updateParentQuestion($event)"
+          ></v-autocomplete>
+        </v-flex>
+
+        <!-- //Question Comparator -->
+        <v-flex xs12 sm3 offset-sm1 d-flex>
+          <v-select
+            :items="comparators"
+            item-text="comparator"
+            item-value="id"
+            v-model="comparatorId"
+            label="Comparator"
+            single-line
+            @change="updateComparator($event)"
           ></v-select>
         </v-flex>
-        <v-flex xs12 v-else>
-          <v-text-field
-            label="Value"
-            type="text"
-            v-model="value"
-            @change="updateValue($event)"
-          ></v-text-field>
-        </v-flex>
-      </v-flex>
 
-      <!-- //Delete Logic -->
-      <v-spacer></v-spacer>
-      <v-flex xs12 sm1 text-xs-center text-sm-right>
-        <v-btn flat icon @click="deleteTrigger()" class="mt-3">
-          <v-icon>close</v-icon>
-        </v-btn>
-      </v-flex>
-    </v-layout>
+        <!-- //Selected Answer -->
+        <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.answer'>
+          <v-select
+            :items="parentQuestionType == 8 || parentQuestionType == 9 ? trueAnswers : answers"
+            item-text="answer"
+            item-value="id"
+            v-model="parentAnswerId"
+            label="Parent Answer"
+            single-line
+            @change="updateParentAnswer($event)"
+          ></v-select>
+        </v-flex>
+
+        <!-- //User Input -->
+        <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.value'>
+          <v-flex xs12 v-if="parentQuestionType == 8 || parentQuestionType == 9">
+            <v-select
+              :items="falseAnswers"
+              item-text="answer"
+              item-value="id"
+              v-model="value"
+              label="Value"
+              single-line
+              @change="updateValue($event)"
+            ></v-select>
+          </v-flex>
+          <v-flex xs12 v-else>
+            <v-text-field
+              label="Value"
+              type="text"
+              v-model="value"
+              @change="updateValue($event)"
+            ></v-text-field>
+          </v-flex>
+        </v-flex>
+
+        <!-- //Delete Logic -->
+        <v-spacer></v-spacer>
+        <v-flex xs12 sm1 text-xs-center text-sm-right>
+          <v-btn flat icon @click="deleteTrigger()" class="mt-3">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-flex>
+      </v-layout>
+    </v-flex>
 
     <!-- // Comparator Join -->
     <v-layout row wrap>
@@ -89,7 +92,7 @@
       </v-flex>
 
     </v-layout>
-  </v-container>
+  </v-layout>
 </template>
 
 <script>
