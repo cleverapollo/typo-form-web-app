@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12 :class='"sm" + (question.width ? question.width : 12)' question-group pa-3 v-if="!isTrigger(question)">
+  <v-flex xs12 :class='"sm" + (question.width ? question.width : 12)' question-group v-if="!isTrigger(question)" px-3>
     
     <v-layout row wrap question-head v-if="this.hide !== true">
       <v-flex xs12>
@@ -184,7 +184,7 @@
     padding-top:0px;
   }
   .question-group {
-    margin-bottom:30px;
+    margin-bottom:15px;
   }
   .question-group >>> .input-group__details {
     min-height:auto;

@@ -86,8 +86,21 @@
 </script>
 
 <style scoped>
-  .list__group {
-    background: #f5f5f5;
-    border-bottom:4px solid white;
+  .v-list__group {
+    background: rgba(0,0,0,.04);
+    border-bottom: 4px #ffffff solid;
+  }
+
+  .v-list__group__header {
+      flex: 1 1 auto !important;
+      overflow: hidden;
+  }
+
+  .v-list {
+    background:transparent;
+  }
+
+  .v-list__group__items {
+    padding-left:15px;
   }
 </style>

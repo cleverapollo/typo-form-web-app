@@ -50,7 +50,7 @@
           </template>
 
           <template v-else-if="sections.length > 1">
-            <div class="title" @click="setEditMode">{{ editedName }}</div>
+            <div class="title px-3" @click="setEditMode">{{ editedName }}</div>
           </template>
         </div>
       </v-flex>
