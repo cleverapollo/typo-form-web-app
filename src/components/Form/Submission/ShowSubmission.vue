@@ -93,9 +93,9 @@
                   ></formNavigation>
                 </v-flex>
 
-                <v-flex xs12 md4 offset-md4 class="mt-4">
-                  <v-btn block color="info" @click=onSendSubmission :disabled="!sendAble">
-                    Send Submission
+                <v-flex xs12 md4 offset-md4 class="mt-4" v-if="sendAble">
+                  <v-btn block color="success" @click=onSendSubmission :disabled="!sendAble">
+                    Submit
                   </v-btn>
                 </v-flex>
               </v-layout>

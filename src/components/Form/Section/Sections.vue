@@ -50,7 +50,7 @@
           </template>
 
           <template v-else-if="sections.length > 1">
-            <div class="title" @click="setEditMode">{{ editedName }}</div>
+            <div class="title px-3" @click="setEditMode">{{ editedName }}</div>
           </template>
         </div>
       </v-flex>
@@ -130,7 +130,7 @@
                 <div slot="header">
                   <h3>
                     <v-icon class="item">drag_handle</v-icon>
-                    {{index + 1 }}. {{ element.question }}
+                    {{index + 1 }}. {{ element.question || section.name }}
                   </h3>
                 </div>
                 <v-card>
