@@ -130,7 +130,7 @@
                 <div slot="header">
                   <h3>
                     <v-icon class="item">drag_handle</v-icon>
-                    {{index + 1 }}. {{ element.question }}
+                    {{index + 1 }}. {{ element.question || section.name }}
                   </h3>
                 </div>
                 <v-card>
