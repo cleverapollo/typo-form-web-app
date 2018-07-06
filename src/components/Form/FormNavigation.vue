@@ -1,15 +1,11 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 v-if="sections.length > 1">
-      <v-layout row wrap>
-        <v-flex xs12 md3 pa-2>
-          <v-btn class="ma-0" block color="info" @click="prev(section)" :disabled="prevAble">Prev</v-btn>
-        </v-flex>
-        <v-spacer></v-spacer>
-        <v-flex xs12 md3 pa-2 ma-0>
-          <v-btn class="ma-0" block color="info" @click="next(section)" :disabled="nextAble">Next</v-btn>
-        </v-flex>
-      </v-layout>
+    <v-flex xs12 md3 pa-2>
+      <v-btn class="ma-0" block color="info" @click="prev(section)" :disabled="prevAble">Prev</v-btn>
+    </v-flex>
+    <v-spacer></v-spacer>
+    <v-flex xs12 md3 pa-2 ma-0>
+      <v-btn class="ma-0" block color="info" @click="next(section)" :disabled="nextAble">Next</v-btn>
     </v-flex>
   </v-layout>
 </template>

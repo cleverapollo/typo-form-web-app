@@ -17,7 +17,7 @@
           prepend-icon="event"
           readonly
         ></v-text-field>
-        <v-date-picker v-model="date" scrollable>
+        <v-date-picker v-model="date" scrollable :readonly="disabled">
           <v-spacer></v-spacer>
           <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
           <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
@@ -34,7 +34,7 @@
   import moment from 'moment'
   export default {
     name: 'date-component',
-    props: ['question', 'answers', 'responses'],
+    props: ['question', 'answers', 'responses', 'disabled'],
     data () {
       return {
         date: this.responses.length ? this.formatDate(this.responses[0].response) : null,

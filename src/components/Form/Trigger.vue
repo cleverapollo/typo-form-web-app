@@ -3,17 +3,16 @@
     <v-layout wrap>
 
       <!-- //Question -->
-      <v-flex xs12 sm3 d-flex>
-        <v-select
+      <v-flex xs12 sm4 offset-sm1>
+        <v-autocomplete
           :items="questionOptions"
           item-text="question"
           item-value="id"
           v-model="parentQuestionId"
           label="Parent Question"
           single-line
-          autocomplete
           @change="updateParentQuestion($event)"
-        ></v-select>
+        ></v-autocomplete>
       </v-flex>
 
       <!-- //Question Comparator -->

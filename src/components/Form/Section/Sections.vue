@@ -55,7 +55,7 @@
         </div>
       </v-flex>
 
-      <v-flex style="min-width: 130px; max-width: 130px;" class="mt-4" v-if="submissionId === -1">
+      <v-flex style="min-width: 130px; max-width: 130px;" v-if="submissionId === -1">
         <v-switch
           label="Repeatable"
           v-model="hasRepeatableQuestions"
@@ -164,6 +164,7 @@
               :submissionId="submissionId"
               :key="'question' + element.id"
               :order="1"
+              :status="status"
               v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
             ></responses>
 
@@ -193,29 +194,29 @@
       >
 
         <template v-for="(element, index) in list">
-          <v-flex xs12 :class="'sm' + (list.length === 1 ? 11 : 12 )"
-            :key="'question' + element.id + '-' + order">
-            <responses
-              :question="element"
-              :formId="formId"
-              :sectionId="section.id"
-              :index="index + 1"
-              :submissionId="submissionId"
-              :order="order"
-              :hide="list.length === 1 && order > 1"
-              v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
-            ></responses>
+          <responses
+            :question="element"
+            :formId="formId"
+            :sectionId="section.id"
+            :index="index + 1"
+            :submissionId="submissionId"
+            :order="order"
+            :hide="list.length === 1 && order > 1"
+            :key="'question' + element.id + '-' + order"
+            :status="status"
+            v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
+          ></responses>
 
-            <ResponseContentBlock
-              :question="element"
-              v-if="getQuestionType(element.question_type_id) === 'Content Block'"
-            ></ResponseContentBlock>
-          </v-flex>
+          <ResponseContentBlock
+            :question="element"
+            :key="'question' + element.id + '-' + order"
+            v-if="getQuestionType(element.question_type_id) === 'Content Block'"
+          ></ResponseContentBlock>
         </template>
 
         <template v-if='hasRepeatableQuestions > section.min_rows'>
-          <v-flex xs12 sm1 :class="'offset-sm' + (list.length === 1 ? 0 : 11 ) + (list.length === 1 && order === 1 ? ' mt-4' : '')" text-xs-center>
-            <v-btn dark fab small color="error" @click="removeSection(order)">
+          <v-flex xs12 sm1 offset-sm11 text-xs-center>
+            <v-btn dark fab small color="error" @click="removeSection(order)" :disabled="status === 'Closed'">
               <v-icon>close</v-icon>
             </v-btn>
           </v-flex>
@@ -224,9 +225,9 @@
       </v-layout>
 
       <v-layout wrap v-if='submissionId !== -1 && hasRepeatableQuestions && (hasRepeatableQuestions < section.max_rows || !section.max_rows)'>
-        <v-btn dark block color="primary" @click="addSection">
+        <v-btn dark block color="primary" @click="addSection" :disabled="status === 'Closed'">
           <v-icon dark>add</v-icon>
-          Add Repeatable Component
+          Add {{section.name}}
         </v-btn>
       </v-layout>
 
@@ -238,7 +239,6 @@
   import draggable from 'vuedraggable'
   import questions from '../Question/Questions'
   import responses from '../Response/Responses'
-  import ResponseRepeatable from '../Response/components/ResponseRepeatable'
   import QuestionContentBlock from '../Question/components/ContentBlock'
   import ResponseContentBlock from '../Response/components/ContentBlock'
   import CreateSection from './CreateSection'
@@ -255,7 +255,6 @@
       draggable,
       questions,
       responses,
-      ResponseRepeatable,
       CreateSection,
       CreateQuestion,
       QuestionContentBlock,
@@ -284,6 +283,21 @@
       sections () {
         return this.$store.getters.loadedSections(this.formId)
       },
+      submission () {
+        if (!this.submissionId) {
+          return null
+        }
+        return this.$store.getters.loadedSubmission(parseInt(this.formId), parseInt(this.submissionId))
+      },
+      statuses () {
+        return this.$store.getters.statuses
+      },
+      status () {
+        if (!this.submission) {
+          return null
+        }
+        return this.getStatus(this.submission.status_id)
+      },
       list: {
         get () {
           return _.sortBy(this.$store.getters.loadedChildren(this.formId, this.section.id), element => {
@@ -301,8 +315,7 @@
         if (!this.submissionId) {
           return []
         }
-        let submission = this.$store.getters.loadedSubmission(parseInt(this.formId), parseInt(this.submissionId))
-        let responses = submission.responses.filter((response) => {
+        let responses = this.submission.responses.filter((response) => {
           const questions = this.section.questions.filter((question) => {
             return question.id === response.question_id
           })
@@ -333,6 +346,12 @@
       }
     },
     methods: {
+      getStatus (statusId) {
+        const status = this.statuses.find((status) => {
+          return status.id === statusId
+        })
+        return status ? status.status : 'undefined'
+      },
       addSection () {
         this.hasRepeatableQuestions += 1
         this.updateSection()

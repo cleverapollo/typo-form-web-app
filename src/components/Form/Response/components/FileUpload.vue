@@ -18,7 +18,7 @@
 
   export default {
     name: 'fileupload',
-    props: ['question', 'submissionId', 'responses'],
+    props: ['question', 'submissionId', 'responses', 'disabled'],
     components: {
       vueDropzone: vue2Dropzone
     },
@@ -53,6 +53,11 @@
             this.$emit('create-response', [null, response.path])
           }
         }
+      }
+    },
+    mounted () {
+      if (this.disabled) {
+        this.$refs.myVueDropzone.disable()
       }
     }
   }

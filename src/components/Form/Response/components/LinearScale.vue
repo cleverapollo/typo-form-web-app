@@ -17,9 +17,11 @@
             <v-radio-group v-model="optionModel" row>
               <v-radio
                 color="info"
+                :disabled="disabled"
                 v-for="n in end.id" 
                 :key="n" v-if="n+1!=start.id" 
                 :value="n"
+                :style="'width: ' + 75/end.id + '%'"
                 @change="onSave(n)
               "></v-radio>
             </v-radio-group>
@@ -34,7 +36,7 @@
 <script>
   export default {
     name: 'linear-scale',
-    props: ['question', 'answers', 'responses'],
+    props: ['question', 'answers', 'responses', 'disabled'],
     data () {
       return {
         optionModel: this.responses.length ? parseInt(this.responses[0].response) : 0

@@ -21,6 +21,7 @@
               v-model="checkAnswers[index]" 
               :value="column.id" 
               @change="onSave(row.id, column.id)"
+              :disabled="disabled"
             ></v-checkbox>
           </v-layout>
         </v-flex>
@@ -32,7 +33,7 @@
 <script>
   export default {
     name: 'checkbox-grid',
-    props: ['question', 'answers', 'responses', 'submissionId'],
+    props: ['question', 'answers', 'responses', 'submissionId', 'disabled'],
     data () {
       return {
         checkAnswers: []

@@ -83,8 +83,7 @@
 
     <triggers :formId="formId" :question="question" :questionOptions="questionOptions" type="Question" v-if="questionOptions.length > 0"></triggers>
 
-    <v-divider></v-divider>
-    <v-layout pa-3 class="card_actions">
+    <v-toolbar pa-3>
       <v-spacer></v-spacer>
 
       <v-tooltip top>
@@ -101,7 +100,11 @@
         <span>Delete Question</span>
       </v-tooltip>
 
-      <div class="v-divider">&nbsp</div>
+      <v-divider
+        class="mx-3"
+        inset
+        vertical>
+      </v-divider>
 
       <v-switch
         label="Required"
@@ -129,7 +132,7 @@
           </v-list-tile>
         </v-list>
       </v-menu>
-    </v-layout>
+    </v-toolbar>
   </v-container>
 </template>
 
@@ -465,17 +468,11 @@
 </script>
 
 <style scoped>
-  .card_actions .btn, .card_actions>* {
-    margin: 0 4px;
-  }
-
   .switch-mandatory {
     max-width: 120px;
-    margin-left: 20px;
   }
-
-  .v-divider {
-    line-height: 2;
-    border-right: 1px solid #ccc;
+  .v-toolbar {
+    box-shadow: none;
+    background: white;
   }
 </style>
