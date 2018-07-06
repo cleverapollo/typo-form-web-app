@@ -16,8 +16,13 @@
           v-model="time"
           prepend-icon="access_time"
           readonly
+          :disabled="disabled"
         ></v-text-field>
-        <v-time-picker v-model="time">
+        <v-time-picker
+          v-model="time"
+          :allowed-minutes="() => {return !disabled}"
+          :allowed-hours="() => {return !disabled}"
+        >
           <v-spacer></v-spacer>
           <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
           <v-btn flat color="primary" @click="$refs.dialog.save(time)">OK</v-btn>
@@ -31,7 +36,7 @@
 <script>
   export default {
     name: 'time-component',
-    props: ['question', 'answers', 'responses'],
+    props: ['question', 'answers', 'responses', 'disabled'],
     data () {
       return {
         timeCnt: 0,

@@ -24,6 +24,7 @@
       :mandatory="question.mandatory"
       :form-id="formId"
       :submission-id="submissionId"
+      :disabled="status === 'Closed'"
       @create-response="createResponse"
       @update-response="updateResponse"
       @delete-response="deleteResponse"
@@ -48,7 +49,7 @@
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
-    props: ['question', 'formId', 'submissionId', 'index', 'sectionId', 'order', 'hide'],
+    props: ['question', 'formId', 'submissionId', 'index', 'sectionId', 'order', 'hide', 'status'],
     mixins: [TriggerMixin],
     data () {
       return {

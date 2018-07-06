@@ -4,6 +4,7 @@
       <v-layout row v-for='(answer, index) in answers' :key='"Option " + index' class='"item" + index'>
         <v-checkbox 
           color="info"
+          :disabled="disabled"
           :label="answer.answer" 
           v-model='checkAnswers' 
           :value="answer.id" 
@@ -24,7 +25,7 @@
   export default {
     name: 'checkboxes',
     mixins: [validationMixin],
-    props: ['question', 'answers', 'responses', 'submissionId'],
+    props: ['question', 'answers', 'responses', 'submissionId', 'disabled'],
     data () {
       return {
         checkAnswers: []

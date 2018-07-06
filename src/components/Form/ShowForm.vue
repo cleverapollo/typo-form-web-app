@@ -18,32 +18,34 @@
                   <v-spacer></v-spacer>
 
                   <!-- //Menu -->
-                  <v-menu offset-y bottom left class="text-xs-right">
-                    <v-btn icon slot="activator">
-                      <v-icon class="white--text">more_vert</v-icon>
-                    </v-btn>
+                  <div class="text-xs-right">
+                    <v-menu offset-y bottom left>
+                      <v-btn icon slot="activator">
+                        <v-icon class="white--text">more_vert</v-icon>
+                      </v-btn>
 
-                    <v-list>
-                      <v-list-tile @click="">
-                        <v-list-tile-title>
-                          <CreateSection
-                            :parentSectionId="-1"
-                            :formId="id"
-                          ></CreateSection>
-                        </v-list-tile-title>
-                      </v-list-tile>
+                      <v-list>
+                        <v-list-tile @click="">
+                          <v-list-tile-title>
+                            <CreateSection
+                              :parentSectionId="-1"
+                              :formId="id"
+                            ></CreateSection>
+                          </v-list-tile-title>
+                        </v-list-tile>
 
-                      <v-list-tile @click="">
-                        <v-list-tile-title>
-                          <EditForm :form="form" :slug="slug"></EditForm>
-                        </v-list-tile-title>
-                      </v-list-tile>
+                        <v-list-tile @click="">
+                          <v-list-tile-title>
+                            <EditForm :form="form" :slug="slug"></EditForm>
+                          </v-list-tile-title>
+                        </v-list-tile>
 
-                      <v-list-tile @click=onDeleteForm>
-                        <v-list-tile-title>Delete Form</v-list-tile-title>
-                      </v-list-tile>
-                    </v-list>
-                  </v-menu>
+                        <v-list-tile @click=onDeleteForm>
+                          <v-list-tile-title>Delete Form</v-list-tile-title>
+                        </v-list-tile>
+                      </v-list>
+                    </v-menu>
+                  </div>
                 </v-flex>
               </v-layout>
             </v-card-title>

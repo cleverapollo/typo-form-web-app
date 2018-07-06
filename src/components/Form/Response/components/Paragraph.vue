@@ -1,11 +1,12 @@
 <template>
   <v-layout row>
     <v-flex xs12>
-      <v-text-field
+      <v-textarea
+        outline
         :value="message"
-        textarea
         @change="onSave($event)"
-      ></v-text-field>
+        :disabled="disabled"
+      ></v-textarea>
     </v-flex>
   </v-layout>
 </template>
@@ -16,7 +17,7 @@
   export default {
     name: 'paragraph',
     mixins: [validationMixin],
-    props: ['question', 'answers', 'responses'],
+    props: ['question', 'answers', 'responses', 'disabled'],
     methods: {
       onSave (value) {
         if (this.responses.length) {

@@ -17,27 +17,25 @@
                   <div class="title pt-3">{{ submissionOwner }}</div>
 
                   <!-- //Menu -->
-                  <v-menu offset-y bottom left class="text-xs-right">
-                    <v-btn icon slot="activator">
-                      <v-icon class="white--text">more_vert</v-icon>
-                    </v-btn>
+                  <div class="text-xs-right">
+                    <v-menu offset-y bottom left>
+                      <v-btn icon slot="activator">
+                        <v-icon class="white--text">more_vert</v-icon>
+                      </v-btn>
 
-                    <v-list>
-                      <v-list-tile @click="">
-                        <v-list-tile-title>
-                          <EditSubmission :slug="slug" :submission="submission" :formId="formId"></EditSubmission>
-                        </v-list-tile-title>
-                      </v-list-tile>
+                      <v-list>
+                        <v-list-tile @click="">
+                          <v-list-tile-title>
+                            <EditSubmission :slug="slug" :submission="submission" :formId="formId"></EditSubmission>
+                          </v-list-tile-title>
+                        </v-list-tile>
 
-                      <v-list-tile @click=onDeleteSubmission>
-                        <v-list-tile-title>Delete Submission</v-list-tile-title>
-                      </v-list-tile>
-
-                      <v-list-tile @click=onSendSubmission v-if="sendAble">
-                        <v-list-tile-title>Send Submission</v-list-tile-title>
-                      </v-list-tile>
-                    </v-list>
-                  </v-menu>
+                        <v-list-tile @click=onDeleteSubmission>
+                          <v-list-tile-title>Delete Submission</v-list-tile-title>
+                        </v-list-tile>
+                      </v-list>
+                    </v-menu>
+                  </div>
                 </v-flex>
 
               </v-layout>
@@ -86,11 +84,21 @@
             <v-divider></v-divider>
             <v-card-actions>
 
-              <formNavigation
-                :slug="slug"
-                :formId="formId"
-                :submissionId="submissionId"
-              ></formNavigation>
+              <v-layout row wrap>
+                <v-flex xs12 v-if="sections.length > 1">
+                  <formNavigation
+                    :slug="slug"
+                    :formId="formId"
+                    :submissionId="submissionId"
+                  ></formNavigation>
+                </v-flex>
+
+                <v-flex xs12 md4 offset-md4 class="mt-4">
+                  <v-btn block color="info" @click=onSendSubmission :disabled="!sendAble">
+                    Send Submission
+                  </v-btn>
+                </v-flex>
+              </v-layout>
 
             </v-card-actions>
 
@@ -119,6 +127,9 @@
       FormNavigation
     },
     computed: {
+      sections () {
+        return this.$store.getters.loadedSections(this.formId)
+      },
       submissionId () {
         return parseInt(this.id)
       },
@@ -199,7 +210,7 @@
         this.$store.dispatch('updateSubmission',
           {
             formId: this.formId,
-            id: this.this.submissionId,
+            id: this.submissionId,
             statusId: this.statuses[statusIndex].id
           }
         )

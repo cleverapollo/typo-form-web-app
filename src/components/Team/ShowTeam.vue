@@ -4,23 +4,25 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <div class="subheading py-2 px-3">{{ team.name }}</div>
-          <v-menu offset-y bottom left class="text-xs-right" v-if="isTeamAdmin">
-            <v-btn icon slot="activator">
-              <v-icon>more_vert</v-icon>
-            </v-btn>
+          <div class="text-xs-right">
+            <v-menu offset-y bottom left v-if="isTeamAdmin">
+              <v-btn icon slot="activator">
+                <v-icon>more_vert</v-icon>
+              </v-btn>
 
-            <v-list>
-              <v-list-tile @click="">
-                <v-list-tile-title>
-                  <EditTeam :team="team" :slug="slug" class="my-1"></EditTeam>
-                </v-list-tile-title>
-              </v-list-tile>
+              <v-list>
+                <v-list-tile @click="">
+                  <v-list-tile-title>
+                    <EditTeam :team="team" :slug="slug" class="my-1"></EditTeam>
+                  </v-list-tile-title>
+                </v-list-tile>
 
-              <v-list-tile @click="onDeleteTeam">
-                <v-list-tile-title>Delete Team</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
+                <v-list-tile @click="onDeleteTeam">
+                  <v-list-tile-title>Delete Team</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
+          </div>
         </v-flex>
         <v-flex xs12>
           <div class="subheading py-2 px-3 break-all">{{ team.description }}</div>

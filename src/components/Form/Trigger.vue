@@ -2,16 +2,15 @@
   <v-container>
     <v-layout row wrap>
       <v-flex xs12 sm4 offset-sm1>
-        <v-select
+        <v-autocomplete
           :items="questionOptions"
           item-text="question"
           item-value="id"
           v-model="parentQuestionId"
           label="Parent Question"
           single-line
-          autocomplete
           @change="updateParentQuestion($event)"
-        ></v-select>
+        ></v-autocomplete>
       </v-flex>
       <v-flex xs12 sm4 offset-sm2>
         <v-select

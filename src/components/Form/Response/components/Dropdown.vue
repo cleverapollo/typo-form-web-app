@@ -1,14 +1,14 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <v-select
+      <v-autocomplete
         v-bind:items="computedOptions"
         v-model="selectedOption"
         item-text="answer"
         item-value="id"
+        :disabled="disabled"
         @change="onSave($event)"
-        autocomplete
-      ></v-select>
+      ></v-autocomplete>
     </v-flex>
   </v-layout>
 </template>
@@ -16,7 +16,7 @@
 <script>
   export default {
     name: 'dropdown',
-    props: ['question', 'answers', 'responses', 'submissionId'],
+    props: ['question', 'answers', 'responses', 'submissionId', 'disabled'],
     data () {
       return {
         selectedOption: this.responses.length ? this.responses[0].answer_id : ''

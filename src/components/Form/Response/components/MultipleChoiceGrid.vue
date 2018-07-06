@@ -14,15 +14,19 @@
             <v-flex xs3>
               <div class="body-2">{{row.answer}}</div>
             </v-flex>
-            <v-flex xs9>
-              <v-radio-group v-model="checkAnswers[index]" row class="pt-0 pb-0">
+            <v-flex>
+              <v-radio-group v-model="checkAnswers[index]" row class="py-0">
                 <v-radio
                   color="info"
-                  v-for='(column, index2) in computedColumns' 
+                  v-for='(column, index2) in computedColumns'
                   :key='"column " + index2'
-                  :value="column.id" 
-                  @change="onSave(row.id, column.id)
-                "></v-radio>
+                  :value="column.id"
+                  :label="column.answer"
+                  @change="onSave(row.id, column.id)"
+                  :style="'width: ' + 100/computedColumns.length + '%'"
+                  class="mx-0"
+                  :disabled="disabled"
+                ></v-radio>
               </v-radio-group>
             </v-flex>
           </v-layout>
@@ -35,7 +39,7 @@
 <script>
   export default {
     name: 'multiple-choice-grid',
-    props: ['question', 'answers', 'responses', 'submissionId'],
+    props: ['question', 'answers', 'responses', 'submissionId', 'disabled'],
     data () {
       return {
         checkAnswers: []

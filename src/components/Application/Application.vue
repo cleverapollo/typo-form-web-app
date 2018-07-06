@@ -8,23 +8,25 @@
           <div class="subheading py-2 px-3">Dashboard</div>
 
           <v-spacer></v-spacer>
-          <v-menu offset-y bottom left v-if="userIsApplicationAdmin" class="text-xs-right">
-            <v-btn icon slot="activator">
-              <v-icon>more_vert</v-icon>
-            </v-btn>
+          <div class="text-xs-right">
+            <v-menu offset-y bottom left v-if="userIsApplicationAdmin">
+              <v-btn icon slot="activator">
+                <v-icon>more_vert</v-icon>
+              </v-btn>
 
-            <v-list>
-              <v-list-tile @click="">
-                <v-list-tile-title>
-                  <EditApplication :application="application" class="my-1"></EditApplication>
-                </v-list-tile-title>
-              </v-list-tile>
+              <v-list>
+                <v-list-tile @click="">
+                  <v-list-tile-title>
+                    <EditApplication :application="application" class="my-1"></EditApplication>
+                  </v-list-tile-title>
+                </v-list-tile>
 
-              <v-list-tile @click="onDeleteApplication">
-                <v-list-tile-title>Delete Application</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
+                <v-list-tile @click="onDeleteApplication">
+                  <v-list-tile-title>Delete Application</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
+          </div>
 
         </v-flex>
       </v-layout>

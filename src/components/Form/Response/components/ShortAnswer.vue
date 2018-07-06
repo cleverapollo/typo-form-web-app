@@ -6,6 +6,7 @@
         :value="message"
         @change="onSave($event)"
         :rules="[validate]"
+        :disabled="disabled"
       ></v-text-field>
     </v-flex>
   </v-layout>
@@ -17,7 +18,7 @@
   export default {
     name: 'short-answer',
     mixins: [validationMixin],
-    props: ['question', 'answers', 'responses'],
+    props: ['question', 'answers', 'responses', 'disabled'],
     methods: {
       onSave (value) {
         if (this.responses.length) {

@@ -4,6 +4,7 @@
       <v-radio-group v-model="optionModel">
         <v-radio 
           color="info"
+          :disabled="disabled"
           v-for='(answer, index) in answers' 
           :key='"Option " + index' 
           :label="answer.answer"
@@ -17,7 +18,7 @@
 <script>
   export default {
     name: 'multiple-choice',
-    props: ['question', 'answers', 'responses'],
+    props: ['question', 'answers', 'responses', 'disabled'],
     data () {
       return {
         optionModel: this.responses.length ? this.responses[0].answer_id : ''
