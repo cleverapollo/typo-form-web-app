@@ -1,7 +1,7 @@
 <template>
   <draggable v-model='list' class='dragArea' :options='{draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
     <v-layout row v-for='(answer, index) in list' :key='"Option " + index' class='answer' :class='"answer" + answer.id'>
-      <v-flex xs10 style='min-width: 120px'>
+      <v-flex style='min-width: 120px' :class="answer.parameter ? 'xs10' : 'xs2'">
         <v-text-field
           prepend-icon='check_box_outline_blank'
           :value='answer.answer'
