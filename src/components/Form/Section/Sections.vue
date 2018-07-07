@@ -122,10 +122,14 @@
           <v-expansion-panel popout>
             <draggable
               v-model="list"
+              :class="'section' + section.id"
+              :options="{group: 'parent', draggable: '.v-expansion-panel__container', handle: '.item'}"
+              @end="checkEnd"
               class="layout row wrap">
               <v-expansion-panel-content
                 v-for="(element,index) in list"
                 :key="index"
+                :class="'element' + element.id"
               >
                 <div slot="header">
                   <h3>
@@ -136,34 +140,33 @@
                 <v-card>
                   <v-card-text>
 
-                  <v-flex
-                    xs12
-                    class="item"
-                    :class="'element' + element.id">
-                    <sections
-                      :section="element"
-                      :formId="formId"
-                      :submissionId="submissionId"
-                      v-if="element.questions"
-                    ></sections>
+                    <v-flex
+                      xs12
+                      :class="'element' + element.id">
+                      <sections
+                        :section="element"
+                        :formId="formId"
+                        :submissionId="submissionId"
+                        v-if="element.questions"
+                      ></sections>
 
-                    <questions
-                      :question="element"
-                      :formId="formId"
-                      :sectionId="section.id"
-                      :index="index + 1"
-                      :key="'question' + element.id"
-                      v-if="element.answers && getQuestionType(element.question_type_id) !== 'Content Block'"
-                    ></questions>
+                      <questions
+                        :question="element"
+                        :formId="formId"
+                        :sectionId="section.id"
+                        :index="index + 1"
+                        :key="'question' + element.id"
+                        v-if="element.answers && getQuestionType(element.question_type_id) !== 'Content Block'"
+                      ></questions>
 
-                    <QuestionContentBlock
-                      :question="element"
-                      :formId="formId"
-                      :sectionId="section.id"
-                      :index="index + 1"
-                      v-if="element.answers && getQuestionType(element.question_type_id) === 'Content Block'"
-                    ></QuestionContentBlock>
-                  </v-flex>
+                      <QuestionContentBlock
+                        :question="element"
+                        :formId="formId"
+                        :sectionId="section.id"
+                        :index="index + 1"
+                        v-if="element.answers && getQuestionType(element.question_type_id) === 'Content Block'"
+                      ></QuestionContentBlock>
+                    </v-flex>
 
                   </v-card-text>
                 </v-card> 
@@ -178,27 +181,27 @@
       <template v-else>
 
         <!-- //Standard -->
-        <template v-if="!hasRepeatableQuestions">
+        <v-layout row wrap v-if="!hasRepeatableQuestions">
           <template v-for="(element, index) in list">
-              <responses
-                :question="element"
-                :formId="formId"
-                :sectionId="section.id"
-                :index="index + 1"
-                :submissionId="submissionId"
-                :key="'question' + element.id"
-                :order="1"
-                :status="status"
-                v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
-              ></responses>
+            <responses
+              :question="element"
+              :formId="formId"
+              :sectionId="section.id"
+              :index="index + 1"
+              :submissionId="submissionId"
+              :key="'question' + element.id"
+              :order="1"
+              :status="status"
+              v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
+            ></responses>
 
-              <ResponseContentBlock
-                :question="element"
-                :key="'question' + element.id"
-                v-if="getQuestionType(element.question_type_id) === 'Content Block'"
-              ></ResponseContentBlock>
-            </template>
-        </template>
+            <ResponseContentBlock
+              :question="element"
+              :key="'question' + element.id"
+              v-if="getQuestionType(element.question_type_id) === 'Content Block'"
+            ></ResponseContentBlock>
+          </template>
+        </v-layout>
 
         <!-- //Repeatable -->
         <template v-else>
@@ -707,13 +710,17 @@
           })
       },
       checkEnd: function (evt) {
-        console.log(evt)
         if (evt.to.className === evt.from.className && evt.newIndex === evt.oldIndex) {
           return
         }
         if (evt.item.className.includes('question') && evt.to.className.includes('parent')) {
           return
         }
+
+        if (evt.item.className.length > 40) {
+          return
+        }
+
         let newIndex = evt.newIndex
 
         if (evt.to.className === evt.from.className && evt.newIndex > evt.oldIndex) {
@@ -737,7 +744,7 @@
 
         const oldparentClass = evt.from.className
         const oldParentSectionId = parseInt(oldparentClass.substr(23))
-        const elementId = parseInt(elementClass.substr(22))
+        const elementId = parseInt(elementClass.substr(36))
         this.$store.dispatch('moveQuestion',
           {
             formId: this.formId,
