@@ -25,9 +25,7 @@
     computed: {
       label () {
         if (this.responses.length) {
-          const str = this.responses[0].response.split('_', 2)
-
-          return '<h3 style="color:black">' + str[1] + ' is uploaded</h3>'
+          return '<img src="' + this.responses[0].response + '" style="width: 150px">'
         } else {
           return 'Please Drag and Drop'
         }
