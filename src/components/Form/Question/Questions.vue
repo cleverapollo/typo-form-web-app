@@ -121,7 +121,7 @@
         <v-list>
           <v-list-tile v-if="mandatory" @click="createRemoveValidation">
             <v-list-tile-title>
-              {{ hasValidation ? "Remove Validation" : "Include Validation" }}
+              {{ validationString }}
             </v-list-tile-title>
           </v-list-tile>
 
@@ -182,7 +182,8 @@
         ifRequireValidation: {
           'Short answer': true,
           'Paragraph': true,
-          'Checkboxes': true
+          'Checkboxes': true,
+          'Dropdown': true
         },
         menuItems: [
           {
@@ -241,6 +242,13 @@
       }
     },
     computed: {
+      validationString () {
+        if (this.questionTypeString === 'Dropdown') {
+          return this.hasValidation ? 'Switch to One-Selection' : 'Switch to Multi-Selection'
+        } else {
+          return this.hasValidation ? 'Remove Validation' : 'Include Validation'
+        }
+      },
       questionWidths () {
         let questionWidths = []
         for (let i = 1; i <= 12; i++) {
