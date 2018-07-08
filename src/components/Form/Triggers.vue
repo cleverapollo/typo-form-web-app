@@ -38,6 +38,9 @@
         return _.sortBy(triggers, element => {
           return element.order
         })
+      },
+      comparators () {
+        return this.$store.getters.comparators
       }
     },
     methods: {
@@ -46,7 +49,7 @@
           formId: this.formId,
           questionId: this.question.id,
           parentQuestionId: this.questionOptions[0].id,
-          comparatorId: 1,
+          comparatorId: this.comparators[0].id,
           operator: 0,
           type: this.type
         })
