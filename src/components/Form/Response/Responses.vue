@@ -25,6 +25,7 @@
       :form-id="formId"
       :submission-id="submissionId"
       :disabled="status === 'Closed'"
+      :hasValidation="hasValidation"
       @create-response="createResponse"
       @update-response="updateResponse"
       @delete-response="deleteResponse"
@@ -70,8 +71,7 @@
           'Date': dateComponent,
           'Time': timeComponent,
           'Content Block': ContentBlock
-        },
-        hasValidation: false
+        }
       }
     },
     computed: {
@@ -111,6 +111,11 @@
         get: function () {
           return this.questionsComponentsMap[this.questionTypeString]
         }
+      },
+      hasValidation () {
+        this.validationTypes = this.$store.getters.validationTypes
+        this.validations = this.$store.getters.loadedQuestionValidation(this.formId, this.question.id)
+        return !!(this.validations && this.validations.length && this.validations.length === 1)
       }
     },
     methods: {
