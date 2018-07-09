@@ -20,6 +20,9 @@ export default {
       let questionCount = 0
       let responseCount = 0
       sections.forEach(function (section) {
+        if (this.isSectionTrigger(section)) {
+          return
+        }
         let sectionCount = 1
         if (section.repeatable) {
           sectionCount = section.repeatable
