@@ -784,3 +784,9 @@
     }
   }
 </script>
+
+<style scoped>
+  .v-card__title {
+    flex-wrap: unset !important;
+  }
+</style>

@@ -37,9 +37,9 @@
       :key="item.id"
       v-if="!isSectionTrigger(item) || submissionId === -1"
     >
-      <v-list-tile slot="activator" @click="clickSection(item)">
+      <v-list-tile slot="activator" @click="clickSection(item)" class="v-list__group__header_tile">
         <v-list-tile-content>
-          <v-list-tile-title>{{ index + 1 }}. {{ item.name }}</v-list-tile-title>
+          <v-list-tile-title v-html="(index + 1) + '. ' + item.name"></v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile v-for="subItem in children(item)" :key="subItem.name" @click="clickSection(subItem)" v-if="!isSectionTrigger(subItem) || submissionId === -1">
@@ -91,9 +91,9 @@
     border-bottom: 4px #ffffff solid;
   }
 
-  .v-list__group__header {
-      flex: 1 1 auto !important;
-      overflow: hidden;
+  .v-list__group__header_tile {
+    flex: 1 1 auto!important;
+    overflow: hidden;
   }
 
   .v-list {
@@ -101,6 +101,6 @@
   }
 
   .v-list__group__items {
-    padding-left:15px;
+    padding-left: 15px;
   }
 </style>
