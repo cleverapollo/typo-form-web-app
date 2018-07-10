@@ -18,7 +18,7 @@
                     <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
                   </v-list-tile-avatar>
                   <v-list-tile-content>
-                    <v-list-tile-title v-html="item.name" class="black--text"></v-list-tile-title>
+                    <v-list-tile-title class="black--text">{{ item.name }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-divider v-if="index < forms.length -1"></v-divider>
