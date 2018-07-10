@@ -42,7 +42,7 @@ export default {
       return questionCount !== 0 ? responseCount * 100 / questionCount : 100
     },
     isSectionTrigger (item) {
-      if (!item || !item.questions.length) {
+      if (!item) {
         return false
       }
       let section = this.$store.getters.loadedSection(this.formId, item.parent_section_id)
