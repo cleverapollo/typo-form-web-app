@@ -166,6 +166,7 @@
             }
           }
         } while (this.isSectionTrigger(rtSection) && this.submissionId !== -1)
+        scroll(0,0)
         this.$store.dispatch('selectSection', rtSection)
       },
       next (rtSection) {
@@ -235,6 +236,7 @@
             }
           }
         } while (this.isSectionTrigger(rtSection) && this.submissionId !== -1)
+        scroll(0,0)
         this.$store.dispatch('selectSection', rtSection)
       }
     }

@@ -1,36 +1,5 @@
 <template>
 
-  <!--
-  <v-expansion-panel>
-    <v-expansion-panel-content
-      v-for="item in list"
-      :key="item.id"
-      :hide-actions="hasChildren(item)"
-      v-model="opened"
-    >
-      <div
-        slot="header"
-        @click="clickSection(item)"
-        :class="active(item)"
-      >
-        {{ item.name }}
-      </div>
-
-      <v-card flat v-if="!hasChildren(item)">
-        <v-card-text>
-          <form-tree
-            :formId="formId"
-            :section="section"
-            :list="children(item)"
-            :submissionId="submissionId"
-            @section-clicked="clickSection"
-          ></form-tree>
-        </v-card-text>
-      </v-card>
-    </v-expansion-panel-content>
-  </v-expansion-panel>
-  -->
-
   <v-list>
     <v-list-group
       v-for="(item, index) in list"
@@ -39,12 +8,12 @@
     >
       <v-list-tile slot="activator" @click="clickSection(item)" class="v-list__group__header_tile">
         <v-list-tile-content>
-          <v-list-tile-title v-html="(index + 1) + '. ' + item.name"></v-list-tile-title>
+          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile v-for="subItem in children(item)" :key="subItem.name" @click="clickSection(subItem)" v-if="!isSectionTrigger(subItem) || submissionId === -1">
         <v-list-tile-content>
-          <v-list-tile-title>{{ subItem.name }}</v-list-tile-title>
+          <v-list-tile-title class="ml-3">{{ subItem.name }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
     </v-list-group>
