@@ -25,13 +25,19 @@
 
                       <v-list>
                         <v-list-tile @click="">
-                          <v-list-tile-title>
+                          <v-list-tile-avatar>
+                            <v-icon>edit</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
                             <EditSubmission :slug="slug" :submission="submission" :formId="formId"></EditSubmission>
-                          </v-list-tile-title>
+                          </v-list-tile-content>
                         </v-list-tile>
 
                         <v-list-tile @click=onDeleteSubmission>
-                          <v-list-tile-title>Delete Submission</v-list-tile-title>
+                          <v-list-tile-avatar>
+                            <v-icon>delete</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>Delete Submission</v-list-tile-content>
                         </v-list-tile>
                       </v-list>
                     </v-menu>

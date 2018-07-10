@@ -12,13 +12,19 @@
 
               <v-list>
                 <v-list-tile @click="">
-                  <v-list-tile-title>
+                  <v-list-tile-avatar>
+                    <v-icon>edit</v-icon>
+                  </v-list-tile-avatar>
+                  <v-list-tile-title-content>
                     <EditTeam :team="team" :slug="slug" class="my-1"></EditTeam>
-                  </v-list-tile-title>
+                  </v-list-tile-title-content>
                 </v-list-tile>
 
                 <v-list-tile @click="onDeleteTeam">
-                  <v-list-tile-title>Delete Team</v-list-tile-title>
+                  <v-list-tile-avatar>
+                    <v-icon>delete</v-icon>
+                  </v-list-tile-avatar>
+                  <v-list-tile-title-content>Delete Team</v-list-tile-title-content>
                 </v-list-tile>
               </v-list>
             </v-menu>

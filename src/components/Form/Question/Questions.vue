@@ -1,67 +1,81 @@
 <template>
   <v-container>
     <form>
-      <v-text-field
-        label="Question"
-        @blur="checkUpdateName"
-        v-model="editedName"
-        required
-      ></v-text-field>
+      <v-layout row>
+        <v-flex xs12>
+          <v-text-field
+            label="Question"
+            @blur="checkUpdateName"
+            v-model="editedName"
+            required
+          ></v-text-field>
+        </v-flex>
+      </v-layout>
 
-      <v-text-field
-        label="Description"
-        v-model="editedDescription"
-        @blur="checkUpdateDescription"
-      ></v-text-field>
+      <v-layout row>
+        <v-flex xs12>
+          <v-text-field
+            label="Description"
+            v-model="editedDescription"
+            @blur="checkUpdateDescription"
+          ></v-text-field>
+        </v-flex>
+      </v-layout>
 
-      <v-select
-        :items="menuItems"
-        item-text="title"
-        item-value="title"
-        v-model="questionTypeString"
-        label="Question Type"
-        auto
-        persistent-hint
-        hint=" "
-        @change="updateQuestionType"
-        required
-      >
-        <template slot="selection" slot-scope="data">
-          <v-list-tile-avatar>
-            <v-icon v-text="data.item.action"></v-icon>
-          </v-list-tile-avatar>
+      <v-layout row>
+        <v-flex xs12 sm7>
+          <v-select
+            :items="menuItems"
+            item-text="title"
+            item-value="title"
+            v-model="questionTypeString"
+            label="Question Type"
+            auto
+            persistent-hint
+            hint=" "
+            @change="updateQuestionType"
+            required
+          >
+            <template slot="selection" slot-scope="data">
+              <v-list-tile-avatar>
+                <v-icon v-text="data.item.action"></v-icon>
+              </v-list-tile-avatar>
 
-          <v-list-tile-content style="color: black">
-            <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
-          </v-list-tile-content>
-        </template>
+              <v-list-tile-content style="color: black">
+                <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
+              </v-list-tile-content>
+            </template>
 
-        <template slot="item" slot-scope="data">
-          <template v-if="typeof data.item !== 'object'">
-            <v-list-tile-content v-text="data.item"></v-list-tile-content>
-          </template>
+            <template slot="item" slot-scope="data">
+              <template v-if="typeof data.item !== 'object'">
+                <v-list-tile-content v-text="data.item"></v-list-tile-content>
+              </template>
 
-          <template v-else>
-            <v-list-tile-avatar>
-              <v-icon v-text="data.item.action"></v-icon>
-            </v-list-tile-avatar>
+              <template v-else>
+                <v-list-tile-avatar>
+                  <v-icon v-text="data.item.action"></v-icon>
+                </v-list-tile-avatar>
 
-            <v-list-tile-content>
-              <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
-            </v-list-tile-content>
-          </template>
-        </template>
-      </v-select>
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
+                </v-list-tile-content>
+              </template>
+            </template>
+          </v-select>
+        </v-flex>
 
-      <v-select
-        :items="questionWidths"
-        v-model="questionWidth"
-        item-text="text"
-        item-value="value"
-        label="Question Width"
-        @change="updateQuestionWidth($event)"
-        required
-      ></v-select>
+        <v-flex xs12 sm4 offset-sm1 pt-2>
+          <v-select
+            :items="questionWidths"
+            v-model="questionWidth"
+            item-text="text"
+            item-value="value"
+            label="Question Width"
+            @change="updateQuestionWidth($event)"
+            required
+          ></v-select>
+        </v-flex>
+      </v-layout>
 
       <component
         :is="questionComponent"

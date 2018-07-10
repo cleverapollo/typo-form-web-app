@@ -16,13 +16,19 @@
 
               <v-list>
                 <v-list-tile @click="">
-                  <v-list-tile-title>
+                  <v-list-tile-avatar>
+                    <v-icon>edit</v-icon>
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>
                     <EditApplication :application="application" class="my-1"></EditApplication>
-                  </v-list-tile-title>
+                  </v-list-tile-content>
                 </v-list-tile>
 
                 <v-list-tile @click="onDeleteApplication">
-                  <v-list-tile-title>Delete Application</v-list-tile-title>
+                  <v-list-tile-avatar>
+                    <v-icon>delete</v-icon>
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>Delete Application</v-list-tile-content>
                 </v-list-tile>
               </v-list>
             </v-menu>
