@@ -139,9 +139,6 @@
                 </v-list-tile-avatar>
                 <v-list-tile-content>
                   <div class="d-flex flex-row">
-                    <div class="application-icon" v-if='application.icon'>
-                      <img :src="application.icon"/>
-                    </div>
                     <div class="pl-3">{{application.name}}</div>
                   </div>
                 </v-list-tile-content>
