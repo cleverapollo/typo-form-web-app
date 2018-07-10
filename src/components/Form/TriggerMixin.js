@@ -45,21 +45,25 @@ export default {
       if (!item) {
         return false
       }
-      let section = this.$store.getters.loadedSection(this.formId, item.parent_section_id)
-      if (this.isSectionTrigger(section)) {
-        return true
-      }
-      if (this.isTrigger(item)) {
-        return true
-      }
-      let questions = item.questions
-      const $this = this
       let hideSectionTrigger = true
-      _.forEach(questions, function (question) {
-        if (!$this.isTrigger(question)) {
-          hideSectionTrigger = false
-        }
-      })
+      const $this = this
+      if (!item.questions.length) {
+        let childrenSection = this.$store.getters.loadedChildrenSection(this.formId, item.id)
+        _.forEach(childrenSection, function (section) {
+          if (!$this.isSectionTrigger(section)) {
+            hideSectionTrigger = false
+          }
+        })
+      } else if (this.isTrigger(item)) {
+        return true
+      } else {
+        let questions = item.questions
+        _.forEach(questions, function (question) {
+          if (!$this.isTrigger(question)) {
+            hideSectionTrigger = false
+          }
+        })
+      }
       return hideSectionTrigger
     },
     getComparator (comparatorId) {
