@@ -131,6 +131,12 @@
                 ripple
                 :key="application.id"
                 :to="'/'+ application.slug">
+                <v-list-tile-avatar tile v-if="application.icon">
+                  <img :src="application.icon">
+                </v-list-tile-avatar>
+                <v-list-tile-avatar color="primary" v-else>
+                  <span class="white--text headline">{{ getFirstLetter(application.name) }}</span>
+                </v-list-tile-avatar>
                 <v-list-tile-content>
                   <div class="d-flex flex-row">
                     <div class="application-icon" v-if='application.icon'>
@@ -160,13 +166,21 @@
           <v-list>
             <v-list-tile
               :to="'/profile'">
+              <v-list-tile-avatar>
+                <v-icon>account_circle</v-icon>
+              </v-list-tile-avatar>
               <v-list-tile-content>
-                Edit Account
+                My Profile
               </v-list-tile-content>
             </v-list-tile>
             <v-list-tile
               @click="onLogout">
-              <v-list-tile-content>Sign out</v-list-tile-content>
+              <v-list-tile-avatar>
+                <v-icon>lock</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                Sign out
+              </v-list-tile-content>
             </v-list-tile>
           </v-list>
         </v-menu>
@@ -281,6 +295,9 @@
       },
       rootURL (path) {
         return '/' + path
+      },
+      getFirstLetter (word) {
+        return word.length > 0 ? word.trim().substring(0, 1).toUpperCase() : ''
       }
     },
     created () {

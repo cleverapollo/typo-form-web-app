@@ -20,7 +20,7 @@
           </v-flex>
 
           <!-- //Teams -->
-          <v-flex xs12>
+          <v-flex xs12 v-if="teams.length">
             <v-select
               :items="teams"
               item-value="id"
