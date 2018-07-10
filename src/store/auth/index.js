@@ -29,7 +29,7 @@ export default {
               response => {
                 commit('setLoading', false)
                 const user = response['data']['user']
-                localStorage.setItem('token', user['api_token'])
+                sessionStorage.setItem('token', user['api_token'])
                 window.axios.defaults.headers.common['API-Token'] = user['api_token']
                 commit('setUser', user)
               }
@@ -63,7 +63,7 @@ export default {
           response => {
             commit('setLoading', false)
             const user = response['data']['user']
-            localStorage.setItem('token', user['api_token'])
+            sessionStorage.setItem('token', user['api_token'])
             window.axios.defaults.headers.common['API-Token'] = user['api_token']
             commit('setUser', user)
           }
@@ -112,7 +112,7 @@ export default {
           response => {
             commit('setLoading', false)
             const user = response['data']['user']
-            localStorage.setItem('token', user['api_token'])
+            sessionStorage.setItem('token', user['api_token'])
             window.axios.defaults.headers.common['API-Token'] = user['api_token']
             commit('setUser', user)
           }
@@ -134,7 +134,7 @@ export default {
       delete window.axios.defaults.headers.common['API-Token']
       commit('setUser', null)
       commit('setLoadedApplications', [])
-      localStorage.removeItem('token')
+      sessionStorage.removeItem('token')
     },
     updateAuth ({commit}, payload) {
       commit('setLoading', true)
@@ -177,7 +177,8 @@ export default {
       commit('setLoading', true)
       commit('clearError')
       const updateObj = {
-        password: payload.password
+        old_password: payload.oldPassword,
+        new_password: payload.newPassword
       }
       window.axios.put(PASSWORD_UPDATE_URL, updateObj)
         .then(response => {
@@ -224,7 +225,7 @@ export default {
       commit('clearError')
       window.axios.delete(USER_URL)
       commit('setUser', null)
-      localStorage.removeItem('token')
+      sessionStorage.removeItem('token')
     }
   },
   getters: {

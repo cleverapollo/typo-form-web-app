@@ -1,6 +1,6 @@
 <template>
   <v-dialog width="600px" persistent v-model="editEmail" full-width>
-    <v-btn large block slot="activator">Change Email</v-btn>
+    <v-btn large block slot="activator" :disabled="disabled">Change Email</v-btn>
     <v-card>
       <v-container>
         <v-layout row v-if="error">
@@ -57,6 +57,7 @@
 
 <script>
   export default {
+    props: ['disabled'],
     data () {
       return {
         email: '',
