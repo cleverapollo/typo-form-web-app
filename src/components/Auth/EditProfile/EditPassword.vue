@@ -1,6 +1,6 @@
 <template>
   <v-dialog width="600px" persistent v-model="editPassword" full-width>
-    <v-btn large block slot="activator">Change Password</v-btn>
+    <v-btn large block slot="activator" :disabled="disabled">Change Password</v-btn>
     <v-card>
       <v-container>
         <v-layout row v-if="error">
@@ -19,9 +19,23 @@
           <v-flex xs12>
             <v-card-text>
               <v-text-field
-                name="password"
-                label="Password"
-                id="password"
+                name="oldPassword"
+                label="Old Password"
+                id="oldPassword"
+                v-model="oldPassword"
+                type="password"
+                required>
+              </v-text-field>
+            </v-card-text>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+          <v-flex xs12>
+            <v-card-text>
+              <v-text-field
+                name="newPassword"
+                label="New Password"
+                id="newPassword"
                 v-model="password"
                 type="password"
                 required>
@@ -58,8 +72,10 @@
 
 <script>
   export default {
+    props: ['disabled'],
     data () {
       return {
+        oldPassword: '',
         password: '',
         editPassword: false
       }
@@ -69,7 +85,7 @@
         if (this.password === '') {
           return
         }
-        this.$store.dispatch('updatePassword', { password: this.password })
+        this.$store.dispatch('updatePassword', { oldPassword: this.oldPassword, newPassword: this.password })
       },
       onDismissed () {
         this.$store.dispatch('clearError')

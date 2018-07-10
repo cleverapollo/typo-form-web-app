@@ -36,14 +36,14 @@
                 <v-layout row>
                   <v-flex text-xs-center class="overflow-flex">
                     <template v-if="userIsAuthenticated">
-                      <EditEmail></EditEmail>
+                      <EditEmail :disabled="this.user.social_id"></EditEmail>
                     </template>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex text-xs-center class="overflow-flex">
                     <template v-if="userIsAuthenticated">
-                      <EditPassword></EditPassword>
+                      <EditPassword :disabled="this.user.social_id"></EditPassword>
                     </template>
                   </v-flex>
                 </v-layout>

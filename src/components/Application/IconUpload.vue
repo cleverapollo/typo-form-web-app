@@ -32,7 +32,7 @@
           thumbnailWidth: 150,
           acceptedFiles: '.jpg, .png',
           dictDefaultMessage: this.label,
-          headers: {'API-Token': localStorage.getItem('token')}
+          headers: {'API-Token': sessionStorage.getItem('token')}
         }
       }
     },
