@@ -19,30 +19,41 @@
 
                   <!-- //Menu -->
                   <div class="text-xs-right">
-                    <v-menu offset-y bottom left>
+                    
+                    <v-menu offset-y left>
                       <v-btn icon slot="activator">
                         <v-icon class="white--text">more_vert</v-icon>
                       </v-btn>
 
                       <v-list>
+
                         <v-list-tile @click="">
-                          <v-list-tile-title>
-                            <CreateSection
-                              :parentSectionId="-1"
-                              :formId="id"
-                            ></CreateSection>
-                          </v-list-tile-title>
+                          <v-list-tile-avatar>
+                            <v-icon>create_new_folder</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
+                            <CreateSection :parentSectionId="-1" :formId="id"></CreateSection>
+                          </v-list-tile-content>
                         </v-list-tile>
 
                         <v-list-tile @click="">
-                          <v-list-tile-title>
+                          <v-list-tile-avatar>
+                            <v-icon>edit</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
                             <EditForm :form="form" :slug="slug"></EditForm>
-                          </v-list-tile-title>
+                          </v-list-tile-content>
                         </v-list-tile>
 
                         <v-list-tile @click=onDeleteForm>
-                          <v-list-tile-title>Delete Form</v-list-tile-title>
+                          <v-list-tile-avatar>
+                            <v-icon>delete</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
+                            Delete Form
+                          </v-list-tile-content>
                         </v-list-tile>
+
                       </v-list>
                     </v-menu>
                   </div>
