@@ -160,7 +160,9 @@
               } else {
                 rtSection = this.getFirstChildSection(this.formId, this.list[0])
               }
-              rtSection = this.getLastChildSection(this.formId, rtSection)
+              if (!this.isSectionTrigger(rtSection)) {
+                rtSection = this.getLastChildSection(this.formId, rtSection)
+              }
             }
           }
         } while (this.isSectionTrigger(rtSection) && this.submissionId !== -1)
@@ -228,7 +230,9 @@
                 rtSection = this.getLastChildSection(this.formId, rtSection)
               }
             }
-            rtSection = this.getFirstChildSection(this.formId, rtSection)
+            if (!this.isSectionTrigger(rtSection)) {
+              rtSection = this.getFirstChildSection(this.formId, rtSection)
+            }
           }
         } while (this.isSectionTrigger(rtSection) && this.submissionId !== -1)
         this.$store.dispatch('selectSection', rtSection)

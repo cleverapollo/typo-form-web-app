@@ -104,7 +104,7 @@
         parentAnswerId: this.trigger.parent_answer_id,
         value: this.trigger.value,
         comparatorId: this.trigger.comparator_id,
-        operator: this.trigger.operator,
+        operator: this.trigger.operator + 0,
         operators: [
           { id: 0, operator: 'AND' },
           { id: 1, operator: 'OR' }
