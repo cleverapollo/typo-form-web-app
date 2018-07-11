@@ -120,6 +120,9 @@ export default {
     },
     compareCondition (questionTrigger) {
       let question = this.$store.getters.loadedAllQuestion(this.formId, parseInt(questionTrigger.parent_question_id))
+      if (!question) {
+        return true
+      }
       let parentResponses = this.parentResponses(questionTrigger.parent_question_id)
       let triggerType = this.triggerType(question.question_type_id, questionTrigger.comparator_id)
       if (!triggerType) {
