@@ -36,6 +36,11 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
+                    <div class="g-recaptcha" data-sitekey="6LdOtGMUAAAAAMI2gKezKJPW9VLz-3AQXHmV7RO9"></div>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs12>
                     <v-btn
                       block
                       class="info"
