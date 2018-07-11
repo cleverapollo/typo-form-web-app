@@ -34,7 +34,7 @@
       },
       prevAble () {
         if (!this.list.length || !this.section) {
-          return false
+          return true
         }
         if (this.submissionId === -1) {
           return this.section === this.sections[0]
@@ -56,6 +56,9 @@
                   }
                   index++
                 }
+                if (index === children.length) {
+                  return true
+                }
               }
             } else {
               repeat = false
@@ -67,7 +70,7 @@
       },
       nextAble () {
         if (!this.list.length || !this.section) {
-          return false
+          return true
         }
 
         let repeat = true
@@ -81,11 +84,14 @@
             } else {
               let index = children.length - 1
               while (index > -1) {
-                if (!this.isSectionTrigger(children[index])) {
+                if (this.submissionId === -1 || !this.isSectionTrigger(children[index])) {
                   ptSection = children[index]
                   break
                 }
                 index--
+              }
+              if (index === -1) {
+                return true
               }
             }
           } else {
@@ -166,7 +172,7 @@
             }
           }
         } while (this.isSectionTrigger(rtSection) && this.submissionId !== -1)
-        scroll(0,0)
+        scroll(0, 0)
         this.$store.dispatch('selectSection', rtSection)
       },
       next (rtSection) {
@@ -236,7 +242,7 @@
             }
           }
         } while (this.isSectionTrigger(rtSection) && this.submissionId !== -1)
-        scroll(0,0)
+        scroll(0, 0)
         this.$store.dispatch('selectSection', rtSection)
       }
     }

@@ -39,7 +39,7 @@ export default {
         }, this)
       }, this)
 
-      return questionCount !== 0 ? responseCount * 100 / questionCount : 100
+      return questionCount !== 0 ? responseCount * 100 / questionCount : 0
     },
     isSectionTrigger (item) {
       if (!item) {
