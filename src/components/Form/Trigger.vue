@@ -14,7 +14,23 @@
             label="Parent Question"
             single-line
             @change="updateParentQuestion($event)"
-          ></v-autocomplete>
+          >
+            <template
+              slot="selection"
+              slot-scope="data"
+            >
+              {{data.item.question}}
+            </template>
+            <template
+              slot="item"
+              slot-scope="data"
+            >
+              <v-list-tile-content>
+                <v-list-tile-title>{{data.item.question}}</v-list-tile-title>
+                <v-list-tile-sub-title>{{getSection(data.item.id)}}</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </template>
+          </v-autocomplete>
         </v-flex>
 
         <!-- //Question Comparator -->
@@ -33,7 +49,7 @@
         <!-- //Selected Answer -->
         <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.answer'>
           <v-select
-            :items="parentQuestionType == 8 || parentQuestionType == 9 ? trueAnswers : answers"
+            :items="parentQuestionType == 8 || parentQuestionType == 9 ? falseAnswers : answers"
             item-text="answer"
             item-value="id"
             v-model="parentAnswerId"
@@ -47,10 +63,10 @@
         <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.value'>
           <v-flex xs12 v-if="parentQuestionType == 8 || parentQuestionType == 9">
             <v-select
-              :items="falseAnswers"
+              v-model="value"
+              :items="trueAnswers"
               item-text="answer"
               item-value="id"
-              v-model="value"
               label="Value"
               single-line
               @change="updateValue($event)"
@@ -102,7 +118,7 @@
       return {
         parentQuestionId: this.trigger.parent_question_id,
         parentAnswerId: this.trigger.parent_answer_id,
-        value: this.trigger.value,
+        value: parseInt(this.trigger.value),
         comparatorId: this.trigger.comparator_id,
         operator: this.trigger.operator + 0,
         operators: [
@@ -152,6 +168,19 @@
       }
     },
     methods: {
+      getSection (questionId) {
+        const allSections = this.$store.getters.loadedSections(this.formId)
+        const section = allSections.find((section) => {
+          return section.questions.find((question) => {
+            return question.id === questionId
+          })
+        })
+        if (section) {
+          return section.name
+        } else {
+          return null
+        }
+      },
       updateParentQuestion (value) {
         if (typeof (value) === 'object') {
           return
