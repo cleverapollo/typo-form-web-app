@@ -143,7 +143,7 @@ export default {
           if (filteredResponses.length > 0) {
             questionAnswer = answer.toString()
           }
-        } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid') {
+        } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid') {
           let filteredResponses = parentResponses.filter(function (parentResponse) {
             return parentResponse.answer_id === answer && parentResponse.response === value
           })
@@ -235,7 +235,7 @@ export default {
         case 'contains':
           if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
             return questionAnswer === answer
-          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid') {
+          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid') {
             return questionAnswer === answer && questionValue === value
           } else {
             if (!answerF) {
