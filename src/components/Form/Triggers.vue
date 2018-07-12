@@ -1,7 +1,12 @@
 <template>
-  <v-layout wrap>
+  <v-layout row wrap>
+    <template v-if="hasValidation()">
+      <v-flex xs12 mt-2 mb-2>
+        <v-divider></v-divider>
+      </v-flex>
+      <v-flex xs12 class="body-2">{{ this.type }} Logic</v-flex>
+    </template>
     <v-flex xs12>
-
       <template v-for='(item, index) in triggers'>
         <trigger :formId="formId" :trigger="item" :questionOptions="questionOptions" :isLast="isLast(index)"></trigger>
         <v-divider v-if='!isLast(index)'></v-divider>
@@ -56,6 +61,9 @@
       },
       isLast (index) {
         return this.triggers.length - 1 === index
+      },
+      hasValidation () {
+        return this.triggers.length > 0
       }
     }
   }

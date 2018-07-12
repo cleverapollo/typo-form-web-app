@@ -1,6 +1,10 @@
 <template>
   <div>
-    <v-layout v-if='hasValidation' row>
+    <v-layout v-if='hasValidation' row wrap>
+      <v-flex xs12 mt-2 mb-2>
+        <v-divider></v-divider>
+      </v-flex>
+      <v-flex xs12 class="body-2">Validation</v-flex>
       <v-flex xs4>
         <v-select
           label='Validation type'
@@ -14,7 +18,7 @@
           label='Minimum count'
           v-model='minInput'
           :value='minValue'
-          mask='###'
+          type='number'
           @change='updateMinCount'
           :rules='[validateMinInput]'
         ></v-text-field>
@@ -25,7 +29,7 @@
           label='Maximum count'
           v-model='maxInput'
           :value='maxValue'
-          mask='###'
+          type='number'
           @change='updateMaxCount'
           :rules='[validateMaxInput]'
         ></v-text-field>
