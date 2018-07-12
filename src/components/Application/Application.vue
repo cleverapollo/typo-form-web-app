@@ -8,7 +8,39 @@
           <div class="subheading py-2 px-3">Dashboard</div>
 
           <v-spacer></v-spacer>
+
           <div class="text-xs-right">
+
+            <!-- //Share Link -->
+            <v-dialog v-model="dialog" persistent max-width="600">
+              <v-btn slot="activator" icon v-if="userIsApplicationAdmin">
+                <v-icon>share</v-icon>
+              </v-btn>
+              <v-card>
+                <!-- //Title -->
+                <v-card-title>
+                  <div class="title mb-2 mt-2">Share Application</div>
+                </v-card-title>
+                
+                <v-card-text>
+                  <v-layout row wrap>
+                    <v-flex xs12 pb-3>Invite other users to this application by sharing the following link.</v-flex>
+                    <v-flex xs12 class="wrap-text">{{ joinURL }}</v-flex>
+                  </v-layout>
+                </v-card-text>
+
+                <v-divider></v-divider>
+                <v-card-actions>
+                  <v-layout row py-2>
+                    <v-flex xs12 class="text-xs-right">
+                      <v-btn color="primary" @click="dialog = false" >Close</v-btn>
+                    </v-flex>
+                  </v-layout>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+
             <v-menu offset-y bottom left v-if="userIsApplicationAdmin">
               <v-btn icon slot="activator">
                 <v-icon>more_vert</v-icon>
@@ -93,7 +125,8 @@
           { title: 'Teams', type: 'teams', icon: 'people', color: 'purple', admin: false }
         ],
         countToStart: 0,
-        countToDuration: 3000
+        countToDuration: 3000,
+        dialog: false
       }
     },
     components: {
@@ -185,5 +218,9 @@
 <style scoped>
   .pointer {
     cursor: pointer;
+  }
+
+  .wrap-text {
+    overflow-wrap: break-word;
   }
 </style>
