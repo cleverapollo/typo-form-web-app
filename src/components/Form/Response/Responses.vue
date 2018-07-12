@@ -47,6 +47,7 @@
   import dateComponent from './components/Date'
   import timeComponent from './components/Time'
   import ContentBlock from './components/ContentBlock'
+  import ABNLookup from './components/ABNLookup'
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
@@ -70,7 +71,8 @@
           'Checkbox grid': checkboxGrid,
           'Date': dateComponent,
           'Time': timeComponent,
-          'Content Block': ContentBlock
+          'Content Block': ContentBlock,
+          'ABN Lookup': ABNLookup
         }
       }
     },
