@@ -18,5 +18,8 @@ module.exports = {
   LIVE_CLIENT_ID: JSON.stringify(process.env.LIVE_CLIENT_ID),
   LIVE_CLIENT_SECRET: JSON.stringify(process.env.LIVE_CLIENT_SECRET),
 
-  REDIRECT_URL: JSON.stringify(process.env.REDIRECT_URL)
+  REDIRECT_URL: JSON.stringify(process.env.REDIRECT_URL),
+
+  GOOGLE_DATA_SITEKEY: JSON.stringify(process.env.GOOGLE_DATA_SITEKEY),
+  GOOGLE_DATA_SECRETKEY: JSON.stringify(process.env.GOOGLE_DATA_SECRETKEY)
 }

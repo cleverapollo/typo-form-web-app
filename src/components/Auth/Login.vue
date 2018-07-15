@@ -31,12 +31,17 @@
                       id="password"
                       v-model="password"
                       type="password"
-                      required></v-text-field>
+                      :rules="[validation]"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <div class="g-recaptcha" data-sitekey="6LdOtGMUAAAAAMI2gKezKJPW9VLz-3AQXHmV7RO9"></div>
+                    <vue-recaptcha
+                      ref="recaptcha"
+                      @verify="onCaptchaVerified"
+                      @expired="onCaptchaExpired"
+                      :sitekey="data_sitekey">
+                    </vue-recaptcha>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -76,21 +81,31 @@
 
 <script>
   import Oauth from './Oauth'
+  import PasswordMixin from './PasswordMixin.js'
+  import VueRecaptcha from 'vue-recaptcha'
   export default {
+    mixins: [PasswordMixin],
     data () {
       return {
+        submitted: false,
         email: '',
-        password: ''
+        password: '',
+        recaptchaToken: '',
+        data_sitekey: process.env.GOOGLE_DATA_SITEKEY
       }
     },
     components: {
-      Oauth
+      Oauth,
+      VueRecaptcha
     },
     computed: {
       user () {
         return this.$store.getters.user
       },
       error () {
+        if (this.submitted && this.recaptchaToken === '') {
+          return { message: 'Recaptcha is required' }
+        }
         return this.$store.getters.error
       },
       loading () {
@@ -121,10 +136,21 @@
         }
       },
       onSignin () {
-        this.$store.dispatch('signUserIn', {email: this.email, password: this.password})
+        if (this.recaptchaToken === '') {
+          this.submitted = true
+          return
+        }
+        this.$store.dispatch('signUserIn', {email: this.email, password: this.password, recaptchaToken: this.recaptchaToken})
+        this.submitted = false
       },
       onDismissed () {
         this.$store.dispatch('clearError')
+      },
+      onCaptchaVerified (recaptchaToken) {
+        this.recaptchaToken = recaptchaToken
+      },
+      onCaptchaExpired () {
+        this.recaptchaToken = ''
       }
     },
     created: function () {

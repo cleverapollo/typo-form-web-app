@@ -68,12 +68,12 @@
         }
 
         if (this.responses.length) {
-          const instance = window.axios.create()
+          /* const instance = window.axios.create()
           delete instance.defaults.headers.common['API-Token']
           instance.get('https://abr.business.gov.au/json/AbnDetails.aspx?abn=' + this.responses[0].response + '&callback=callback&guid=9c1fe65f-650b-4ea8-838c-aa03d946db12')
             .then((response) => {
               console.log(response)
-            })
+            }) */
         }
         return value
       }

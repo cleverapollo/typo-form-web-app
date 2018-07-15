@@ -30,7 +30,7 @@
                       id="password"
                       v-model="password"
                       type="password"
-                      required></v-text-field>
+                      :rules="[validation]"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -58,7 +58,9 @@
 </template>
 
 <script>
+  import PasswordMixin from './PasswordMixin.js'
   export default {
+    mixins: [PasswordMixin],
     props: ['token'],
     data () {
       return {
