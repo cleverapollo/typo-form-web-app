@@ -163,6 +163,7 @@
   import dateComponent from './components/Date'
   import timeComponent from './components/Time'
   import ContentBlock from './components/ContentBlock'
+  import ABNLookup from './components/ABNLookup'
   import * as _ from 'lodash'
 
   import triggers from '../Triggers'
@@ -191,7 +192,8 @@
           'Checkbox grid': checkboxGrid,
           'Date': dateComponent,
           'Time': timeComponent,
-          'Content Block': ContentBlock
+          'Content Block': ContentBlock,
+          'ABN Lookup': ABNLookup
         },
         ifRequireValidation: {
           'Short answer': true,
@@ -247,6 +249,10 @@
           {
             action: 'schedule',
             title: 'Time'
+          },
+          {
+            action: 'search',
+            title: 'ABN Lookup'
           }
         ],
         validationTypes: this.$store.getters.validationTypes,
