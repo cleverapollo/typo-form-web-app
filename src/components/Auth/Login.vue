@@ -30,8 +30,8 @@
                       label="Password"
                       id="password"
                       v-model="password"
-                      type="password"
-                      :rules="[validation]"></v-text-field>
+                      type="password">
+                    </v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -81,10 +81,10 @@
 
 <script>
   import Oauth from './Oauth'
-  import PasswordMixin from './PasswordMixin.js'
+  // import PasswordMixin from './PasswordMixin.js'
   import VueRecaptcha from 'vue-recaptcha'
   export default {
-    mixins: [PasswordMixin],
+   // mixins: [PasswordMixin],
     data () {
       return {
         submitted: false,
