@@ -14,6 +14,7 @@ import AlertCmp from './components/Shared/Alert.vue'
 
 import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
+const sanitizeHtml = require('sanitize-html')
 
 Vue.use(Vuetify)
 Vue.use(VueAxios, axios)
@@ -43,6 +44,7 @@ Vue.use(VueAuthenticate, {
   }
 })
 Vue.config.productionTip = false
+Vue.prototype.$sanitize = sanitizeHtml
 
 Vue.component('app-alert', AlertCmp)
 
