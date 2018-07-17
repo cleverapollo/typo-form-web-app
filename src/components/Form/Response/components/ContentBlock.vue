@@ -1,6 +1,6 @@
 <template>
   <v-flex xs12>
-    <div v-html="message"></div>
+    <div v-html="$sanitize(message)"></div>
   </v-flex>
 </template>
 
