@@ -8,8 +8,6 @@ const router = express.Router()
 
 const cspMiddleware = csp({
   policies: {
-    'img-src': [csp.SELF],
-    'object-src': [csp.NONE],
     'block-all-mixed-content': true,
     'frame-ancestors': [csp.NONE]
   }
