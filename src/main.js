@@ -55,12 +55,7 @@ function createApp () {
     router,
     store,
     components: { App },
-    template: '<App/>',
-    // Attach the Vue instance to the window,
-    // so it's available globally.
-    created: function () {
-      window.Vue = this
-    }
+    template: '<App/>'
   })
 }
 

@@ -330,9 +330,9 @@
     methods: {
       createRemoveValidation () {
         if (this.hasValidation) {
-          window.Vue.$emit('validation-remove', this.question.id)
+          this.$root.$emit('validation-remove', this.question.id)
         } else {
-          window.Vue.$emit('validation-create', this.question.id)
+          this.$root.$emit('validation-create', this.question.id)
         }
       },
       setQuestionType (str) {
