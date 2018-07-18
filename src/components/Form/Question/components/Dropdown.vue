@@ -108,8 +108,8 @@
           }
         }
       }
-      window.Vue.$on('validation-create', this.eventsAdapter['validation-create'])
-      window.Vue.$on('validation-remove', this.eventsAdapter['validation-remove'])
+      this.$root.$on('validation-create', this.eventsAdapter['validation-create'])
+      this.$root.$on('validation-remove', this.eventsAdapter['validation-remove'])
     },
     computed: {
       list: {
@@ -122,8 +122,8 @@
       }
     },
     beforeDestroy () {
-      window.Vue.$off('validation-create', this.eventsAdapter['validation-create'])
-      window.Vue.$off('validation-remove', this.eventsAdapter['validation-remove'])
+      this.$root.$off('validation-create', this.eventsAdapter['validation-create'])
+      this.$root.$off('validation-remove', this.eventsAdapter['validation-remove'])
     }
   }
 </script>
