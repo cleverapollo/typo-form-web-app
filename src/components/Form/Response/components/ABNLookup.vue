@@ -4,7 +4,7 @@
       <v-text-field
         label="ABN"
         name="short-answer"
-        :value="message"
+        :value="value.Abn"
         @change="onSave($event)"
         :rules="[validate]"
         :disabled="disabled"
@@ -14,7 +14,7 @@
       <v-text-field
         label="Business Name"
         name="business-name"
-        :value="value.businessName"
+        :value="value.BusinessName"
         readonly
       ></v-text-field>
     </v-flex>
@@ -22,7 +22,7 @@
       <v-text-field
         label="Entity Name"
         name="entity-name"
-        :value="value.entityName"
+        :value="value.EntityName"
         readonly
       ></v-text-field>
     </v-flex>
@@ -30,7 +30,7 @@
       <v-text-field
         label="Entity Type"
         name="entity-type"
-        :value="value.entityType"
+        :value="value.EntityTypeName"
         readonly
       ></v-text-field>
     </v-flex>
@@ -62,18 +62,14 @@
       },
       value () {
         let value = {
-          businessName: '',
-          entityName: '',
-          entityType: ''
+          Abn: '',
+          BusinessName: '',
+          EntityName: '',
+          EntityTypeName: ''
         }
 
-        if (this.responses.length) {
-          /* const instance = window.axios.create()
-          delete instance.defaults.headers.common['API-Token']
-          instance.get('https://abr.business.gov.au/json/AbnDetails.aspx?abn=' + this.responses[0].response + '&callback=callback&guid=9c1fe65f-650b-4ea8-838c-aa03d946db12')
-            .then((response) => {
-              console.log(response)
-            }) */
+        if (this.responses.length && this.responses[0].response !== '') {
+          value = JSON.parse(this.responses[0].response)
         }
         return value
       }
