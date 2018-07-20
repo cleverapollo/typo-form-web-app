@@ -23,16 +23,16 @@ export default {
           }
         }
         if (uppercaseCount < 1) {
-          return 'Passwords should have at least 1 uppercase character (A-Z)'
+          return 'Passwords should have at least 1 uppercase character (A-Z).'
         }
         if (lowercaseCount < 1) {
-          return 'Passwords should have at least 1 lowercase character (a-z)'
+          return 'Passwords should have at least 1 lowercase character (a-z).'
         }
         if (numberCount < 1) {
-          return 'Passwords should have at least 1 digit (0-9)'
+          return 'Passwords should have at least 1 digit (0-9).'
         }
         if (specialCount < 1) {
-          return 'Passwords should have at least 1 special character (punctuation)'
+          return 'Passwords should have at least 1 special character (punctuation).'
         }
         return true
       }
