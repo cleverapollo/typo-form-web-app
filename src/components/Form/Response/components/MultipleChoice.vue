@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <v-radio-group v-model="optionModel">
+      <v-radio-group v-model="optionModel" :row="hasValidation">
         <v-radio 
           color="info"
           :disabled="disabled"
@@ -18,7 +18,7 @@
 <script>
   export default {
     name: 'multiple-choice',
-    props: ['question', 'answers', 'responses', 'disabled'],
+    props: ['question', 'answers', 'responses', 'disabled', 'hasValidation'],
     data () {
       return {
         optionModel: this.responses.length ? this.responses[0].answer_id : ''

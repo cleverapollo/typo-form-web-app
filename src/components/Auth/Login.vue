@@ -141,7 +141,12 @@
           return
         }
         this.$store.dispatch('signUserIn', {email: this.email, password: this.password, recaptchaToken: this.recaptchaToken})
-        this.submitted = false
+          .then(response => {
+          })
+          .catch(() => {
+            this.$refs.recaptcha.reset()
+            this.submitted = false
+          })
       },
       onDismissed () {
         this.$store.dispatch('clearError')
