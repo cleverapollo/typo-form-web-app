@@ -16,6 +16,34 @@ import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
 const sanitizeHtml = require('sanitize-html')
 
+// Add a request interceptor
+axios.interceptors.request.use(
+  (config) => {
+    const accessToken = sessionStorage.getItem('token')
+    if (accessToken != null) {
+      config.headers['API-Token'] = accessToken
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+// Add a response interceptor
+axios.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    if (error.response.status === 401) {
+      sessionStorage.removeItem('token')
+      router.push('/login')
+    }
+    return Promise.reject(error)
+  }
+)
+
 Vue.use(Vuetify)
 Vue.use(VueAxios, axios)
 Vue.use(VueAuthenticate, {

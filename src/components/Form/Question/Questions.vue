@@ -141,7 +141,7 @@
 
           <v-list-tile v-else disabled>
             <v-list-tile-title>
-              Include Validation
+              {{ validationString }}
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -198,6 +198,7 @@
         ifRequireValidation: {
           'Short answer': true,
           'Paragraph': true,
+          'Multiple choice': true,
           'Checkboxes': true,
           'Dropdown': true
         },
@@ -263,7 +264,9 @@
     },
     computed: {
       validationString () {
-        if (this.questionTypeString === 'Dropdown') {
+        if (this.questionTypeString === 'Multiple choice') {
+          return this.hasValidation ? 'Switch to Column Option' : 'Switch to Row Option'
+        } else if (this.questionTypeString === 'Dropdown') {
           return this.hasValidation ? 'Switch to One-Selection' : 'Switch to Multi-Selection'
         } else {
           return this.hasValidation ? 'Remove Validation' : 'Include Validation'
@@ -330,8 +333,10 @@
     methods: {
       createRemoveValidation () {
         if (this.hasValidation) {
+          console.log(this.question.id, 'remove')
           this.$root.$emit('validation-remove', this.question.id)
         } else {
+          console.log(this.$root)
           this.$root.$emit('validation-create', this.question.id)
         }
       },
@@ -456,6 +461,7 @@
         })
       },
       createValidation (...args) {
+        console.log(args)
         const name = args[0]
         const validationTypeId = _.find(this.validationTypes, type => {
           return name === type.type

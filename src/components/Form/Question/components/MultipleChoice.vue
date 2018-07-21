@@ -34,8 +34,12 @@
 
 <script>
   import draggable from 'vuedraggable'
+  import validationMixin from '../QuestionValiationMixin'
   export default {
     name: 'multiple-choice',
+    mixins: [
+      validationMixin
+    ],
     props: {
       'answers': {
         default: function () {
@@ -45,6 +49,13 @@
     },
     components: {
       draggable
+    },
+    data () {
+      return {
+        validationTypes: [
+          'Multiple choice'
+        ]
+      }
     },
     methods: {
       createAnswer () {
@@ -95,6 +106,8 @@
           this.$emit('change-answer')
         }
       }
+      this.$root.$on('validation-create', this.eventsAdapter['validation-create'])
+      this.$root.$on('validation-remove', this.eventsAdapter['validation-remove'])
     },
     computed: {
       list: {
@@ -117,6 +130,10 @@
         }
         return this.answers.length
       }
+    },
+    beforeDestroy () {
+      this.$root.$off('validation-create', this.eventsAdapter['validation-create'])
+      this.$root.$off('validation-remove', this.eventsAdapter['validation-remove'])
     }
   }
 </script>

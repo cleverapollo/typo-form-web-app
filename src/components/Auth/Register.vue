@@ -149,16 +149,19 @@
           this.submitted = true
           return
         }
-        this.$store.dispatch('signUserUp',
-          {
-            first_name: this.firstname,
-            last_name: this.lastname,
-            email: this.email,
-            password: this.password,
-            recaptchaToken: this.recaptchaToken
-          }
-        )
-        this.submitted = false
+        this.$store.dispatch('signUserUp', {
+          first_name: this.firstname,
+          last_name: this.lastname,
+          email: this.email,
+          password: this.password,
+          recaptchaToken: this.recaptchaToken
+        })
+          .then(response => {
+          })
+          .catch(() => {
+            this.$refs.recaptcha.reset()
+            this.submitted = false
+          })
       },
       onDismissed () {
         this.$store.dispatch('clearError')

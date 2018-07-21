@@ -22,62 +22,66 @@ export default {
     signUserUp ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      window.axios.post(REGISTER_URL, payload)
-        .then(
-          response => window.axios.post(LOGIN_URL, payload)
-            .then(
-              response => {
-                commit('setLoading', false)
-                const user = response['data']['user']
-                sessionStorage.setItem('token', user['api_token'])
-                window.axios.defaults.headers.common['API-Token'] = user['api_token']
-                commit('setUser', user)
-              }
-            )
-            .catch(
-              error => {
-                commit('setLoading', false)
-                commit('setUser', null)
-                if (typeof (error.response.data) !== 'string') {
-                  commit('setError', error.response.data)
-                  console.log(error.response.data)
+      return new Promise((resolve, reject) => {
+        window.axios.post(REGISTER_URL, payload)
+          .then((response) => {
+            window.axios.post(LOGIN_URL, payload)
+              .then(
+                response => {
+                  commit('setLoading', false)
+                  const user = response['data']['user']
+                  sessionStorage.setItem('token', user['api_token'])
+                  commit('setUser', user)
                 }
-              }
-            )
-        )
-        .catch(
-          error => {
+              )
+              .catch(
+                error => {
+                  commit('setLoading', false)
+                  commit('setUser', null)
+                  if (typeof (error.response.data) !== 'string') {
+                    commit('setError', error.response.data)
+                    console.log(error.response.data)
+                  }
+                }
+              )
+            resolve(response)
+          })
+          .catch((error) => {
             commit('setLoading', false)
             if (typeof (error.response.data) !== 'string') {
               commit('setError', error.response.data)
               console.log(error.response.data)
             }
-          }
-        )
+            reject(error)
+          })
+      })
     },
     signUserIn ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      window.axios.post(LOGIN_URL, payload)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const user = response['data']['user']
-            sessionStorage.setItem('token', user['api_token'])
-            window.axios.defaults.headers.common['API-Token'] = user['api_token']
-            commit('setUser', user)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            commit('setUser', null)
-            if (typeof (error.response.data) !== 'string') {
-              commit('setError', error.response.data)
-              console.log(error.response.data)
+      return new Promise((resolve, reject) => {
+        window.axios.post(LOGIN_URL, payload)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const user = response['data']['user']
+              sessionStorage.setItem('token', user['api_token'])
+              commit('setUser', user)
+              resolve(response)
             }
-          }
-        )
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              commit('setUser', null)
+              if (typeof (error.response.data) !== 'string') {
+                commit('setError', error.response.data)
+                console.log(error.response.data)
+              }
+              reject(error)
+            }
+          )
+      })
     },
     autoSignIn ({commit}) {
       commit('setLoading', true)
@@ -95,7 +99,6 @@ export default {
             (error) => {
               commit('setLoading', false)
               commit('setUser', null)
-              delete window.axios.defaults.headers.common['API-Token']
               reject(error)
               if (typeof (error.response.data) !== 'string') {
                 console.log(error.response.data)
@@ -113,7 +116,6 @@ export default {
             commit('setLoading', false)
             const user = response['data']['user']
             sessionStorage.setItem('token', user['api_token'])
-            window.axios.defaults.headers.common['API-Token'] = user['api_token']
             commit('setUser', user)
           }
         )
@@ -131,7 +133,6 @@ export default {
     logout ({commit}) {
       commit('clearError')
       window.axios.post(LOGOUT_URL)
-      delete window.axios.defaults.headers.common['API-Token']
       commit('setUser', null)
       commit('setLoadedApplications', [])
       sessionStorage.removeItem('token')
