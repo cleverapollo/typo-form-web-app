@@ -15,16 +15,16 @@
                   <v-list-tile-avatar>
                     <v-icon>edit</v-icon>
                   </v-list-tile-avatar>
-                  <v-list-tile-title-content>
+                  <v-list-tile-content>
                     <EditTeam :team="team" :slug="slug" class="my-1"></EditTeam>
-                  </v-list-tile-title-content>
+                  </v-list-tile-content>
                 </v-list-tile>
 
                 <v-list-tile @click="onDeleteTeam">
                   <v-list-tile-avatar>
                     <v-icon>delete</v-icon>
                   </v-list-tile-avatar>
-                  <v-list-tile-title-content>Delete Team</v-list-tile-title-content>
+                  <v-list-tile-content>Delete Team</v-list-tile-content>
                 </v-list-tile>
               </v-list>
             </v-menu>
@@ -187,7 +187,7 @@
         return this.$store.getters.invitedTeamUsers(parseInt(this.id))
       },
       joinURL () {
-        return window.origin + '/join/team/' + this.team.share_token
+        return window.location.origin + '/join/team/' + this.team.share_token
       },
       userHeaders () {
         let defaultUserHeaders = [

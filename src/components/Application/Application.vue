@@ -163,7 +163,7 @@
         return this.$store.getters.loading
       },
       joinURL () {
-        return window.origin + '/join/application/' + this.application.share_token
+        return window.location.origin + '/join/application/' + this.application.share_token
       },
       usersCount () {
         return this.$store.getters.loadedUsers(this.slug).length
