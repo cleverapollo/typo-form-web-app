@@ -4,6 +4,7 @@ import Vue from 'vue'
 import VueAuthenticate from 'vue-authenticate'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
+import 'babel-polyfill'
 
 import App from './App'
 import router from './router'
@@ -88,7 +89,6 @@ function createApp () {
 }
 
 if (sessionStorage.getItem('token')) {
-  window.axios.defaults.headers.common['API-Token'] = sessionStorage.getItem('token')
   store.dispatch('autoSignIn').finally(() => createApp())
 } else {
   createApp()
