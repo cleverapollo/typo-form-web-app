@@ -456,9 +456,10 @@
       },
       questionOptions () {
         const allQuestions = this.$store.getters.loadedAllQuestions(this.formId)
-        return _.sortBy(allQuestions, element => {
-          return element.id
-        })
+        // return _.sortBy(allQuestions, element => {
+        //   return element.id
+        // })
+        return allQuestions
       }
     },
     methods: {

@@ -12,7 +12,7 @@
           v-model='activeValidationType'
         ></v-select>
       </v-flex>
-      <v-flex v-if='"Checkbox" !== activeValidationType' xs3 offset-xs1>
+      <v-flex v-if='"Decimal validation" !== activeValidationType' xs3 offset-xs1>
         <v-text-field
           name='min-char-count'
           label='Minimum count'
@@ -23,7 +23,7 @@
           :rules='[validateMinInput]'
         ></v-text-field>
       </v-flex>
-      <v-flex v-if='"Checkbox" !== activeValidationType' xs3 offset-xs1>
+      <v-flex xs3 offset-xs1>
         <v-text-field
           name='max-char-count'
           label='Maximum count'
@@ -56,7 +56,7 @@
     data () {
       return {
         validationTypes: [
-          'Number', 'Words', 'Letters', 'Email'
+          'Number', 'Words', 'Letters', 'Email', 'Decimal validation'
         ]
       }
     },

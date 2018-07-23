@@ -287,9 +287,10 @@
       },
       questionOptions () {
         const allQuestions = this.$store.getters.loadedAllQuestions(this.formId).filter((question) => { return question.id !== this.question.id })
-        return _.sortBy(allQuestions, element => {
-          return element.id
-        })
+        // return _.sortBy(allQuestions, element => {
+        //   return element.id
+        // })
+        return allQuestions
       },
       answers () {
         return _.sortBy(this.question.answers, element => {

@@ -6,7 +6,7 @@
         name="short-answer"
         :value="value.Abn"
         @change="onSave($event)"
-        :rules="[validate]"
+        type="number"
         :error-messages="value.Message"
         :disabled="disabled"
       ></v-text-field>
@@ -39,11 +39,8 @@
 </template>
 
 <script>
-  import validationMixin from '../ResponseValidationMixin'
-
   export default {
-    name: 'short-answer',
-    mixins: [validationMixin],
+    name: 'abn-lookup',
     props: ['question', 'answers', 'responses', 'disabled'],
     methods: {
       onSave (value) {
@@ -64,7 +61,7 @@
           Message: ''
         }
 
-        if (this.responses.length && this.responses[0].response !== '' && this.responses[0].Abn) {
+        if (this.responses.length && this.responses[0].response !== '') {
           value = JSON.parse(this.responses[0].response)
         }
         return value

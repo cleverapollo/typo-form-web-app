@@ -38,7 +38,7 @@ axios.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      sessionStorage.removeItem('token')
+      store.dispatch('logout')
       router.push('/login')
     }
     return Promise.reject(error)

@@ -12,6 +12,10 @@ export default {
     }
   },
   methods: {
+    countDecimals (value) {
+      if (Math.floor(value) === value) return 0
+      return value.toString().split('.')[1].length || 0
+    },
     validate (value) {
       if (this.activeValidationType) {
         if (this.activeValidationType === 'Number') {
@@ -47,6 +51,11 @@ export default {
             return `Minimum ${this.minValue} answers required.`
           } else if (this.responses.length > this.maxValue && this.maxValue !== 0) {
             return `Maximum ${this.maxValue} answers allowed.`
+          }
+          return true
+        } else if (this.activeValidationType === 'Decimal validation') {
+          if (isNaN(value) || this.countDecimals(value) > this.maxValue) {
+            return `Maximum ${this.maxValue} decimals allowed.`
           }
           return true
         } else {
