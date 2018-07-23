@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600">
 
-    <v-alert :value="error" type="info">
+    <v-alert :value="error" type="error">
       {{ errorString }}
     </v-alert>
 
@@ -83,7 +83,7 @@
           })
           .catch(
             error => {
-              this.errorString = error.response.data.name[0]
+              this.errorString = error.response.data.message || error.response.data.name[0]
               this.error = true
             }
           )

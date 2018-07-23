@@ -77,7 +77,7 @@
           })
           .catch(
             error => {
-              this.errorString = error.response.data.name[0]
+              this.errorString = error.response.data.message || error.response.data.name[0]
               this.error = true
             }
           )

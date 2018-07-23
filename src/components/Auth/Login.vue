@@ -146,6 +146,7 @@
           .catch(() => {
             this.$refs.recaptcha.reset()
             this.submitted = false
+            this.recaptchaToken = ''
           })
       },
       onDismissed () {
