@@ -1,16 +1,17 @@
 <template>
   <v-layout row wrap>
-    <v-flex sm5>
+    <v-flex sm12>
       <v-text-field
         label="ABN"
         name="short-answer"
         :value="value.Abn"
         @change="onSave($event)"
-        :rules="[validate]"
+        type="number"
+        :error-messages="value.Message"
         :disabled="disabled"
       ></v-text-field>
     </v-flex>
-    <v-flex sm5 offset-sm2>
+    <v-flex sm3>
       <v-text-field
         label="Business Name"
         name="business-name"
@@ -18,7 +19,7 @@
         readonly
       ></v-text-field>
     </v-flex>
-    <v-flex sm5>
+    <v-flex sm4 offset-sm1>
       <v-text-field
         label="Entity Name"
         name="entity-name"
@@ -26,7 +27,7 @@
         readonly
       ></v-text-field>
     </v-flex>
-    <v-flex sm5 offset-sm2>
+    <v-flex sm3 offset-sm1>
       <v-text-field
         label="Entity Type"
         name="entity-type"
@@ -38,11 +39,8 @@
 </template>
 
 <script>
-  import validationMixin from '../ResponseValidationMixin'
-
   export default {
-    name: 'short-answer',
-    mixins: [validationMixin],
+    name: 'abn-lookup',
     props: ['question', 'answers', 'responses', 'disabled'],
     methods: {
       onSave (value) {
@@ -54,18 +52,13 @@
       }
     },
     computed: {
-      message () {
-        if (!this.responses.length) {
-          return ''
-        }
-        return this.responses[0].response
-      },
       value () {
         let value = {
           Abn: '',
           BusinessName: '',
           EntityName: '',
-          EntityTypeName: ''
+          EntityTypeName: '',
+          Message: ''
         }
 
         if (this.responses.length && this.responses[0].response !== '') {
