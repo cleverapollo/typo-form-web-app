@@ -20,11 +20,13 @@
                   </v-list-tile-content>
                 </v-list-tile>
 
-                <v-list-tile @click="onDeleteTeam">
+                <v-list-tile @click.stop="deleteTeam = true">
                   <v-list-tile-avatar>
                     <v-icon>delete</v-icon>
                   </v-list-tile-avatar>
-                  <v-list-tile-content>Delete Team</v-list-tile-content>
+                  <v-list-tile-content>
+                    Delete Team
+                  </v-list-tile-content>
                 </v-list-tile>
               </v-list>
             </v-menu>
@@ -131,6 +133,9 @@
 
     <!-- //Invite Team -->
     <InviteTeam :slug="slug" :teamId="id" :visible="inviteUsers" @close="inviteUsers = false"></InviteTeam>
+
+    <!-- //Delete Team -->
+    <DeleteConfirmDialog @delete-action="onDeleteTeam" :visible="deleteTeam" @close="deleteTeam = false"></DeleteConfirmDialog>
   </v-layout>
 </template>
 
@@ -146,7 +151,8 @@
       return {
         userSearch: '',
         invitedUserSearch: '',
-        inviteUsers: false
+        inviteUsers: false,
+        deleteTeam: false
       }
     },
     components: {

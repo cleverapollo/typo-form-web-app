@@ -12,7 +12,7 @@
           <div class="text-xs-right">
 
             <!-- //Share Link -->
-            <v-dialog v-model="dialog" persistent max-width="600">
+            <v-dialog v-model="joinUrlDialog" persistent max-width="600">
               <v-btn slot="activator" icon v-if="userIsApplicationAdmin">
                 <v-icon>share</v-icon>
               </v-btn>
@@ -33,7 +33,7 @@
                 <v-card-actions>
                   <v-layout row py-2>
                     <v-flex xs12 class="text-xs-right">
-                      <v-btn color="primary" @click="dialog = false" >Close</v-btn>
+                      <v-btn color="primary" @click="joinUrlDialog = false" >Close</v-btn>
                     </v-flex>
                   </v-layout>
                 </v-card-actions>
@@ -56,11 +56,13 @@
                   </v-list-tile-content>
                 </v-list-tile>
 
-                <v-list-tile @click="onDeleteApplication">
+                <v-list-tile @click.stop="deleteApplication = true">
                   <v-list-tile-avatar>
                     <v-icon>delete</v-icon>
                   </v-list-tile-avatar>
-                  <v-list-tile-content>Delete Application</v-list-tile-content>
+                  <v-list-tile-content>
+                    Delete Application
+                  </v-list-tile-content>
                 </v-list-tile>
               </v-list>
             </v-menu>
@@ -107,6 +109,9 @@
       </v-layout>
     </v-flex>
 
+    <!-- //Delete Application -->
+    <DeleteConfirmDialog @delete-action="onDeleteApplication" :visible="deleteApplication" @close="deleteApplication = false"></DeleteConfirmDialog>
+
   </v-layout>
 </template>
 
@@ -126,7 +131,8 @@
         ],
         countToStart: 0,
         countToDuration: 3000,
-        dialog: false
+        joinUrlDialog: false,
+        deleteApplication: false
       }
     },
     components: {

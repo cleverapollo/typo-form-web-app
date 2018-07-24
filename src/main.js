@@ -12,6 +12,7 @@ import Vuetify from 'vuetify'
 import { store } from './store'
 
 import AlertCmp from './components/Shared/Alert.vue'
+import DeleteConfirmDialog from './components/Shared/DeleteConfirmDialog.vue'
 
 import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
@@ -76,6 +77,7 @@ Vue.config.productionTip = false
 Vue.prototype.$sanitize = sanitizeHtml
 
 Vue.component('app-alert', AlertCmp)
+Vue.component('DeleteConfirmDialog', DeleteConfirmDialog)
 
 /* eslint-disable no-new */
 function createApp () {
