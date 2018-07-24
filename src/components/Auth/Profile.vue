@@ -32,18 +32,17 @@
                   </v-flex>
                 </v-layout>
                 -->
-
-                <v-layout row>
+                <v-layout row v-if="!isSocialUser">
                   <v-flex text-xs-center class="overflow-flex">
                     <template v-if="userIsAuthenticated">
-                      <EditEmail :disabled="this.user.social_id"></EditEmail>
+                      <EditEmail :disabled="isSocialUser"></EditEmail>
                     </template>
                   </v-flex>
                 </v-layout>
-                <v-layout row>
+                <v-layout row v-if="!isSocialUser">
                   <v-flex text-xs-center class="overflow-flex">
                     <template v-if="userIsAuthenticated">
-                      <EditPassword :disabled="this.user.social_id"></EditPassword>
+                      <EditPassword :disabled="isSocialUser"></EditPassword>
                     </template>
                   </v-flex>
                 </v-layout>
@@ -145,12 +144,14 @@
       },
       userIsAuthenticated () {
         return this.user !== null && this.user !== undefined
+      },
+      isSocialUser () {
+        return this.user.social_id
       }
     },
     methods: {
       onUpdateUser () {
-        if (this.firstname.trim() === '' ||
-          this.lastname.trim() === '') {
+        if (this.firstname.trim() === '' || this.lastname.trim() === '') {
           return
         }
         this.editProfile = true
