@@ -118,7 +118,7 @@
       return {
         parentQuestionId: this.trigger.parent_question_id,
         parentAnswerId: this.trigger.parent_answer_id,
-        value: parseInt(this.trigger.value),
+        value: this.trigger.value,
         comparatorId: this.trigger.comparator_id,
         operator: this.trigger.operator + 0,
         operators: [

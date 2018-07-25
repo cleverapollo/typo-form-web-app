@@ -275,6 +275,9 @@ export default {
           } else {
             return false
           }
+        case 'in list':
+          const values = value.split(',').map((value) => value.trim())
+          return values.indexOf(questionValue) > -1
         default:
           break
       }

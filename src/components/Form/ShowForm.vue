@@ -45,7 +45,7 @@
                           </v-list-tile-content>
                         </v-list-tile>
 
-                        <v-list-tile @click=onDeleteForm>
+                        <v-list-tile @click.stop="deleteForm = true">
                           <v-list-tile-avatar>
                             <v-icon>delete</v-icon>
                           </v-list-tile-avatar>
@@ -93,6 +93,9 @@
 
       </v-layout>
     </v-flex>
+
+    <!-- //Delete Form -->
+    <DeleteConfirmDialog @delete-action="onDeleteForm" :visible="deleteForm" @close="deleteForm = false"></DeleteConfirmDialog>
   </v-layout>
 </template>
 
@@ -103,13 +106,18 @@
   import FormNavigation from './FormNavigation'
 
   export default {
+    props: ['slug', 'id'],
     components: {
       FormView,
       EditForm,
       CreateSection,
       FormNavigation
     },
-    props: ['slug', 'id'],
+    data () {
+      return {
+        deleteForm: false
+      }
+    },
     computed: {
       form () {
         return this.$store.getters.loadedForm(this.slug, parseInt(this.id))

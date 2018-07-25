@@ -15,10 +15,13 @@
       <v-btn color="grey darken-2" flat icon @click="duplicateQuestion">
         <v-icon>content_copy</v-icon>
       </v-btn>
-      <v-btn color="grey darken-2" flat icon @click="deleteQuestion">
+      <v-btn color="grey darken-2" flat icon @click.stop="deleteQuestion = true">
         <v-icon>delete</v-icon>
       </v-btn>
     </v-layout>
+
+    <!-- //Delete Question -->
+    <DeleteConfirmDialog @delete-action="onDeleteQuestion" :visible="deleteQuestion" @close="deleteQuestion = false"></DeleteConfirmDialog>
   </v-container>
 </template>
 
@@ -31,7 +34,8 @@
     },
     data () {
       return {
-        editedDescription: this.question.description
+        editedDescription: this.question.description,
+        deleteQuestion: false
       }
     },
     computed: {
@@ -56,7 +60,7 @@
           id: this.question.id
         })
       },
-      deleteQuestion () {
+      onDeleteQuestion () {
         this.$store.dispatch('deleteQuestion', {
           formId: this.formId,
           sectionId: this.sectionId,

@@ -4,7 +4,7 @@
       <v-flex style='min-width: 120px' :class="answer.parameter ? 'xs10' : 'xs2'">
         <v-text-field
           prepend-icon='check_box_outline_blank'
-          :value='answer.answer'
+          v-model='answer.answer'
           @change='updateAnswer(answer.id, $event)'
         ></v-text-field>
       </v-flex>
@@ -58,6 +58,7 @@
 
 <script>
   import draggable from 'vuedraggable'
+  import * as _ from 'lodash'
   import validationMixin from '../QuestionValiationMixin'
 
   export default {
@@ -97,7 +98,15 @@
         this.$emit('create-answer', ['Other...', false])
       },
       updateAnswer (index, value) {
-        this.$emit('update-answer', [index, value])
+        const values = value.split(',').map((value) => value.trim())
+        this.$emit('update-answer', [index, values[0]])
+        let _this = this
+        _.forEach(values, function (value, index) {
+          if (index === 0) {
+            return
+          }
+          _this.$emit('create-answer', [value, true])
+        })
       },
       checkEnd: function (evt) {
         if (evt.newIndex === evt.oldIndex) {

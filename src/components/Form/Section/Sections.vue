@@ -41,7 +41,7 @@
             </v-list-tile-content>
           </v-list-tile>
 
-          <v-list-tile @click="deleteSection">
+          <v-list-tile @click.stop="deleteSection = true">
             <v-list-tile-avatar>
               <v-icon>delete</v-icon>
             </v-list-tile-avatar>
@@ -348,6 +348,9 @@
 -->
 
     </v-card-text>
+
+    <!-- //Delete Section -->
+    <DeleteConfirmDialog @delete-action="onDeleteSection" :visible="deleteSection" @close="deleteSection = false"></DeleteConfirmDialog>
   </v-card>
 </template>
 
@@ -384,7 +387,8 @@
         editMode: false,
         hasRepeatableQuestions: this.section.repeatable,
         min_rows: this.section.min_rows,
-        max_rows: this.section.max_rows
+        max_rows: this.section.max_rows,
+        deleteSection: false
       }
     },
     watch: {
@@ -649,7 +653,7 @@
             max_rows: this.max_rows
           })
       },
-      deleteSection () {
+      onDeleteSection () {
         this.$store.dispatch('deleteSection', {
           formId: this.formId,
           id: this.section.id
