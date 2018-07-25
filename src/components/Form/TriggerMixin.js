@@ -164,6 +164,7 @@ export default {
 
       answer = answer ? answer.toString() : null
       const comparator = this.getComparator(comparatorID)
+      const values = value.split(',').map((value) => value.trim())
       switch (comparator) {
         case 'equals':
           if (!answerF) {
@@ -276,10 +277,8 @@ export default {
             return false
           }
         case 'in list':
-          const values = value.split(',').map((value) => value.trim())
           return values.indexOf(questionValue) > -1
         case 'not in list':
-          const values = value.split(',').map((value) => value.trim())
           return values.indexOf(questionValue) === -1
         default:
           break
