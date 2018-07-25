@@ -8,7 +8,7 @@
         <v-text-field
           :disabled='!answer.parameter'
           v-model='answer.answer'
-          @change='updateAnswer(answer.id, $event)'
+          @change='showModal(answer.id, $event)'
         ></v-text-field>
       </v-flex>
       <v-flex style='width: 30px'  v-show='answers.length > 1'>
@@ -28,6 +28,42 @@
         ></v-text-field>
       </v-flex>
     </v-layout>
+    <v-dialog
+      v-model="dialog"
+      width="500"
+      persistent
+      ref="dialog"
+    >
+      <v-card>
+        <v-card-title>
+          Multi Answer
+        </v-card-title>
+
+        <v-card-text>
+          A comma has been detected in the answer string, would you like to split this string into multiple answers?
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            flat
+            @click="updateAnswer(true)"
+          >
+            Yes
+          </v-btn>
+          <v-btn
+            color="error"
+            flat
+            @click="updateAnswer(false)"
+          >
+            No
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </draggable>
 </template>
 
@@ -55,7 +91,10 @@
       return {
         validationTypes: [
           'Dropdown'
-        ]
+        ],
+        dialog: false,
+        multiAnswer: '',
+        multiAnswerId: -1
       }
     },
     methods: {
@@ -72,16 +111,32 @@
       setHasOther () {
         this.$emit('create-answer', ['Other...', false])
       },
-      updateAnswer (index, value) {
-        const values = value.split(',').map((value) => value.trim())
-        this.$emit('update-answer', [index, values[0]])
-        let _this = this
-        _.forEach(values, function (value, index) {
-          if (index === 0) {
-            return
-          }
-          _this.$emit('create-answer', [value, true])
-        })
+      showModal (index, value) {
+        this.multiAnswer = value
+        this.multiAnswerId = index
+        if (value.includes(',')) {
+          this.dialog = true
+        } else {
+          this.updateAnswer(false)
+        }
+      },
+      updateAnswer (flag) {
+        if (flag) {
+          const index = this.multiAnswerId
+          const value = this.multiAnswer
+          const values = value.split(',').map((value) => value.trim())
+          this.$emit('update-answer', [index, values[0]])
+          let _this = this
+          _.forEach(values, function (value, index) {
+            if (index === 0) {
+              return
+            }
+            _this.$emit('create-answer', [value, true])
+          })
+        } else {
+          this.$emit('update-answer', [this.multiAnswerId, this.multiAnswer])
+        }
+        this.dialog = false
       },
       checkEnd: function (evt) {
         if (evt.newIndex === evt.oldIndex) {
