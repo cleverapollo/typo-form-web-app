@@ -278,6 +278,9 @@ export default {
         case 'in list':
           const values = value.split(',').map((value) => value.trim())
           return values.indexOf(questionValue) > -1
+        case 'not in list':
+          const values = value.split(',').map((value) => value.trim())
+          return values.indexOf(questionValue) === -1
         default:
           break
       }
