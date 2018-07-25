@@ -164,7 +164,7 @@ export default {
 
       answer = answer ? answer.toString() : null
       const comparator = this.getComparator(comparatorID)
-      const values = value.split(',').map((value) => value.trim())
+      const values = value ? value.split(',').map((value) => value.trim()) : []
       switch (comparator) {
         case 'equals':
           if (!answerF) {
