@@ -35,7 +35,7 @@
 
         <!-- //Question Comparator -->
         <v-flex xs12 sm3 offset-sm1 d-flex>
-          <v-select
+          <v-autocomplete
             :items="comparators"
             item-text="comparator"
             item-value="id"
@@ -43,12 +43,12 @@
             label="Comparator"
             single-line
             @change="updateComparator($event)"
-          ></v-select>
+          ></v-autocomplete>
         </v-flex>
 
         <!-- //Selected Answer -->
         <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.answer'>
-          <v-select
+          <v-autocomplete
             :items="parentQuestionType == 8 || parentQuestionType == 9 ? falseAnswers : answers"
             item-text="answer"
             item-value="id"
@@ -56,13 +56,13 @@
             label="Parent Answer"
             single-line
             @change="updateParentAnswer($event)"
-          ></v-select>
+          ></v-autocomplete>
         </v-flex>
 
         <!-- //User Input -->
         <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.value'>
           <v-flex xs12 v-if="parentQuestionType == 8 || parentQuestionType == 9">
-            <v-select
+            <v-autocomplete
               v-model="value"
               :items="trueAnswers"
               item-text="answer"
@@ -70,7 +70,7 @@
               label="Value"
               single-line
               @change="updateValue($event)"
-            ></v-select>
+            ></v-autocomplete>
           </v-flex>
           <v-flex xs12 v-else>
             <v-text-field

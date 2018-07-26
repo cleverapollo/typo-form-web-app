@@ -14,7 +14,7 @@
             <v-flex xs12 sm6 d-flex>
               <v-text-field
                 label="Email"
-                type="email"
+                @change="multiEmail(index, $event)"
                 v-model="item.email"
                 required
               ></v-text-field>
@@ -62,6 +62,7 @@
 </template>
 
 <script>
+  import * as _ from 'lodash'
   export default {
     props: ['slug', 'teamId', 'visible'],
     data () {
@@ -109,6 +110,20 @@
         }
         this.show = false
         this.$store.dispatch('inviteTeam', {invitations: invitations, id: this.teamId, slug: this.slug})
+      },
+      multiEmail (insertIndex, value) {
+        if (!value.includes(',')) {
+          return
+        }
+        const values = value.split(',').map((value) => value.trim())
+        this.invitations[insertIndex].email = values[0]
+        let _this = this
+        _.forEach(values, function (value, index) {
+          if (index === 0) {
+            return
+          }
+          _this.invitations.splice(insertIndex + index, 0, { email: value, team_role_id: _this.invitations[insertIndex].team_role_id })
+        })
       }
     }
   }

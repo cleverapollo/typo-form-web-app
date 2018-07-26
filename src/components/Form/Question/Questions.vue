@@ -338,10 +338,8 @@
     methods: {
       createRemoveValidation () {
         if (this.hasValidation) {
-          console.log(this.question.id, 'remove')
           this.$root.$emit('validation-remove', this.question.id)
         } else {
-          console.log(this.$root)
           this.$root.$emit('validation-create', this.question.id)
         }
       },
@@ -466,7 +464,6 @@
         })
       },
       createValidation (...args) {
-        console.log(args)
         const name = args[0]
         const validationTypeId = _.find(this.validationTypes, type => {
           return name === type.type

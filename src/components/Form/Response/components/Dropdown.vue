@@ -1,14 +1,14 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <v-select
+      <v-autocomplete
         v-bind:items="computedOptions"
         v-model="selectedOption"
         item-text="answer"
         item-value="id"
         :disabled="disabled"
         :multiple="hasValidation"
-      ></v-select>
+      ></v-autocomplete>
     </v-flex>
   </v-layout>
 </template>
