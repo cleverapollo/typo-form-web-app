@@ -28,6 +28,19 @@
             </v-card-text>
           </v-flex>
         </v-layout>
+        <v-layout row wrap>
+          <v-flex xs12>
+            <v-card-text>
+              <v-text-field
+                name="password"
+                label="Password"
+                id="password"
+                v-model="password"
+                type="password">
+              </v-text-field>
+            </v-card-text>
+          </v-flex>
+        </v-layout>
         <v-divider></v-divider>
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
@@ -61,15 +74,16 @@
     data () {
       return {
         email: '',
+        password: '',
         editEmail: false
       }
     },
     methods: {
       onSaveEmail () {
-        if (this.email.trim() === '') {
+        if (this.email.trim() === '' || this.password === '') {
           return
         }
-        this.$store.dispatch('updateEmail', { email: this.email })
+        this.$store.dispatch('updateEmail', { email: this.email, password: this.password })
       },
       onDismissed () {
         this.$store.dispatch('clearError')
@@ -84,6 +98,7 @@
       editEmail (value) {
         if (!value) {
           this.email = ''
+          this.password = ''
         } else {
           this.$store.dispatch('clearError')
         }

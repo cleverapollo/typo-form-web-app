@@ -160,7 +160,8 @@ export default {
       commit('setLoading', true)
       commit('clearError')
       const updateObj = {
-        email: payload.email
+        email: payload.email,
+        password: payload.password
       }
       window.axios.put(EMAIL_UPDATE_URL, updateObj)
         .then(response => {

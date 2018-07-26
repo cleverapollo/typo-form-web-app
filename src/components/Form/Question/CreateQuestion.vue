@@ -28,14 +28,14 @@
               id="description"
               v-model="editedDescription"
             ></v-text-field>
-            <v-select
+            <v-autocomplete
               :items="questionTypes"
               item-text="type"
               item-value="id"
               v-model="questionType"
               label="Question Type"
               single-line
-            ></v-select>
+            ></v-autocomplete>
             <v-switch
               :label="`Required`"
               v-model="mandatory"

@@ -10,35 +10,35 @@
 
           <!-- //Forms -->
           <v-flex xs12>
-            <v-select
+            <v-autocomplete
               :items="forms"
               item-value="id"
               item-text="name"
               v-model="formId"
               label="Form Type"
-            ></v-select>
+            ></v-autocomplete>
           </v-flex>
 
           <!-- //Teams -->
           <v-flex xs12 v-if="teams.length">
-            <v-select
+            <v-autocomplete
               :items="teams"
               item-value="id"
               item-text="name"
               v-model="teamId"
               label="Team"
-            ></v-select>
+            ></v-autocomplete>
           </v-flex>
 
           <!-- //Users -->
           <v-flex xs12 v-if="userIsApplicationAdmin">
-            <v-select
+            <v-autocomplete
               :items="users"
               item-value="id"
               item-text="name"
               v-model="userId"
               label="User"
-            ></v-select>
+            ></v-autocomplete>
           </v-flex>
 
           <!-- //Period Start -->
