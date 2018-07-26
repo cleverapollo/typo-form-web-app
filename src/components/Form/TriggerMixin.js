@@ -104,11 +104,8 @@ export default {
       while (index < questionTriggers.length) {
         const questionTrigger = questionTriggers[index]
         const parentQuestion = this.$store.getters.loadedAllQuestion(this.formId, parseInt(questionTrigger.parent_question_id))
-        if (this.isTrigger(parentQuestion)) {
-          return true
-        }
-        tempF = tempF && this.compareCondition(questionTrigger)
-        if (questionTrigger.operator === 1) {
+        tempF = tempF && this.compareCondition(questionTrigger) && !this.isTrigger(parentQuestion)
+        if (questionTrigger.operator === 1 || questionTrigger.operator === true) {
           if (tempF) {
             return false
           }
