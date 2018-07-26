@@ -139,7 +139,7 @@ export default {
       let questionAnswer = ''
       let questionValue = ''
       if (parentResponses.length > 0) {
-        if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
+        if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown') {
           let filteredResponses = parentResponses.filter(function (parentResponse) {
             return parentResponse.answer_id === answer
           })
@@ -165,6 +165,10 @@ export default {
       answer = answer ? answer.toString() : null
       const comparator = this.getComparator(comparatorID)
       const values = value ? value.split(',').map((value) => value.trim()) : []
+      let listValue = parentResponses.map((value) => value.response)
+      if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown' || this.getQuestionType(questionTypeID) === 'Multiple choice') {
+        listValue = parentResponses.map((value) => question.answers.find((answer) => { return answer.id === value.answer_id }).answer)
+      }
       switch (comparator) {
         case 'equals':
           if (!answerF) {
@@ -237,19 +241,31 @@ export default {
           }
           break
         case 'contains':
-          if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
+          if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown') {
             return questionAnswer === answer
           } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid') {
             return questionAnswer === answer && questionValue === value
           } else {
             if (!answerF) {
               return _.includes(questionValue, value)
+            } else if (!valueF) {
+              return _.includes(questionAnswer, answer)
             } else {
-              if (!valueF) {
-                return _.includes(questionAnswer, answer)
-              } else {
-                return _.includes(questionAnswer, answer) && _.includes(questionValue, value)
-              }
+              return _.includes(questionAnswer, answer) && _.includes(questionValue, value)
+            }
+          }
+        case 'not contains':
+          if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown') {
+            return questionAnswer !== answer
+          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid') {
+            return questionAnswer !== answer || questionValue !== value
+          } else {
+            if (!answerF) {
+              return !_.includes(questionValue, value)
+            } else if (!valueF) {
+              return !_.includes(questionAnswer, answer)
+            } else {
+              return !_.includes(questionAnswer, answer) || !_.includes(questionValue, value)
             }
           }
         case 'starts with':
@@ -277,9 +293,9 @@ export default {
             return false
           }
         case 'in list':
-          return values.indexOf(questionValue) > -1
+          return listValue.filter(value => values.indexOf(value) !== -1).length > 0
         case 'not in list':
-          return values.indexOf(questionValue) === -1
+          return listValue.filter(value => values.indexOf(value) !== -1).length === 0
         default:
           break
       }
