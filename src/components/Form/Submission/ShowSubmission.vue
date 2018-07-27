@@ -148,6 +148,9 @@
         }
         return this.submission.form.id
       },
+      form () {
+        return this.$store.getters.loadedForm(this.slug, this.formId)
+      },
       statuses () {
         return this.$store.getters.statuses
       },
@@ -162,6 +165,10 @@
       },
       sendAble () {
         if (new Date(this.periodStart).getTime() - new Date().getTime() > 0 || new Date(this.periodEnd).getTime() - new Date().getTime() < 0) {
+          return false
+        }
+
+        if (this.form.allow_submit === 0) {
           return false
         }
 
