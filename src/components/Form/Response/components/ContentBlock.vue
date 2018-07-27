@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12>
+  <v-flex xs12 pb-3 px-3>
     <div v-html="$sanitize(message)"></div>
   </v-flex>
 </template>
