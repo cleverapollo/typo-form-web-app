@@ -139,7 +139,7 @@
       onSignin () {
         if (this.recaptchaToken === '') {
           this.submitted = true
-          // return
+          return
         }
         this.$store.dispatch('signUserIn', {email: this.email, password: this.password, recaptchaToken: this.recaptchaToken})
           .then(response => {
