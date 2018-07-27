@@ -6,7 +6,7 @@
       @blur="updateQuestion"
     ></v-textarea>
 
-    <triggers :formId="formId" :sectionId="sectionId" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
+    <triggers :formId="formId" type="Question" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
 
     <v-divider></v-divider>
 

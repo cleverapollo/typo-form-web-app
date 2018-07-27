@@ -8,6 +8,7 @@ const STATUS_URL = `${API_URL}status`
 const VALIDATION_TYPE_URL = `${API_URL}validation-type`
 const COMPARATOR_URL = `${API_URL}comparator`
 const TRIGGER_TYPE_URL = `${API_URL}trigger-type`
+const ANSWER_SORT_URL = `${API_URL}answer-sort`
 
 export default {
   state: {
@@ -51,6 +52,9 @@ export default {
     },
     setTriggerTypes (state, payload) {
       state.triggerTypes = payload
+    },
+    setAnswerSorts (state, payload) {
+      state.answerSorts = payload
     }
   },
   actions: {
@@ -202,6 +206,22 @@ export default {
             console.log(error)
           }
         )
+    },
+    loadAnswerSorts ({commit}) {
+      commit('setLoading', true)
+      window.axios.get(ANSWER_SORT_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setAnswerSorts', response['data']['answer_sorts'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
     }
   },
   getters: {
@@ -239,6 +259,9 @@ export default {
     },
     triggerTypes (state) {
       return state.triggerTypes
+    },
+    answerSorts (state) {
+      return state.answerSorts
     }
   }
 }

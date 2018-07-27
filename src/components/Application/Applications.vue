@@ -96,6 +96,11 @@
       sortApplications (applications) {
         return applications.slice().sort(function (a, b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0) })
       }
+    },
+    mounted () {
+      if (this.applications.length === 1 && !this.isSuperUser) {
+        this.$router.push('/' + this.applications[0].slug)
+      }
     }
   }
 </script>

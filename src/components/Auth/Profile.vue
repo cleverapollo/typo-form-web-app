@@ -162,6 +162,13 @@
         this.$router.push('/signin')
       }
     },
+    watch: {
+      user (value) {
+        this.firstname = value.first_name
+        this.lastname = value.last_name
+        this.email = value.email
+      }
+    },
     created: function () {
       const user = this.user
       if (user !== null && user !== undefined) {

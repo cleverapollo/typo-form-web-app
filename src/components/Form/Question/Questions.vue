@@ -77,6 +77,20 @@
         </v-flex>
       </v-layout>
 
+      <v-layout row v-if="hasSort">
+        <v-flex xs12>
+          <v-select
+            :items="answerSorts"
+            v-model="sortId"
+            item-text="sort"
+            item-value="id"
+            label="Sort Option"
+            @change="updateQuestionSort($event)"
+            required
+          ></v-select>
+        </v-flex>
+      </v-layout>
+
       <component
         :is="questionComponent"
         :question-id="question.id"
@@ -183,6 +197,7 @@
         editedDescription: this.question.description,
         questionTypeId: this.question.question_type_id,
         questionWidth: this.question.width,
+        sortId: this.question.sort_id,
         mandatory: !!this.question.mandatory, // got number type
         questionsComponentsMap: {
           'Short answer': shortAnswer,
@@ -297,12 +312,42 @@
         return allQuestions
       },
       answers () {
-        return _.sortBy(this.question.answers, element => {
+        const answers = this.question.answers
+        if (this.answerSort === 'Text ASC') {
+          return _.sortBy(answers, element => {
+            return 1000000 * (element.parameter ? 0 : 1) + element.order
+          })
+        }
+        if (this.answerSort === 'Text DESC') {
+          return _.sortBy(answers, element => {
+            return 1000000 * (element.parameter ? 0 : 1) + element.order
+          })
+        }
+        if (this.answerSort === 'Number ASC') {
+          return _.sortBy(answers, element => {
+            return 1000000 * (element.parameter ? 0 : 1) + element.order
+          })
+        }
+        if (this.answerSort === 'Number DESC') {
+          return _.sortBy(answers, element => {
+            return 1000000 * (element.parameter ? 0 : 1) + element.order
+          })
+        }
+        return _.sortBy(answers, element => {
           return 1000000 * (element.parameter ? 0 : 1) + element.order
         })
       },
       questionTypes () {
         return this.$store.getters.questionTypes
+      },
+      answerSort () {
+        const answerSort = _.find(this.answerSorts, sort => {
+          return sort.id === this.sortId
+        })
+        return answerSort ? answerSort.sort : 'Undefined'
+      },
+      answerSorts () {
+        return this.$store.getters.answerSorts
       },
       hasValidation () {
         this.validationTypes = this.$store.getters.validationTypes
@@ -328,6 +373,18 @@
         get: function () {
           return this.questionsComponentsMap[this.questionTypeString]
         }
+      },
+      hasSort () {
+        if (this.questionTypeString === 'Multiple choice') {
+          return true
+        }
+        if (this.questionTypeString === 'Checkboxes') {
+          return true
+        }
+        if (this.questionTypeString === 'Dropdown') {
+          return true
+        }
+        return false
       }
     },
     watch: {
@@ -408,6 +465,10 @@
         this.questionWidth = value
         this.updateQuestion()
       },
+      updateQuestionSort (value) {
+        this.sortId = value
+        this.updateQuestion()
+      },
       updateQuestionType (value) {
         // 1, 2, 6, 7, 10, 11 - QuestionType Group 1
         // 3, 4, 5 - QuestionType Group 2
@@ -434,6 +495,7 @@
             question: this.editedName,
             description: this.editedDescription,
             questionTypeId: this.questionTypeId,
+            sortId: this.sortId,
             mandatory: this.mandatory,
             width: this.questionWidth
           })

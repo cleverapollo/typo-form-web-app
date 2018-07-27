@@ -65,6 +65,9 @@ export default {
       if (payload.questionTypeId) {
         updateObj.question_type_id = payload.questionTypeId
       }
+      if (payload.sortId) {
+        updateObj.sort_id = payload.sortId
+      }
       if (payload.mandatory !== undefined) {
         updateObj.mandatory = payload.mandatory
       }
