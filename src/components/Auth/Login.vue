@@ -127,6 +127,7 @@
           this.$store.dispatch('loadRoles')
           this.$store.dispatch('loadComparators')
           this.$store.dispatch('loadTriggerTypes')
+          this.$store.dispatch('loadAnswerSorts')
           this.$store.dispatch('loadApplications')
           if (this.$route.query.redirect) {
             this.$router.push(this.$route.query.redirect)
@@ -138,7 +139,7 @@
       onSignin () {
         if (this.recaptchaToken === '') {
           this.submitted = true
-          return
+          // return
         }
         this.$store.dispatch('signUserIn', {email: this.email, password: this.password, recaptchaToken: this.recaptchaToken})
           .then(response => {

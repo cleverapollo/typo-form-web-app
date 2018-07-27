@@ -33,7 +33,7 @@
                           </v-list-tile-content>
                         </v-list-tile>
 
-                        <v-list-tile @click=onDeleteSubmission>
+                        <v-list-tile @click.stop="deleteSubmission = true">
                           <v-list-tile-avatar>
                             <v-icon>delete</v-icon>
                           </v-list-tile-avatar>
@@ -113,6 +113,10 @@
 
       </v-layout>
     </v-flex>
+
+    <!-- //Delete Submission -->
+    <DeleteConfirmDialog @delete-action="onDeleteSubmission" :visible="deleteSubmission" @close="deleteSubmission = false"></DeleteConfirmDialog>
+
   </v-layout>
 </template>
 
@@ -127,6 +131,11 @@
   export default {
     props: ['slug', 'id'],
     mixins: [TriggerMixin],
+    data () {
+      return {
+        deleteSubmission: false
+      }
+    },
     components: {
       FormView,
       EditSubmission,

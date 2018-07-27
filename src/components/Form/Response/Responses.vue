@@ -78,9 +78,39 @@
     },
     computed: {
       answers () {
-        return _.sortBy(this.question.answers, element => {
-          return 1000000 * (1 - element.parameter) + element.order
+        const answers = this.question.answers
+        if (this.answerSort === 'Text ASC') {
+          return _.sortBy(answers, element => {
+            return 1000000 * (element.parameter ? 0 : 1) + element.order
+          })
+        }
+        if (this.answerSort === 'Text DESC') {
+          return _.sortBy(answers, element => {
+            return 1000000 * (element.parameter ? 0 : 1) + element.order
+          })
+        }
+        if (this.answerSort === 'Number ASC') {
+          return _.sortBy(answers, element => {
+            return 1000000 * (element.parameter ? 0 : 1) + element.order
+          })
+        }
+        if (this.answerSort === 'Number DESC') {
+          return _.sortBy(answers, element => {
+            return 1000000 * (element.parameter ? 0 : 1) + element.order
+          })
+        }
+        return _.sortBy(answers, element => {
+          return 1000000 * (element.parameter ? 0 : 1) + element.order
         })
+      },
+      answerSort () {
+        const answerSort = _.find(this.answerSorts, sort => {
+          return sort.id === this.question.sort_id
+        })
+        return answerSort ? answerSort.sort : 'Undefined'
+      },
+      answerSorts () {
+        return this.$store.getters.answerSorts
       },
       responses () {
         if (!this.submissionId) {
