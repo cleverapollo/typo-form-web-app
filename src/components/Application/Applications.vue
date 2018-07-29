@@ -78,9 +78,22 @@
           return false
         }
         return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
+      },
+      applicationCount () {
+        return this.applications.length
+      }
+    },
+    watch: {
+      applicationCount (value) {
+        this.onValidate(value)
       }
     },
     methods: {
+      onValidate (value) {
+        if (value === 1 && !this.isSuperUser) {
+          this.$router.push('/' + this.applications[0].slug)
+        }
+      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId
@@ -98,9 +111,7 @@
       }
     },
     mounted () {
-      if (this.applications.length === 1 && !this.isSuperUser) {
-        this.$router.push('/' + this.applications[0].slug)
-      }
+      this.onValidate(this.applications)
     }
   }
 </script>

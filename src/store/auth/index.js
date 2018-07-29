@@ -132,10 +132,12 @@ export default {
     },
     logout ({commit}) {
       commit('clearError')
-      window.axios.post(LOGOUT_URL)
       commit('setUser', null)
-      commit('setLoadedApplications', [])
-      sessionStorage.removeItem('token')
+      window.axios.post(LOGOUT_URL)
+        .then(response => {
+          commit('setLoadedApplications', [])
+          sessionStorage.removeItem('token')
+        })
     },
     updateAuth ({commit}, payload) {
       commit('setLoading', true)
@@ -226,8 +228,10 @@ export default {
     destroyUser ({commit}) {
       commit('clearError')
       window.axios.delete(USER_URL)
-      commit('setUser', null)
-      sessionStorage.removeItem('token')
+        .then(response => {
+          commit('setUser', null)
+          sessionStorage.removeItem('token')
+        })
     }
   },
   getters: {

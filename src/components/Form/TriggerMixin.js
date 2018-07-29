@@ -238,7 +238,9 @@ export default {
           }
           break
         case 'contains':
-          if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown') {
+          if (this.getQuestionType(questionTypeID) === 'Dropdown') {
+            return listValue.filter(element => element.includes(value)).length > 0
+          } else if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
             return questionAnswer === answer
           } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid') {
             return questionAnswer === answer && questionValue === value
@@ -252,7 +254,9 @@ export default {
             }
           }
         case 'not contains':
-          if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown') {
+          if (this.getQuestionType(questionTypeID) === 'Dropdown') {
+            return listValue.filter(element => element.includes(value)).length === 0
+          } else if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
             return questionAnswer !== answer
           } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid') {
             return questionAnswer !== answer || questionValue !== value
