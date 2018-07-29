@@ -314,28 +314,18 @@
       answers () {
         const answers = this.question.answers
         if (this.answerSort === 'Text ASC') {
-          return _.sortBy(answers, element => {
-            return 1000000 * (element.parameter ? 0 : 1) + element.order
-          })
+          return _.orderBy(answers, ['parameter', 'answer'], ['desc', 'asc'])
         }
         if (this.answerSort === 'Text DESC') {
-          return _.sortBy(answers, element => {
-            return 1000000 * (element.parameter ? 0 : 1) + element.order
-          })
+          return _.orderBy(answers, ['parameter', 'answer'], ['desc', 'desc'])
         }
         if (this.answerSort === 'Number ASC') {
-          return _.sortBy(answers, element => {
-            return 1000000 * (element.parameter ? 0 : 1) + element.order
-          })
+          return _.orderBy(answers, ['parameter', answer => parseInt(answer.answer)], ['desc', 'asc'])
         }
         if (this.answerSort === 'Number DESC') {
-          return _.sortBy(answers, element => {
-            return 1000000 * (element.parameter ? 0 : 1) + element.order
-          })
+          return _.orderBy(answers, ['parameter', answer => parseInt(answer.answer)], ['desc', 'desc'])
         }
-        return _.sortBy(answers, element => {
-          return 1000000 * (element.parameter ? 0 : 1) + element.order
-        })
+        return _.orderBy(answers, ['parameter', 'order'], ['desc', 'asc'])
       },
       questionTypes () {
         return this.$store.getters.questionTypes
