@@ -79,16 +79,16 @@
     computed: {
       answers () {
         const answers = this.question.answers
-        if (this.answerSort === 'Text ASC') {
+        if (this.answerSort === 'Alphanumeric Ascending (A-Z)') {
           return _.orderBy(answers, ['parameter', 'answer'], ['desc', 'asc'])
         }
-        if (this.answerSort === 'Text DESC') {
+        if (this.answerSort === 'Alphanumeric Descending (Z-A)') {
           return _.orderBy(answers, ['parameter', 'answer'], ['desc', 'desc'])
         }
-        if (this.answerSort === 'Number ASC') {
+        if (this.answerSort === 'Number Ascending (1-9)') {
           return _.orderBy(answers, ['parameter', answer => parseInt(answer.answer)], ['desc', 'asc'])
         }
-        if (this.answerSort === 'Number DESC') {
+        if (this.answerSort === 'Number Descending (9-1)') {
           return _.orderBy(answers, ['parameter', answer => parseInt(answer.answer)], ['desc', 'desc'])
         }
         return _.orderBy(answers, ['parameter', 'order'], ['desc', 'asc'])
