@@ -41,6 +41,30 @@ export default {
 
       return questionCount !== 0 ? responseCount * 100 / questionCount : 0
     },
+    sectionProgress (formId, sectionId, submissionId) {
+      const section = this.$store.getters.loadedSection(formId, sectionId)
+      let questionCount = 0
+      let responseCount = 0
+      if (this.isSectionTrigger(section)) {
+        return 0
+      }
+      let sectionCount = 1
+      if (section.repeatable) {
+        sectionCount = section.repeatable
+      }
+      let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question))
+      questionCount += questions.length * sectionCount
+      questions.forEach(function (question) {
+        let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
+        let responseLength = 1
+        if (section.repeatable) {
+          responseLength = responses.length
+        }
+        responseCount += responses.length ? responseLength : 0
+      }, this)
+
+      return questionCount !== 0 ? responseCount * 100 / questionCount : 0
+    },
     isSectionTrigger (item) {
       if (!item) {
         return false

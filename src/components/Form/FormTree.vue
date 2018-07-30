@@ -7,11 +7,19 @@
       v-if="!isSectionTrigger(item) || submissionId === -1"
     >
       <v-list-tile slot="activator" @click="clickSection(item)" class="v-list__group__header_tile">
+        <v-list-tile-avatar>
+          <v-icon v-if='sectionProgress(formId, item.id, submissionId) === 100'>check_circle</v-icon>
+        </v-list-tile-avatar>
         <v-list-tile-content>
-          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+          <v-list-tile-title>
+            {{ item.name }}
+          </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile v-for="subItem in children(item)" :key="subItem.name" @click="clickSection(subItem)" v-if="!isSectionTrigger(subItem) || submissionId === -1">
+        <v-list-tile-avatar>
+          <v-icon v-if='sectionProgress(formId, subItem.id, submissionId) === 100'>check_circle</v-icon>
+        </v-list-tile-avatar>
         <v-list-tile-content>
           <v-list-tile-title class="ml-3">{{ subItem.name }}</v-list-tile-title>
         </v-list-tile-content>
