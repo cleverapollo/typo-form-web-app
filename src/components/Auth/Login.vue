@@ -67,7 +67,7 @@
                 <v-layout row>
                   <v-flex xs12 text-xs-center class="mt-4">
                     <span>Don't have an account?</span>
-                    <router-link to="/register" tag="a">Register</router-link>
+                    <router-link :to="{ path: 'register', query: $route.query}">Register</router-link>
                   </v-flex>
                 </v-layout>
               </form>

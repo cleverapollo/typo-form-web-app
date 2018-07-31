@@ -86,7 +86,7 @@
                 <v-layout row>
                   <v-flex xs12 text-xs-center class="mt-4">
                     <span>Already have an account?</span>
-                    <router-link to="/login" tag="a">Log In</router-link>
+                    <router-link :to="{ path: 'login', query: $route.query}">Log In</router-link>
                   </v-flex>
                 </v-layout>
               </form>
@@ -141,7 +141,20 @@
     methods: {
       onValidate (value) {
         if (value !== null && value !== undefined) {
-          this.$router.push('/')
+          this.$store.dispatch('loadQuestionTypes')
+          this.$store.dispatch('loadValidationTypes')
+          this.$store.dispatch('loadPeriods')
+          this.$store.dispatch('loadStatuses')
+          this.$store.dispatch('loadRoles')
+          this.$store.dispatch('loadComparators')
+          this.$store.dispatch('loadTriggerTypes')
+          this.$store.dispatch('loadAnswerSorts')
+          this.$store.dispatch('loadApplications')
+          if (this.$route.query.redirect) {
+            this.$router.push(this.$route.query.redirect)
+          } else {
+            this.$router.push('/')
+          }
         }
       },
       onSignup () {
