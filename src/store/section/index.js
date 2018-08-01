@@ -281,10 +281,10 @@ export default {
       if (payload.repeatable !== undefined) {
         updateObj.repeatable = 0 + payload.repeatable
       }
-      if (payload.min_rows) {
+      if (payload.min_rows !== undefined) {
         updateObj.min_rows = payload.min_rows
       }
-      if (payload.max_rows) {
+      if (payload.max_rows !== undefined) {
         updateObj.max_rows = payload.max_rows
       }
       window.axios.put(FORM_URL + payload.formId + SECTION_URL + '/' + payload.id, updateObj)
