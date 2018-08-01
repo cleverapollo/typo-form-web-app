@@ -48,21 +48,25 @@ export default {
       if (this.isSectionTrigger(section)) {
         return 0
       }
-      let sectionCount = 1
       if (section.repeatable) {
-        sectionCount = section.repeatable
-      }
-      let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question))
-      questionCount += questions.length * sectionCount
-      questions.forEach(function (question) {
-        let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
-        let responseLength = 1
-        if (section.repeatable) {
-          responseLength = [...new Set(responses.map(response => response.order))].length
+        const sectionCount = section.repeatable
+        for (let i = 1; i <= sectionCount; i++) {
+          let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, i))
+          questionCount += questions.length
+          questions.forEach(function (question) {
+            let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id && response.order === i)
+            const responseLength = [...new Set(responses.map(response => response.order))].length
+            responseCount += responses.length ? responseLength : 0
+          }, this)
         }
-        responseCount += responses.length ? responseLength : 0
-      }, this)
-
+      } else {
+        let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, 1))
+        questionCount += questions.length
+        questions.forEach(function (question) {
+          let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
+          responseCount += responses.length ? 1 : 0
+        }, this)
+      }
       return questionCount !== 0 ? responseCount * 100 / questionCount : 0
     },
     isSectionTrigger (item) {
@@ -78,12 +82,12 @@ export default {
             hideSectionTrigger = false
           }
         })
-      } else if (this.isTrigger(item)) {
+      } else if (this.isTrigger(item, 1)) {
         return true
       } else {
         let questions = item.questions
         _.forEach(questions, function (question) {
-          if (!$this.isTrigger(question)) {
+          if (!$this.isTrigger(question, 1)) {
             hideSectionTrigger = false
           }
         })
@@ -102,7 +106,7 @@ export default {
       })
       return questionType ? questionType.type : 'undefined'
     },
-    isTrigger (question) {
+    isTrigger (question, order) {
       if (!question) {
         return false
       }
@@ -128,7 +132,7 @@ export default {
       while (index < questionTriggers.length) {
         const questionTrigger = questionTriggers[index]
         const parentQuestion = this.$store.getters.loadedAllQuestion(this.formId, parseInt(questionTrigger.parent_question_id))
-        tempF = tempF && this.compareCondition(questionTrigger) && !this.isTrigger(parentQuestion)
+        tempF = tempF && this.compareCondition(questionTrigger, order) && !this.isTrigger(parentQuestion, order)
         if (questionTrigger.operator === 1 || questionTrigger.operator === true) {
           if (tempF) {
             return false
@@ -139,12 +143,14 @@ export default {
       }
       return !tempF
     },
-    compareCondition (questionTrigger) {
+    compareCondition (questionTrigger, order) {
       let question = this.$store.getters.loadedAllQuestion(this.formId, parseInt(questionTrigger.parent_question_id))
       if (!question) {
         return true
       }
-      let parentResponses = this.parentResponses(questionTrigger.parent_question_id)
+      let parentResponses = this.parentResponses(questionTrigger.parent_question_id).filter((response) => {
+        return response.order === order
+      })
       let triggerType = this.triggerType(question.question_type_id, questionTrigger.comparator_id)
       if (!triggerType) {
         return true

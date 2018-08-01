@@ -157,7 +157,7 @@
 
         <!-- //Standard -->
         <v-layout row wrap v-if="!hasRepeatableQuestions">
-          <template v-for="(element, index) in list" v-if="!isTrigger(element)">
+          <template v-for="(element, index) in list" v-if="!isTrigger(element , 1)">
             <responses
               :question="element"
               :formId="formId"
@@ -187,7 +187,7 @@
             :key="'repeat' + order"
           >
 
-            <template v-for="(element, index) in list"  v-if="!isTrigger(element)">
+            <template v-for="(element, index) in list"  v-if="!isTrigger(element, order)">
               <responses
                 :question="element"
                 :formId="formId"
