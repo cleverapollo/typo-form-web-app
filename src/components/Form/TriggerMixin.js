@@ -58,7 +58,7 @@ export default {
         let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
         let responseLength = 1
         if (section.repeatable) {
-          responseLength = responses.length
+          responseLength = [...new Set(responses.map(response => response.order))].length
         }
         responseCount += responses.length ? responseLength : 0
       }, this)
