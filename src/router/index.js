@@ -9,6 +9,7 @@ import NewPassword from '@/components/Auth/NewPassword'
 import ResetPassword from '@/components/Auth/ResetPassword'
 import AcceptInvitation from '@/components/Shared/AcceptInvitation'
 import AcceptJoin from '@/components/Shared/AcceptJoin'
+import Terms from '@/components/Shared/Terms'
 
 // Applications
 import Applications from '@/components/Application/Applications'
@@ -44,6 +45,11 @@ const router = new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/terms-of-use',
+      name: 'Terms',
+      component: Terms
     },
     {
       path: '/password/reset/:token',

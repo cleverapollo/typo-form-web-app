@@ -108,6 +108,13 @@
                     <router-link :to="{ path: 'login', query: $route.query}">Log In</router-link>
                   </v-flex>
                 </v-layout>
+
+                <v-layout row>
+                  <v-flex xs12 text-xs-center class="mt-4">
+                    <span>By clicking 'Register' your agree to the </span>
+                    <router-link :to="{ path: 'terms-of-use', query: $route.query}">Terms of Use.</router-link>
+                  </v-flex>
+                </v-layout>
               </form>
             </v-container>
           </v-card-text>
