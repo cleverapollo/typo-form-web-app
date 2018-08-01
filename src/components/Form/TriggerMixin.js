@@ -321,6 +321,12 @@ export default {
           return listValue.filter(value => values.indexOf(value) !== -1).length > 0
         case 'not in list':
           return listValue.filter(value => values.indexOf(value) !== -1).length === 0
+        case 'is invalid':
+          if (parentResponses.length > 0) {
+            return JSON.parse(questionValue)['Abn'] === ''
+          } else {
+            return false
+          }
         default:
           break
       }
