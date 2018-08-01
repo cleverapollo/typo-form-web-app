@@ -11,7 +11,23 @@
           <v-card-text>
             <v-container>
               <form @submit.prevent="onSignin">
+                <v-layout row>
+                  <v-flex xs12>
+                    <div class="headline">Log in</div>
+                  </v-flex>
+                </v-layout>
+                <v-divider class="my-2"></v-divider>
+
+                <!-- //OAuth -->
                 <oauth></oauth>
+
+                <!-- //Email -->
+                <v-divider class="my-2"></v-divider>
+                <v-layout row class="mt-4">
+                  <v-flex xs12 text-xs-center>
+                    <div class="caption">or login with email</div>
+                  </v-flex>
+                </v-layout>
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
@@ -35,7 +51,7 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs12>
+                  <v-flex xs12 class="mb-2">
                     <vue-recaptcha
                       ref="recaptcha"
                       @verify="onCaptchaVerified"
@@ -59,15 +75,15 @@
                     </v-btn>
                   </v-flex>
                 </v-layout>
+                <v-divider class="my-2"></v-divider>
+
                 <v-layout row>
-                  <v-flex xs12 text-xs-center class="mt-4">
-                    <router-link to="/password/reset" tag="a">Forgot your password?</router-link>
-                  </v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs12 text-xs-center class="mt-4">
+                  <v-flex xs12 sm6 text-xs-left class="mt-4">
                     <span>Don't have an account?</span>
                     <router-link :to="{ path: 'register', query: $route.query}">Register</router-link>
+                  </v-flex>
+                  <v-flex xs12 sm6 text-xs-right class="mt-4">
+                    <router-link to="/password/reset" tag="a">Forgot your password?</router-link>
                   </v-flex>
                 </v-layout>
               </form>

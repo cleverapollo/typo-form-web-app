@@ -15,6 +15,14 @@
         <v-card>
           <v-card-text>
             <v-container>
+
+              <v-layout row>
+                <v-flex xs12>
+                  <div class="headline">Reset my password</div>
+                </v-flex>
+              </v-layout>
+              <v-divider class="my-2"></v-divider>
+
               <form @submit.prevent="onResetPassword">
                 <v-layout row>
                   <v-flex xs12>
@@ -35,7 +43,7 @@
                       type="submit"
                       :disabled="loading"
                       :loading="loading">
-                      Send instructions
+                      Reset my password
                        <span slot="loader" class="custom-loader">
                         <v-icon light>cached</v-icon>
                        </span>
@@ -43,6 +51,16 @@
                   </v-flex>
                 </v-layout>
               </form>
+
+                
+              <v-divider class="my-2"></v-divider>
+
+              <v-layout row>
+                <v-flex xs12 text-xs-left class="mt-4">
+                  <span>Im ready to </span>
+                  <router-link :to="{ path: '/login', query: $route.query}">Log In</router-link>
+                </v-flex>
+              </v-layout>
             </v-container>
           </v-card-text>
         </v-card>

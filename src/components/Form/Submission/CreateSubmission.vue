@@ -217,6 +217,11 @@
         this.$store.dispatch('createSubmission', data)
           .then(response => {
             this.reset()
+
+            // Redirect to the submission
+            if (response.data.submission.id) {
+              this.$router.push('/' + this.slug + '/submissions/' + response.data.submission.id)
+            }
           })
       },
       close () {
