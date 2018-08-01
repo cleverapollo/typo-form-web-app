@@ -2,8 +2,8 @@
   <div>
     <v-layout row>
       <v-flex xs12 sm12 text-xs-center>
-        <v-btn @click="auth('google')" block>
-          <img src='/static/icon/google_icon.png' height="25px" class="mr-2" />
+        <v-btn @click="auth('google')" depressed block class="btn-oauth btn-google">
+          <i class="fab fa-google"></i>
           <span>Login with Google</span>
         </v-btn>
       </v-flex>
@@ -36,12 +36,6 @@
       </v-flex>
     </v-layout>
     -->
-
-    <v-layout row>
-      <v-flex xs12 sm12 text-xs-center class="mt-4">
-        <span class="grey--text">or</span>
-      </v-flex>
-    </v-layout>
   </div>
 </template>
 
@@ -104,3 +98,16 @@
     }
   }
 </script>
+
+<style scoped>
+  .btn-google {
+    background-color: #dd4b39 !important;
+    color: #ffffff;
+  }
+
+  .btn-oauth i {
+    font-size: 20px;
+    left: 0px;
+    position: absolute;
+  }
+</style>

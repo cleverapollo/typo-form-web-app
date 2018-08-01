@@ -74,6 +74,11 @@
         this.$store.dispatch('createApplication', data)
           .then(response => {
             this.reset()
+
+            // Redirect to the app
+            if (response.data.application.slug) {
+              this.$router.push('/' + response.data.application.slug + '/')
+            }
           })
           .catch(
             error => {

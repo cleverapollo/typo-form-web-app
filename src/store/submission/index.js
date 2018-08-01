@@ -144,23 +144,26 @@ export default {
         submission.team_id = payload.teamId
       }
 
-      window.axios.post(FORM_URL + payload.formId + SUBMISSION_URL, submission)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const createObj = {
-              formId: payload.formId,
-              submission: response['data']['submission']
+      return new Promise((resolve, reject) => {
+        window.axios.post(FORM_URL + payload.formId + SUBMISSION_URL, submission)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const createObj = {
+                formId: payload.formId,
+                submission: response['data']['submission']
+              }
+              resolve(response)
+              commit('createSubmission', createObj)
             }
-            commit('createSubmission', createObj)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+            }
+          )
+      })
     },
     updateSubmission ({commit}, payload) {
       commit('setLoading', true)

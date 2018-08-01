@@ -10,7 +10,24 @@
         <v-card>
           <v-card-text>
             <v-container>
+
+              <v-layout row>
+                <v-flex xs12>
+                  <div class="headline">Create an account</div>
+                </v-flex>
+              </v-layout>
+              <v-divider class="my-2"></v-divider>
+
+              <!-- //OAuth -->
               <oauth></oauth>
+
+              <!-- //Email -->
+              <v-divider class="my-2"></v-divider>
+              <v-layout row class="mt-4">
+                <v-flex xs12 text-xs-center>
+                  <div class="caption">or register with email</div>
+                </v-flex>
+              </v-layout>
               <form @submit.prevent="onSignup">
                 <v-layout row>
                   <v-flex xs12>
@@ -58,7 +75,7 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs12>
+                  <v-flex xs12 class="my-2">
                     <vue-recaptcha
                       ref="recaptcha"
                       @verify="onCaptchaVerified"
@@ -82,9 +99,11 @@
                     </v-btn>
                   </v-flex>
                 </v-layout>
-                <v-divider></v-divider>
+                
+                <v-divider class="my-2"></v-divider>
+
                 <v-layout row>
-                  <v-flex xs12 text-xs-center class="mt-4">
+                  <v-flex xs12 text-xs-left class="mt-4">
                     <span>Already have an account?</span>
                     <router-link :to="{ path: 'login', query: $route.query}">Log In</router-link>
                   </v-flex>

@@ -80,6 +80,11 @@
         this.$store.dispatch('createForm', formData)
           .then(response => {
             this.close()
+
+            // Redirect to the form
+            if (response.data.form.id) {
+              this.$router.push('/' + this.slug + '/forms/' + response.data.form.id)
+            }
           })
           .catch(
             error => {
