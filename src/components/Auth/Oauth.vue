@@ -100,7 +100,7 @@
 </script>
 
 <style scoped>
-  .btn-google {
+  .v-btn.btn-google {
     background-color: #dd4b39 !important;
     color: #ffffff;
   }

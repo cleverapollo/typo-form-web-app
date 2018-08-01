@@ -112,7 +112,9 @@
                 <v-layout row>
                   <v-flex xs12 text-xs-center class="mt-4">
                     <span>By clicking 'Register' your agree to the </span>
-                    <router-link :to="{ path: 'terms-of-use', query: $route.query}">Terms of Use.</router-link>
+                    <span flat class="blue--text text--lighten-1" @click.stop="terms = true" style="cursor: pointer;">
+                      Terms of Use.
+                    </span>
                   </v-flex>
                 </v-layout>
               </form>
@@ -121,6 +123,9 @@
         </v-card>
       </v-flex>
     </v-layout>
+
+    <!-- // Terms of Use -->
+    <Terms :visible="terms" @close="terms = false"></Terms>
   </v-container>
 </template>
 
@@ -138,7 +143,8 @@
         email: '',
         password: '',
         recaptchaToken: '',
-        data_sitekey: process.env.GOOGLE_DATA_SITEKEY
+        data_sitekey: process.env.GOOGLE_DATA_SITEKEY,
+        terms: false
       }
     },
     components: {
