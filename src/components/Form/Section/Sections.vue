@@ -187,7 +187,7 @@
             :key="'repeat' + order"
           >
 
-            <template v-for="(element, index) in list">
+            <template v-for="(element, index) in list"  v-if="!isTrigger(element)">
               <responses
                 :question="element"
                 :formId="formId"

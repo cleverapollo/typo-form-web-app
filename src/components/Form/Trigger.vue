@@ -120,7 +120,7 @@
         parentAnswerId: this.trigger.parent_answer_id,
         value: this.trigger.value,
         comparatorId: this.trigger.comparator_id,
-        operator: this.trigger.operator + 0,
+        operator: this.trigger.operator ? 1 : 0,
         operators: [
           { id: 0, operator: 'AND' },
           { id: 1, operator: 'OR' }

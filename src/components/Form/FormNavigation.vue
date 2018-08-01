@@ -41,7 +41,7 @@
         } else {
           let repeat = true
           let ptSection = this.list[0]
-          let children = this.$store.getters.loadedChildren(this.formId, null)
+          let children = this.list
 
           while (repeat) {
             if (children.length > 0) {
@@ -63,7 +63,9 @@
             } else {
               repeat = false
             }
-            children = this.$store.getters.loadedChildren(this.formId, ptSection.id)
+            children = _.sortBy(this.$store.getters.loadedChildren(this.formId, ptSection.id), element => {
+              return element.order
+            })
           }
           return this.section === ptSection
         }
@@ -75,7 +77,7 @@
 
         let repeat = true
         let ptSection = this.list[this.list.length - 1]
-        let children = this.$store.getters.loadedChildren(this.formId, null)
+        let children = this.list
 
         while (repeat) {
           if (children.length > 0) {
@@ -97,7 +99,9 @@
           } else {
             repeat = false
           }
-          children = this.$store.getters.loadedChildren(this.formId, ptSection.id)
+          children = _.sortBy(this.$store.getters.loadedChildren(this.formId, ptSection.id), element => {
+            return element.order
+          })
         }
 
         return this.section === ptSection
@@ -116,7 +120,9 @@
           }
         } else {
           if (this.submissionId !== -1) {
-            const children = this.$store.getters.loadedChildren(this.formId, rtSection.id)
+            const children = _.sortBy(this.$store.getters.loadedChildren(this.formId, rtSection.id), element => {
+              return element.order
+            })
             if (children.length > 0 && children[0].questions) {
               rtSection = this.getFirstChildSection(this.formId, rtSection)
               this.$store.dispatch('selectSection', rtSection)

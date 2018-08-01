@@ -102,7 +102,7 @@ export default {
       if (payload.comparatorId) {
         updateObj.comparator_id = payload.comparatorId
       }
-      if (payload.operator) {
+      if (payload.operator !== undefined) {
         updateObj.operator = payload.operator
       }
       window.axios.put(FORM_URL + payload.formId + TRIGGER_URL + '/' + payload.id, updateObj)
