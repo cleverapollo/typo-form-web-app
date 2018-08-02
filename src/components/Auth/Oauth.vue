@@ -108,6 +108,8 @@
   .btn-oauth i {
     font-size: 20px;
     left: 0px;
+    top: 0px;
+    line-height: 36px;
     position: absolute;
   }
 </style>

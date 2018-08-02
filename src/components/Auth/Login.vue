@@ -77,12 +77,12 @@
                 </v-layout>
                 <v-divider class="my-2"></v-divider>
 
-                <v-layout row>
-                  <v-flex xs12 sm6 text-xs-left class="mt-4">
+                <v-layout row wrap>
+                  <v-flex xs12 sm6 text-xs-center text-sm-left class="mt-2">
                     <span>Don't have an account?</span>
                     <router-link :to="{ path: 'register', query: $route.query}">Register</router-link>
                   </v-flex>
-                  <v-flex xs12 sm6 text-xs-right class="mt-4">
+                  <v-flex xs12 sm6 text-xs-center text-sm-right class="mt-2">
                     <router-link to="/password/reset" tag="a">Forgot your password?</router-link>
                   </v-flex>
                 </v-layout>
