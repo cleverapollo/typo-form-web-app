@@ -111,7 +111,7 @@
       }
     },
     mounted () {
-      this.onValidate(this.applications)
+      this.onValidate(this.applicationCount)
     }
   }
 </script>

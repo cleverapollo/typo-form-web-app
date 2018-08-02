@@ -79,18 +79,22 @@ export default {
     },
     acceptJoin ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.post(JOIN_URL + payload.type + '/' + payload.token)
-        .then(
-          response => {
-            commit('setLoading', false)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            commit('setError', error.response.data)
-          }
-        )
+      return new Promise((resolve, reject) => {
+        window.axios.post(JOIN_URL + payload.type + '/' + payload.token)
+          .then(
+            response => {
+              commit('setLoading', false)
+              resolve(response)
+            }
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              commit('setError', error.response.data)
+              reject(error)
+            }
+          )
+      })
     },
     clearError ({commit}) {
       commit('clearError')
