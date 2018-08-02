@@ -103,20 +103,19 @@
                 <v-divider class="my-2"></v-divider>
 
                 <v-layout row>
-                  <v-flex xs12 text-xs-left class="mt-4">
+                  <v-flex xs12 text-xs-center class="mt-2">
+                    <span>By creating an account you agree to the </span>
+                    <a href="#" @click.stop="terms = true">Terms of Use</a>.
+                  </v-flex>
+                </v-layout>
+
+                <v-layout row>
+                  <v-flex xs12 text-xs-center class="mt-2">
                     <span>Already have an account?</span>
                     <router-link :to="{ path: 'login', query: $route.query}">Log In</router-link>
                   </v-flex>
                 </v-layout>
 
-                <v-layout row>
-                  <v-flex xs12 text-xs-center class="mt-4">
-                    <span>By clicking 'Register' your agree to the </span>
-                    <span flat class="blue--text text--lighten-1" @click.stop="terms = true" style="cursor: pointer;">
-                      Terms of Use.
-                    </span>
-                  </v-flex>
-                </v-layout>
               </form>
             </v-container>
           </v-card-text>

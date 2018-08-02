@@ -25,6 +25,7 @@
               :headers="headers"
               :items="submissions"
               :search="search"
+              hide-actions
             >
               <template slot="items" slot-scope="props">
                 <tr @click="onSubmission(props.item.id)">

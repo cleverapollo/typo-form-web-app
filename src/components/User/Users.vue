@@ -31,6 +31,7 @@
                   :headers="userHeaders"
                   :items="users"
                   :search="userSearch"
+                  hide-actions
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.first_name }}</td>
@@ -70,6 +71,7 @@
                   :headers="invitedHeaders"
                   :items="invitedUsers"
                   :search="invitedUserSearch"
+                  hide-actions
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.invitee }}</td>
