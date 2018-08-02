@@ -102,6 +102,7 @@
       editPassword (value) {
         if (!value) {
           this.password = ''
+          this.oldPassword = ''
         } else {
           this.$store.dispatch('clearError')
         }

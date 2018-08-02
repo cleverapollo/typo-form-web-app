@@ -40,8 +40,7 @@
           if (this.type === 'application') {
             this.$router.push('/' + response.data.data.slug)
           } else {
-            const application = this.$store.getters.loadedApplicationById(response.data.data.application_id)
-            this.$router.push('/' + application.slug + '/teams/' + response.data.data.id)
+            this.$router.push('/' + response.data.slug + '/teams/' + response.data.data.id)
           }
         })
         .catch(error => {
