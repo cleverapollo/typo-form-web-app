@@ -3,7 +3,7 @@
     <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <div class="subheading py-2 px-3">Accept Invitation</div>
+          <h1 class="headline primary--text py-3">Accept Invitation</h1>
         </v-flex>
         <v-flex d-flex xs12>
           <v-alert :value="true" :type="alert">

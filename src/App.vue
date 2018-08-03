@@ -234,7 +234,7 @@
       },
       applicationItems () {
         return [
-            { title: 'Dashboard', path: '', icon: 'dashboard', admin: false },
+            { title: 'Dashboard', path: 'dashboard', icon: 'dashboard', admin: false },
             { title: 'Users', path: 'users', icon: 'person', admin: true },
             { title: 'Teams', path: 'teams', icon: 'people', admin: false },
             { title: 'Forms', path: 'forms', icon: 'content_paste', admin: true },

@@ -5,8 +5,7 @@
 
         <!-- //Title -->
         <v-flex d-flex xs12>
-          <div class="subheading py-2 px-3">Dashboard</div>
-
+          <h1 class="headline primary--text py-3">Dashboard</h1>
           <v-spacer></v-spacer>
 
           <div class="text-xs-right">
