@@ -3,7 +3,7 @@
     <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <div class="subheading py-2 px-3">Join to the {{ type }}</div>
+          <h1 class="headline primary--text py-3">Join the {{ type }}</h1>
         </v-flex>
         <v-flex d-flex xs12>
           <v-alert :value="true" :type="alert">
@@ -31,7 +31,7 @@
       }
     },
     created: function () {
-      this.message = 'Processing joining'
+      this.message = 'Processing invitation.'
       if (this.token.trim() !== '' && this.user !== null && this.user !== undefined) {
         this.$store.dispatch('acceptJoin', {type: this.type, token: this.token})
         .then(response => {

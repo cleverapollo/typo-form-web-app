@@ -23,17 +23,6 @@
       <v-card-text>
         <v-layout row wrap>
 
-          <!-- //Teams -->
-          <v-flex xs12>
-            <v-autocomplete
-              :items="teams"
-              item-value="id"
-              item-text="name"
-              v-model="teamId"
-              label="Team"
-            ></v-autocomplete>
-          </v-flex>
-
           <!-- //Users -->
           <v-flex xs12>
             <v-autocomplete
@@ -41,11 +30,23 @@
               item-value="id"
               item-text="name"
               v-model="userId"
-              label="User"
+              label="Who is the primary contact for this submission?"
+            ></v-autocomplete>
+          </v-flex>
+
+          <!-- //Teams -->
+          <v-flex xs12>
+            <v-autocomplete
+              :items="teams"
+              item-value="id"
+              item-text="name"
+              v-model="teamId"
+              label="Working as a team? Select your team."
             ></v-autocomplete>
           </v-flex>
           
           <!-- //Period Start -->
+          <div class="body-2">Is this submission for a set period? If so, set the date below (optional)</div>
           <v-flex xs12 sm6>
 
             <v-dialog

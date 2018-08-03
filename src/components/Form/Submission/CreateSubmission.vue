@@ -15,18 +15,7 @@
               item-value="id"
               item-text="name"
               v-model="formId"
-              label="Form Type"
-            ></v-autocomplete>
-          </v-flex>
-
-          <!-- //Teams -->
-          <v-flex xs12 v-if="teams.length">
-            <v-autocomplete
-              :items="teams"
-              item-value="id"
-              item-text="name"
-              v-model="teamId"
-              label="Team"
+              label="What submission do you want to create?"
             ></v-autocomplete>
           </v-flex>
 
@@ -37,11 +26,23 @@
               item-value="id"
               item-text="name"
               v-model="userId"
-              label="User"
+              label="Who is the primary contact for this submission?"
+            ></v-autocomplete>
+          </v-flex>
+
+          <!-- //Teams -->
+          <v-flex xs12 v-if="teams.length">
+            <v-autocomplete
+              :items="teams"
+              item-value="id"
+              item-text="name"
+              v-model="teamId"
+              label="Working as a team? Select your team."
             ></v-autocomplete>
           </v-flex>
 
           <!-- //Period Start -->
+          <div class="body-2">Is this submission for a set period? If so, set the date below (optional)</div>
           <v-flex xs12 sm6>
 
             <v-dialog

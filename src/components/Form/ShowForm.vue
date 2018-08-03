@@ -3,7 +3,7 @@
     <v-flex d-flex xs12>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <div class="subheading py-2 px-3">Edit Form</div>
+          <h1 class="headline primary--text py-3">Edit Form</h1>
         </v-flex>
 
         <!-- //Form Layout -->

@@ -5,7 +5,7 @@
 
         <!-- //Title -->
         <v-flex d-flex xs12>
-          <div class="subheading py-2 px-3">Forms</div>
+          <h1 class="headline primary--text py-3">Forms</h1>
         </v-flex>
 
         <!-- //Form List -->

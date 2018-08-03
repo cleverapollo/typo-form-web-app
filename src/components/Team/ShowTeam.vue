@@ -3,7 +3,7 @@
     <v-flex d-flex xs12>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <div class="subheading py-2 px-3">{{ team.name }}</div>
+          <h1 class="headline primary--text py-3">{{ team.name }}</h1>
           <div class="text-xs-right">
             <v-menu offset-y bottom left v-if="isTeamAdmin">
               <v-btn icon slot="activator">

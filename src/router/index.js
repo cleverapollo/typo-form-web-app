@@ -89,6 +89,13 @@ const router = new Router({
     },
     {
       path: '/:slug',
+      name: 'Submissions',
+      component: Submissions,
+      props: true,
+      meta: {requiresAuth: true}
+    },
+    {
+      path: '/:slug/dashboard',
       name: 'Application',
       component: Application,
       props: true,
