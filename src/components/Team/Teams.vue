@@ -5,6 +5,11 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Teams</h1>
         </v-flex>
+        <v-flex d-flex xs12>
+          <p>Select an existing team below or <a href="#" @click.stop="createTeam = true">create a new team</a>.</p>
+        </v-flex>
+
+
         <v-flex d-flex xs12 v-if="teams.length">
           <v-card>
             <v-list one-line>
