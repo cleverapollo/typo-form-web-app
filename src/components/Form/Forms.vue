@@ -7,6 +7,9 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Forms</h1>
         </v-flex>
+        <v-flex d-flex xs12>
+          <p>Select an existing form below or <a href="#" @click.stop="createForm = true">create a new form</a>.</p>
+        </v-flex>
 
         <!-- //Form List -->
         <v-flex d-flex xs12 v-if="forms.length">

@@ -6,7 +6,7 @@
           <h1 class="headline primary--text py-3">Submissions</h1>
         </v-flex>
         <v-flex d-flex xs12>
-          <p>Select an existing submission or create a new submission using the red action button.</p>
+          <p>Select an existing submission below or <a href="#" @click.stop="createSubmission = true">create a new submission</a>.</p>
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>

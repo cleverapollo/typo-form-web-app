@@ -23,6 +23,12 @@
               </v-layout>
               <v-divider class="my-2"></v-divider>
 
+              <v-layout row>
+                <v-flex xs12>
+                  <p>Enter your email address and we will email you link to reset your password.</p>
+                </v-flex>
+              </v-layout>
+
               <form @submit.prevent="onResetPassword">
                 <v-layout row>
                   <v-flex xs12>
@@ -52,7 +58,6 @@
                 </v-layout>
               </form>
 
-                
               <v-divider class="my-2"></v-divider>
 
               <v-layout row>
