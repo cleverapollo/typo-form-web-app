@@ -351,6 +351,9 @@
 
     <!-- //Delete Section -->
     <DeleteConfirmDialog @delete-action="onDeleteSection" :visible="deleteSection" @close="deleteSection = false"></DeleteConfirmDialog>
+
+    <!-- //Show snackbar -->
+    <Snackbar :snackbar="snackbarVisible" @dismissed="snackbarVisible = false"></Snackbar>
   </v-card>
 </template>
 
@@ -388,7 +391,8 @@
         hasRepeatableQuestions: this.section.repeatable,
         min_rows: this.section.min_rows,
         max_rows: this.section.max_rows,
-        deleteSection: false
+        deleteSection: false,
+        snackbarVisible: false
       }
     },
     watch: {
@@ -629,6 +633,7 @@
           formId: this.formId,
           progress: this.progress(parseInt(this.formId), parseInt(this.submissionId))
         })
+        this.snackbarVisible = true
       },
       setEditMode () {
         if (this.submissionId === -1) {

@@ -12,6 +12,7 @@ import Vuetify from 'vuetify'
 import { store } from './store'
 
 import AlertCmp from './components/Shared/Alert.vue'
+import Snackbar from './components/Shared/Snackbar.vue'
 import Terms from '@/components/Shared/Terms.vue'
 import DeleteConfirmDialog from './components/Shared/DeleteConfirmDialog.vue'
 
@@ -78,6 +79,7 @@ Vue.config.productionTip = false
 Vue.prototype.$sanitize = sanitizeHtml
 
 Vue.component('app-alert', AlertCmp)
+Vue.component('Snackbar', Snackbar)
 Vue.component('Terms', Terms)
 Vue.component('DeleteConfirmDialog', DeleteConfirmDialog)
 
