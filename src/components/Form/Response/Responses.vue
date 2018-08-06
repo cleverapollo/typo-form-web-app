@@ -30,6 +30,9 @@
       @update-response="updateResponse"
       @delete-response="deleteResponse"
     ></component>
+
+    <!-- //Show snackbar -->
+    <Snackbar :snackbar="snackbarVisible" @dismissed="snackbarVisible = false"></Snackbar>
   </v-flex>
 </template>
 
@@ -73,7 +76,8 @@
           'Time': timeComponent,
           'Content Block': ContentBlock,
           'ABN Lookup': ABNLookup
-        }
+        },
+        snackbarVisible: false
       }
     },
     computed: {
@@ -195,6 +199,7 @@
           formId: this.formId,
           progress: this.progress(parseInt(this.formId), parseInt(this.submissionId))
         })
+        this.snackbarVisible = true
       }
     }
   }
