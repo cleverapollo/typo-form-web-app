@@ -51,21 +51,22 @@
             <v-card-text>
               <v-layout row wrap>
                 <v-flex xs12 sm6>
-                  <div class="body">Last Saved: {{ lastSaved }}</div>
-                </v-flex>
-                <v-flex xs12 sm6>
-                  <div class="body text-sm-right" v-if='periodStart || periodEnd'>Period: {{ submissionPeriod }}</div>
+                  <div class="body pb-3">Last Saved: {{ lastSaved }}</div>
+                  <div class="body" v-if='periodStart || periodEnd'>Period: {{ submissionPeriod }}</div>
                 </v-flex>
 
                 <!-- //Progress -->
-                <v-flex xs12>
-                  <v-progress-linear
-                    :value="progressNumber"
+                <v-flex xs12 sm6 text-sm-right>
+                  <v-progress-circular
                     color="success"
-                    height="10"
+                    :value="progressNumber.toFixed(0)"
+                    size="75"
+                    width="5"
+                    rotate="-90"
                   >
-                    {{ progressNumber.toFixed(0) }}
-                  </v-progress-linear>
+                  <div class="title">{{ progressNumber.toFixed(0) + "%" }}</div>
+                  </v-progress-circular>
+
                 </v-flex>
               </v-layout>
             </v-card-text>
