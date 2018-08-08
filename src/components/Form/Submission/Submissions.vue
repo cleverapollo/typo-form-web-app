@@ -33,10 +33,10 @@
               <template slot="items" slot-scope="props">
                 <tr @click="onSubmission(props.item.id)">
                   <td>{{ props.item.form.name }}</td>
-                  <td>{{ props.item.team ? props.item.team.name : props.item.user.first_name + ' ' + props.item.user.last_name }}</td>
+                  <td>{{ props.item.owner }}</td>
                   <td>{{ props.item.created_at.date | moment }}</td>
                   <td>{{ props.item.updated_at.date | moment }}</td>
-                  <td>{{ status(props.item.status_id) }}</td>
+                  <td>{{ props.item.status }}</td>
                 </tr>
               </template>
               <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -77,17 +77,22 @@
         createSubmission: false,
         search: '',
         headers: [
-          { text: 'Submission', value: 'name', sortable: true, align: 'left' },
+          { text: 'Submission', value: 'form.name', sortable: true, align: 'left' },
           { text: 'Owner', value: 'owner', sortable: true, align: 'left' },
-          { text: 'Created', value: 'created_at', sortable: true, align: 'left' },
-          { text: 'Modified', value: 'updated_at', sortable: true, align: 'left' },
+          { text: 'Created', value: 'created_at.date', sortable: true, align: 'left' },
+          { text: 'Modified', value: 'updated_at.date', sortable: true, align: 'left' },
           { text: 'Status', value: 'status', sortable: true, align: 'left' }
         ]
       }
     },
     computed: {
       submissions () {
-        return this.$store.getters.loadedAllSubmissions(this.slug)
+        let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
+        submissions.forEach((submission) => {
+          submission.owner = submission.team ? submission.team.name : submission.user.first_name + ' ' + submission.user.last_name
+          submission.status = this.status(submission.status_id)
+        })
+        return submissions
       },
       statuses () {
         return this.$store.getters.statuses
