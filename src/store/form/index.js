@@ -51,23 +51,27 @@ export default {
   actions: {
     loadForms ({commit}, slug) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + slug + FORM_URL)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              slug: slug,
-              forms: response['data']['forms']
+      return new Promise((resolve, reject) => {
+        window.axios.get(APPLICATION_URL + slug + FORM_URL)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const updateObj = {
+                slug: slug,
+                forms: response['data']['forms']
+              }
+              commit('setLoadedForms', updateObj)
+              resolve(response)
             }
-            commit('setLoadedForms', updateObj)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     },
     createForm ({commit, getters}, payload) {
       commit('setLoading', true)

@@ -67,6 +67,7 @@
   import moment from 'moment'
 
   export default {
+    name: 'Submissions',
     props: ['slug'],
     components: {
       CreateSubmission

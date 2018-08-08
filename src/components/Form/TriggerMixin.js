@@ -23,20 +23,35 @@ export default {
         if (this.isSectionTrigger(section)) {
           return
         }
-        let sectionCount = 1
         if (section.repeatable) {
-          sectionCount = section.repeatable
-        }
-        let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question))
-        questionCount += questions.length * sectionCount
-        questions.forEach(function (question) {
-          let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
-          let responseLength = 1
-          if (section.repeatable) {
-            responseLength = responses.length
+          for (let i = 1; i <= section.repeatable; i++) {
+            let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, i))
+            questions.forEach(function (question) {
+              let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id && response.order === i)
+              let responseLength = responses.length ? 1 : 0
+              let questionLength = 1
+              if (this.getQuestionType(question.question_type_id) === 'Multiple choice grid' || this.getQuestionType(question.question_type_id) === 'Checkbox grid') {
+                responseLength = [...new Set(responses.map(response => response.answer_id))].length
+                questionLength = question.answers.filter(answer => !answer.parameter).length
+              }
+              questionCount += questionLength
+              responseCount += responseLength
+            }, this)
           }
-          responseCount += responses.length ? responseLength : 0
-        }, this)
+        } else {
+          let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, 1))
+          questions.forEach(function (question) {
+            let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
+            let responseLength = responses.length ? 1 : 0
+            let questionLength = 1
+            if (this.getQuestionType(question.question_type_id) === 'Multiple choice grid' || this.getQuestionType(question.question_type_id) === 'Checkbox grid') {
+              responseLength = [...new Set(responses.map(response => response.answer_id))].length
+              questionLength = question.answers.filter(answer => !answer.parameter).length
+            }
+            questionCount += questionLength
+            responseCount += responseLength
+          }, this)
+        }
       }, this)
 
       return questionCount !== 0 ? responseCount * 100 / questionCount : 0
@@ -49,22 +64,32 @@ export default {
         return 0
       }
       if (section.repeatable) {
-        const sectionCount = section.repeatable
-        for (let i = 1; i <= sectionCount; i++) {
+        for (let i = 1; i <= section.repeatable; i++) {
           let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, i))
-          questionCount += questions.length
           questions.forEach(function (question) {
             let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id && response.order === i)
-            const responseLength = [...new Set(responses.map(response => response.order))].length
-            responseCount += responses.length ? responseLength : 0
+            let responseLength = responses.length ? 1 : 0
+            let questionLength = 1
+            if (this.getQuestionType(question.question_type_id) === 'Multiple choice grid' || this.getQuestionType(question.question_type_id) === 'Checkbox grid') {
+              responseLength = [...new Set(responses.map(response => response.answer_id))].length
+              questionLength = question.answers.filter(answer => !answer.parameter).length
+            }
+            questionCount += questionLength
+            responseCount += responseLength
           }, this)
         }
       } else {
         let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, 1))
-        questionCount += questions.length
         questions.forEach(function (question) {
           let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
-          responseCount += responses.length ? 1 : 0
+          let responseLength = responses.length ? 1 : 0
+          let questionLength = 1
+          if (this.getQuestionType(question.question_type_id) === 'Multiple choice grid' || this.getQuestionType(question.question_type_id) === 'Checkbox grid') {
+            responseLength = [...new Set(responses.map(response => response.answer_id))].length
+            questionLength = question.answers.filter(answer => !answer.parameter).length
+          }
+          questionCount += questionLength
+          responseCount += responseLength
         }, this)
       }
       return questionCount !== 0 ? responseCount * 100 / questionCount : 0

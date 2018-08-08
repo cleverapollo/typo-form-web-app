@@ -28,6 +28,7 @@ import ShowForm from '@/components/Form/ShowForm'
 // Submissions
 import Submissions from '@/components/Form/Submission/Submissions'
 import ShowSubmission from '@/components/Form/Submission/ShowSubmission'
+import SubmissionFilter from '@/components/Form/Submission/SubmissionFilter'
 
 import {store} from '@/store'
 
@@ -147,6 +148,13 @@ const router = new Router({
       path: '/:slug/submissions/:id',
       name: 'ShowSubmission',
       component: ShowSubmission,
+      props: true,
+      meta: {requiresAuth: true}
+    },
+    {
+      path: '/:slug/submissionfilter',
+      name: 'SubmissionFilter',
+      component: SubmissionFilter,
       props: true,
       meta: {requiresAuth: true}
     },
