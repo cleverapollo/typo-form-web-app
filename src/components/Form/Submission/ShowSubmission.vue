@@ -133,6 +133,7 @@
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
+    name: 'ShowSubmission',
     props: ['slug', 'id'],
     mixins: [TriggerMixin],
     data () {

@@ -189,6 +189,29 @@ export default {
         return questions
       }
     },
+    loadedApplicationQuestions (state, getters, rootState) {
+      return (slug) => {
+        if (!rootState.form.loadedForms[slug]) {
+          return []
+        }
+        const forms = rootState.form.loadedForms[slug]
+        let questions = []
+        for (let j = 0; j < forms.length; j++) {
+          if (!rootState.section.loadedSections[forms[j].id]) {
+            continue
+          }
+          for (let i = 0; i < rootState.section.loadedSections[forms[j].id].length; i++) {
+            for (let k = 0; k < rootState.section.loadedSections[forms[j].id][i].questions.length; k++) {
+              let question = rootState.section.loadedSections[forms[j].id][i].questions[k]
+              question['section_name'] = rootState.section.loadedSections[forms[j].id][i].name
+              question['form_name'] = forms[j].name
+              questions.push(question)
+            }
+          }
+        }
+        return questions
+      }
+    },
     loadedQuestion (state, getters, rootState) {
       return (formId, sectionId, questionId) => {
         if (!rootState.section.loadedSections[formId]) {

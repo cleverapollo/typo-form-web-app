@@ -5,13 +5,17 @@ const SUBMISSION_URL = '/submission'
 
 export default {
   state: {
-    loadedSubmissions: {}
+    loadedSubmissions: {},
+    loadedSubmissionFilters: {}
   },
   mutations: {
     setLoadedSubmissions (state, payload) {
       let submissions = Object.assign({}, state.loadedSubmissions)
       submissions[payload.formId] = payload.submissions
       state.loadedSubmissions = submissions
+    },
+    submissionFilter (state, payload) {
+      state.loadedSubmissionFilters = payload
     },
     setLoadedAllSubmissions (state, payload) {
       let submissions = Object.assign({}, state.loadedSubmissions)
@@ -220,6 +224,22 @@ export default {
             reject(error)
           })
       })
+    },
+    submissionFilter ({commit}, payload) {
+      commit('setLoading', true)
+      return new Promise((resolve, reject) => {
+        window.axios.post(APPLICATION_URL + payload.slug + SUBMISSION_URL + '/filter', payload)
+          .then((response) => {
+            commit('setLoading', false)
+            commit('submissionFilter', response['data']['submissions'])
+            resolve(response.data.submissions)
+          })
+          .catch(error => {
+            console.log(error)
+            commit('setLoading', false)
+            reject(error)
+          })
+      })
     }
   },
   getters: {
@@ -264,6 +284,11 @@ export default {
           }
         }
         return null
+      }
+    },
+    loadedSubmissionFilters (state) {
+      return () => {
+        return state.loadedSubmissionFilters
       }
     },
     loadedSubmission (state) {
