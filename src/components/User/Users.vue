@@ -37,7 +37,7 @@
                     <td>{{ props.item.first_name }}</td>
                     <td>{{ props.item.last_name }}</td>
                     <td>{{ props.item.email }}</td>
-                    <td>{{ getRole(props.item.application_role_id) }}</td>
+                    <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='userIsApplicationAdmin' class="justify-center layout px-0">
                       <EditUser :user="props.item" :slug="slug"></EditUser>
@@ -75,7 +75,7 @@
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.invitee }}</td>
-                    <td>{{ getRole(props.item.application_role_id) }}</td>
+                    <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='userIsApplicationAdmin' class="justify-center layout px-0">
                       <EditInvitedUser :user="props.item" :slug="slug"></EditInvitedUser>
@@ -154,10 +154,18 @@
         return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       users () {
-        return this.$store.getters.loadedUsers(this.slug)
+        let users = this.$store.getters.loadedUsers(this.slug)
+        users.forEach((user) => {
+          user.role = this.getRole(user.application_role_id)
+        })
+        return users
       },
       invitedUsers () {
-        return this.$store.getters.invitedUsers(this.slug)
+        let invitedUsers = this.$store.getters.invitedUsers(this.slug)
+        invitedUsers.forEach((invitedUser) => {
+          invitedUser.role = this.getRole(invitedUser.application_role_id)
+        })
+        return invitedUsers
       },
       userHeaders () {
         let defaultUserHeaders = [
@@ -165,7 +173,7 @@
           { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
           { text: 'Email', value: 'email', sortable: true, align: 'left' },
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Joined', value: 'created_at', sortable: true, align: 'left' }
+          { text: 'Joined', value: 'created_at.date', sortable: true, align: 'left' }
         ]
         if (this.userIsApplicationAdmin) {
           defaultUserHeaders.push({ text: 'Actions', sortable: false, align: 'center' })
@@ -174,9 +182,9 @@
       },
       invitedHeaders () {
         let defaultInvitedHeaders = [
-          { text: 'Email', value: 'email', sortable: true, align: 'left' },
+          { text: 'Email', value: 'invitee', sortable: true, align: 'left' },
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Invited', value: 'created_at', sortable: true, align: 'left' }
+          { text: 'Invited', value: 'created_at.date', sortable: true, align: 'left' }
         ]
         if (this.userIsApplicationAdmin) {
           defaultInvitedHeaders.push({ text: 'Actions', sortable: false, align: 'center' })

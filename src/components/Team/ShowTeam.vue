@@ -67,7 +67,7 @@
                     <td>{{ props.item.first_name }}</td>
                     <td>{{ props.item.last_name }}</td>
                     <td>{{ props.item.email }}</td>
-                    <td>{{ getRole(props.item.team_role_id) }}</td>
+                    <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='isTeamAdmin' class="justify-center layout px-0">
                       <EditTeamUser :user="props.item" :slug="slug" :teamId="id"></EditTeamUser>
@@ -105,7 +105,7 @@
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.invitee }}</td>
-                    <td>{{ getRole(props.item.team_role_id) }}</td>
+                    <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='isTeamAdmin' class="justify-center layout px-0">
                       <EditInvitedTeamUser :user="props.item" :slug="slug" :teamId="id"></EditInvitedTeamUser>
@@ -189,10 +189,18 @@
         return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       users () {
-        return this.$store.getters.loadedTeamUsers(parseInt(this.id))
+        let users = this.$store.getters.loadedTeamUsers(parseInt(this.id))
+        users.forEach((user) => {
+          user.role = this.getRole(user.team_role_id)
+        })
+        return users
       },
       invitedUsers () {
-        return this.$store.getters.invitedTeamUsers(parseInt(this.id))
+        let invitedUsers = this.$store.getters.invitedTeamUsers(parseInt(this.id))
+        invitedUsers.forEach((invitedUser) => {
+          invitedUser.role = this.getRole(invitedUser.team_role_id)
+        })
+        return invitedUsers
       },
       joinURL () {
         return window.location.origin + '/join/team/' + this.team.share_token
@@ -203,7 +211,7 @@
           { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
           { text: 'Email', value: 'email', sortable: true, align: 'left' },
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Joined', value: 'created_at', sortable: true, align: 'left' }
+          { text: 'Joined', value: 'created_at.date', sortable: true, align: 'left' }
         ]
         if (this.isTeamAdmin) {
           defaultUserHeaders.push({ text: 'Action', sortable: false, align: 'center' })
@@ -212,9 +220,9 @@
       },
       invitedHeaders () {
         let defaultInvitedHeaders = [
-          { text: 'Email', value: 'email', sortable: true, align: 'left' },
+          { text: 'Email', value: 'invitee', sortable: true, align: 'left' },
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Invited', value: 'created_at', sortable: true, align: 'left' }
+          { text: 'Invited', value: 'created_at.date', sortable: true, align: 'left' }
         ]
         if (this.isTeamAdmin) {
           defaultInvitedHeaders.push({ text: 'Action', sortable: false, align: 'center' })
