@@ -59,10 +59,10 @@
                 <v-flex xs12 sm6 text-sm-right>
                   <v-progress-circular
                     color="success"
-                    :value="progressNumber.toFixed(0)"
-                    size="75"
-                    width="5"
-                    rotate="-90"
+                    :value="parseInt(progressNumber.toFixed(0))"
+                    :size="75"
+                    :width="5"
+                    :rotate="-90"
                   >
                   <div class="title">{{ progressNumber.toFixed(0) + "%" }}</div>
                   </v-progress-circular>
@@ -103,12 +103,6 @@
                 <v-flex xs12 md4 offset-md4 class="mt-4" v-if="sendAble">
                   <v-btn block color="success" @click=onSendSubmission :disabled="!sendAble">
                     Submit
-                  </v-btn>
-                </v-flex>
-
-                <v-flex xs12 md4 offset-md4 class="mt-4" v-else>
-                  <v-btn block color="success" @click="snackbar = true">
-                    Save
                   </v-btn>
                 </v-flex>
               </v-layout>

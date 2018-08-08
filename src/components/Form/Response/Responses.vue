@@ -199,7 +199,7 @@
           formId: this.formId,
           progress: this.progress(parseInt(this.formId), parseInt(this.submissionId))
         })
-        this.snackbarVisible = true
+       // this.snackbarVisible = true
       }
     }
   }

@@ -39,7 +39,8 @@ export default {
         }, this)
       }, this)
 
-      return questionCount !== 0 ? responseCount * 100 / questionCount : 0
+      let progress = questionCount !== 0 ? responseCount * 100 / questionCount : 0
+      return progress < 0 ? 0 : progress > 100 ? 100 : progress
     },
     sectionProgress (formId, sectionId, submissionId) {
       const section = this.$store.getters.loadedSection(formId, sectionId)
@@ -67,7 +68,8 @@ export default {
           responseCount += responses.length ? 1 : 0
         }, this)
       }
-      return questionCount !== 0 ? responseCount * 100 / questionCount : 0
+      let progress = questionCount !== 0 ? responseCount * 100 / questionCount : 0
+      return progress < 0 ? 0 : progress > 100 ? 100 : progress
     },
     isSectionTrigger (item) {
       if (!item) {
