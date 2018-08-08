@@ -2,8 +2,11 @@
   <v-snackbar
     v-model="show"
     :timeout="3000"
+    color="success"
+    bottom
+    left
   >
-    Response is saved.
+    Progress saved
     <v-btn
       dark
       flat
