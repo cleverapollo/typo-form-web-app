@@ -74,6 +74,8 @@
                       ></v-text-field>
                   </v-flex>
                 </v-layout>
+                <PasswordComplexity />
+                
                 <v-layout row>
                   <v-flex xs12 class="my-2">
                     <vue-recaptcha
@@ -129,6 +131,7 @@
 </template>
 
 <script>
+  import PasswordComplexity from './PasswordComplexity'
   import Oauth from './Oauth'
   import PasswordMixin from './PasswordMixin.js'
   import VueRecaptcha from 'vue-recaptcha'
@@ -147,6 +150,7 @@
       }
     },
     components: {
+      PasswordComplexity,
       Oauth,
       VueRecaptcha
     },

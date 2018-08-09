@@ -43,6 +43,8 @@
             </v-card-text>
           </v-flex>
         </v-layout>
+        <PasswordComplexity />
+
         <v-divider></v-divider>
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
@@ -71,9 +73,13 @@
 </template>
 
 <script>
+  import PasswordComplexity from './../PasswordComplexity'
   import PasswordMixin from '../PasswordMixin.js'
   export default {
     mixins: [PasswordMixin],
+    components: {
+      PasswordComplexity
+    },
     props: ['disabled'],
     data () {
       return {

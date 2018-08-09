@@ -52,6 +52,7 @@
                       :rules="[validation]"></v-text-field>
                   </v-flex>
                 </v-layout>
+                <PasswordComplexity />
                 <v-layout row>
                   <v-flex xs12>
                     <v-btn
@@ -87,9 +88,13 @@
 </template>
 
 <script>
+  import PasswordComplexity from './PasswordComplexity'
   import PasswordMixin from './PasswordMixin.js'
   export default {
     mixins: [PasswordMixin],
+    components: {
+      PasswordComplexity,
+    },
     props: ['token'],
     data () {
       return {
