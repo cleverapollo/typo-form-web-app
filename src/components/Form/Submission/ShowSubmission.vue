@@ -100,10 +100,13 @@
                   ></formNavigation>
                 </v-flex>
 
-                <v-flex xs12 md4 offset-md4 class="mt-4" v-if="sendAble">
+                <v-flex xs12 md4 offset-md4 class="mt-4" v-if="status!=='Closed'">
                   <v-btn block color="success" @click=onSendSubmission :disabled="!sendAble">
                     Submit
                   </v-btn>
+                </v-flex>
+                <v-flex xs12 text-xs-center class="mt-3" v-if="status!=='Closed'">
+                  <p class="caption">This submission can be submitted once all mandatory questions have been answered.</p>
                 </v-flex>
               </v-layout>
 
@@ -178,6 +181,12 @@
       progressNumber () {
         return this.progress(parseInt(this.formId), this.submissionId)
       },
+      status () {
+        const status = this.statuses.find((status) => {
+          return status.id === this.submission.status_id
+        })
+        return status ? status.status : 'undefined'
+      },
       sendAble () {
         if (new Date(this.periodStart).getTime() - new Date().getTime() > 0 || new Date(this.periodEnd).getTime() - new Date().getTime() < 0) {
           return false
@@ -187,13 +196,8 @@
           return false
         }
 
-        if (this.statuses) {
-          const statusIndex = _.findIndex(this.statuses, status => {
-            return status.id === this.submission.status_id
-          })
-          if (statusIndex > -1 && this.statuses[statusIndex].status !== 'Open') {
-            return false
-          }
+        if (this.status !== 'Open') {
+          return false
         }
 
         return this.progressNumber === 100

@@ -93,7 +93,7 @@
   export default {
     mixins: [PasswordMixin],
     components: {
-      PasswordComplexity,
+      PasswordComplexity
     },
     props: ['token'],
     data () {

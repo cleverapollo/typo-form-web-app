@@ -64,14 +64,16 @@
                   </v-list-tile-content>
                 </v-list-tile>
 
-                <!-- <v-list-tile @click="onList ('submissionfilter')">
+                <!-- Submission Filter
+                <v-list-tile @click="onList ('submissionfilter')">
                   <v-list-tile-avatar>
                     <v-icon>assignment</v-icon>
                   </v-list-tile-avatar>
                   <v-list-tile-content>
                     Submission Filter
                   </v-list-tile-content>
-                </v-list-tile> -->
+                </v-list-tile>
+                -->
               </v-list>
             </v-menu>
           </div>

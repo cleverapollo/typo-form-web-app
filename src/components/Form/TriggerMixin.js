@@ -80,18 +80,31 @@ export default {
           }, this)
         }
       } else {
-        let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, 1))
-        questions.forEach(function (question) {
-          let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
-          let responseLength = responses.length ? 1 : 0
-          let questionLength = 1
-          if (this.getQuestionType(question.question_type_id) === 'Multiple choice grid' || this.getQuestionType(question.question_type_id) === 'Checkbox grid') {
-            responseLength = [...new Set(responses.map(response => response.answer_id))].length
-            questionLength = question.answers.filter(answer => !answer.parameter).length
-          }
-          questionCount += questionLength
-          responseCount += responseLength
-        }, this)
+        const childrenSections = this.$store.getters.loadedChildrenSection(formId, sectionId)
+        if (childrenSections.length) {
+          let _this = this
+          let progress = 100
+          childrenSections.forEach(function (section) {
+            const childProgress = _this.sectionProgress(formId, section.id, submissionId)
+            if (childProgress !== 100) {
+              progress = 0
+            }
+          })
+          return progress
+        } else {
+          let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, 1))
+          questions.forEach(function (question) {
+            let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
+            let responseLength = responses.length ? 1 : 0
+            let questionLength = 1
+            if (this.getQuestionType(question.question_type_id) === 'Multiple choice grid' || this.getQuestionType(question.question_type_id) === 'Checkbox grid') {
+              responseLength = [...new Set(responses.map(response => response.answer_id))].length
+              questionLength = question.answers.filter(answer => !answer.parameter).length
+            }
+            questionCount += questionLength
+            responseCount += responseLength
+          }, this)
+        }
       }
       let progress = questionCount !== 0 ? responseCount * 100 / questionCount : 0
       return progress < 0 ? 0 : progress > 100 ? 100 : progress
