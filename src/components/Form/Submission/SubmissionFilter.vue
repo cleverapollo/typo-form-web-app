@@ -19,10 +19,9 @@
                   :items="sources"
                   label="Source"
                   v-model="element.source"
-                  item-text="question"
-                  item-value="question"
                   single-line
                   required
+                  return-object
                 >
                   <template
                     slot="selection"
@@ -167,12 +166,12 @@
         ]
         const questions = this.$store.getters.loadedApplicationQuestions(this.slug)
         _.forEach(questions, (question) => {
-          sources.push({'group': question.form_name + '-' + question.section_name, 'question': question.question})
+          sources.push({'group': question.form_name + '-' + question.section_name, 'question': question.question, 'id': question.id})
         }, this)
         return sources
       },
       loadedSubmissionFilters () {
-        return this.$store.getters.loadedSubmissionFilters()
+        return this.$store.getters.loadedSubmissionFilters().submission_ids
       }
     },
     methods: {
@@ -197,7 +196,29 @@
         if (!this.filters.length) {
           return
         }
-        this.$store.dispatch('submissionFilter', {filters: this.filters, slug: this.slug})
+        let filterParameters = []
+        for (let i = 0; i < this.filters.length; i++) {
+          if (!this.filters[i].source) {
+            continue
+          }
+          let newParameter = {}
+          if (this.filters[i].source.group === 'Submission Detail') {
+            newParameter = {
+              source: this.filters[i].source.question,
+              query: this.filters[i].query,
+              value: this.filters[i].value
+            }
+          } else {
+            newParameter = {
+              source: 'question_id',
+              question_id: this.filters[i].source.id,
+              query: this.filters[i].query,
+              value: this.filters[i].value
+            }
+          }
+          filterParameters.push(newParameter)
+        }
+        this.$store.dispatch('submissionFilter', {filters: filterParameters, slug: this.slug})
       },
       removeFilter (index) {
         this.filters.splice(index, 1)
