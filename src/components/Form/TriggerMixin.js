@@ -62,7 +62,7 @@ export default {
       let questionCount = 0
       let responseCount = 0
       if (this.isSectionTrigger(section)) {
-        return 0
+        return 100
       }
       if (section.repeatable) {
         for (let i = 1; i <= section.repeatable; i++) {
