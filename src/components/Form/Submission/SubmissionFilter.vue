@@ -19,6 +19,8 @@
                   :items="sources"
                   label="Source"
                   v-model="element.source"
+                  item-text="question"
+                  item-value="question"
                   single-line
                   required
                   return-object
