@@ -6,6 +6,14 @@
           <h1 class="headline primary--text py-3">{{ submission.form.name }}</h1>
         </v-flex>
 
+        <v-flex xs12 class="mb-3">
+          <v-alert
+            :value="status != 'Open'"
+            type="success">
+            This submission is {{ status.toLowerCase() }}.
+          </v-alert>
+        </v-flex>
+
         <!-- //Submission Layout -->
         <v-flex xs12>
           <v-card>
@@ -69,6 +77,7 @@
 
                 </v-flex>
               </v-layout>
+
             </v-card-text>
             <v-divider></v-divider>
 
@@ -179,7 +188,7 @@
         return this.submission.period_end ? this.submission.period_end.substring(0, 10) : ''
       },
       progressNumber () {
-        return this.progress(parseInt(this.formId), this.submissionId)
+        return this.status === 'Open' ? this.progress(parseInt(this.formId), this.submissionId) : 100
       },
       status () {
         const status = this.statuses.find((status) => {
@@ -246,6 +255,7 @@
             statusId: this.statuses[statusIndex].id
           }
         )
+        scroll(0, 0)
       }
     },
     created () {
