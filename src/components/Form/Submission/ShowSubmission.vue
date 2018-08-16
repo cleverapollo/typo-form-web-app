@@ -115,7 +115,7 @@
                   </v-btn>
                 </v-flex>
                 <v-flex xs12 text-xs-center class="mt-3" v-if="status!=='Closed'">
-                  <p class="caption">This submission can only be submitted once all mandatory questions have been answered.</p>
+                  <p class="caption">This form can only be submitted once all mandatory questions have been answered.</p>
                 </v-flex>
               </v-layout>
 
