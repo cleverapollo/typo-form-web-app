@@ -47,6 +47,13 @@
                           </v-list-tile-avatar>
                           <v-list-tile-content>Delete Submission</v-list-tile-content>
                         </v-list-tile>
+
+                        <v-list-tile @click.stop="onOpenSubmission" v-if="status==='Closed'">
+                          <v-list-tile-avatar>
+                            <v-icon>assignment</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>Open Submission</v-list-tile-content>
+                        </v-list-tile>
                       </v-list>
                     </v-menu>
                   </div>
@@ -232,6 +239,19 @@
       }
     },
     methods: {
+      onOpenSubmission: function () {
+        const statusIndex = _.findIndex(this.statuses, status => {
+          return status.status === 'Open'
+        })
+
+        this.$store.dispatch('updateSubmission',
+          {
+            formId: this.formId,
+            id: this.submissionId,
+            statusId: this.statuses[statusIndex].id
+          }
+        )
+      },
       onDeleteSubmission: function () {
         this.$store.dispatch('deleteSubmission',
           {
