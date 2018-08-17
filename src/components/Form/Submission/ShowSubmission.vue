@@ -48,7 +48,7 @@
                           <v-list-tile-content>Delete Submission</v-list-tile-content>
                         </v-list-tile>
 
-                        <v-list-tile @click.stop="onOpenSubmission" v-if="status==='Closed'">
+                        <v-list-tile @click.stop="onOpenSubmission" v-if="status==='Closed' && userIsApplicationAdmin">
                           <v-list-tile-avatar>
                             <v-icon>assignment</v-icon>
                           </v-list-tile-avatar>
@@ -167,6 +167,27 @@
       FormNavigation
     },
     computed: {
+      application () {
+        return this.$store.getters.loadedApplication(this.slug)
+      },
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      userIsApplicationAdmin () {
+        return this.userIsAdmin || this.isSuperUser
+      },
+      userIsAdmin () {
+        if (!this.userIsAuthenticated || !this.application) {
+          return false
+        }
+        return this.getRole(this.application.application_role_id) === 'Admin'
+      },
+      isSuperUser () {
+        if (!this.userIsAuthenticated) {
+          return false
+        }
+        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
+      },
       sections () {
         return this.$store.getters.loadedSections(this.formId)
       },
@@ -187,6 +208,9 @@
       },
       statuses () {
         return this.$store.getters.statuses
+      },
+      roles () {
+        return this.$store.getters.roles
       },
       periodStart () {
         return this.submission.period_start ? this.submission.period_start.substring(0, 10) : ''
@@ -239,6 +263,12 @@
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
       onOpenSubmission: function () {
         const statusIndex = _.findIndex(this.statuses, status => {
           return status.status === 'Open'
