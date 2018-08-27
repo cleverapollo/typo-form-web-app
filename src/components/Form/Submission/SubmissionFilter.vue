@@ -44,7 +44,7 @@
               </v-flex>
               <v-flex xs10 offset-xs1 sm2 offset-sm1 d-flex>
                 <v-select
-                  :items="filterComparators"
+                  :items="filterComparators(element.source)"
                   item-text="comparator"
                   item-value="id"
                   v-model="element.query"
@@ -121,23 +121,46 @@
     },
     computed: {
       headers () {
-        // let headers = []
+        let headers = []
         _.forEach(this.filters, function (filter) {
           if (filter.source.group === 'Submission Detail') {
-            // if (filter.source.question === 'id')
+            if (filter.source.question === 'ID') {
+              headers.push({ text: 'ID', value: 'id', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Form ID') {
+              headers.push({ text: 'Form ID', value: 'form.id', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Form') {
+              headers.push({ text: 'Form', value: 'form.name', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'User ID') {
+              headers.push({ text: 'User ID', value: 'user.id', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'User') {
+              headers.push({ text: 'User', value: 'user.name', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Team ID') {
+              headers.push({ text: 'Team ID', value: 'team.id', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Team') {
+              headers.push({ text: 'Team', value: 'team.name', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Progress') {
+              headers.push({ text: 'Progress', value: 'progress', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Period Start') {
+              headers.push({ text: 'Period Start', value: 'period_start', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Period End') {
+              headers.push({ text: 'Period End', value: 'period_end', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Status') {
+              headers.push({ text: 'Status', value: 'status', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Created Date') {
+              headers.push({ text: 'Created Date', value: 'created_at.date', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Updated Date') {
+              headers.push({ text: 'Updated Date', value: 'updated_at.date', sortable: true, align: 'left' })
+            }
+          } else {
+            headers.push({ text: filter.source.question, value: filter.source.question, sortable: false, align: 'left' })
           }
         })
-        return [
-          { text: 'Submission', value: 'form.name', sortable: true, align: 'left' },
-          { text: 'Owner', value: 'owner', sortable: true, align: 'left' },
-          { text: 'Created', value: 'created_at.date', sortable: true, align: 'left' },
-          { text: 'Modified', value: 'updated_at.date', sortable: true, align: 'left' },
-          { text: 'Status', value: 'status', sortable: true, align: 'left' }
-        ]
+        return headers
       },
       submissions () {
         let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
         submissions.forEach((submission) => {
+          submission.user.name = submission.user.first_name + ' ' + submission.user.last_name
           submission.owner = submission.team ? submission.team.name : submission.user.first_name + ' ' + submission.user.last_name
           submission.status = this.status(submission.status_id)
         })
@@ -149,22 +172,21 @@
       comparators () {
         return this.$store.getters.comparators
       },
-      filterComparators () {
-        return this.comparators.filter((comparator) => {
-          return comparator.comparator !== 'is invalid'
-        })
-      },
       sources () {
         let sources = [
-          {'group': 'Submission Detail', 'question': 'id'},
-          {'group': 'Submission Detail', 'question': 'form_id'},
-          {'group': 'Submission Detail', 'question': 'user_id'},
-          {'group': 'Submission Detail', 'question': 'team_id'},
-          {'group': 'Submission Detail', 'question': 'progress'},
-          {'group': 'Submission Detail', 'question': 'period_start'},
-          {'group': 'Submission Detail', 'question': 'period_end'},
-          {'group': 'Submission Detail', 'question': 'status_id'},
-          {'group': 'Submission Detail', 'question': 'updated_at'}
+          {'group': 'Submission Detail', 'question': 'ID'},
+          {'group': 'Submission Detail', 'question': 'Form ID'},
+          {'group': 'Submission Detail', 'question': 'Form'},
+          {'group': 'Submission Detail', 'question': 'User ID'},
+          {'group': 'Submission Detail', 'question': 'User'},
+          {'group': 'Submission Detail', 'question': 'Team ID'},
+          {'group': 'Submission Detail', 'question': 'Team'},
+          {'group': 'Submission Detail', 'question': 'Progress'},
+          {'group': 'Submission Detail', 'question': 'Period Start'},
+          {'group': 'Submission Detail', 'question': 'Period End'},
+          {'group': 'Submission Detail', 'question': 'Status'},
+          {'group': 'Submission Detail', 'question': 'Created Date'},
+          {'group': 'Submission Detail', 'question': 'Updated Date'}
         ]
         const questions = this.$store.getters.loadedApplicationQuestions(this.slug)
         _.forEach(questions, (question) => {
@@ -177,19 +199,39 @@
       }
     },
     methods: {
+      filterComparators (source) {
+        if (source.group === 'Submission Detail') {
+          if (source.question === 'Form' || source.question === 'User' || source.question === 'Team') {
+            return this.comparators.filter((comparator) => {
+              return comparator.comparator === 'equals' ||
+                comparator.comparator === 'not equal to' ||
+                comparator.comparator === 'contains' ||
+                comparator.comparator === 'starts with' ||
+                comparator.comparator === 'ends with' ||
+                comparator.comparator === 'is null' ||
+                comparator.comparator === 'is not null' ||
+                comparator.comparator === 'in list' ||
+                comparator.comparator === 'not in list' ||
+                comparator.comparator === 'does not contain'
+            })
+          }
+          return this.comparators.filter((comparator) => {
+            return comparator.comparator !== 'is invalid' &&
+              comparator.comparator !== 'contains' &&
+              comparator.comparator !== 'does not contain' &&
+              comparator.comparator !== 'starts with' &&
+              comparator.comparator !== 'ends with'
+          })
+        }
+        return this.comparators.filter((comparator) => {
+          return comparator.comparator !== 'is invalid'
+        })
+      },
       onSubmission (id) {
         this.$router.push('/' + this.slug + '/submissions/' + id)
       },
       status (id) {
         return this.statuses.find(e => { return e.id === id }).status
-      },
-      onDeleteSubmission: function (formId, id) {
-        this.$store.dispatch('deleteSubmission',
-          {
-            formId: formId,
-            id: id
-          }
-        )
       },
       addFilter () {
         this.filters.push({ source: '', query: '', value: '' })
@@ -212,7 +254,7 @@
             }
           } else {
             newParameter = {
-              source: 'question_id',
+              source: 'Question',
               question_id: this.filters[i].source.id,
               query: this.filters[i].query,
               value: this.filters[i].value
