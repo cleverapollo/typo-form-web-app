@@ -109,7 +109,7 @@
                 <div slot="header">
                   <h3>
                     <v-icon class="item">drag_handle</v-icon>
-                    {{index + 1 }}. {{ element.question || section.name }}
+                    {{index + 1 }}. {{ element.question || element.name }}
                   </h3>
                 </div>
                 <v-card>
@@ -743,6 +743,7 @@
         this.min_rows = parseInt(value)
         if (isNaN(this.min_rows)) {
           this.min_rows = ''
+          return 'Minimum rows count is required.'
         }
         if (this.max_rows && this.min_rows > this.max_rows) {
           return 'Minimum rows count is set bigger than maximum rows count.'
@@ -755,7 +756,7 @@
         if (isNaN(this.max_rows)) {
           this.max_rows = ''
         }
-        if (this.min_rows && this.min_rows > this.max_rows) {
+        if (this.max_rows && this.min_rows > this.max_rows) {
           return 'Maximum rows count is set smaller than minimum rows count.'
         } else {
           return true
@@ -773,5 +774,12 @@
 <style scoped>
   .v-card__title {
     flex-wrap: unset !important;
+  }
+  .v-expansion-panel__header div:first-child {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
   }
 </style>

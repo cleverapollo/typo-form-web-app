@@ -105,7 +105,7 @@
 
             <!-- //Footer -->
             <v-divider></v-divider>
-            <v-card-actions>
+            <v-card-actions v-if="status!=='Closed'">
 
               <v-layout row wrap>
                 <v-flex xs12 v-if="sections.length > 1">
@@ -116,12 +116,12 @@
                   ></formNavigation>
                 </v-flex>
 
-                <v-flex xs12 md4 offset-md4 class="mt-4" v-if="status!=='Closed'">
+                <v-flex xs12 md4 offset-md4 class="mt-4">
                   <v-btn block color="success" @click=onSendSubmission :disabled="!sendAble">
                     Submit
                   </v-btn>
                 </v-flex>
-                <v-flex xs12 text-xs-center class="mt-3" v-if="status!=='Closed'">
+                <v-flex xs12 text-xs-center class="mt-3">
                   <p class="caption">This form can only be submitted once all mandatory questions have been answered.</p>
                 </v-flex>
               </v-layout>

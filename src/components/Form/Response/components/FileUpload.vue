@@ -25,11 +25,6 @@
         imageUrl: this.responses.length ? this.responses[0].response : null
       }
     },
-    watch: {
-      responses (value) {
-        this.imageUrl = value[0].response
-      }
-    },
     methods: {
       onDownload () {
         const AWS = require('aws-sdk')
@@ -87,6 +82,7 @@
               } else {
                 this.$emit('create-response', [null, response.data.path])
               }
+              this.imageUrl = response.data.path
               this.progress = 0
             }
           )
