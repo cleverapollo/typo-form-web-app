@@ -53,13 +53,34 @@
                   required
                 ></v-select>
               </v-flex>
-              <v-flex xs10 offset-xs1 sm2 offset-sm1 d-flex>
-                <v-text-field
+              <v-flex xs10 offset-xs1 sm1 offset-sm1 d-flex v-if="element.source.group != 'Submission Detail'">
+                <v-autocomplete
+                  :items="answers(element.source)"
+                  item-text="answer"
+                  item-value="id"
+                  v-model="element.answer"
                   label="Value"
-                  v-model="element.value"
                   single-line
-                  required
-                ></v-text-field>
+                ></v-autocomplete>
+              </v-flex>
+              <v-flex xs10 offset-xs1 sm1 offset-sm1 d-flex>
+                <v-flex xs12 v-if="questionType(element.source) == 8 || questionType(element.source) == 9">
+                  <v-autocomplete
+                    v-model="element.value"
+                    :items="values(element.source)"
+                    item-text="answer"
+                    item-value="id"
+                    label="Value"
+                    single-line
+                  ></v-autocomplete>
+                </v-flex>
+                <v-flex xs12 v-else>
+                  <v-text-field
+                    label="Value"
+                    type="text"
+                    v-model="element.value"
+                  ></v-text-field>
+                </v-flex>
               </v-flex>
               <v-flex xs10 offset-xs1 sm1 offset-sm0 text-xs-center text-sm-right>
                 <v-btn flat icon @click="removeFilter(index)" class="mt-3">
@@ -116,10 +137,15 @@
     data () {
       return {
         search: '',
-        filters: [{ source: '', query: '', value: '' }]
+        filters: [{ source: '', query: '', value: '', answer: '' }]
       }
     },
     computed: {
+      triggerTypes () {
+        return this.$store.getters.triggerTypes.filter(e => {
+          return e.question_type_id === this.parentQuestionType
+        })
+      },
       headers () {
         let headers = []
         _.forEach(this.filters, function (filter) {
@@ -199,9 +225,57 @@
       }
     },
     methods: {
+      question (source) {
+        if (!source.group) {
+          return null
+        }
+
+        if (source.group === 'Submission Detail') {
+          return null
+        }
+
+        const formName = source.group.split('-')[0]
+        console.log(formName)
+        console.log(this.$store.getters.loadedForms(this.slug))
+        const form = this.$store.getters.loadedForms(this.slug).find((form) => {
+          return form.name === formName
+        })
+        const question = this.$store.getters.loadedAllQuestion(form.id, this.source.id)
+        return question
+      },
+      questionType (source) {
+        const question = this.question(source)
+        if (!question) {
+          return null
+        }
+        return question.question_type_id
+      },
+      values (source) {
+        const question = this.question(source)
+        if (!question) {
+          return []
+        }
+
+        return this.question(source).answers.filter(e => {
+          return e.parameter
+        })
+      },
+      answers (source) {
+        const question = this.question(source)
+        if (!question) {
+          return []
+        }
+
+        if (this.questionType(source) === 8 || this.questionType(source) === 9) {
+          return question.answers.filter(e => {
+            return !e.parameter
+          })
+        }
+        return this.question(source).answers
+      },
       filterComparators (source) {
         if (source.group === 'Submission Detail') {
-          if (source.question === 'Form' || source.question === 'User' || source.question === 'Team') {
+          if (source.question === 'Form' || source.question === 'User' || source.question === 'Team' || source.question === 'Status') {
             return this.comparators.filter((comparator) => {
               return comparator.comparator === 'equals' ||
                 comparator.comparator === 'not equal to' ||
@@ -224,7 +298,7 @@
           })
         }
         return this.comparators.filter((comparator) => {
-          return comparator.comparator !== 'is invalid'
+          return this.triggerTypes.map(x => x.comparator_id).includes(comparator.id)
         })
       },
       onSubmission (id) {
@@ -234,7 +308,7 @@
         return this.statuses.find(e => { return e.id === id }).status
       },
       addFilter () {
-        this.filters.push({ source: '', query: '', value: '' })
+        this.filters.push({ source: '', query: '', value: '', answer: '' })
       },
       applyFilter () {
         if (!this.filters.length) {
@@ -250,14 +324,16 @@
             newParameter = {
               source: this.filters[i].source.question,
               query: this.filters[i].query,
-              value: this.filters[i].value
+              value: this.filters[i].value,
+              answer: this.filters[i].answer
             }
           } else {
             newParameter = {
               source: 'Question',
               question_id: this.filters[i].source.id,
               query: this.filters[i].query,
-              value: this.filters[i].value
+              value: this.filters[i].value,
+              answer: this.filters[i].answer
             }
           }
           filterParameters.push(newParameter)

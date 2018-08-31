@@ -1,26 +1,40 @@
 <template>
   <v-layout row wrap>
 
-    <!-- //Setions -->
-    <v-flex xs12 class="sm3" v-if='sections.length > 1'>
-      <form-tree
-        :formId="formId"
-        :section="section"
-        :list="list"
-        :submissionId="submissionId"
-        @section-clicked="sectionClicked"
-      ></form-tree>
-    </v-flex>
+    <template v-if='submissionId !== -1 && status === "Closed"'>
+      <template v-for="(element, index) in list">
+        <v-flex xs12>
+          <SectionReport
+            :section="element"
+            :formId="formId"
+            :submissionId="submissionId"
+            v-if="section"
+          ></SectionReport>
+        </v-flex>
+      </template>
+    </template>
+    <template v-else>
+      <!-- //Setions -->
+      <v-flex xs12 class="sm3" v-if='sections.length > 1'>
+        <form-tree
+          :formId="formId"
+          :section="section"
+          :list="list"
+          :submissionId="submissionId"
+          @section-clicked="sectionClicked"
+        ></form-tree>
+      </v-flex>
 
-    <!-- //Questions -->
-    <v-flex xs12 :class='"sm" + (sections.length > 1 ? 9 : 12)'>
-      <sections
-        :section="section"
-        :formId="formId"
-        :submissionId="submissionId"
-        v-if="section"
-      ></sections>
-    </v-flex>
+      <!-- //Questions -->
+      <v-flex xs12 :class='"sm" + (sections.length > 1 ? 9 : 12)'>
+        <sections
+          :section="section"
+          :formId="formId"
+          :submissionId="submissionId"
+          v-if="section"
+        ></sections>
+      </v-flex>
+    </template>
 
   </v-layout>
 </template>
@@ -28,6 +42,7 @@
 <script>
   import * as _ from 'lodash'
   import sections from './Section/Sections'
+  import SectionReport from './Section/SectionReport'
   import FormTree from './FormTree'
   import SectionOperation from './SectionOperation.js'
 
@@ -35,6 +50,7 @@
     props: ['slug', 'formId', 'submissionId'],
     mixins: [SectionOperation],
     components: {
+      SectionReport,
       sections,
       FormTree
     },
@@ -68,6 +84,18 @@
         }
         this.$store.dispatch('selectSection', rtSection)
         return rtSection
+      },
+      submission () {
+        return this.$store.getters.loadedApplicationSubmission(this.slug, this.submissionId)
+      },
+      statuses () {
+        return this.$store.getters.statuses
+      },
+      status () {
+        const status = this.statuses.find((status) => {
+          return status.id === this.submission.status_id
+        })
+        return status ? status.status : 'undefined'
       }
     },
     methods: {
