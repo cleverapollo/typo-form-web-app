@@ -2,13 +2,13 @@
   <v-layout row wrap>
 
     <template v-if='submissionId !== -1 && status === "Closed"'>
-      <template v-for="(element, index) in list">
+      <template v-for="(element, index) in sections">
         <v-flex xs12>
           <SectionReport
             :section="element"
             :formId="formId"
             :submissionId="submissionId"
-            v-if="section"
+            v-if="element.questions.length"
           ></SectionReport>
         </v-flex>
       </template>
