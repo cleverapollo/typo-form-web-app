@@ -1,34 +1,26 @@
 <template>
   <v-card flat active-class="active-section" v-if="!isSectionTrigger(section) || submissionId === -1">
 
-    <v-card-title>
-      {{ section.name }}
+    <v-card-title class="pb-1">
+      <div class="subheading font-weight-medium">{{ this.getSectionName(section) }}</div>
     </v-card-title>
 
     <v-card-text>
       <!-- //Submission -->
       <!-- //Standard -->
       <v-layout row wrap v-if="!section.repeatable">
-        <template v-if="list.length && list[0].questions">
-          <template v-for="(element, index) in list" v-if="!isTrigger(element , 1)">
-            <SectionReport
-              :section="element"
-              :formId="formId"
-              :submissionId="submissionId"
-              v-if="element.questions"
-            ></SectionReport>
-          </template>
-        </template>
-        <template v-else>
+        <template>
           <v-data-table
+            :headers="headers"
             :items="list"
-            class="elevation-1"
             hide-actions
-            hide-headers
+            class="question-answers"
           >
-            <template slot="items" slot-scope="props" v-if="!isTrigger(props.item , 1)">
+            <template slot="items" slot-scope="props" v-if="!isTrigger(props.item , 1) && showQuestion(props.item)">
               <td>{{ props.item.question }}</td>
-              <td class="text-xs-right">{{ answer(props.item, 1) }}</td>
+              <td>
+                <div v-html="$sanitize(answer(props.item, 1))"></div>
+              </td>
             </template>
           </v-data-table>
         </template>
@@ -43,14 +35,14 @@
           :key="'repeat' + order"
         >
           <v-data-table
+            :headers="headers"
             :items="list"
-            class="elevation-1"
             hide-actions
-            hide-headers
+            class="question-answers"
           >
-            <template slot="items" slot-scope="props" v-if="!isTrigger(props.item , order)">
+            <template slot="items" slot-scope="props" v-if="!isTrigger(props.item , order) && showQuestion(props.item)">
               <td>{{ props.item.question }}</td>
-              <td class="text-xs-right">{{ answer(props.item, order) }}</td>
+              <td>{{ answer(props.item, order) }}</td>
             </template>
           </v-data-table>
         </v-layout>
@@ -67,6 +59,24 @@
     name: 'SectionReport',
     props: ['section', 'formId', 'submissionId'],
     mixins: [TriggerMixin],
+    data () {
+      return {
+        headers: [
+          {
+            text: 'Question',
+            align: 'left',
+            sortable: false,
+            width: '40%'
+          },
+          {
+            text: 'Answer',
+            align: 'left',
+            sortable: false,
+            width: '60%'
+          }
+        ]
+      }
+    },
     computed: {
       sections () {
         return this.$store.getters.loadedSections(this.formId)
@@ -101,6 +111,29 @@
       }
     },
     methods: {
+      getSectionName (section) {
+        let name = section.name
+        do {
+          section = this.getSection(section.parent_section_id)
+          name = section ? section.name + ' > ' + name : name
+        } while (section)
+
+        return name
+      },
+      getSection (sectionId) {
+        return _.find(this.sections, {id: sectionId})
+      },
+      showQuestion (question) {
+        let show = false
+        switch (question.question_type_id) {
+          case 12:
+            show = false
+            break
+          default:
+            show = true
+        }
+        return show
+      },
       getStatus (statusId) {
         const status = this.statuses.find((status) => {
           return status.id === statusId
@@ -116,12 +149,16 @@
         switch (questionType) {
           case 'Short answer':
           case 'Paragraph':
-          case 'File upload':
           case 'Date':
           case 'Time':
           case 'Linear scale':
             if (responses.length) {
               response = responses[0].response
+            }
+            break
+          case 'File upload':
+            if (responses.length) {
+              response = '<a href="' + responses[0].response + '" target="_blank">Download File</a>'
             }
             break
           case 'Multiple choice':
@@ -174,5 +211,14 @@
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
+  }
+  .question-answers >>> th {
+    font-weight:500;
+    font-size:14px;
+    background: #eee;
+    color: #000 !important;
+  }
+  .question-answers {
+    width:100%;
   }
 </style>
