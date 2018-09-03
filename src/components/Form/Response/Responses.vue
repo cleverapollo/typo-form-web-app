@@ -10,7 +10,7 @@
       </v-flex>
       <v-flex xs12>
         <div class="body-1 grey--text text--darken-1" v-if='editedDescription'>
-          {{ editedDescription }}
+          <div v-html="$sanitize(editedDescription)"></div>
         </div>
       </v-flex>
     </v-layout>
