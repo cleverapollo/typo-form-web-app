@@ -115,6 +115,13 @@
       <v-spacer></v-spacer>
 
       <v-tooltip top>
+        <v-btn slot="activator" color="grey darken-2" flat icon @click="moveQuestion = true">
+          <v-icon>fullscreen</v-icon>
+        </v-btn>
+        <span>Move Question</span>
+      </v-tooltip>
+
+      <v-tooltip top>
         <v-btn slot="activator" color="grey darken-2" flat icon @click="duplicateQuestion">
           <v-icon>content_copy</v-icon>
         </v-btn>
@@ -164,6 +171,8 @@
 
     <!-- //Delete Question -->
     <DeleteConfirmDialog @delete-action="onDeleteQuestion" :visible="deleteQuestion" @close="deleteQuestion = false"></DeleteConfirmDialog>
+    <!-- //Move Question -->
+    <ParentSectionDialog @move-action="onMoveQuestion" :visible="moveQuestion" @close="moveQuestion = false" :formId="formId" :sectionId="sectionId" flag="Question"></ParentSectionDialog>
   </v-container>
 </template>
 
@@ -193,6 +202,7 @@
     data () {
       return {
         deleteQuestion: false,
+        moveQuestion: false,
         editedName: this.question.question,
         editedDescription: this.question.description,
         questionTypeId: this.question.question_type_id,
@@ -502,6 +512,21 @@
           formId: this.formId,
           sectionId: this.sectionId,
           id: this.question.id
+        })
+      },
+      onMoveQuestion (parentSectionId) {
+        const section = this.$store.getters.loadedSection(this.formId, parentSectionId)
+        let order = 1
+        if (section.questions.length) {
+          order = section.questions[section.questions.length - 1].order + 1
+        }
+
+        this.$store.dispatch('moveQuestion', {
+          formId: this.formId,
+          questionId: this.question.id,
+          oldParentSectionId: this.sectionId,
+          parentSectionId: parentSectionId,
+          order: order
         })
       },
       moveAnswer (args) {

@@ -287,6 +287,9 @@ export default {
       if (payload.max_rows) {
         updateObj.max_rows = payload.max_rows
       }
+      if (payload.order) {
+        updateObj.order = payload.order
+      }
       window.axios.put(FORM_URL + payload.formId + SECTION_URL + '/' + payload.id, updateObj)
         .then(
           response => {
