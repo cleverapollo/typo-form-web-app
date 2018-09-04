@@ -57,6 +57,13 @@
             </v-list-tile-content>
           </v-list-tile>
 
+          <v-list-tile @click.stop="moveSection = true">
+            <v-list-tile-avatar>
+              <v-icon>fullscreen</v-icon>
+            </v-list-tile-avatar>
+            <v-list-tile-content>Move Section</v-list-tile-content>
+          </v-list-tile>
+
           <v-list-tile @click="createContentBlock" v-if="!includeSection">
             <v-list-tile-avatar>
               <v-icon>add_comment</v-icon>
@@ -352,6 +359,9 @@
     <!-- //Delete Section -->
     <DeleteConfirmDialog @delete-action="onDeleteSection" :visible="deleteSection" @close="deleteSection = false"></DeleteConfirmDialog>
 
+    <!-- //Move Section -->
+    <ParentSectionDialog @move-action="onMoveSection" :visible="moveSection" @close="moveSection = false" :formId="formId" :sectionId="section.parent_section_id" flag="Section"></ParentSectionDialog>
+
     <!-- //Show snackbar -->
     <Snackbar :snackbar="snackbarVisible" @dismissed="snackbarVisible = false"></Snackbar>
   </v-card>
@@ -392,6 +402,7 @@
         min_rows: this.section.min_rows,
         max_rows: this.section.max_rows,
         deleteSection: false,
+        moveSection: false,
         snackbarVisible: false
       }
     },
@@ -657,6 +668,24 @@
             min_rows: this.min_rows,
             max_rows: this.max_rows
           })
+      },
+      onMoveSection (parentSectionId) {
+        const childrenSection = this.$store.getters.loadedChildrenSection(this.formId, parentSectionId)
+        let order = 1
+        if (childrenSection.length) {
+          order = childrenSection[childrenSection.length - 1].order + 1
+        }
+
+        this.$store.dispatch('updateSection', {
+          formId: this.formId,
+          id: this.section.id,
+          parentSectionId: parentSectionId,
+          name: this.editedName,
+          repeatable: this.hasRepeatableQuestions,
+          min_rows: this.min_rows,
+          max_rows: this.max_rows,
+          order: order
+        })
       },
       onDeleteSection () {
         this.$store.dispatch('deleteSection', {
