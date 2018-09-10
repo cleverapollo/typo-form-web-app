@@ -38,44 +38,6 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-
-
-            <v-menu offset-y bottom left v-if="userIsApplicationAdmin">
-              <v-btn icon slot="activator">
-                <v-icon>more_vert</v-icon>
-              </v-btn>
-
-              <v-list>
-                <v-list-tile @click="">
-                  <v-list-tile-avatar>
-                    <v-icon>edit</v-icon>
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    <EditApplication :application="application" class="my-1"></EditApplication>
-                  </v-list-tile-content>
-                </v-list-tile>
-
-                <v-list-tile @click.stop="deleteApplication = true">
-                  <v-list-tile-avatar>
-                    <v-icon>delete</v-icon>
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    Delete Application
-                  </v-list-tile-content>
-                </v-list-tile>
-
-                <!-- Submission Filter -->
-                <v-list-tile @click="onList ('submissionfilter')">
-                  <v-list-tile-avatar>
-                    <v-icon>assignment</v-icon>
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    Submission Filter
-                  </v-list-tile-content>
-                </v-list-tile>
-
-              </v-list>
-            </v-menu>
           </div>
 
         </v-flex>
@@ -126,8 +88,6 @@
 </template>
 
 <script>
-  import EditApplication from './EditApplication'
-  import SettingApplication from './SettingApplication'
   import countTo from 'vue-count-to'
   export default {
     props: ['slug'],
@@ -146,8 +106,6 @@
       }
     },
     components: {
-      EditApplication,
-      SettingApplication,
       countTo
     },
     computed: {

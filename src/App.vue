@@ -34,7 +34,7 @@
               v-if="!item.admin || userIsApplicationAdmin"
               >
               <v-list-tile
-                :to="applicationURL(item.path)"
+                :to="applicationUrl(item.path, application)"
                 :key="item.title"
               >
                 <v-list-tile-action>
@@ -55,7 +55,7 @@
           <v-divider></v-divider>
           <template v-for="item in accountItems">
             <v-list-tile
-              :to="rootURL(item.path)"
+              :to="applicationUrl(item.path)"
               :key="item.title"
             >
               <v-list-tile-action>
@@ -77,7 +77,7 @@
         <v-list dense>
           <template v-for="item in authItems">
             <v-list-tile
-              :to="rootURL(item.path)"
+              :to="applicationUrl(item.path)"
               :key="item.title"
             >
               <v-list-tile-action>
@@ -98,19 +98,19 @@
     <!-- //Toolbar -->
     <v-toolbar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
-      color="info"
-      dark
+      color="white"
+      class="elevation-0 app-toolbar"
       app
       fixed
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title class="ml-0 pl-3">
-        <router-link :to="titleLink" tag="span" style="cursor: pointer">
+        <router-link :to="applicationUrl('', application)" tag="span" style="cursor: pointer">
           <div class="d-flex flex-row">
-            <v-avatar tile v-if="titleIcon">
-              <img :src="titleIcon"/>
+            <v-avatar tile v-if="applicationIcon(application)">
+              <img :src="applicationIcon(application)"/>
             </v-avatar>
-            <div class="pl-3 application-name">{{title}}</div>
+            <div class="pl-3 application-name">{{ applicationName(application) }}</div>
           </div>
         </router-link>
       </v-toolbar-title>
@@ -130,16 +130,16 @@
                 avatar
                 ripple
                 :key="application.id"
-                :to="'/'+ application.slug">
-                <v-list-tile-avatar tile v-if="application.icon">
-                  <img :src="application.icon">
+                :to="applicationUrl('', application)">
+                <v-list-tile-avatar tile v-if="applicationIcon(application)">
+                  <img :src="applicationIcon(application)">
                 </v-list-tile-avatar>
                 <v-list-tile-avatar color="primary" v-else>
-                  <span class="white--text headline">{{ getFirstLetter(application.name) }}</span>
+                  <span class="white--text headline">{{ applicationFirstLetter(application) }}</span>
                 </v-list-tile-avatar>
                 <v-list-tile-content>
                   <div class="d-flex flex-row">
-                    <div class="pl-3">{{application.name}}</div>
+                    <div class="pl-3">{{ applicationName(application) }}</div>
                   </div>
                 </v-list-tile-content>
               </v-list-tile>
@@ -147,11 +147,6 @@
           </v-list>
         </v-menu>
 
-        <!-- //Not yet enabled
-        <v-btn icon>
-          <v-icon>notifications</v-icon>
-        </v-btn>
-        -->
         <v-menu offset-y left>
           <v-btn
             icon
@@ -212,20 +207,6 @@
       user () {
         return this.$store.getters.user
       },
-      title () {
-        const application = this.$store.getters.loadedApplication(this.$route.params['slug'])
-        return application ? application.name : process.env.APP_NAME
-      },
-      titleIcon () {
-        const application = this.$store.getters.loadedApplication(this.$route.params['slug'])
-        return application && application.icon ? application.icon : ''
-      },
-      titleLink () {
-        if (this.$route.params['slug']) {
-          return '/' + this.$route.params['slug']
-        }
-        return '/'
-      },
       applications () {
         return this.$store.getters.loadedApplications
       },
@@ -238,8 +219,8 @@
             { title: 'Users', path: 'users', icon: 'person', admin: true },
             { title: 'Teams', path: 'teams', icon: 'people', admin: false },
             { title: 'Forms', path: 'forms', icon: 'content_paste', admin: true },
-            { title: 'Submissions', path: 'submissions', icon: 'assignment', admin: false }
-            // ,{ title: 'Settings', path: 'settings', icon: 'settings', admin: true }
+            { title: 'Submissions', path: 'submissions', icon: 'assignment', admin: false },
+            { title: 'Settings', path: 'settings', icon: 'settings', admin: true }
         ]
       },
       accountItems () {
@@ -277,6 +258,22 @@
       }
     },
     methods: {
+      applicationName (application = []) {
+        return application.name ? application.name : process.env.APP_NAME
+      },
+      applicationUrl (path = '', application = []) {
+        return '/' + (application && application.slug ? application.slug + '/' : '') + (path.length ? path + '/' : '')
+      },
+      applicationIcon (application = []) {
+        try {
+          return JSON.parse(application.icon).url
+        } catch (error) {
+          return false
+        }
+      },
+      applicationFirstLetter (application = []) {
+        return application.name && application.name.length > 0 ? application.name.trim().substring(0, 1).toUpperCase() : 'A'
+      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId
@@ -286,15 +283,6 @@
       onLogout () {
         this.$store.dispatch('logout')
         this.$router.push('/login')
-      },
-      applicationURL (path) {
-        return '/' + this.application.slug + '/' + path
-      },
-      rootURL (path) {
-        return '/' + path
-      },
-      getFirstLetter (word) {
-        return word.length > 0 ? word.trim().substring(0, 1).toUpperCase() : ''
       }
     },
     created () {
@@ -314,15 +302,17 @@
 </script>
 
 <style>
-  .application-name {
-    line-height:46px;
-  }
-
-  .border-top {
-    border-top:1px solid #e0e0e0;
-  }
-
   .border-bottom {
     border-bottom:1px solid #e0e0e0;
   }
+  .theme--light.application {
+    background: #eee;
+  }
+  .v-toolbar.app-toolbar {
+    box-shadow: 1px 2px 1px #d3d3d3 !important;
+  }
+  .application-name {
+    line-height:48px;
+  }
+  
 </style>

@@ -15,6 +15,7 @@ import AlertCmp from './components/Shared/Alert.vue'
 import Snackbar from './components/Shared/Snackbar.vue'
 import Terms from '@/components/Shared/Terms.vue'
 import DeleteConfirmDialog from './components/Shared/DeleteConfirmDialog.vue'
+import FileUpload from './components/Shared/FileUpload.vue'
 
 import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
@@ -47,7 +48,6 @@ axios.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-
 Vue.use(Vuetify)
 Vue.use(VueAxios, axios)
 Vue.use(VueAuthenticate, {
@@ -82,6 +82,7 @@ Vue.component('app-alert', AlertCmp)
 Vue.component('Snackbar', Snackbar)
 Vue.component('Terms', Terms)
 Vue.component('DeleteConfirmDialog', DeleteConfirmDialog)
+Vue.component('FileUpload', FileUpload)
 
 /* eslint-disable no-new */
 function createApp () {
