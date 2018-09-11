@@ -13,6 +13,7 @@ import AcceptJoin from '@/components/Shared/AcceptJoin'
 // Applications
 import Applications from '@/components/Application/Applications'
 import Application from '@/components/Application/Application'
+import ApplicationSettings from '@/components/Application/ApplicationSettings'
 
 // Users
 import Users from '@/components/User/Users'
@@ -141,6 +142,13 @@ const router = new Router({
       path: '/:slug/submissions',
       name: 'Submissions',
       component: Submissions,
+      props: true,
+      meta: {requiresAuth: true}
+    },
+    {
+      path: '/:slug/settings',
+      name: 'ApplicationSettings',
+      component: ApplicationSettings,
       props: true,
       meta: {requiresAuth: true}
     },

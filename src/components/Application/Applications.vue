@@ -10,16 +10,16 @@
             <v-list one-line>
 
               <!-- //Application List -->
-              <template v-for="(item, index) in sortApplications(applications)">
-                <v-list-tile :to="applicationUrl(item.slug)" :key="item.id" avatar>
-                  <v-list-tile-avatar tile v-if="item.icon">
-                    <img :src="item.icon">
+              <template v-for="(application, index) in sortApplications(applications)">
+                <v-list-tile :to="applicationUrl('', application)" :key="application.id" avatar>
+                  <v-list-tile-avatar tile v-if="getApplicationIcon(application)">
+                    <img :src="getApplicationIcon(application)">
                   </v-list-tile-avatar>
                   <v-list-tile-avatar color="primary" v-else>
-                    <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
+                    <span class="white--text headline">{{ applicationFirstLetter(application) }}</span>
                   </v-list-tile-avatar>
                   <v-list-tile-content>
-                    <v-list-tile-title class="black--text">{{ item.name }}</v-list-tile-title>
+                    <v-list-tile-title class="black--text">{{ application.name }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-divider v-if="index < applications.length -1"></v-divider>
@@ -89,6 +89,19 @@
       }
     },
     methods: {
+      getApplicationIcon (application = []) {
+        try {
+          return JSON.parse(application.icon).url
+        } catch (error) {
+          return false
+        }
+      },
+      applicationFirstLetter (application = []) {
+        return application.name && application.name.length > 0 ? application.name.trim().substring(0, 1).toUpperCase() : 'A'
+      },
+      applicationUrl (path = '', application = []) {
+        return '/' + (application && application.slug ? application.slug + '/' : '') + (path.length ? path + '/' : '')
+      },
       onValidate (value) {
         if (value === 1 && !this.isSuperUser) {
           this.$router.push('/' + this.applications[0].slug)
@@ -99,12 +112,6 @@
           return role.id === roleId
         })
         return role ? role.name : 'undefined'
-      },
-      getFirstLetter (word) {
-        return word.length > 0 ? word.trim().substring(0, 1).toUpperCase() : ''
-      },
-      applicationUrl (slug) {
-        return '/' + slug
       },
       sortApplications (applications) {
         return applications.slice().sort(function (a, b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0) })

@@ -2,7 +2,7 @@
   <v-layout row wrap>
 
     <template v-if='submissionId !== -1 && status === "Closed"'>
-      <template v-for="(element, index) in sections">
+      <template v-for="(element, index) in sortedSections">
         <v-flex xs12>
           <SectionReport
             :section="element"
@@ -57,6 +57,10 @@
     computed: {
       sections () {
         return this.$store.getters.loadedSections(this.formId)
+      },
+      sortedSections () {
+        console.log(this.sections)
+        return _.sortBy(this.sections, ['order'])
       },
       list: {
         get () {
