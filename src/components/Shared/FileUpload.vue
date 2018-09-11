@@ -71,7 +71,7 @@
       },
       fileUploaded (file, response) {
         this.files.push(response.file)
-        file.stored_name = response.file.stored_name
+        file = { ...file, ...response.file }
         this.addDownloadLink(file)
         this.$emit('change', this.files)
       },
