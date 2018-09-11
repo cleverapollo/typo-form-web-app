@@ -15,7 +15,7 @@
               item-value="id"
               item-text="name"
               v-model="formId"
-              label="What submission do you want to create?"
+              label="Form"
             ></v-autocomplete>
           </v-flex>
 
@@ -26,7 +26,7 @@
               item-value="id"
               item-text="name"
               v-model="userId"
-              label="Who is the primary contact for this submission?"
+              label="Owner"
             ></v-autocomplete>
           </v-flex>
 
@@ -37,7 +37,7 @@
               item-value="id"
               item-text="name"
               v-model="teamId"
-              label="Working as a team? Select your team."
+              label="Team"
             ></v-autocomplete>
           </v-flex>
 

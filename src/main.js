@@ -16,6 +16,7 @@ import Snackbar from './components/Shared/Snackbar'
 import Terms from '@/components/Shared/Terms'
 import DeleteConfirmDialog from './components/Shared/DeleteConfirmDialog'
 import ParentSectionDialog from './components/Shared/ParentSectionDialog'
+import FileUpload from './components/Shared/FileUpload.vue'
 
 import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
@@ -48,7 +49,6 @@ axios.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-
 Vue.use(Vuetify)
 Vue.use(VueAxios, axios)
 Vue.use(VueAuthenticate, {
@@ -84,6 +84,7 @@ Vue.component('Snackbar', Snackbar)
 Vue.component('Terms', Terms)
 Vue.component('DeleteConfirmDialog', DeleteConfirmDialog)
 Vue.component('ParentSectionDialog', ParentSectionDialog)
+Vue.component('FileUpload', FileUpload)
 
 /* eslint-disable no-new */
 function createApp () {
