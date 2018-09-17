@@ -111,12 +111,13 @@
               <v-expansion-panel-content
                 v-for="(element,index) in list"
                 :key="index"
-                :class="'element' + element.id"
+                :class="getQuestionClass(element)"
               >
                 <div slot="header">
                   <h3>
                     <v-icon class="item">drag_handle</v-icon>
                     {{index + 1 }}. {{ element.question || element.name }}
+                    <v-icon class="question_icon">{{ getQuestionIcon(element) }}</v-icon>
                   </h3>
                 </div>
                 <v-card>
@@ -234,125 +235,6 @@
         </template>
 
       </template>
-
-<!--
-      <draggable
-        v-model="list"
-        :class="'section' + section.id"
-        :options="{group: 'parent', draggable: '.item'}"
-        @end="checkEnd"
-        style="min-height: 100px"
-        class="layout row wrap"
-        v-if="submissionId === -1 || !hasRepeatableQuestions"
-      >
-        <template v-for="(element, index) in list">
-          <v-flex
-            xs12
-            class="item"
-            :class="'element' + element.id"
-            v-if="submissionId === -1">
-            <sections
-              :section="element"
-              :formId="formId"
-              :submissionId="submissionId"
-              v-if="element.questions"
-            ></sections>
-
-            <questions
-              :question="element"
-              :formId="formId"
-              :sectionId="section.id"
-              :index="index + 1"
-              :key="'question' + element.id"
-              v-if="element.answers && getQuestionType(element.question_type_id) !== 'Content Block'"
-            ></questions>
-
-            <QuestionContentBlock
-              :question="element"
-              :formId="formId"
-              :sectionId="section.id"
-              :index="index + 1"
-              v-if="element.answers && getQuestionType(element.question_type_id) === 'Content Block'"
-            ></QuestionContentBlock>
-          </v-flex>
-
-          <template v-else>
-            <responses
-              :question="element"
-              :formId="formId"
-              :sectionId="section.id"
-              :index="index + 1"
-              :submissionId="submissionId"
-              :key="'question' + element.id"
-              :order="1"
-              :status="status"
-              v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
-            ></responses>
-
-            <ResponseContentBlock
-              :question="element"
-              :key="'question' + element.id"
-              v-if="getQuestionType(element.question_type_id) === 'Content Block'"
-            ></ResponseContentBlock>
-          </template>
-        </template>
-
-        <div slot="footer" v-if="isSectionEmpty">
-          <v-card>
-            <v-card-title>
-              <h3>This section has no questions.</h3>
-            </v-card-title>
-          </v-card>
-        </div>
-      </draggable>
-
-      <v-layout
-        row
-        wrap
-        v-else
-        v-for="order in hasRepeatableQuestions"
-        :key="'repeat' + order"
-      >
-
-        <template v-for="(element, index) in list">
-          <responses
-            :question="element"
-            :formId="formId"
-            :sectionId="section.id"
-            :index="index + 1"
-            :submissionId="submissionId"
-            :order="order"
-            :hide="list.length === 1 && order > 1"
-            :key="'question' + element.id + '-' + order"
-            :status="status"
-            v-if="getQuestionType(element.question_type_id) !== 'Content Block'"
-          ></responses>
-
-          <ResponseContentBlock
-            :question="element"
-            :key="'question' + element.id + '-' + order"
-            v-if="getQuestionType(element.question_type_id) === 'Content Block'"
-          ></ResponseContentBlock>
-        </template>
-
-        <template v-if='hasRepeatableQuestions > section.min_rows'>
-          <v-flex xs12 sm1 offset-sm11 text-xs-center>
-            <v-btn dark fab small color="error" @click="removeSection(order)" :disabled="status === 'Closed'">
-              <v-icon>close</v-icon>
-            </v-btn>
-          </v-flex>
-        </template>
-
-      </v-layout>
-
-      <v-layout wrap v-if='submissionId !== -1 && hasRepeatableQuestions && (hasRepeatableQuestions < section.max_rows || !section.max_rows)'>
-        <v-btn dark block color="primary" @click="addSection" :disabled="status === 'Closed'">
-          <v-icon dark>add</v-icon>
-          Add {{section.name}}
-        </v-btn>
-      </v-layout>
-
--->
 
     </v-card-text>
 
@@ -482,6 +364,15 @@
       }
     },
     methods: {
+      getQuestionClass (element) {
+        return 'element' + element.id + ' ' + this.getQuestionType(element.question_type_id).replace(' ', '-').toLowerCase()
+      },
+      getQuestionIcon (element) {
+        let questionType = this.getQuestionType(element.question_type_id)
+        switch (questionType) {
+          case 'Content Block': return 'code'
+        }
+      },
       getStatus (statusId) {
         const status = this.statuses.find((status) => {
           return status.id === statusId
@@ -810,5 +701,13 @@
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
+  }
+  .v-expansion-panel__container.content-block {
+    background: khaki;
+  }
+  .v-icon.question_icon {
+    float:right;
+    padding-right: 20px;
+    padding-left:20px;
   }
 </style>

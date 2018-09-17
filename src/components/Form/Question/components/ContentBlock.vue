@@ -1,10 +1,26 @@
 <template>
   <v-container>
-    <v-textarea
-      label="Content Block"
-      v-model="editedDescription"
-      @blur="updateQuestion"
-    ></v-textarea>
+
+    <v-layout row>
+      <v-flex xs12>
+        <v-text-field
+          label="Description"
+          @blur="updateQuestion"
+          v-model="editedQuestion"
+          required
+        ></v-text-field>
+      </v-flex>
+    </v-layout>
+
+      <v-layout row>
+        <v-flex xs12>
+          <v-textarea
+            label="Content Block"
+            v-model="editedDescription"
+            @blur="updateQuestion"
+          ></v-textarea>
+        </v-flex>
+      </v-layout>
 
     <triggers :formId="formId" type="Question" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
 
@@ -34,6 +50,7 @@
     },
     data () {
       return {
+        editedQuestion: this.question.question || 'Content Block',
         editedDescription: this.question.description,
         deleteQuestion: false
       }
@@ -49,7 +66,7 @@
           formId: this.formId,
           sectionId: this.sectionId,
           id: this.question.id,
-          question: 'Content Block',
+          question: this.editedQuestion,
           description: this.editedDescription
         })
       },
