@@ -24,13 +24,12 @@
 
       <v-layout row>
         <v-flex xs12 sm7>
-          <v-select
+          <v-autocomplete
             :items="menuItems"
             item-text="title"
             item-value="title"
             v-model="questionTypeString"
             label="Question Type"
-            auto
             persistent-hint
             hint=" "
             @change="updateQuestionType"
@@ -61,7 +60,7 @@
                 </v-list-tile-content>
               </template>
             </template>
-          </v-select>
+          </v-autocomplete>
         </v-flex>
 
         <v-flex xs12 sm4 offset-sm1 pt-2>
