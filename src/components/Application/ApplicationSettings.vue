@@ -72,8 +72,12 @@
       </v-card>
     </v-flex>
 
+    <v-flex xs6>
+      <v-btn flat secondary @click.stop="exportApplicationData">Export Application Data</v-btn>
+    </v-flex>
+
     <!-- //Delete Application -->
-    <v-flex xs12 text-xs-right>
+    <v-flex xs6 text-xs-right>
       <v-btn flat secondary @click.stop="deleteApplication = true">Delete Application</v-btn>
     </v-flex>
     <DeleteConfirmDialog @delete-action="onDeleteApplication" :visible="deleteApplication" @close="deleteApplication = false"></DeleteConfirmDialog>
@@ -144,6 +148,14 @@
       }
     },
     methods: {
+      exportApplicationData () {
+        window.axios.get(process.env.API_URL + 'application/' + this.slug + '/export')
+        .then(response => {
+          if (response.data.file.url) {
+            window.open(response.data.file.url, '_blank')
+          }
+        })
+      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId
