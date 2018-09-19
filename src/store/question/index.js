@@ -59,7 +59,7 @@ export default {
       if (payload.question) {
         updateObj.question = payload.question
       }
-      if (payload.description) {
+      if (payload.description !== undefined) {
         updateObj.description = payload.description
       }
       if (payload.questionTypeId) {

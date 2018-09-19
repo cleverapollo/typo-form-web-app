@@ -265,44 +265,44 @@ export default {
           break
         case 'less than':
           if (!answerF) {
-            if (questionValue < value) {
+            if (parseFloat(questionValue) < parseFloat(value)) {
               return true
             }
           } else {
-            if (questionAnswer < answer) {
+            if (parseFloat(questionAnswer) < parseFloat(answer)) {
               return true
             }
           }
           break
         case 'greater than':
           if (!answerF) {
-            if (questionValue > value) {
+            if (parseFloat(questionValue) > parseFloat(value)) {
               return true
             }
           } else {
-            if (questionAnswer > answer) {
+            if (parseFloat(questionAnswer) > parseFloat(answer)) {
               return true
             }
           }
           break
         case 'less than or equal to':
           if (!answerF) {
-            if (questionValue <= value) {
+            if (parseFloat(questionValue) <= parseFloat(value)) {
               return true
             }
           } else {
-            if (questionAnswer <= answer) {
+            if (parseFloat(questionAnswer) <= parseFloat(answer)) {
               return true
             }
           }
           break
         case 'greater than or equal to':
           if (!answerF) {
-            if (questionValue >= value) {
+            if (parseFloat(questionValue) >= parseFloat(value)) {
               return true
             }
           } else {
-            if (questionAnswer >= answer) {
+            if (parseFloat(questionAnswer) >= parseFloat(answer)) {
               return true
             }
           }
