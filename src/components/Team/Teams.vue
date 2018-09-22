@@ -58,10 +58,10 @@
   import * as _ from 'lodash'
   import CreateTeam from './CreateTeam'
   export default {
-    props: ['slug'],
     data () {
       return {
-        createTeam: false
+        createTeam: false,
+        slug: window.location.hostname.split[0]
       }
     },
     components: {

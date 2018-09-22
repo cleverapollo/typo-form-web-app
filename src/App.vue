@@ -29,12 +29,12 @@
         <template v-if="application">
           <v-divider></v-divider>
           <v-list dense>
-            <template 
+            <template
               v-for="item in applicationItems"
               v-if="!item.admin || userIsApplicationAdmin"
               >
               <v-list-tile
-                :to="applicationUrl(item.path, application)"
+                :href="applicationUrl(item.path, application)"
                 :key="item.title"
               >
                 <v-list-tile-action>
@@ -55,7 +55,7 @@
           <v-divider></v-divider>
           <template v-for="item in accountItems">
             <v-list-tile
-              :to="applicationUrl(item.path)"
+              :to="'/' + item.path"
               :key="item.title"
             >
               <v-list-tile-action>
@@ -77,7 +77,7 @@
         <v-list dense>
           <template v-for="item in authItems">
             <v-list-tile
-              :to="applicationUrl(item.path)"
+              :tp="'/' + item.path"
               :key="item.title"
             >
               <v-list-tile-action>
@@ -105,7 +105,7 @@
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title class="ml-0 pl-3">
-        <router-link :to="applicationUrl('', application)" tag="span" style="cursor: pointer">
+        <router-link to="/" tag="span" style="cursor: pointer">
           <div class="d-flex flex-row">
             <v-avatar tile v-if="applicationIcon(application)">
               <img :src="applicationIcon(application)"/>
@@ -130,7 +130,7 @@
                 avatar
                 ripple
                 :key="application.id"
-                :to="applicationUrl('', application)">
+                :href="applicationUrl('', application)">
                 <v-list-tile-avatar tile v-if="applicationIcon(application)">
                   <img :src="applicationIcon(application)">
                 </v-list-tile-avatar>
@@ -211,7 +211,12 @@
         return this.$store.getters.loadedApplications
       },
       application () {
-        return this.$store.getters.loadedApplication(this.$route.params['slug'])
+        const url = window.location.origin.split('://')
+        const subdomain = url[1].split('.')
+        if (subdomain[0] === 'informed365' || subdomain[0] === 'app') {
+          return null
+        }
+        return this.$store.getters.loadedApplication(subdomain[0])
       },
       applicationItems () {
         return [
@@ -252,17 +257,23 @@
           return false
         }
         return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
-      },
-      copyright () {
-        return new Date().getFullYear() + ' ' + process.env.APP_NAME
       }
     },
     methods: {
       applicationName (application = []) {
-        return application.name ? application.name : process.env.APP_NAME
+        return application ? application.name : this.app_name
       },
       applicationUrl (path = '', application = []) {
-        return '/' + (application && application.slug ? application.slug + '/' : '') + (path.length ? path + '/' : '')
+        const url = window.location.origin.split('://')
+        const subdomain = url[1].split('.')
+        if (application) {
+          if (subdomain[0] === 'informed365') {
+            subdomain.unshift(application.slug)
+          } else if (subdomain[0] === 'app') {
+            subdomain[0] = application.slug
+          }
+        }
+        return url[0] + '://' + subdomain.join('.') + (path.length ? path + '/' : '')
       },
       applicationIcon (application = []) {
         try {
@@ -314,5 +325,5 @@
   .application-name {
     line-height:48px;
   }
-  
+
 </style>

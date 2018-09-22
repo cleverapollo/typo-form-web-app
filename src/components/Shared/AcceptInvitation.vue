@@ -38,9 +38,25 @@
           this.message = response.data.data.message ? response.data.data.message : 'Invitation accepted.'
           this.alert = 'success'
           if (this.type === 'application') {
-            this.$router.push('/' + response.data.data.slug)
+            const slug = response.data.data.slug
+            const url = window.location.origin.split('://')
+            const subdomain = url[1].split('.')
+            if (subdomain[0] === 'informed365') {
+              subdomain.unshift(slug)
+            } else if (subdomain[0] === 'app') {
+              subdomain[0] = slug
+            }
+            window.location.href = url[0] + '://' + subdomain.join('.')
           } else {
-            this.$router.push('/' + response.data.slug + '/teams/' + response.data.data.id)
+            const slug = response.data.slug
+            const url = window.location.origin.split('://')
+            const subdomain = url[1].split('.')
+            if (subdomain[0] === 'informed365') {
+              subdomain.unshift(slug)
+            } else if (subdomain[0] === 'app') {
+              subdomain[0] = slug
+            }
+            window.location.href = url[0] + '://' + subdomain.join('.') + '/teams/' + response.data.data.id
           }
         })
         .catch(error => {

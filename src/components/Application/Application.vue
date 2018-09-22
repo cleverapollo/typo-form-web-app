@@ -20,7 +20,7 @@
                 <v-card-title>
                   <div class="title mb-2 mt-2">Share Application</div>
                 </v-card-title>
-                
+
                 <v-card-text>
                   <v-layout row wrap>
                     <v-flex xs12 pb-3>Invite other users to this application by sharing the following link.</v-flex>
@@ -43,7 +43,7 @@
         </v-flex>
       </v-layout>
     </v-flex>
-  
+
     <!-- //Dashboard Widgets -->
     <v-flex xs12>
       <v-layout row wrap>
@@ -90,7 +90,6 @@
 <script>
   import countTo from 'vue-count-to'
   export default {
-    props: ['slug'],
     data () {
       return {
         items: [
@@ -102,7 +101,8 @@
         countToStart: 0,
         countToDuration: 3000,
         joinUrlDialog: false,
-        deleteApplication: false
+        deleteApplication: false,
+        slug: window.location.hostname.split[0]
       }
     },
     components: {
@@ -166,7 +166,7 @@
         this.$router.push('/applications')
       },
       onList (type) {
-        this.$router.push('/' + this.slug + '/' + type)
+        this.$router.push('/' + type)
       },
       getPropertyCount (type) {
         switch (type) {

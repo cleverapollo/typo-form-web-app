@@ -61,7 +61,7 @@
 
               </v-layout>
             </v-card-title>
-            
+
             <!-- // Submission Information -->
             <v-card-text>
               <v-layout row wrap>
@@ -153,12 +153,13 @@
 
   export default {
     name: 'ShowSubmission',
-    props: ['slug', 'id'],
+    props: ['id'],
     mixins: [TriggerMixin],
     data () {
       return {
         deleteSubmission: false,
-        snackbar: false
+        snackbar: false,
+        slug: window.location.hostname.split[0]
       }
     },
     components: {
@@ -290,7 +291,7 @@
           }
         )
           .then(() => {
-            this.$router.push('/' + this.slug + '/submissions')
+            this.$router.push('/submissions')
           })
       },
       onSendSubmission: function () {

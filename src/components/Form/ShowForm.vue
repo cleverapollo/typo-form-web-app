@@ -19,7 +19,7 @@
 
                   <!-- //Menu -->
                   <div class="text-xs-right">
-                    
+
                     <v-menu offset-y left>
                       <v-btn icon slot="activator">
                         <v-icon class="white--text">more_vert</v-icon>
@@ -106,7 +106,7 @@
   import FormNavigation from './FormNavigation'
 
   export default {
-    props: ['slug', 'id'],
+    props: ['id'],
     components: {
       FormView,
       EditForm,
@@ -115,7 +115,8 @@
     },
     data () {
       return {
-        deleteForm: false
+        deleteForm: false,
+        slug: window.location.hostname.split[0]
       }
     },
     computed: {
@@ -129,7 +130,7 @@
           slug: this.slug,
           id: this.form.id
         })
-        this.$router.push('/' + this.slug + '/forms')
+        this.$router.push('/forms')
       }
     },
     created: function () {

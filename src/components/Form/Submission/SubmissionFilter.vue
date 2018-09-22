@@ -133,11 +133,11 @@
 
   export default {
     name: 'SubmissionFilter',
-    props: ['slug'],
     data () {
       return {
         search: '',
-        filters: [{ source: '', query: '', value: '', answer: '' }]
+        filters: [{ source: '', query: '', value: '', answer: '' }],
+        slug: window.location.hostname.split[0]
       }
     },
     computed: {
@@ -235,8 +235,6 @@
         }
 
         const formName = source.group.split('-')[0]
-        console.log(formName)
-        console.log(this.$store.getters.loadedForms(this.slug))
         const form = this.$store.getters.loadedForms(this.slug).find((form) => {
           return form.name === formName
         })
@@ -302,7 +300,7 @@
         })
       },
       onSubmission (id) {
-        this.$router.push('/' + this.slug + '/submissions/' + id)
+        this.$router.push('/submissions/' + id)
       },
       status (id) {
         return this.statuses.find(e => { return e.id === id }).status

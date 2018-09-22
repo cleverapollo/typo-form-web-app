@@ -11,7 +11,7 @@
         </v-flex>
       </v-layout>
     </v-flex>
-  
+
     <v-flex xs12>
       <v-card>
         <v-card-text>
@@ -34,9 +34,9 @@
               <label class="v-label v-label--active theme--light">Application Image</label>
               <v-layout row>
               <v-flex xs12 mt-2>
-                <FileUpload 
-                  v-bind:maxFiles="maxFiles" 
-                  v-bind:maxFilesize="maxFilesize" 
+                <FileUpload
+                  v-bind:maxFiles="maxFiles"
+                  v-bind:maxFilesize="maxFilesize"
                   v-bind:acceptedFiles="acceptedFiles"
                   v-bind:files="images"
                 ></FileUpload>
@@ -68,7 +68,7 @@
             </v-flex>
           </v-layout>
         </v-card-actions>
-      
+
       </v-card>
     </v-flex>
 
@@ -88,7 +88,6 @@
 
 <script>
   export default {
-    props: ['slug'],
     data () {
       return {
         name: null,
@@ -97,7 +96,8 @@
         acceptedFiles: 'image/*',
         maxFiles: 1,
         maxFilesize: 5,
-        deleteApplication: false
+        deleteApplication: false,
+        slug: window.location.hostname.split[0]
       }
     },
     computed: {
@@ -182,7 +182,16 @@
         this.$store.dispatch('updateApplication', application)
           .then(response => {
             this.$store.dispatch('loadApplication', response.data.application.slug)
-            .then((response) => this.$router.push('/' + response.data.application.slug))
+            .then((response) => {
+              const slug = response.data.application.slug
+              const url = window.location.origin.split('://')
+              const subdomain = url[1].split('.')
+              if (subdomain[0] === 'informed365') {
+                subdomain.unshift(slug)
+              } else if (subdomain[0] === 'app') {
+                subdomain[0] = slug
+              }
+            })
           })
       }
     },

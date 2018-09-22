@@ -36,7 +36,7 @@
           </v-flex>
         </v-layout>
       </v-card-actions>
-      
+
     </v-card>
   </v-dialog>
 </template>
@@ -77,7 +77,15 @@
 
             // Redirect to the app
             if (response.data.application.slug) {
-              this.$router.push('/' + response.data.application.slug + '/')
+              const slug = response.data.application.slug
+              const url = window.location.origin.split('://')
+              const subdomain = url[1].split('.')
+              if (subdomain[0] === 'informed365') {
+                subdomain.unshift(slug)
+              } else if (subdomain[0] === 'app') {
+                subdomain[0] = slug
+              }
+              window.location.href = url[0] + '://' + subdomain.join('.')
             }
           })
           .catch(
