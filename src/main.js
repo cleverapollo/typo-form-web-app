@@ -13,7 +13,7 @@ import { store } from './store'
 
 import AlertCmp from './components/Shared/Alert'
 import Snackbar from './components/Shared/Snackbar'
-import Terms from '@/components/Shared/Terms'
+import Terms from './components/Shared/Terms'
 import DeleteConfirmDialog from './components/Shared/DeleteConfirmDialog'
 import ParentSectionDialog from './components/Shared/ParentSectionDialog'
 import FileUpload from './components/Shared/FileUpload.vue'
@@ -25,7 +25,7 @@ const sanitizeHtml = require('sanitize-html')
 // Add a request interceptor
 axios.interceptors.request.use(
   (config) => {
-    const accessToken = sessionStorage.getItem('token')
+    const accessToken = localStorage.getItem('token')
     if (accessToken != null) {
       config.headers['API-Token'] = accessToken
     }
@@ -97,7 +97,7 @@ function createApp () {
   })
 }
 
-if (sessionStorage.getItem('token')) {
+if (localStorage.getItem('token')) {
   store.dispatch('autoSignIn').finally(() => createApp())
 } else {
   createApp()
