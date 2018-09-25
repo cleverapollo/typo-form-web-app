@@ -120,7 +120,7 @@
         inviteApplication: false,
         userSearch: '',
         invitedUserSearch: '',
-        slug: window.location.hostname.split[0]
+        slug: window.location.hostname.split('.')[0]
       }
     },
     components: {

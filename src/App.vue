@@ -34,7 +34,7 @@
               v-if="!item.admin || userIsApplicationAdmin"
               >
               <v-list-tile
-                :href="applicationUrl(item.path, application)"
+                :to="'/' + item.path"
                 :key="item.title"
               >
                 <v-list-tile-action>
@@ -130,7 +130,7 @@
                 avatar
                 ripple
                 :key="application.id"
-                :href="applicationUrl('', application)">
+                :href="applicationUrl(application)">
                 <v-list-tile-avatar tile v-if="applicationIcon(application)">
                   <img :src="applicationIcon(application)">
                 </v-list-tile-avatar>
@@ -263,17 +263,17 @@
       applicationName (application = []) {
         return application ? application.name : this.app_name
       },
-      applicationUrl (path = '', application = []) {
+      applicationUrl (application = []) {
         const url = window.location.origin.split('://')
         const subdomain = url[1].split('.')
         if (application) {
           if (subdomain[0] === 'informed365') {
             subdomain.unshift(application.slug)
-          } else if (subdomain[0] === 'app') {
+          } else {
             subdomain[0] = application.slug
           }
         }
-        return url[0] + '://' + subdomain.join('.') + (path.length ? path + '/' : '')
+        return url[0] + '://' + subdomain.join('.')
       },
       applicationIcon (application = []) {
         try {

@@ -97,7 +97,7 @@
         maxFiles: 1,
         maxFilesize: 5,
         deleteApplication: false,
-        slug: window.location.hostname.split[0]
+        slug: window.location.hostname.split('.')[0]
       }
     },
     computed: {
@@ -188,7 +188,7 @@
               const subdomain = url[1].split('.')
               if (subdomain[0] === 'informed365') {
                 subdomain.unshift(slug)
-              } else if (subdomain[0] === 'app') {
+              } else {
                 subdomain[0] = slug
               }
             })

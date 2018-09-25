@@ -11,7 +11,7 @@
 
               <!-- //Application List -->
               <template v-for="(application, index) in sortApplications(applications)">
-                <v-list-tile :href="applicationUrl('', application)" :key="application.id" avatar>
+                <v-list-tile :href="applicationUrl(application)" :key="application.id" avatar>
                   <v-list-tile-avatar tile v-if="getApplicationIcon(application)">
                     <img :src="getApplicationIcon(application)">
                   </v-list-tile-avatar>
@@ -99,15 +99,15 @@
       applicationFirstLetter (application = []) {
         return application.name && application.name.length > 0 ? application.name.trim().substring(0, 1).toUpperCase() : 'A'
       },
-      applicationUrl (path = '', application = []) {
+      applicationUrl (application = []) {
         const url = window.location.origin.split('://')
         const subdomain = url[1].split('.')
         if (subdomain[0] === 'informed365') {
           subdomain.unshift(application.slug)
-        } else if (subdomain[0] === 'app') {
+        } else {
           subdomain[0] = application.slug
         }
-        return url[0] + '://' + subdomain.join('.') + (path.length ? path + '/' : '')
+        return url[0] + '://' + subdomain.join('.')
       },
       onValidate (value) {
         if (value === 1 && !this.isSuperUser) {

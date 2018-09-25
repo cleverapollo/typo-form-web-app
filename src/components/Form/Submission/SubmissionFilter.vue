@@ -137,7 +137,7 @@
       return {
         search: '',
         filters: [{ source: '', query: '', value: '', answer: '' }],
-        slug: window.location.hostname.split[0]
+        slug: window.location.hostname.split('.')[0]
       }
     },
     computed: {

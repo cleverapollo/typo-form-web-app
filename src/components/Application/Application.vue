@@ -102,7 +102,7 @@
         countToDuration: 3000,
         joinUrlDialog: false,
         deleteApplication: false,
-        slug: window.location.hostname.split[0]
+        slug: window.location.hostname.split('.')[0]
       }
     },
     components: {
@@ -137,6 +137,9 @@
         return this.$store.getters.loading
       },
       joinURL () {
+        if (!this.application) {
+          return ''
+        }
         return window.location.origin + '/join/application/' + this.application.share_token
       },
       usersCount () {

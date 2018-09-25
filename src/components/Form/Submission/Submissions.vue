@@ -82,7 +82,7 @@
           { text: 'Modified', value: 'updated_at.date', sortable: true, align: 'left' },
           { text: 'Status', value: 'status', sortable: true, align: 'left' }
         ],
-        slug: window.location.hostname.split[0]
+        slug: window.location.hostname.split('.')[0]
       }
     },
     computed: {

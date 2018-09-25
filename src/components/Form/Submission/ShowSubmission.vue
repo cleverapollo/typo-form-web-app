@@ -159,7 +159,7 @@
       return {
         deleteSubmission: false,
         snackbar: false,
-        slug: window.location.hostname.split[0]
+        slug: window.location.hostname.split('.')[0]
       }
     },
     components: {

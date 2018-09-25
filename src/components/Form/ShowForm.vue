@@ -116,7 +116,7 @@
     data () {
       return {
         deleteForm: false,
-        slug: window.location.hostname.split[0]
+        slug: window.location.hostname.split('.')[0]
       }
     },
     computed: {

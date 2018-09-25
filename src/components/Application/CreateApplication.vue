@@ -82,7 +82,7 @@
               const subdomain = url[1].split('.')
               if (subdomain[0] === 'informed365') {
                 subdomain.unshift(slug)
-              } else if (subdomain[0] === 'app') {
+              } else {
                 subdomain[0] = slug
               }
               window.location.href = url[0] + '://' + subdomain.join('.')

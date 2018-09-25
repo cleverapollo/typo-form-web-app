@@ -87,13 +87,13 @@ const router = new Router({
     },
     {
       path: '/',
-      redirect: '/applications'
+      redirect: '/dashboard',
+      meta: {requiresAuth: true}
     },
     {
       path: '/dashboard',
       name: 'Application',
       component: Application,
-      props: true,
       meta: {
         application: true,
         requiresAuth: true
@@ -103,7 +103,6 @@ const router = new Router({
       path: '/teams',
       name: 'Teams',
       component: Teams,
-      props: true,
       meta: {
         application: true,
         requiresAuth: true
@@ -123,7 +122,6 @@ const router = new Router({
       path: '/users',
       name: 'Users',
       component: Users,
-      props: true,
       meta: {
         application: true,
         requiresAuth: true
@@ -133,7 +131,6 @@ const router = new Router({
       path: '/forms',
       name: 'Forms',
       component: Forms,
-      props: true,
       meta: {
         application: true,
         requiresAuth: true
@@ -153,7 +150,6 @@ const router = new Router({
       path: '/submissions',
       name: 'Submissions',
       component: Submissions,
-      props: true,
       meta: {
         application: true,
         requiresAuth: true
@@ -163,7 +159,6 @@ const router = new Router({
       path: '/settings',
       name: 'ApplicationSettings',
       component: ApplicationSettings,
-      props: true,
       meta: {
         application: true,
         requiresAuth: true
@@ -183,7 +178,6 @@ const router = new Router({
       path: '/submissionfilter',
       name: 'SubmissionFilter',
       component: SubmissionFilter,
-      props: true,
       meta: {
         application: true,
         requiresAuth: true
@@ -217,33 +211,20 @@ router.beforeEach((to, from, next) => {
   style.id = 'dyc-css'
   const url = window.location.origin.split('://')
   const subdomain = url[1].split('.')
-  if (subdomain[0] !== 'informed365' && subdomain[0] !== 'app') {
-    store.dispatch('loadApplication', subdomain[0])
-      .then(() => {
-        const application = store.getters.loadedApplication(subdomain[0])
-
-        favicon.href = application.icon ? application.icon : '/static/logo.png'
-        const css = application.css ? application.css : ''
-        if (style.childNodes.length) {
-          style.childNodes[0].textContent = css
-        } else {
-          style.appendChild(document.createTextNode(css))
-        }
-        head.appendChild(style)
-        console.log(application)
-        document.title = application ? application.name : process.env.APP_NAME
-        next()
-      })
-      .catch(() => next({path: '/'}))
-  } else {
-    favicon.href = '/static/logo.png'
-    if (style.childNodes.length) {
-      style.childNodes[0].textContent = ''
-    }
-    head.appendChild(style)
-    document.title = process.env.APP_NAME
-    next()
+  let application = null
+  if (subdomain[0] !== 'informed365' && subdomain[0] !== 'app' && store.getters.user) {
+    application = store.getters.loadedApplication(subdomain[0])
   }
+  favicon.href = application && application.icon ? application.icon : '/static/logo.png'
+  const css = application && application.css ? application.css : ''
+  if (style.childNodes.length) {
+    style.childNodes[0].textContent = css
+  } else {
+    style.appendChild(document.createTextNode(css))
+  }
+  head.appendChild(style)
+  document.title = application ? application.name : process.env.APP_NAME
+  next()
 })
 
 export default router
