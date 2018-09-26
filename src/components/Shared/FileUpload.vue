@@ -53,7 +53,8 @@
           maxFiles: this.maxFiles,
           acceptedFiles: this.acceptedFiles,
           createImageThumbnails: false,
-          addRemoveLinks: true
+          addRemoveLinks: true,
+          timeout: 1800000
         }
       }
     },
