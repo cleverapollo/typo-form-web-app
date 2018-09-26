@@ -1,7 +1,7 @@
 <template>
   <v-layout row>
     <v-flex xs12>
-      <vue-dropzone 
+      <vue-dropzone
         ref="dropZone"
         :id="dropZoneId"
         :options="options"
@@ -35,7 +35,7 @@
       // Maximum file size (MB)
       maxFilesize: {
         type: Number,
-        default: 50
+        default: 5000
       },
       // Accepted Files
       acceptedFiles: {
@@ -53,7 +53,8 @@
           maxFiles: this.maxFiles,
           acceptedFiles: this.acceptedFiles,
           createImageThumbnails: false,
-          addRemoveLinks: true
+          addRemoveLinks: true,
+          timeout: 1800000
         }
       }
     },

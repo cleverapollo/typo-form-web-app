@@ -116,7 +116,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <template v-if="userIsAuthenticated">
-        <v-menu offset-y left class="hidden-sm-and-down">
+        <v-menu offset-y left class="hidden-sm-and-down" v-if='applications.length > 1'>
           <v-btn
             icon
             slot="activator">
@@ -124,7 +124,7 @@
               <v-icon>apps</v-icon>
             </v-avatar>
           </v-btn>
-          <v-list v-if='applications.length'>
+          <v-list>
             <template v-for="(application, index) in applications" :v-bind="application.id">
               <v-list-tile
                 avatar
