@@ -183,8 +183,9 @@
         </v-btn>
       </template>
     </v-toolbar>
-    <v-content class="border-bottom">
-      <v-container fluid :class="{'px-0': $vuetify.breakpoint.xsOnly }">
+    <v-content>
+      <v-divider class="app-toolbar-divider"></v-divider>
+      <v-container class="app-container" fluid :class="{'px-0': $vuetify.breakpoint.xsOnly }">
         <router-view></router-view>
       </v-container>
     </v-content>
@@ -300,19 +301,11 @@
     }
   }
 </script>
-
 <style>
-  .border-bottom {
-    border-bottom:1px solid #e0e0e0;
-  }
   .theme--light.application {
-    background: #eee;
-  }
-  .v-toolbar.app-toolbar {
-    box-shadow: 1px 2px 1px #d3d3d3 !important;
+    background: #fff;
   }
   .application-name {
     line-height:48px;
   }
-  
 </style>

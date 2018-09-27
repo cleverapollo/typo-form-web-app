@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+// Home
+import Home from '@/components/Home'
+
 // Profile
 import Profile from '@/components/Auth/Profile'
 import Register from '@/components/Auth/Register'
@@ -81,7 +84,8 @@ const router = new Router({
     },
     {
       path: '/',
-      redirect: '/applications'
+      component: Home
+      // redirect: '/applications'
     },
     {
       path: '/applications',
