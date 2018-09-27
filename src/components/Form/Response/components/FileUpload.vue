@@ -31,7 +31,7 @@
         } catch (error) {
           // String file name
           let response = data.length ? data[0].response : []
-          if (response !== '') {
+          if (response.length) {
             let filename = response.split('/')
             files.push({
               url: response,
