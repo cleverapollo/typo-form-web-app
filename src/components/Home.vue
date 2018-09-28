@@ -1,30 +1,17 @@
 <template>
   <v-template>
 
-    <!--
     <v-layout row fill-height>
       <v-flex xs12 class="background-cover" v-bind:style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
         <v-container fill-height>
           <v-layout row wrap align-center>
             <v-flex xs12 class="text-xs-center white--text">
-              <div class="flex display-3 font-weight-light my-3">Informed 365</div>
-              <div class="flex my-3">
-                
-              </div>
-              <div class="flex">
-                <v-btn class="white black--text my-5" large dark>Get Started</v-btn>
-              </div>
+              <div class="flex headline font-weight-light my-3">Login/Register/Password Reset Components here.</div>
             </v-flex>
           </v-layout>
         </v-container>
       </v-flex>
     </v-layout>
-    -->
-
-    <v-footer class="pa-3">
-      <v-spacer></v-spacer>
-      <div>&copy; {{ new Date().getFullYear() }} Informed 365 | Terms of Use</div>
-    </v-footer>
 
   </v-template>
 </template>
@@ -33,7 +20,7 @@
   export default {
     computed: {
       backgroundImage () {
-        return '/static/background.jpg'
+        return '/static/background.jpg' //Default image, set from application if available
       }
     }
   }
