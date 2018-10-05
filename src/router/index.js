@@ -7,7 +7,6 @@ import Register from '@/components/Auth/Register'
 import Login from '@/components/Auth/Login'
 import NewPassword from '@/components/Auth/NewPassword'
 import ResetPassword from '@/components/Auth/ResetPassword'
-import AcceptInvitation from '@/components/Shared/AcceptInvitation'
 import AcceptJoin from '@/components/Shared/AcceptJoin'
 
 // Applications
@@ -63,13 +62,6 @@ const router = new Router({
       path: '/profile',
       name: 'Profile',
       component: Profile,
-      meta: {requiresAuth: true}
-    },
-    {
-      path: '/invitation/:type/:token',
-      name: 'AcceptInvitation',
-      component: AcceptInvitation,
-      props: true,
       meta: {requiresAuth: true}
     },
     {
