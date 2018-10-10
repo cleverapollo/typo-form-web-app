@@ -2,6 +2,7 @@
   <v-app>
 
     <!-- //Application Loading -->
+    <!-- // TODO: Set loader for pages, not updates -->
     <!-- <ApplicationLoading /> -->
 
     <!-- //Navigation Drawer -->
