@@ -19,19 +19,6 @@
                     </v-avatar>
                   </v-flex>
                 </v-layout>
-
-                <!-- // TODO: Implement Account Image
-                <v-layout row>
-                  <v-flex text-xs-center>
-                    <v-btn flat small color="primary">Change picture</v-btn>
-                  </v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex text-xs-center class="overflow-flex">
-                    <v-btn large block>Delete Picture</v-btn>
-                  </v-flex>
-                </v-layout>
-                -->
                 <v-layout row v-if="!isSocialUser">
                   <v-flex text-xs-center class="overflow-flex">
                     <template v-if="userIsAuthenticated">

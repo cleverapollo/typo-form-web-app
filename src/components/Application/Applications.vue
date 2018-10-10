@@ -11,7 +11,7 @@
 
               <!-- //Application List -->
               <template v-for="(application, index) in sortApplications(applications)">
-                <v-list-tile :to="applicationUrl('', application)" :key="application.id" avatar>
+                <v-list-tile :href="applicationUrl(application)" :key="application.id" avatar>
                   <v-list-tile-avatar tile v-if="getApplicationIcon(application)">
                     <img :src="getApplicationIcon(application)">
                   </v-list-tile-avatar>
@@ -24,7 +24,7 @@
                 </v-list-tile>
                 <v-divider v-if="index < applications.length -1"></v-divider>
               </template>
-  
+
             </v-list>
           </v-card>
         </v-flex>
@@ -57,7 +57,9 @@
   export default {
     data () {
       return {
-        createApplication: false
+        createApplication: false,
+        app_domain: process.env.APP_DOMAIN,
+        ssl_enabled: process.env.SSL_ENABLED
       }
     },
     components: {
@@ -81,6 +83,9 @@
       },
       applicationCount () {
         return this.applications.length
+      },
+      appProtocol () {
+        return this.ssl_enabled === 'true' ? 'https://' : 'http://'
       }
     },
     watch: {
@@ -99,12 +104,12 @@
       applicationFirstLetter (application = []) {
         return application.name && application.name.length > 0 ? application.name.trim().substring(0, 1).toUpperCase() : 'A'
       },
-      applicationUrl (path = '', application = []) {
-        return '/' + (application && application.slug ? application.slug + '/' : '') + (path.length ? path + '/' : '')
+      applicationUrl (application = []) {
+        return this.appProtocol + application.slug + '.' + this.app_domain
       },
       onValidate (value) {
         if (value === 1 && !this.isSuperUser) {
-          this.$router.push('/' + this.applications[0].slug)
+          window.location.host = this.applications[0].slug + window.location.host
         }
       },
       getRole (roleId) {

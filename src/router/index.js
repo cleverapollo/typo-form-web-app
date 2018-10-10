@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+// Home
+import Home from '@/components/Home'
+
 // Profile
 import Profile from '@/components/Auth/Profile'
 import Register from '@/components/Auth/Register'
@@ -81,7 +84,7 @@ const router = new Router({
     },
     {
       path: '/',
-      redirect: '/applications'
+      component: Home
     },
     {
       path: '/applications',
@@ -90,81 +93,97 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
-      path: '/:slug',
-      name: 'Submissions',
-      component: Submissions,
-      props: true,
-      meta: {requiresAuth: true}
-    },
-    {
-      path: '/:slug/dashboard',
+      path: '/dashboard',
       name: 'Application',
       component: Application,
-      props: true,
-      meta: {requiresAuth: true}
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
     },
     {
-      path: '/:slug/teams',
+      path: '/teams',
       name: 'Teams',
       component: Teams,
-      props: true,
-      meta: {requiresAuth: true}
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
     },
     {
-      path: '/:slug/teams/:id',
+      path: '/teams/:id',
       name: 'ShowTeam',
       component: ShowTeam,
       props: true,
-      meta: {requiresAuth: true}
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
     },
     {
-      path: '/:slug/users',
+      path: '/users',
       name: 'Users',
       component: Users,
-      props: true,
-      meta: {requiresAuth: true}
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
     },
     {
-      path: '/:slug/forms',
+      path: '/forms',
       name: 'Forms',
       component: Forms,
-      props: true,
-      meta: {requiresAuth: true}
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
     },
     {
-      path: '/:slug/forms/:id',
+      path: '/forms/:id',
       name: 'ShowForm',
       component: ShowForm,
       props: true,
-      meta: {requiresAuth: true}
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
     },
     {
-      path: '/:slug/submissions',
+      path: '/submissions',
       name: 'Submissions',
       component: Submissions,
-      props: true,
-      meta: {requiresAuth: true}
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
     },
     {
-      path: '/:slug/settings',
+      path: '/settings',
       name: 'ApplicationSettings',
       component: ApplicationSettings,
-      props: true,
-      meta: {requiresAuth: true}
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
     },
     {
-      path: '/:slug/submissions/:id',
+      path: '/submissions/:id',
       name: 'ShowSubmission',
       component: ShowSubmission,
       props: true,
-      meta: {requiresAuth: true}
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
     },
     {
-      path: '/:slug/submissionfilter',
+      path: '/submissionfilter',
       name: 'SubmissionFilter',
       component: SubmissionFilter,
-      props: true,
-      meta: {requiresAuth: true}
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
     },
     {
       path: '/auth/callback',
@@ -192,32 +211,22 @@ router.beforeEach((to, from, next) => {
   const style = document.getElementById('dyc-css') || document.createElement('style')
   style.type = 'text/css'
   style.id = 'dyc-css'
-  if (to.matched.some(record => record.path.includes(':slug'))) {
-    store.dispatch('loadApplication', to.params['slug'])
-      .then(() => {
-        const application = store.getters.loadedApplication(to.params['slug'])
-
-        favicon.href = application.icon ? application.icon : '/static/logo.png'
-        const css = application.css ? application.css : ''
-        if (style.childNodes.length) {
-          style.childNodes[0].textContent = css
-        } else {
-          style.appendChild(document.createTextNode(css))
-        }
-        head.appendChild(style)
-        document.title = application ? application.name : process.env.APP_NAME
-        next()
-      })
-      .catch(() => next({path: '/'}))
-  } else {
-    favicon.href = '/static/logo.png'
-    if (style.childNodes.length) {
-      style.childNodes[0].textContent = ''
-    }
-    head.appendChild(style)
-    document.title = process.env.APP_NAME
-    next()
+  const url = window.location.origin.split('://')
+  const subdomain = url[1].split('.')
+  let application = null
+  if (subdomain[0] !== 'informed365' && subdomain[0] !== 'app' && store.getters.user) {
+    application = store.getters.loadedApplication(subdomain[0])
   }
+  favicon.href = application && application.icon ? application.icon : '/static/icon.png'
+  const css = application && application.css ? application.css : ''
+  if (style.childNodes.length) {
+    style.childNodes[0].textContent = css
+  } else {
+    style.appendChild(document.createTextNode(css))
+  }
+  head.appendChild(style)
+  document.title = application ? application.name : process.env.APP_NAME
+  next()
 })
 
 export default router
