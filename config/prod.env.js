@@ -3,8 +3,11 @@ require('dotenv').config()
 module.exports = {
   NODE_ENV: '"production"',
   APP_NAME: JSON.stringify(process.env.APP_NAME),
-  API_ORIGIN_URL: JSON.stringify(process.env.API_URL),
+  APP_DOMAIN: JSON.stringify(process.env.APP_DOMAIN),
+  SSL_ENABLED: JSON.stringify(process.env.SSL_ENABLED),
+
   API_URL: JSON.stringify(process.env.API_URL + 'api/'),
+  API_ORIGIN_URL: JSON.stringify(process.env.API_URL),
 
   GITHUB_CLIENT_ID: JSON.stringify(process.env.GITHUB_CLIENT_ID),
   GITHUB_CLIENT_SECRET: JSON.stringify(process.env.GITHUB_CLIENT_SECRET),
@@ -15,11 +18,13 @@ module.exports = {
   GOOGLE_CLIENT_ID: JSON.stringify(process.env.GOOGLE_CLIENT_ID),
   GOOGLE_CLIENT_SECRET: JSON.stringify(process.env.GOOGLE_CLIENT_SECRET),
 
+  GOOGLE_DATA_SITEKEY: JSON.stringify(process.env.GOOGLE_DATA_SITEKEY),
+  GOOGLE_DATA_SECRETKEY: JSON.stringify(process.env.GOOGLE_DATA_SECRETKEY),
+
   LIVE_CLIENT_ID: JSON.stringify(process.env.LIVE_CLIENT_ID),
   LIVE_CLIENT_SECRET: JSON.stringify(process.env.LIVE_CLIENT_SECRET),
 
   REDIRECT_URL: JSON.stringify(process.env.REDIRECT_URL),
 
-  GOOGLE_DATA_SITEKEY: JSON.stringify(process.env.GOOGLE_DATA_SITEKEY),
-  GOOGLE_DATA_SECRETKEY: JSON.stringify(process.env.GOOGLE_DATA_SECRETKEY)
+  ABR_GUID: JSON.stringify(process.env.ABR_GUID)
 }
