@@ -83,7 +83,7 @@
 
             // Redirect to the form
             if (response.data.form.id) {
-              this.$router.push('/' + this.slug + '/forms/' + response.data.form.id)
+              this.$router.push('/forms/' + response.data.form.id)
             }
           })
           .catch(

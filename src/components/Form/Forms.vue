@@ -57,10 +57,10 @@
   import * as _ from 'lodash'
   import CreateForm from './CreateForm'
   export default {
-    props: ['slug'],
     data () {
       return {
-        createForm: false
+        createForm: false,
+        slug: window.location.hostname.split('.')[0]
       }
     },
     components: {
@@ -108,7 +108,7 @@
         return role ? role.name : 'undefined'
       },
       onLoadForm (id) {
-        return '/' + this.slug + '/forms/' + id
+        return '/forms/' + id
       }
     },
     created: function () {

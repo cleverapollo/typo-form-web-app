@@ -1,12 +1,12 @@
 <template>
   <v-container>
     <v-layout row v-if="error">
-      <v-flex sm12 md8 offset-md2 xl4 offset-xl4>
+      <v-flex xs12 md6 offset-md3>
         <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
       </v-flex>
     </v-layout>
     <v-layout row>
-      <v-flex sm12 md8 offset-md2 xl4 offset-xl4>
+      <v-flex xs12 md6 offset-md3>
         <v-card>
           <v-card-text>
             <v-container>
@@ -195,7 +195,7 @@
       onSignup () {
         if (this.recaptchaToken === '') {
           this.submitted = true
-          return
+          // return
         }
         this.$store.dispatch('signUserUp', {
           first_name: this.firstname,

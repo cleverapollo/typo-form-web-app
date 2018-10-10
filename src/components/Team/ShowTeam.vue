@@ -148,13 +148,14 @@
   import EditInvitedTeamUser from './EditInvitedTeamUser'
   import moment from 'moment'
   export default {
-    props: ['slug', 'id'],
+    props: ['id'],
     data () {
       return {
         userSearch: '',
         invitedUserSearch: '',
         inviteUsers: false,
-        deleteTeam: false
+        deleteTeam: false,
+        slug: window.location.hostname.split('.')[0]
       }
     },
     components: {
@@ -239,7 +240,7 @@
           slug: this.slug,
           id: this.team.id
         })
-        this.$router.push('/' + this.slug + '/teams')
+        this.$router.push('/teams')
       },
       onDeleteTeamUser (teamUserId) {
         this.$store.dispatch('deleteTeamUser', {
@@ -251,7 +252,7 @@
             if (this.user.id === teamUserId) {
               this.$store.dispatch('loadTeams', this.slug)
                 .then(() => {
-                  this.$router.push('/' + this.slug + '/teams')
+                  this.$router.push('/teams')
                 })
             }
           })

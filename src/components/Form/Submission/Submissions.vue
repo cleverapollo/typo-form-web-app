@@ -68,7 +68,6 @@
 
   export default {
     name: 'Submissions',
-    props: ['slug'],
     components: {
       CreateSubmission
     },
@@ -82,7 +81,8 @@
           { text: 'Created', value: 'created_at.date', sortable: true, align: 'left' },
           { text: 'Modified', value: 'updated_at.date', sortable: true, align: 'left' },
           { text: 'Status', value: 'status', sortable: true, align: 'left' }
-        ]
+        ],
+        slug: window.location.hostname.split('.')[0]
       }
     },
     computed: {
@@ -100,7 +100,7 @@
     },
     methods: {
       onSubmission (id) {
-        this.$router.push('/' + this.slug + '/submissions/' + id)
+        this.$router.push('/submissions/' + id)
       },
       status (id) {
         return this.statuses.find(e => { return e.id === id }).status

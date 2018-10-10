@@ -1,19 +1,23 @@
 <template>
   <v-app>
 
+    <!-- //Application Loading -->
+    <!-- <ApplicationLoading /> -->
+
     <!-- //Navigation Drawer -->
     <v-navigation-drawer
       v-model="drawer"
       fixed
       app
       temporary
+      v-if="!backgroundRequired"
     >
 
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
           <v-list-tile avatar>
             <v-list-tile-avatar tile>
-              <img src="/static/logo.png" >
+              <img src="/static/icon.png" >
             </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title>{{ app_name }}</v-list-tile-title>
@@ -29,12 +33,12 @@
         <template v-if="application">
           <v-divider></v-divider>
           <v-list dense>
-            <template 
+            <template
               v-for="item in applicationItems"
               v-if="!item.admin || userIsApplicationAdmin"
               >
               <v-list-tile
-                :to="applicationUrl(item.path, application)"
+                :to="'/' + item.path"
                 :key="item.title"
               >
                 <v-list-tile-action>
@@ -55,7 +59,7 @@
           <v-divider></v-divider>
           <template v-for="item in accountItems">
             <v-list-tile
-              :to="applicationUrl(item.path)"
+              :to="'/' + item.path"
               :key="item.title"
             >
               <v-list-tile-action>
@@ -77,7 +81,7 @@
         <v-list dense>
           <template v-for="item in authItems">
             <v-list-tile
-              :to="applicationUrl(item.path)"
+              :tp="'/' + item.path"
               :key="item.title"
             >
               <v-list-tile-action>
@@ -102,10 +106,11 @@
       class="elevation-0 app-toolbar"
       app
       fixed
+      v-if="!backgroundRequired"
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title class="ml-0 pl-3">
-        <router-link :to="applicationUrl('', application)" tag="span" style="cursor: pointer">
+        <router-link to="/" tag="span" style="cursor: pointer">
           <div class="d-flex flex-row">
             <v-avatar tile v-if="applicationIcon(application)">
               <img :src="applicationIcon(application)"/>
@@ -116,7 +121,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <template v-if="userIsAuthenticated">
-        <v-menu offset-y left class="hidden-sm-and-down">
+        <v-menu offset-y left class="hidden-sm-and-down" v-if='applications.length > 1'>
           <v-btn
             icon
             slot="activator">
@@ -124,13 +129,13 @@
               <v-icon>apps</v-icon>
             </v-avatar>
           </v-btn>
-          <v-list v-if='applications.length'>
+          <v-list>
             <template v-for="(application, index) in applications" :v-bind="application.id">
               <v-list-tile
                 avatar
                 ripple
                 :key="application.id"
-                :to="applicationUrl('', application)">
+                :href="applicationUrl(application)">
                 <v-list-tile-avatar tile v-if="applicationIcon(application)">
                   <img :src="applicationIcon(application)">
                 </v-list-tile-avatar>
@@ -183,8 +188,8 @@
         </v-btn>
       </template>
     </v-toolbar>
-    <v-content class="border-bottom">
-      <v-container fluid :class="{'px-0': $vuetify.breakpoint.xsOnly }">
+    <v-content class="application-background-image" v-bind:style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
+      <v-container :fill-height="backgroundRequired" fluid :class="{'px-0': $vuetify.breakpoint.xsOnly }">
         <router-view></router-view>
       </v-container>
     </v-content>
@@ -192,15 +197,27 @@
 </template>
 
 <script>
+  import parseDomain from 'parse-domain'
   export default {
     name: 'App',
     data () {
       return {
         drawer: null,
-        app_name: process.env.APP_NAME
+        app_name: process.env.APP_NAME,
+        app_domain: process.env.APP_DOMAIN,
+        ssl_enabled: process.env.SSL_ENABLED
       }
     },
     computed: {
+      backgroundRequired () {
+        return !this.$route.meta.requiresAuth
+      },
+      backgroundImage () {
+        if (this.backgroundRequired) {
+          return this.application && this.application.background_image && this.applicationBackgroundImage(this.application.background_image) ? this.applicationBackgroundImage(this.application.background_image) : '/static/background.jpg'
+        }
+        return ''
+      },
       roles () {
         return this.$store.getters.roles
       },
@@ -210,8 +227,12 @@
       applications () {
         return this.$store.getters.loadedApplications
       },
+      slug () {
+        let domain = parseDomain(window.location.hostname, { customTlds: ['local'] })
+        return domain ? domain.subdomain : null
+      },
       application () {
-        return this.$store.getters.loadedApplication(this.$route.params['slug'])
+        return this.slug ? this.$store.getters.loadedApplication(this.slug) : null
       },
       applicationItems () {
         return [
@@ -225,7 +246,7 @@
       },
       accountItems () {
         return [
-            { title: 'Applications', path: 'applications', icon: 'apps' },
+            // { title: 'Applications', path: 'applications', icon: 'apps' },
             { title: 'My Profile', path: 'profile', icon: 'account_circle' }
         ]
       },
@@ -253,20 +274,27 @@
         }
         return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
-      copyright () {
-        return new Date().getFullYear() + ' ' + process.env.APP_NAME
+      appProtocol () {
+        return this.ssl_enabled === 'true' ? 'https://' : 'http://'
       }
     },
     methods: {
       applicationName (application = []) {
-        return application.name ? application.name : process.env.APP_NAME
+        return application && application.name ? application.name : this.app_name
       },
-      applicationUrl (path = '', application = []) {
-        return '/' + (application && application.slug ? application.slug + '/' : '') + (path.length ? path + '/' : '')
+      applicationUrl (application = []) {
+        return this.appProtocol + application.slug + '.' + this.app_domain
       },
       applicationIcon (application = []) {
         try {
           return JSON.parse(application.icon).url
+        } catch (error) {
+          return false
+        }
+      },
+      applicationBackgroundImage (image) {
+        try {
+          return JSON.parse(image).url
         } catch (error) {
           return false
         }
@@ -286,6 +314,9 @@
       }
     },
     created () {
+      // Load Application
+      this.$store.dispatch('loadApplication', this.slug)
+
       if (this.userIsAuthenticated) {
         this.$store.dispatch('loadQuestionTypes')
         this.$store.dispatch('loadValidationTypes')
@@ -300,19 +331,21 @@
     }
   }
 </script>
-
 <style>
-  .border-bottom {
-    border-bottom:1px solid #e0e0e0;
-  }
   .theme--light.application {
-    background: #eee;
-  }
-  .v-toolbar.app-toolbar {
-    box-shadow: 1px 2px 1px #d3d3d3 !important;
+    background: #F4F4F4;
   }
   .application-name {
     line-height:48px;
   }
-  
+  .app-toolbar {
+    border-bottom: solid thin rgba(0,0,0,.12) !important;
+  }
+  .application-background-image {
+    background: no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
 </style>

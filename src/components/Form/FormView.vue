@@ -59,7 +59,6 @@
         return this.$store.getters.loadedSections(this.formId)
       },
       sortedSections () {
-        console.log(this.sections)
         return _.sortBy(this.sections, ['order'])
       },
       list: {

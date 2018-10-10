@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <FileUpload 
+      <FileUpload
         v-bind:maxFiles="maxFiles"
         v-bind:maxFilesize="maxFilesize"
         v-bind:files="files"
@@ -19,7 +19,7 @@
       return {
         files: this.setFiles(this.responses),
         maxFiles: 1,
-        maxFilesize: 50
+        maxFilesize: 5000
       }
     },
     methods: {

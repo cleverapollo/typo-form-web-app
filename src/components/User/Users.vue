@@ -115,12 +115,12 @@
   import EditInvitedUser from './EditInvitedUser'
   import moment from 'moment'
   export default {
-    props: ['slug'],
     data () {
       return {
         inviteApplication: false,
         userSearch: '',
-        invitedUserSearch: ''
+        invitedUserSearch: '',
+        slug: window.location.hostname.split('.')[0]
       }
     },
     components: {

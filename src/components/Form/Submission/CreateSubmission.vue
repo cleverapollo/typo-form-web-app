@@ -221,7 +221,7 @@
 
             // Redirect to the submission
             if (response.data.submission.id) {
-              this.$router.push('/' + this.slug + '/submissions/' + response.data.submission.id)
+              this.$router.push('/submissions/' + response.data.submission.id)
             }
           })
       },
