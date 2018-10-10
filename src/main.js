@@ -17,6 +17,7 @@ import Terms from './components/Shared/Terms'
 import DeleteConfirmDialog from './components/Shared/DeleteConfirmDialog'
 import ParentSectionDialog from './components/Shared/ParentSectionDialog'
 import FileUpload from './components/Shared/FileUpload.vue'
+import ApplicationLoading from './components/Shared/ApplicationLoading.vue'
 
 import 'vuetify/dist/vuetify.min.css'
 window.axios = require('axios')
@@ -85,6 +86,7 @@ Vue.component('Terms', Terms)
 Vue.component('DeleteConfirmDialog', DeleteConfirmDialog)
 Vue.component('ParentSectionDialog', ParentSectionDialog)
 Vue.component('FileUpload', FileUpload)
+Vue.component('ApplicationLoading', ApplicationLoading)
 
 /* eslint-disable no-new */
 function createApp () {

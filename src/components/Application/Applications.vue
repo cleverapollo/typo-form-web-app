@@ -57,7 +57,9 @@
   export default {
     data () {
       return {
-        createApplication: false
+        createApplication: false,
+        app_domain: process.env.APP_DOMAIN,
+        ssl_enabled: process.env.SSL_ENABLED
       }
     },
     components: {
@@ -81,6 +83,9 @@
       },
       applicationCount () {
         return this.applications.length
+      },
+      appProtocol () {
+        return this.ssl_enabled === 'true' ? 'https://' : 'http://'
       }
     },
     watch: {
@@ -100,14 +105,7 @@
         return application.name && application.name.length > 0 ? application.name.trim().substring(0, 1).toUpperCase() : 'A'
       },
       applicationUrl (application = []) {
-        const url = window.location.origin.split('://')
-        const subdomain = url[1].split('.')
-        if (subdomain[0] === 'informed365') {
-          subdomain.unshift(application.slug)
-        } else {
-          subdomain[0] = application.slug
-        }
-        return url[0] + '://' + subdomain.join('.')
+        return this.appProtocol + application.slug + '.' + this.app_domain
       },
       onValidate (value) {
         if (value === 1 && !this.isSuperUser) {

@@ -108,7 +108,7 @@
         return role ? role.name : 'undefined'
       },
       onLoadForm (id) {
-        return '/' + this.slug + '/forms/' + id
+        return '/forms/' + id
       }
     },
     created: function () {

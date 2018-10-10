@@ -1,15 +1,31 @@
 <template>
   <v-container>
+
+    <!-- // Error Message -->
     <v-layout row v-if="error">
-      <v-flex sm12 md8 offset-md2 xl4 offset-xl4>
+      <v-flex xs12 md6 offset-md3>
         <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
       </v-flex>
     </v-layout>
+
+    <!-- //Login Form -->
     <v-layout row>
-      <v-flex sm12 md8 offset-md2 xl4 offset-xl4>
+      <v-flex xs12 md6 offset-md3>
         <v-card>
-          <v-card-text>
-            <v-container>
+
+          <!-- // Application Image -->
+          <v-card-text class="application-image-slot pb-1" v-if="applicationImage">
+            <v-container pb-1>
+              <v-layout row wrap>
+                <v-flex xs12 text-xs-center>
+                  <img class="application-image" v-bind:src="applicationImage" />
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+
+          <v-card-text class="pt-1">
+            <v-container pt-1>
               <form @submit.prevent="onSignin">
                 <v-layout row>
                   <v-flex xs12>
@@ -51,16 +67,6 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs12 class="mb-2">
-                    <vue-recaptcha
-                      ref="recaptcha"
-                      @verify="onCaptchaVerified"
-                      @expired="onCaptchaExpired"
-                      :sitekey="data_sitekey">
-                    </vue-recaptcha>
-                  </v-flex>
-                </v-layout>
-                <v-layout row>
                   <v-flex xs12>
                     <v-btn
                       block
@@ -89,43 +95,51 @@
               </form>
             </v-container>
           </v-card-text>
+
+          <!-- // Support Text -->
+          <v-card-text class="support-slot" v-if="supportText">
+            <v-container>
+              <v-layout row wrap text-xs-center>
+                <v-flex xs12><span v-html="supportText" /></v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+
         </v-card>
       </v-flex>
     </v-layout>
+
   </v-container>
 </template>
 
 <script>
   import Oauth from './Oauth'
-  // import PasswordMixin from './PasswordMixin.js'
-  import VueRecaptcha from 'vue-recaptcha'
   export default {
-   // mixins: [PasswordMixin],
     data () {
       return {
         submitted: false,
         email: '',
-        password: '',
-        recaptchaToken: '',
-        data_sitekey: process.env.GOOGLE_DATA_SITEKEY
+        password: ''
       }
     },
     components: {
-      Oauth,
-      VueRecaptcha
+      Oauth
     },
     computed: {
       user () {
         return this.$store.getters.user
       },
       error () {
-        if (this.submitted && this.recaptchaToken === '') {
-          return { message: 'Recaptcha is required' }
-        }
         return this.$store.getters.error
       },
       loading () {
         return this.$store.getters.loading
+      },
+      supportText () {
+        return 'For support, please contact <a href="mailto:support@informed365.com" target="_blank">Informed 365 Help Desk</a>.'
+      },
+      applicationImage () {
+        return '/static/logo.png'
       }
     },
     watch: {
@@ -153,27 +167,14 @@
         }
       },
       onSignin () {
-        if (this.recaptchaToken === '') {
-          this.submitted = true
-          // return
-        }
-        this.$store.dispatch('signUserIn', {email: this.email, password: this.password, recaptchaToken: this.recaptchaToken})
-          .then(response => {
-          })
+        this.$store.dispatch('signUserIn', {email: this.email, password: this.password})
+          .then(response => {})
           .catch(() => {
-            this.$refs.recaptcha.reset()
             this.submitted = false
-            this.recaptchaToken = ''
           })
       },
       onDismissed () {
         this.$store.dispatch('clearError')
-      },
-      onCaptchaVerified (recaptchaToken) {
-        this.recaptchaToken = recaptchaToken
-      },
-      onCaptchaExpired () {
-        this.recaptchaToken = ''
       }
     },
     created: function () {
@@ -182,3 +183,12 @@
     }
   }
 </script>
+
+<style>
+.support-slot {
+  background-color:#f2f2f2;
+}
+img.application-image {
+  max-width:50%;
+}
+</style>

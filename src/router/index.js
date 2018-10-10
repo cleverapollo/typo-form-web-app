@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+// Home
+import Home from '@/components/Home'
+
 // Profile
 import Profile from '@/components/Auth/Profile'
 import Register from '@/components/Auth/Register'
@@ -80,14 +83,13 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
+      path: '/',
+      component: Home
+    },
+    {
       path: '/applications',
       name: 'Applications',
       component: Applications,
-      meta: {requiresAuth: true}
-    },
-    {
-      path: '/',
-      redirect: '/dashboard',
       meta: {requiresAuth: true}
     },
     {
@@ -215,7 +217,7 @@ router.beforeEach((to, from, next) => {
   if (subdomain[0] !== 'informed365' && subdomain[0] !== 'app' && store.getters.user) {
     application = store.getters.loadedApplication(subdomain[0])
   }
-  favicon.href = application && application.icon ? application.icon : '/static/logo.png'
+  favicon.href = application && application.icon ? application.icon : '/static/icon.png'
   const css = application && application.css ? application.css : ''
   if (style.childNodes.length) {
     style.childNodes[0].textContent = css

@@ -1,19 +1,23 @@
 <template>
   <v-app>
 
+    <!-- //Application Loading -->
+    <ApplicationLoading />
+
     <!-- //Navigation Drawer -->
     <v-navigation-drawer
       v-model="drawer"
       fixed
       app
       temporary
+      v-if="!backgroundRequired"
     >
 
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
           <v-list-tile avatar>
             <v-list-tile-avatar tile>
-              <img src="/static/logo.png" >
+              <img src="/static/icon.png" >
             </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title>{{ app_name }}</v-list-tile-title>
@@ -102,6 +106,7 @@
       class="elevation-0 app-toolbar"
       app
       fixed
+      v-if="!backgroundRequired"
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title class="ml-0 pl-3">
@@ -183,8 +188,8 @@
         </v-btn>
       </template>
     </v-toolbar>
-    <v-content class="border-bottom">
-      <v-container fluid :class="{'px-0': $vuetify.breakpoint.xsOnly }">
+    <v-content class="application-background-image" v-bind:style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
+      <v-container :fill-height="backgroundRequired" fluid :class="{'px-0': $vuetify.breakpoint.xsOnly }">
         <router-view></router-view>
       </v-container>
     </v-content>
@@ -192,15 +197,27 @@
 </template>
 
 <script>
+  import parseDomain from 'parse-domain'
   export default {
     name: 'App',
     data () {
       return {
         drawer: null,
-        app_name: process.env.APP_NAME
+        app_name: process.env.APP_NAME,
+        app_domain: process.env.APP_DOMAIN,
+        ssl_enabled: process.env.SSL_ENABLED
       }
     },
     computed: {
+      backgroundRequired () {
+        return !this.$route.meta.requiresAuth
+      },
+      backgroundImage () {
+        if (this.backgroundRequired) {
+          return this.application && this.application.background_image && this.applicationBackgroundImage(this.application.background_image) ? this.applicationBackgroundImage(this.application.background_image) : '/static/background.jpg'
+        }
+        return ''
+      },
       roles () {
         return this.$store.getters.roles
       },
@@ -210,13 +227,12 @@
       applications () {
         return this.$store.getters.loadedApplications
       },
+      slug () {
+        let domain = parseDomain(window.location.hostname, { customTlds: ['local'] })
+        return domain ? domain.subdomain : null
+      },
       application () {
-        const url = window.location.origin.split('://')
-        const subdomain = url[1].split('.')
-        if (subdomain[0] === 'informed365' || subdomain[0] === 'app') {
-          return null
-        }
-        return this.$store.getters.loadedApplication(subdomain[0])
+        return this.slug ? this.$store.getters.loadedApplication(this.slug) : null
       },
       applicationItems () {
         return [
@@ -230,7 +246,7 @@
       },
       accountItems () {
         return [
-            { title: 'Applications', path: 'applications', icon: 'apps' },
+            // { title: 'Applications', path: 'applications', icon: 'apps' },
             { title: 'My Profile', path: 'profile', icon: 'account_circle' }
         ]
       },
@@ -257,27 +273,28 @@
           return false
         }
         return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
+      },
+      appProtocol () {
+        return this.ssl_enabled === 'true' ? 'https://' : 'http://'
       }
     },
     methods: {
       applicationName (application = []) {
-        return application ? application.name : this.app_name
+        return application && application.name ? application.name : this.app_name
       },
       applicationUrl (application = []) {
-        const url = window.location.origin.split('://')
-        const subdomain = url[1].split('.')
-        if (application) {
-          if (subdomain[0] === 'informed365') {
-            subdomain.unshift(application.slug)
-          } else {
-            subdomain[0] = application.slug
-          }
-        }
-        return url[0] + '://' + subdomain.join('.')
+        return this.appProtocol + application.slug + '.' + this.app_domain
       },
       applicationIcon (application = []) {
         try {
           return JSON.parse(application.icon).url
+        } catch (error) {
+          return false
+        }
+      },
+      applicationBackgroundImage (image) {
+        try {
+          return JSON.parse(image).url
         } catch (error) {
           return false
         }
@@ -297,6 +314,9 @@
       }
     },
     created () {
+      // Load Application
+      this.$store.dispatch('loadApplication', this.slug)
+
       if (this.userIsAuthenticated) {
         this.$store.dispatch('loadQuestionTypes')
         this.$store.dispatch('loadValidationTypes')
@@ -311,19 +331,21 @@
     }
   }
 </script>
-
 <style>
-  .border-bottom {
-    border-bottom:1px solid #e0e0e0;
-  }
   .theme--light.application {
-    background: #eee;
-  }
-  .v-toolbar.app-toolbar {
-    box-shadow: 1px 2px 1px #d3d3d3 !important;
+    background: #F4F4F4;
   }
   .application-name {
     line-height:48px;
   }
-
+  .app-toolbar {
+    border-bottom: solid thin rgba(0,0,0,.12) !important;
+  }
+  .application-background-image {
+    background: no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
 </style>
