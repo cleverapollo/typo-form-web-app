@@ -2,7 +2,7 @@
   <v-app>
 
     <!-- //Application Loading -->
-    <ApplicationLoading />
+    <!-- <ApplicationLoading /> -->
 
     <!-- //Navigation Drawer -->
     <v-navigation-drawer
