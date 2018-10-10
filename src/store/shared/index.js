@@ -1,5 +1,4 @@
 const API_URL = process.env.API_URL
-const INVITATION_URL = `${API_URL}invitation/`
 const JOIN_URL = `${API_URL}join/`
 const QUESTION_TYPE_URL = `${API_URL}question-type`
 const ROLE_URL = `${API_URL}role`
@@ -58,25 +57,6 @@ export default {
     }
   },
   actions: {
-    acceptInvitation ({commit}, payload) {
-      commit('setLoading', true)
-      return new Promise((resolve, reject) => {
-        window.axios.post(INVITATION_URL + payload.type + '/' + payload.token)
-          .then(
-            response => {
-              commit('setLoading', false)
-              resolve(response)
-            }
-          )
-          .catch(
-            error => {
-              commit('setLoading', false)
-              commit('setError', error.response.data)
-              reject(error)
-            }
-          )
-      })
-    },
     acceptJoin ({commit}, payload) {
       commit('setLoading', true)
       return new Promise((resolve, reject) => {
