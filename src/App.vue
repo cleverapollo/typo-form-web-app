@@ -62,6 +62,7 @@
             <v-list-tile
               :to="'/' + item.path"
               :key="item.title"
+              v-if="item.application || !item.application && !application"
             >
               <v-list-tile-action>
                 <v-icon>{{ item.icon }}</v-icon>
@@ -228,12 +229,12 @@
       applications () {
         return this.$store.getters.loadedApplications
       },
+      application () {
+        return this.$store.getters.loadedApplication(this.slug)
+      },
       slug () {
         let domain = parseDomain(window.location.hostname, { customTlds: ['local'] })
         return domain ? domain.subdomain : null
-      },
-      application () {
-        return this.slug ? this.$store.getters.loadedApplication(this.slug) : null
       },
       applicationItems () {
         return [
@@ -247,8 +248,8 @@
       },
       accountItems () {
         return [
-            // { title: 'Applications', path: 'applications', icon: 'apps' },
-            { title: 'My Profile', path: 'profile', icon: 'account_circle' }
+            { title: 'Applications', path: 'applications', icon: 'apps', application: false },
+            { title: 'My Profile', path: 'profile', icon: 'account_circle', application: true }
         ]
       },
       authItems () {

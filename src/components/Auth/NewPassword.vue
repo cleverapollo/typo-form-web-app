@@ -1,17 +1,17 @@
 <template>
   <v-container>
-    <v-layout row v-if="message">
-      <v-flex xs12 md6 offset-md3>
+    <v-layout row align-center justify-center v-if="message">
+      <v-flex sm12 lg6 xl4>
         <app-alert @dismissed="onDismissed" :text="message" type="success"></app-alert>
       </v-flex>
     </v-layout>
-    <v-layout row v-if="error">
-      <v-flex xs12 md6 offset-md3>
+    <v-layout row align-center justify-center v-if="error">
+      <v-flex sm12 lg6 xl4>
         <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
       </v-flex>
     </v-layout>
-    <v-layout row>
-      <v-flex xs12 md6 offset-md3>
+    <v-layout row align-center justify-center>
+      <v-flex sm12 lg6 xl4>
         <v-card>
           <v-card-text>
             <v-container>

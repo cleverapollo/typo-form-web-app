@@ -33,7 +33,7 @@
         <!-- //No Teams -->
         <v-flex xs12 pa-2 v-else>
           <v-alert value="true" type="info">
-            It looks like you don't have access to any teams yet. Any team that you have been invitied into will display once you accept the invitation.
+             It looks like you don't have access to any teams yet.
           </v-alert>
         </v-flex>
 
