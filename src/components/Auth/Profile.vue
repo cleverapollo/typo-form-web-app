@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <v-flex d-flex sm12 md10 offset-md1 xl8 offset-xl2>
+    <v-flex d-flex xs12>
       <v-layout row wrap>
         <v-flex xs12 sm6 md4 d-flex>
           <v-card>

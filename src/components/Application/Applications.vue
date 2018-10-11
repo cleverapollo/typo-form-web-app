@@ -5,6 +5,10 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Applications</h1>
         </v-flex>
+        <v-flex d-flex xs12>
+          <p>You have access to the following applications on the Informed 365 platform.</p>
+        </v-flex>
+
         <v-flex d-flex xs12 v-if="applications.length">
           <v-card>
             <v-list one-line>
@@ -32,7 +36,7 @@
         <!-- //No Applications -->
         <v-flex xs12 pa-2 v-else>
           <v-alert value="true" type="info">
-            It looks like you don't have access to any applications yet. Any application that you have been invitied into will display once you accept the invitation.
+            It looks like you don't have access to any applications yet. You must be invited into an application.
           </v-alert>
         </v-flex>
 
@@ -88,11 +92,6 @@
         return this.ssl_enabled === 'true' ? 'https://' : 'http://'
       }
     },
-    watch: {
-      applicationCount (value) {
-        this.onValidate(value)
-      }
-    },
     methods: {
       getApplicationIcon (application = []) {
         try {
@@ -107,11 +106,6 @@
       applicationUrl (application = []) {
         return this.appProtocol + application.slug + '.' + this.app_domain
       },
-      onValidate (value) {
-        if (value === 1 && !this.isSuperUser) {
-          window.location.host = this.applications[0].slug + window.location.host
-        }
-      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId
@@ -121,9 +115,6 @@
       sortApplications (applications) {
         return applications.slice().sort(function (a, b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0) })
       }
-    },
-    mounted () {
-      this.onValidate(this.applicationCount)
     }
   }
 </script>

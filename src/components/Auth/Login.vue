@@ -2,15 +2,15 @@
   <v-container>
 
     <!-- // Error Message -->
-    <v-layout row v-if="error">
-      <v-flex xs12 md6 offset-md3>
+    <v-layout row align-center justify-center v-if="error">
+      <v-flex sm12 lg6 xl4>
         <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
       </v-flex>
     </v-layout>
 
     <!-- //Login Form -->
-    <v-layout row>
-      <v-flex xs12 md6 offset-md3>
+    <v-layout row align-center justify-center>
+      <v-flex sm12 lg6 xl4>
         <v-card>
 
           <!-- // Application Image -->
@@ -189,6 +189,7 @@
   background-color:#f2f2f2;
 }
 img.application-image {
-  max-width:50%;
+  max-width:250px;
+  max-height:75px;
 }
 </style>
