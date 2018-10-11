@@ -79,7 +79,7 @@
         return word.length > 0 ? word.trim().substring(0, 1).toUpperCase() : ''
       },
       onLoadTeam (id) {
-        return '/' + this.slug + '/teams/' + id
+        return '/teams/' + id
       }
     },
     created: function () {
