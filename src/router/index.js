@@ -206,18 +206,29 @@ router.beforeEach((to, from, next) => {
   const url = window.location.origin.split('://')
   const subdomain = url[1].split('.')
   let application = null
-  if (subdomain[0] !== 'informed365' && subdomain[0] !== 'app' && store.getters.user) {
-    application = store.getters.loadedApplication(subdomain[0])
-  }
-  favicon.href = application && application.icon ? application.icon : '/static/icon.png'
-  const css = application && application.css ? application.css : ''
+  document.title = process.env.APP_NAME
+  favicon.href = '/static/icon.png'
   if (style.childNodes.length) {
-    style.childNodes[0].textContent = css
+    style.childNodes[0].textContent = ''
   } else {
-    style.appendChild(document.createTextNode(css))
+    style.appendChild(document.createTextNode(''))
   }
   head.appendChild(style)
-  document.title = application ? application.name : process.env.APP_NAME
+  if (subdomain[0] !== 'informed365' && subdomain[0] !== 'app' && store.getters.user) {
+    store.dispatch('loadApplication', subdomain[0])
+      .then(() => {
+        application = store.getters.loadedApplication(subdomain[0])
+        document.title = application.name
+        favicon.href = JSON.parse(application.icon).url
+        const css = application.css
+        if (style.childNodes.length) {
+          style.childNodes[0].textContent = css
+        } else {
+          style.appendChild(document.createTextNode(css))
+        }
+        head.appendChild(style)
+      })
+  }
   next()
 })
 

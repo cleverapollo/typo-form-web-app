@@ -216,7 +216,10 @@
       },
       backgroundImage () {
         if (this.backgroundRequired) {
-          return this.application && this.application.background_image && this.applicationBackgroundImage(this.application.background_image) ? this.applicationBackgroundImage(this.application.background_image) : '/static/background.jpg'
+          if (!this.application) {
+            return ''
+          }
+          return this.application.background_image && this.applicationBackgroundImage(this.application.background_image) ? this.applicationBackgroundImage(this.application.background_image) : '/static/background.jpg'
         }
         return ''
       },
@@ -259,7 +262,7 @@
         ]
       },
       userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+        return this.user !== null && this.user !== undefined
       },
       userIsApplicationAdmin () {
         return this.userIsAdmin || this.isSuperUser
@@ -274,7 +277,7 @@
         if (!this.userIsAuthenticated) {
           return false
         }
-        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
+        return this.getRole(this.user.role_id) === 'Super Admin'
       },
       appProtocol () {
         return this.ssl_enabled === 'true' ? 'https://' : 'http://'
