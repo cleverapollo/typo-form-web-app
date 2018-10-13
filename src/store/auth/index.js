@@ -135,7 +135,6 @@ export default {
       commit('setUser', null)
       window.axios.post(LOGOUT_URL)
         .then(response => {
-          commit('setLoadedApplications', [])
           localStorage.removeItem('token')
         })
     },
