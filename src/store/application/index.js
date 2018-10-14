@@ -71,7 +71,6 @@ export default {
             error => {
               commit('setLoading', false)
               reject(error)
-              console.log(error)
             }
           )
       })
@@ -109,7 +108,6 @@ export default {
           .catch(
             error => {
               commit('setLoading', false)
-              console.log(error)
               reject(error)
             }
           )
@@ -175,7 +173,6 @@ export default {
             resolve(response)
           })
           .catch(error => {
-            console.log(error)
             commit('setLoading', false)
             reject(error)
           })

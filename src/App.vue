@@ -211,23 +211,15 @@
       }
     },
     computed: {
-      backgroundRequired () {
-        return !this.$route.meta.requiresAuth
-      },
-      backgroundImage () {
-        if (this.backgroundRequired) {
-          if (!this.application) {
-            return ''
-          }
-          return this.application.background_image && this.applicationBackgroundImage(this.application.background_image) ? this.applicationBackgroundImage(this.application.background_image) : '/static/background.jpg'
-        }
-        return ''
-      },
       roles () {
         return this.$store.getters.roles
       },
       user () {
         return this.$store.getters.user
+      },
+      slug () {
+        let domain = parseDomain(window.location.hostname, { customTlds: ['local'] })
+        return domain ? domain.subdomain : null
       },
       applications () {
         return this.$store.getters.loadedApplications
@@ -235,9 +227,14 @@
       application () {
         return this.$store.getters.loadedApplication(this.slug)
       },
-      slug () {
-        let domain = parseDomain(window.location.hostname, { customTlds: ['local'] })
-        return domain ? domain.subdomain : null
+      backgroundRequired () {
+        return !this.$route.meta.requiresAuth
+      },
+      backgroundImage () {
+        if (this.backgroundRequired) {
+          return this.application && this.application.background_image && this.applicationBackgroundImage(this.application.background_image) ? this.applicationBackgroundImage(this.application.background_image) : '/static/background.jpg'
+        }
+        return ''
       },
       applicationItems () {
         return [
