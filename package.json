@@ -20,7 +20,7 @@
     "chalk": "^2.4.1",
     "dotenv": "^5.0.1",
     "ejs": "^2.6.1",
-    "express": "^4.16.3",
+    "express": "^4.16.4",
     "express-csp-header": "^2.2.0",
     "filesize": "^3.6.1",
     "helmet": "^3.14.0",
@@ -36,7 +36,7 @@
     "vue-router": "^3.0.1",
     "vue2-dropzone": "^3.5.2",
     "vuedraggable": "^2.16.0",
-    "vuetify": "^1.2.8",
+    "vuetify": "^1.2.9",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
