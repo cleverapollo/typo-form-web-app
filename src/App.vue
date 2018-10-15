@@ -190,7 +190,7 @@
         </v-btn>
       </template>
     </v-toolbar>
-    <v-content class="application-background-image" v-bind:style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
+    <v-content>
       <v-container :fill-height="backgroundRequired" fluid :class="{'px-0': $vuetify.breakpoint.xsOnly }">
         <router-view></router-view>
       </v-container>
@@ -229,12 +229,6 @@
       },
       backgroundRequired () {
         return !this.$route.meta.requiresAuth
-      },
-      backgroundImage () {
-        if (this.backgroundRequired) {
-          return this.application && this.application.background_image && this.applicationBackgroundImage(this.application.background_image) ? this.applicationBackgroundImage(this.application.background_image) : '/static/background.jpg'
-        }
-        return ''
       },
       applicationItems () {
         return [
@@ -316,9 +310,6 @@
       }
     },
     created () {
-      // Load Application
-      this.$store.dispatch('loadApplication', this.slug)
-
       if (this.userIsAuthenticated) {
         this.$store.dispatch('loadQuestionTypes')
         this.$store.dispatch('loadValidationTypes')
@@ -334,20 +325,21 @@
   }
 </script>
 <style>
+  body {
+    background: no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-color: #F4F4F4;
+  }
   .theme--light.application {
-    background: #F4F4F4;
+    background: none;
   }
   .application-name {
     line-height:48px;
   }
   .app-toolbar {
     border-bottom: solid thin rgba(0,0,0,.12) !important;
-  }
-  .application-background-image {
-    background: no-repeat center center fixed; 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
   }
 </style>
