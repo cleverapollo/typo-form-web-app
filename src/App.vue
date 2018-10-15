@@ -334,7 +334,7 @@
     background-color: #F4F4F4;
   }
   .theme--light.application {
-    background: transparent;
+    background: transparent !important;
   }
   .application-name {
     line-height:48px;
