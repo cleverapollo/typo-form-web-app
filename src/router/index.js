@@ -34,6 +34,7 @@ import ShowSubmission from '@/components/Form/Submission/ShowSubmission'
 import SubmissionFilter from '@/components/Form/Submission/SubmissionFilter'
 
 import {store} from '@/store'
+import parseDomain from 'parse-domain'
 
 Vue.use(Router)
 
@@ -197,39 +198,26 @@ router.afterEach((to, from) => {
   }
 })
 
+// Set Document Information (Title, Favicon, CSS, Background Image)
 router.beforeEach((to, from, next) => {
+  const domain = parseDomain(window.location.hostname, { customTlds: ['local'] })
   const favicon = document.getElementById('dyc-favicon')
-  const head = document.head || document.getElementsByTagName('head')[0]
-  const style = document.getElementById('dyc-css') || document.createElement('style')
-  style.type = 'text/css'
-  style.id = 'dyc-css'
-  const url = window.location.origin.split('://')
-  const subdomain = url[1].split('.')
-  let application = null
-  document.title = process.env.APP_NAME
-  favicon.href = '/static/icon.png'
-  if (style.childNodes.length) {
-    style.childNodes[0].textContent = ''
-  } else {
-    style.appendChild(document.createTextNode(''))
-  }
-  head.appendChild(style)
-  if (subdomain[0] !== 'informed365' && subdomain[0] !== 'app' && store.getters.user) {
-    store.dispatch('loadApplication', subdomain[0])
-      .then(() => {
-        application = store.getters.loadedApplication(subdomain[0])
-        document.title = application.name
-        favicon.href = JSON.parse(application.icon).url
-        const css = application.css
-        if (style.childNodes.length) {
-          style.childNodes[0].textContent = css
-        } else {
-          style.appendChild(document.createTextNode(css))
-        }
-        head.appendChild(style)
-      })
-  }
-  next()
+  const style = document.getElementById('dyc-css')
+  let application = []
+  store.dispatch('loadApplication', domain.subdomain)
+  .then(response => {
+    application = response.data.application
+  })
+  .catch(() => { })
+  .finally(() => {
+    document.title = application.name || process.env.APP_NAME
+    favicon.href = application.icon && JSON.parse(application.icon).url ? JSON.parse(application.icon).url : '/static/icon.png'
+    style.innerHTML = application.css || ''
+    // Set Background Image
+    let backgroundImage = application.icon && JSON.parse(application.background_image).url ? JSON.parse(application.background_image).url : '/static/background.jpg'
+    document.body.style.backgroundImage = !to.meta.requiresAuth ? 'url(' + backgroundImage + ')' : ''
+    next()
+  })
 })
 
 export default router
