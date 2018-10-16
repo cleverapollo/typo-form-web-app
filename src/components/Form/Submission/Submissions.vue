@@ -86,6 +86,9 @@
       }
     },
     computed: {
+      user () {
+        return this.$store.getters.user
+      },
       submissions () {
         let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
         submissions.forEach((submission) => {
@@ -115,10 +118,12 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadUsers', this.slug)
-      this.$store.dispatch('loadTeams', this.slug)
-      this.$store.dispatch('loadForms', this.slug)
-      this.$store.dispatch('loadAllSubmissions', this.slug)
+      if (this.user) {
+        this.$store.dispatch('loadUsers', this.slug)
+        this.$store.dispatch('loadTeams', this.slug)
+        this.$store.dispatch('loadForms', this.slug)
+        this.$store.dispatch('loadAllSubmissions', this.slug)
+      }
     },
     filters: {
       moment: function (date) {

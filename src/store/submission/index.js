@@ -128,7 +128,6 @@ export default {
           .catch(
             error => {
               commit('setLoading', false)
-              console.log(error)
               reject(error)
             }
           )

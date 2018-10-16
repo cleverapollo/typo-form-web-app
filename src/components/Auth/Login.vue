@@ -34,16 +34,6 @@
                 </v-layout>
                 <v-divider class="my-2"></v-divider>
 
-                <!-- //OAuth -->
-                <oauth></oauth>
-
-                <!-- //Email -->
-                <v-divider class="my-2"></v-divider>
-                <v-layout row class="mt-4">
-                  <v-flex xs12 text-xs-center>
-                    <div class="caption">or login with email</div>
-                  </v-flex>
-                </v-layout>
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
@@ -159,11 +149,7 @@
           this.$store.dispatch('loadTriggerTypes')
           this.$store.dispatch('loadAnswerSorts')
           this.$store.dispatch('loadApplications')
-          if (this.$route.query.redirect) {
-            this.$router.push(this.$route.query.redirect)
-          } else {
-            this.$router.push('/')
-          }
+          this.$router.push(this.$route.query.redirect || '/')
         }
       },
       onSignin () {

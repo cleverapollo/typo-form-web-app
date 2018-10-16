@@ -28,7 +28,7 @@
       </v-toolbar>
 
       <!-- //Authenticated User -->
-      <template v-if="userIsAuthenticated">
+      <template v-if="user">
 
         <!-- //Application Items -->
         <template v-if="application">
@@ -36,7 +36,7 @@
           <v-list dense>
             <template
               v-for="item in applicationItems"
-              v-if="!item.admin || userIsApplicationAdmin"
+              v-if="!item.admin || isAdmin"
               >
               <v-list-tile
                 :to="'/' + item.path"
@@ -122,7 +122,7 @@
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <template v-if="userIsAuthenticated">
+      <template v-if="user">
         <v-menu offset-y left class="hidden-sm-and-down" v-if='applications.length > 1'>
           <v-btn
             icon
@@ -252,23 +252,11 @@
             { title: 'Register', path: 'register', icon: 'person_add' }
         ]
       },
-      userIsAuthenticated () {
-        return this.user !== null && this.user !== undefined
-      },
-      userIsApplicationAdmin () {
-        return this.userIsAdmin || this.isSuperUser
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.application_role_id) === 'Admin'
+      isAdmin () {
+        return this.isSuperUser || (this.user && this.application && this.getRole(this.application.application_role_id) === 'Admin')
       },
       isSuperUser () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.getRole(this.user.role_id) === 'Super Admin'
+        return this.user && this.getRole(this.user.role_id) === 'Super Admin'
       },
       appProtocol () {
         return this.ssl_enabled === 'true' ? 'https://' : 'http://'
@@ -288,13 +276,6 @@
           return false
         }
       },
-      applicationBackgroundImage (image) {
-        try {
-          return JSON.parse(image).url
-        } catch (error) {
-          return false
-        }
-      },
       applicationFirstLetter (application = []) {
         return application.name && application.name.length > 0 ? application.name.trim().substring(0, 1).toUpperCase() : 'A'
       },
@@ -310,7 +291,7 @@
       }
     },
     created () {
-      if (this.userIsAuthenticated) {
+      if (this.user) {
         this.$store.dispatch('loadQuestionTypes')
         this.$store.dispatch('loadValidationTypes')
         this.$store.dispatch('loadPeriods')
