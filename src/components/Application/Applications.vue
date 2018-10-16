@@ -115,6 +115,9 @@
       sortApplications (applications) {
         return applications.slice().sort(function (a, b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0) })
       }
+    },
+    created () {
+      this.$store.dispatch('loadApplications')
     }
   }
 </script>

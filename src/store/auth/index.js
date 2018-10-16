@@ -40,7 +40,6 @@ export default {
                   commit('setUser', null)
                   if (typeof (error.response.data) !== 'string') {
                     commit('setError', error.response.data)
-                    console.log(error.response.data)
                   }
                 }
               )
@@ -50,7 +49,6 @@ export default {
             commit('setLoading', false)
             if (typeof (error.response.data) !== 'string') {
               commit('setError', error.response.data)
-              console.log(error.response.data)
             }
             reject(error)
           })
@@ -76,7 +74,6 @@ export default {
               commit('setUser', null)
               if (typeof (error.response.data) !== 'string') {
                 commit('setError', error.response.data)
-                console.log(error.response.data)
               }
               reject(error)
             }
@@ -100,9 +97,6 @@ export default {
               commit('setLoading', false)
               commit('setUser', null)
               reject(error)
-              if (typeof (error.response.data) !== 'string') {
-                console.log(error.response.data)
-              }
             }
           )
       })
@@ -125,7 +119,6 @@ export default {
             commit('setUser', null)
             if (typeof (error.response.data) !== 'string') {
               commit('setError', error.response.data)
-              console.log(error.response.data)
             }
           }
         )
@@ -152,7 +145,6 @@ export default {
           commit('clearError')
         })
         .catch(error => {
-          console.log(error.response.data)
           commit('setLoading', false)
           commit('setError', error.response.data)
         })
@@ -171,7 +163,6 @@ export default {
           commit('clearError')
         })
         .catch(error => {
-          console.log(error.response.data)
           commit('setLoading', false)
           commit('setError', error.response.data)
         })
@@ -189,7 +180,6 @@ export default {
           commit('clearError')
         })
         .catch(error => {
-          console.log(error.response.data)
           commit('setLoading', false)
           commit('setError', error.response.data)
         })
@@ -217,7 +207,6 @@ export default {
             resolve(response)
           })
           .catch(error => {
-            console.log(error.response.data)
             commit('setLoading', false)
             commit('setError', error.response.data)
             reject(error)

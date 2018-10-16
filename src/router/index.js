@@ -1,9 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// Home
-import Home from '@/components/Home'
-
 // Profile
 import Profile from '@/components/Auth/Profile'
 import Register from '@/components/Auth/Register'
@@ -77,7 +74,7 @@ const router = new Router({
     },
     {
       path: '/',
-      component: Home
+      redirect: '/submissions'
     },
     {
       path: '/applications',
@@ -188,22 +185,12 @@ const router = new Router({
   mode: 'history'
 })
 
-// Redirect unauthenticated users
-router.afterEach((to, from) => {
-  if (!store.getters.user && to.meta.requiresAuth) {
-    router.push({
-      path: '/login',
-      query: {redirect: to.fullPath}
-    })
-  }
-})
-
-// Set Document Information (Title, Favicon, CSS, Background Image)
 router.beforeEach((to, from, next) => {
+  // Set Application Branding and Content
   const domain = parseDomain(window.location.hostname, { customTlds: ['local'] })
   const favicon = document.getElementById('dyc-favicon')
   const style = document.getElementById('dyc-css')
-  let application = []
+  let application = {}
   store.dispatch('loadApplication', domain.subdomain)
   .then(response => {
     application = response.data.application
@@ -213,9 +200,20 @@ router.beforeEach((to, from, next) => {
     document.title = application.name || process.env.APP_NAME
     favicon.href = application.icon && JSON.parse(application.icon).url ? JSON.parse(application.icon).url : '/static/icon.png'
     style.innerHTML = application.css || ''
-    // Set Background Image
     let backgroundImage = application.icon && JSON.parse(application.background_image).url ? JSON.parse(application.background_image).url : '/static/background.jpg'
     document.body.style.backgroundImage = !to.meta.requiresAuth ? 'url(' + backgroundImage + ')' : ''
+     // Redirect Unauthenticated Users to login
+    if (!store.getters.user && to.meta.requiresAuth) {
+      router.push({
+        path: '/login'
+      })
+    }
+    // Redirect Authenticated Users where no application found
+    if (store.getters.user && !application.slug && to.meta.application) {
+      router.push({
+        path: '/applications'
+      })
+    }
     next()
   })
 })

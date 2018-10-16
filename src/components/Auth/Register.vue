@@ -8,9 +8,9 @@
     <v-layout row align-center justify-center>
       <v-flex sm12 lg6 xl4>
         <v-card>
+          
           <v-card-text>
             <v-container>
-
               <v-layout row>
                 <v-flex xs12>
                   <div class="headline">Create an account</div>
@@ -18,16 +18,6 @@
               </v-layout>
               <v-divider class="my-2"></v-divider>
 
-              <!-- //OAuth -->
-              <oauth></oauth>
-
-              <!-- //Email -->
-              <v-divider class="my-2"></v-divider>
-              <v-layout row class="mt-4">
-                <v-flex xs12 text-xs-center>
-                  <div class="caption">or register with email</div>
-                </v-flex>
-              </v-layout>
               <form @submit.prevent="onSignup">
                 <v-layout row>
                   <v-flex xs12>
@@ -132,7 +122,6 @@
 
 <script>
   import PasswordComplexity from './PasswordComplexity'
-  import Oauth from './Oauth'
   import PasswordMixin from './PasswordMixin.js'
   import VueRecaptcha from 'vue-recaptcha'
   export default {
@@ -151,7 +140,6 @@
     },
     components: {
       PasswordComplexity,
-      Oauth,
       VueRecaptcha
     },
     computed: {
@@ -195,7 +183,6 @@
       onSignup () {
         if (this.recaptchaToken === '') {
           this.submitted = true
-          // return
         }
         this.$store.dispatch('signUserUp', {
           first_name: this.firstname,
