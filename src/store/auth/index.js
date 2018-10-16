@@ -30,7 +30,7 @@ export default {
                 response => {
                   commit('setLoading', false)
                   const user = response['data']['user']
-                  localStorage.setItem('token', user['api_token'])
+                  sessionStorage.setItem('token', user['api_token'])
                   commit('setUser', user)
                 }
               )
@@ -63,7 +63,7 @@ export default {
             response => {
               commit('setLoading', false)
               const user = response['data']['user']
-              localStorage.setItem('token', user['api_token'])
+              sessionStorage.setItem('token', user['api_token'])
               commit('setUser', user)
               resolve(response)
             }
@@ -109,7 +109,7 @@ export default {
           response => {
             commit('setLoading', false)
             const user = response['data']['user']
-            localStorage.setItem('token', user['api_token'])
+            sessionStorage.setItem('token', user['api_token'])
             commit('setUser', user)
           }
         )
@@ -128,7 +128,7 @@ export default {
       commit('setUser', null)
       window.axios.post(LOGOUT_URL)
         .then(response => {
-          localStorage.removeItem('token')
+          sessionStorage.removeItem('token')
         })
     },
     updateAuth ({commit}, payload) {
@@ -218,7 +218,7 @@ export default {
       window.axios.delete(USER_URL)
         .then(response => {
           commit('setUser', null)
-          localStorage.removeItem('token')
+          sessionStorage.removeItem('token')
         })
     }
   },

@@ -183,6 +183,7 @@
       onSignup () {
         if (this.recaptchaToken === '') {
           this.submitted = true
+          return
         }
         this.$store.dispatch('signUserUp', {
           first_name: this.firstname,
