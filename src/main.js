@@ -26,7 +26,7 @@ const sanitizeHtml = require('sanitize-html')
 // Add a request interceptor
 axios.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('token')
+    const accessToken = sessionStorage.getItem('token')
     if (accessToken != null) {
       config.headers['API-Token'] = accessToken
     }
@@ -99,7 +99,7 @@ function createApp () {
   })
 }
 
-if (localStorage.getItem('token')) {
+if (sessionStorage.getItem('token')) {
   store.dispatch('autoSignIn').finally(() => createApp())
 } else {
   createApp()
