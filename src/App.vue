@@ -77,28 +77,6 @@
         </v-list>
       </template>
 
-      <!-- //Auth Menu -->
-      <template v-else>
-        <v-divider></v-divider>
-        <v-list dense>
-          <template v-for="item in authItems">
-            <v-list-tile
-              :tp="'/' + item.path"
-              :key="item.title"
-            >
-              <v-list-tile-action>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ item.title }}
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </template>
-        </v-list>
-      </template>
-
     </v-navigation-drawer>
 
     <!-- //Toolbar -->
@@ -199,7 +177,6 @@
 </template>
 
 <script>
-  import parseDomain from 'parse-domain'
   export default {
     name: 'App',
     data () {
@@ -218,8 +195,7 @@
         return this.$store.getters.user
       },
       slug () {
-        let domain = parseDomain(window.location.hostname, { customTlds: ['local'] })
-        return domain ? domain.subdomain : null
+        return window.location.hostname.split('.')[0]
       },
       applications () {
         return this.$store.getters.loadedApplications
@@ -244,12 +220,6 @@
         return [
             { title: 'Applications', path: 'applications', icon: 'apps', application: false },
             { title: 'My Profile', path: 'profile', icon: 'account_circle', application: true }
-        ]
-      },
-      authItems () {
-        return [
-            { title: 'Log In', path: 'login', icon: 'account_circle' },
-            { title: 'Register', path: 'register', icon: 'person_add' }
         ]
       },
       isAdmin () {

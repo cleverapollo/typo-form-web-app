@@ -26,7 +26,6 @@
     "helmet": "^3.14.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
-    "parse-domain": "^2.1.2",
     "sanitize-html": "^1.19.1",
     "socks": "^2.2.1",
     "vue": "^2.5.17",
