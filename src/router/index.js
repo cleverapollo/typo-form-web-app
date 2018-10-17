@@ -204,7 +204,8 @@ router.beforeEach((to, from, next) => {
      // Redirect Unauthenticated Users to login
     if (!store.getters.user && to.meta.requiresAuth) {
       router.push({
-        path: '/login'
+        path: '/login',
+        query: {redirect: to.fullPath}
       })
     }
     // Redirect Authenticated Users where no application found

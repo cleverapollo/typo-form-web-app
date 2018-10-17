@@ -6,6 +6,9 @@
           <h1 class="headline primary--text py-3">Users</h1>
         </v-flex>
         <v-flex d-flex xs12>
+          <p>Select an existing user below or <a href="#" @click.stop="inviteApplication = true">add a new users</a>.</p>
+        </v-flex>
+        <v-flex d-flex xs12>
           <v-card>
 
             <v-tabs dark slider-color="white" color="info">
