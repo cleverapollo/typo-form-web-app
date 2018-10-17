@@ -182,11 +182,12 @@
       }
     },
     created () {
-      this.$store.dispatch('loadUsers', this.slug)
       this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadAllSubmissions', this.slug)
-      this.$store.dispatch('loadApplicationEmail', this.slug)
+      if (this.userIsAdmin) {
+        this.$store.dispatch('loadUsers', this.slug)
+      }
     }
   }
 </script>

@@ -31,7 +31,6 @@ import ShowSubmission from '@/components/Form/Submission/ShowSubmission'
 import SubmissionFilter from '@/components/Form/Submission/SubmissionFilter'
 
 import {store} from '@/store'
-import parseDomain from 'parse-domain'
 
 Vue.use(Router)
 
@@ -187,11 +186,11 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   // Set Application Branding and Content
-  const domain = parseDomain(window.location.hostname, { customTlds: ['local'] })
+  const slug = window.location.hostname.split('.')[0]
   const favicon = document.getElementById('dyc-favicon')
   const style = document.getElementById('dyc-css')
   let application = {}
-  store.dispatch('loadApplication', domain.subdomain)
+  store.dispatch('loadApplication', slug)
   .then(response => {
     application = response.data.application
   })

@@ -103,7 +103,6 @@
 </template>
 
 <script>
-  import Oauth from './Oauth'
   export default {
     data () {
       return {
@@ -111,9 +110,6 @@
         email: '',
         password: ''
       }
-    },
-    components: {
-      Oauth
     },
     computed: {
       user () {
