@@ -197,9 +197,9 @@ router.beforeEach((to, from, next) => {
   .catch(() => { })
   .finally(() => {
     document.title = application.name || process.env.APP_NAME
-    favicon.href = application.icon && JSON.parse(application.icon).url ? JSON.parse(application.icon).url : '/static/icon.png'
+    favicon.href = application.icon && JSON.parse(application.icon) ? JSON.parse(application.icon).url : '/static/icon.png'
     style.innerHTML = application.css || ''
-    let backgroundImage = application.icon && JSON.parse(application.background_image).url ? JSON.parse(application.background_image).url : '/static/background.jpg'
+    let backgroundImage = application.background_image && JSON.parse(application.background_image) ? JSON.parse(application.background_image).url : '/static/background.jpg'
     document.body.style.backgroundImage = !to.meta.requiresAuth ? 'url(' + backgroundImage + ')' : ''
      // Redirect Unauthenticated Users to login
     if (!store.getters.user && to.meta.requiresAuth) {
