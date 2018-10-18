@@ -14,7 +14,7 @@
             <v-list one-line>
 
               <!-- //Application List -->
-              <template v-for="(application, index) in sortApplications(applications)">
+              <template v-for="(application, index) in sortedApplications">
                 <v-list-tile :href="applicationUrl(application)" :key="application.id" avatar>
                   <v-list-tile-avatar tile v-if="getApplicationIcon(application)">
                     <img :src="getApplicationIcon(application)">
@@ -76,20 +76,17 @@
       roles () {
         return this.$store.getters.roles
       },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      user () {
+        return this.$store.getters.user
       },
       isSuperUser () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
-      },
-      applicationCount () {
-        return this.applications.length
+        return this.user && this.getRole(this.user.role_id) === 'Super Admin'
       },
       appProtocol () {
         return this.ssl_enabled === 'true' ? 'https://' : 'http://'
+      },
+      sortedApplications () {
+        return this.applications.slice().sort(function (a, b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0) })
       }
     },
     methods: {
@@ -111,9 +108,6 @@
           return role.id === roleId
         })
         return role ? role.name : 'undefined'
-      },
-      sortApplications (applications) {
-        return applications.slice().sort(function (a, b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0) })
       }
     },
     created () {

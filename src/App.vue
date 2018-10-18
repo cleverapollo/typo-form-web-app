@@ -110,7 +110,7 @@
             </v-avatar>
           </v-btn>
           <v-list>
-            <template v-for="(application, index) in applications" :v-bind="application.id">
+            <template v-for="(application, index) in sortedApplications" :v-bind="application.id">
               <v-list-tile
                 avatar
                 ripple
@@ -230,6 +230,9 @@
       },
       appProtocol () {
         return this.ssl_enabled === 'true' ? 'https://' : 'http://'
+      },
+      sortedApplications () {
+        return this.applications.slice().sort(function (a, b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0) })
       }
     },
     methods: {
