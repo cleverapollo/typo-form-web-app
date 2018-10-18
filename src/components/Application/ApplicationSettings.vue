@@ -77,7 +77,7 @@
     </v-flex>
 
     <!-- //Delete Application -->
-    <v-flex xs6 text-xs-right>
+    <v-flex xs6 text-xs-right v-if="isSuperUser">
       <v-btn flat secondary @click.stop="deleteApplication = true">Delete Application</v-btn>
     </v-flex>
     <DeleteConfirmDialog @delete-action="onDeleteApplication" :visible="deleteApplication" @close="deleteApplication = false"></DeleteConfirmDialog>
