@@ -136,7 +136,7 @@
         }
 
         try {
-          return JSON.parse(this.application.icon).url
+          return JSON.parse(this.application.logo).url
         } catch (error) {
           return false
         }
