@@ -131,14 +131,10 @@
         return this.$store.getters.loadedApplication(this.slug)
       },
       applicationImage () {
-        if (!this.application) {
-          return '/static/logo.png'
-        }
-
         try {
           return JSON.parse(this.application.logo).url
         } catch (error) {
-          return false
+          return '/static/logo.png'
         }
       }
     },
