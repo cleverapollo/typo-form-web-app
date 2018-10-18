@@ -622,9 +622,10 @@
           return
         }
 
-        if (evt.item.className.length > 40) {
-          return
-        }
+        // What is the purpose of this? Blocks moving question in most cases
+        // if (evt.item.className.length > 40) {
+        //  return
+        // }
 
         let newIndex = evt.newIndex
 
