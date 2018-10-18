@@ -287,6 +287,13 @@
   .theme--light.application {
     background: transparent !important;
   }
+  .application .v-navigation-drawer--is-mobile, 
+  .application .v-navigation-drawer--temporary {
+    z-index: 30;
+  }
+  .application .app-toolbar {
+    z-index: 25;
+  }
   .application-name {
     line-height:48px;
   }
