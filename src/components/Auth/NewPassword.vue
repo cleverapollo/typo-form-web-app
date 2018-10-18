@@ -13,7 +13,19 @@
     <v-layout row align-center justify-center>
       <v-flex sm12 lg6 xl4>
         <v-card>
-          <v-card-text>
+
+          <!-- // Application Image -->
+          <v-card-text class="application-image-slot pb-1" v-if="applicationImage">
+            <v-container pb-1>
+              <v-layout row wrap>
+                <v-flex xs12 text-xs-center>
+                  <img class="application-image" v-bind:src="applicationImage" />
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+
+          <v-card-text class="pt-1">
             <v-container>
 
               <v-layout row>
@@ -81,6 +93,15 @@
 
             </v-container>
           </v-card-text>
+
+          <!-- // Support Text -->
+          <v-card-text class="support-slot" v-if="supportText">
+            <v-container>
+              <v-layout row wrap text-xs-center>
+                <v-flex xs12><span v-html="supportText" /></v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
@@ -104,11 +125,31 @@
       }
     },
     computed: {
+      slug () {
+        return window.location.hostname.split('.')[0]
+      },
       error () {
         return this.$store.getters.error
       },
       loading () {
         return this.$store.getters.loading
+      },
+      supportText () {
+        return 'For support, please contact <a href="mailto:support@informed365.com" target="_blank">Informed 365 Help Desk</a>.'
+      },
+      application () {
+        return this.$store.getters.loadedApplication(this.slug)
+      },
+      applicationImage () {
+        if (!this.application) {
+          return '/static/logo.png'
+        }
+
+        try {
+          return JSON.parse(this.application.icon).url
+        } catch (error) {
+          return false
+        }
       }
     },
     methods: {
