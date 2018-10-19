@@ -189,6 +189,10 @@
   import timeComponent from './components/Time'
   import ContentBlock from './components/ContentBlock'
   import ABNLookup from './components/ABNLookup'
+  import Number from './components/Number'
+  import Decimal from './components/Decimal'
+  import Email from './components/Email'
+  import Percent from './components/Percent'
   import * as _ from 'lodash'
 
   import triggers from '../Triggers'
@@ -221,14 +225,22 @@
           'Date': dateComponent,
           'Time': timeComponent,
           'Content Block': ContentBlock,
-          'ABN Lookup': ABNLookup
+          'ABN Lookup': ABNLookup,
+          'Number': Number,
+          'Decimal': Decimal,
+          'Email': Email,
+          'Percent': Percent
         },
         ifRequireValidation: {
           'Short answer': true,
           'Paragraph': true,
           'Multiple choice': true,
           'Checkboxes': true,
-          'Dropdown': true
+          'Dropdown': true,
+          'Number': true,
+          'Decimal': true,
+          'Email': true,
+          'Percent': true
         },
         menuItems: [
           {
@@ -282,6 +294,23 @@
           {
             action: 'search',
             title: 'ABN Lookup'
+          },
+          {divider: true},
+          {
+            action: 'plus_one',
+            title: 'Number'
+          },
+          {
+            action: 'looks_one',
+            title: 'Decimal'
+          },
+          {
+            action: 'email',
+            title: 'Email'
+          },
+          {
+            action: 'opacity',
+            title: 'Percent'
           }
         ],
         validationTypes: this.$store.getters.validationTypes,

@@ -51,6 +51,10 @@
   import timeComponent from './components/Time'
   import ContentBlock from './components/ContentBlock'
   import ABNLookup from './components/ABNLookup'
+  import Number from './components/Number'
+  import Decimal from './components/Decimal'
+  import Email from './components/Email'
+  import Percent from './components/Percent'
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
@@ -75,7 +79,11 @@
           'Date': dateComponent,
           'Time': timeComponent,
           'Content Block': ContentBlock,
-          'ABN Lookup': ABNLookup
+          'ABN Lookup': ABNLookup,
+          'Number': Number,
+          'Decimal': Decimal,
+          'Email': Email,
+          'Percent': Percent
         },
         snackbarVisible: false
       }
