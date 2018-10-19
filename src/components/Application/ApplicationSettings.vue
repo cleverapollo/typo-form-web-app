@@ -28,20 +28,79 @@
             </v-flex>
           </v-layout>
 
-          <!-- //Application Image -->
+          <!-- //Application Icon -->
           <v-layout row>
             <v-flex xs12>
-              <label class="v-label v-label--active theme--light">Application Image</label>
+              <label class="v-label v-label--active theme--light">Application Icon</label>
+              <v-layout row>
+                <v-flex xs12 mt-2>
+                  <FileUpload
+                    v-bind:maxFiles="maxFiles"
+                    v-bind:maxFilesize="maxFilesize"
+                    v-bind:acceptedFiles="acceptedFiles"
+                    v-bind:files="icon"
+                  ></FileUpload>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+
+          <!-- //Application Logo -->
+          <v-layout row>
+            <v-flex xs12>
+              <label class="v-label v-label--active theme--light">Application Logo</label>
               <v-layout row>
               <v-flex xs12 mt-2>
                 <FileUpload
                   v-bind:maxFiles="maxFiles"
                   v-bind:maxFilesize="maxFilesize"
                   v-bind:acceptedFiles="acceptedFiles"
-                  v-bind:files="images"
+                  v-bind:files="logo"
                 ></FileUpload>
               </v-flex>
               </v-layout>
+            </v-flex>
+          </v-layout>
+
+          <!-- //Application Background -->
+          <v-layout row>
+            <v-flex xs12 mt-2>
+              <label class="v-label v-label--active theme--light">Application Background</label>
+              <v-layout row>
+                <v-flex xs12 mt-2>
+                  <FileUpload
+                    v-bind:maxFiles="maxFiles"
+                    v-bind:maxFilesize="maxFilesize"
+                    v-bind:acceptedFiles="acceptedFiles"
+                    v-bind:files="images"
+                  >
+                  </FileUpload>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+
+          <!-- //Primary Color -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-text-field
+                name="primary"
+                label="Primary Color"
+                v-model="primary_color"
+              >
+              </v-text-field>
+            </v-flex>
+          </v-layout>
+
+          <!-- //Secondary Color -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-text-field
+                name="secondary"
+                label="Secondary Color"
+                v-model="secondary_color"
+              >
+              </v-text-field>
             </v-flex>
           </v-layout>
 
@@ -49,9 +108,9 @@
           <v-layout row wrap>
             <v-flex xs12>
               <v-textarea
-              name="css"
-              label="Custom CSS"
-              v-model="css"
+                name="css"
+                label="Custom CSS"
+                v-model="css"
               >
               </v-textarea>
             </v-flex>
@@ -92,6 +151,10 @@
       return {
         name: null,
         css: null,
+        primary_color: null,
+        secondary_color: null,
+        logo: [],
+        icon: [],
         images: [],
         acceptedFiles: 'image/*',
         maxFiles: 1,
@@ -106,6 +169,30 @@
       },
       application () {
         return this.$store.getters.loadedApplication(this.slug)
+      },
+      applicationLogo () {
+        let logo = null
+        if (this.logo.length) {
+          logo = {
+            name: this.logo[0].name,
+            url: this.logo[0].url,
+            size: this.logo[0].size,
+            stored_name: this.logo[0].stored_name
+          }
+        }
+        return logo === null ? null : JSON.stringify(logo)
+      },
+      applicationIcon () {
+        let icon = null
+        if (this.icon.length) {
+          icon = {
+            name: this.icon[0].name,
+            url: this.icon[0].url,
+            size: this.icon[0].size,
+            stored_name: this.icon[0].stored_name
+          }
+        }
+        return icon === null ? null : JSON.stringify(icon)
       },
       applicationImage () {
         let image = null
@@ -172,7 +259,11 @@
         let application = {
           slug: this.application.slug,
           css: this.css,
-          icon: this.applicationImage
+          logo: this.applicationLogo,
+          primary_color: this.primary_color,
+          secondary_color: this.secondary_color,
+          background_image: this.applicationImage,
+          icon: this.applicationIcon
         }
 
         if (this.name !== this.application.name) {
@@ -198,7 +289,11 @@
     created: function () {
       this.name = this.application.name
       this.css = this.application.css
-      this.images = this.application.icon !== null ? [JSON.parse(this.application.icon)] : []
+      this.icon = this.application.icon !== null ? [JSON.parse(this.application.icon)] : []
+      this.primary_color = this.application.primary_color
+      this.secondary_color = this.application.secondary_color
+      this.logo = this.application.logo !== null ? [JSON.parse(this.application.logo)] : []
+      this.images = this.application.background_image !== null ? [JSON.parse(this.application.background_image)] : []
     }
   }
 </script>

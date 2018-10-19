@@ -158,7 +158,11 @@ export default {
       const application = {
         name: payload.name,
         css: payload.css,
-        icon: payload.icon
+        icon: payload.icon,
+        logo: payload.logo,
+        primary_color: payload.primary_color,
+        secondary_color: payload.secondary_color,
+        background_image: payload.background_image
       }
 
       return new Promise((resolve, reject) => {

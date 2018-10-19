@@ -112,6 +112,9 @@
       }
     },
     computed: {
+      slug () {
+        return window.location.hostname.split('.')[0]
+      },
       user () {
         return this.$store.getters.user
       },
@@ -124,8 +127,15 @@
       supportText () {
         return 'For support, please contact <a href="mailto:support@informed365.com" target="_blank">Informed 365 Help Desk</a>.'
       },
+      application () {
+        return this.$store.getters.loadedApplication(this.slug)
+      },
       applicationImage () {
-        return '/static/logo.png'
+        try {
+          return JSON.parse(this.application.logo).url
+        } catch (error) {
+          return '/static/logo.png'
+        }
       }
     },
     watch: {
