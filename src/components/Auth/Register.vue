@@ -252,3 +252,13 @@
     }
   }
 </script>
+
+<style>
+.support-slot {
+  background-color:#f2f2f2;
+}
+img.application-image {
+  max-width:250px;
+  max-height:75px;
+}
+</style>
