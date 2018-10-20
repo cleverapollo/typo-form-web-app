@@ -13,7 +13,7 @@
             v-if="answer.parameter"
           >
           </v-radio>
-          <template v-else>
+          <v-layout row wrap v-else>
             <v-radio
               color="info"
               :disabled="disabled"
@@ -29,7 +29,7 @@
               @change="onUpdate(answer.id)"
             >
             </v-text-field>
-          </template>
+          </v-layout>
         </template>
       </v-radio-group>
     </v-flex>

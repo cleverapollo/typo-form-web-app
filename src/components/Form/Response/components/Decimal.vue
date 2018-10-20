@@ -3,8 +3,7 @@
     <v-flex xs12>
       <v-text-field
         name="decimal"
-        type="number"
-        :value="message"
+        v-model="message"
         @change="onSave($event)"
         :rules="[rules.float, validate]"
         :disabled="disabled"
@@ -22,17 +21,23 @@
     props: ['question', 'answers', 'responses', 'disabled'],
     data () {
       return {
+        message: null,
         rules: {
           float: value => {
-            return value === parseFloat(value).toString() || 'This value must be a Float.'
+            return value === parseFloat(value).toString() || 'This value should be a decimal.'
           }
         }
       }
     },
     methods: {
       onSave (value) {
-        if (this.rules.float(value) !== true || this.validate(value) !== true) {
+        if (this.validate(value) !== true) {
           return
+        }
+
+        if (this.rules.float(value) !== true) {
+          value = parseFloat(value)
+          this.message = value
         }
 
         if (this.responses.length) {
@@ -42,12 +47,9 @@
         }
       }
     },
-    computed: {
-      message () {
-        if (this.responses.length) {
-          return this.responses[0].response
-        }
-        return ''
+    mounted () {
+      if (this.responses.length) {
+        this.message = this.responses[0].response
       }
     }
   }
