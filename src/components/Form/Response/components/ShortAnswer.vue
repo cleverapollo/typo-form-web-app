@@ -7,6 +7,11 @@
         @change="onSave($event)"
         :rules="[validate]"
         :disabled="disabled"
+        :prefix="prefix"
+        :suffix="suffix"
+        :prepend-icon="prependIcon"
+        :append-icon="appendIcon"
+        :append-outer-icon="appendOuterIcon"
       ></v-text-field>
     </v-flex>
   </v-layout>
@@ -18,7 +23,7 @@
   export default {
     name: 'short-answer',
     mixins: [validationMixin],
-    props: ['question', 'answers', 'responses', 'disabled'],
+    props: ['question', 'answers', 'responses', 'disabled', 'formId', 'sectionId', 'questionId'],
     methods: {
       onSave (value) {
         if (this.responses.length) {
@@ -34,6 +39,50 @@
           return this.responses[0].response
         }
         return ''
+      },
+      meta () {
+        const question = this.$store.getters.loadedQuestion(this.formId, this.sectionId, this.questionId)
+        if (!question.metas.length) {
+          return null
+        }
+        return question.metas[0]
+      },
+      value () {
+        if (!this.meta) {
+          return null
+        }
+        return JSON.parse(this.meta.metadata).value
+      },
+      prefix () {
+        if (!this.meta || JSON.parse(this.meta.metadata).type !== 'Prefix') {
+          return null
+        }
+
+        return this.value
+      },
+      suffix () {
+        if (!this.meta || JSON.parse(this.meta.metadata).type !== 'Suffix') {
+          return null
+        }
+        return this.value
+      },
+      prependIcon () {
+        if (!this.meta || JSON.parse(this.meta.metadata).type !== 'Prepend') {
+          return null
+        }
+        return this.value
+      },
+      appendIcon () {
+        if (!this.meta || JSON.parse(this.meta.metadata).type !== 'Append') {
+          return null
+        }
+        return this.value
+      },
+      appendOuterIcon () {
+        if (!this.meta || JSON.parse(this.meta.metadata).type !== 'Append Outer') {
+          return null
+        }
+        return this.value
       }
     }
   }

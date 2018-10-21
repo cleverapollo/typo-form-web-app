@@ -23,6 +23,7 @@
       :question="editedName"
       :mandatory="question.mandatory"
       :form-id="formId"
+      :section-id="sectionId"
       :submission-id="submissionId"
       :disabled="status === 'Closed'"
       :hasValidation="hasValidation"
