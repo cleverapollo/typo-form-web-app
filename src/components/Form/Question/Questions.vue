@@ -93,6 +93,7 @@
       <component
         :is="questionComponent"
         :question-id="question.id"
+        :section-id="sectionId"
         :form-id="formId"
         :answers="answers"
         :has-validation="mandatory && hasValidation"

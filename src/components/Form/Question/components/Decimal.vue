@@ -35,24 +35,28 @@
         ></v-text-field>
       </v-flex>
     </v-layout>
+    <Fix
+      :question-id="questionId"
+      :section-id="sectionId"
+      :form-id="formId"
+    >
+    </Fix>
   </div>
 </template>
 
 <script>
   import validationMixin from '../QuestionValiationMixin'
+  import Fix from '../Fix'
 
   export default {
     name: 'Decimal',
     mixins: [
       validationMixin
     ],
-    props: {
-      'answers': {
-        default: function () {
-          return []
-        }
-      }
+    components: {
+      Fix
     },
+    props: ['answers', 'sectionId', 'formId'],
     data () {
       return {
         validationTypes: [

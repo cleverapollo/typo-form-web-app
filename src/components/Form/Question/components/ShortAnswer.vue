@@ -1,5 +1,20 @@
 <template>
   <div>
+    <v-layout row>
+      <v-flex xs10>
+        <v-text-field
+          name="short-answer"
+          value="Short Answer"
+          disabled
+        ></v-text-field>
+      </v-flex>
+    </v-layout>
+    <Fix
+      :question-id="questionId"
+      :section-id="sectionId"
+      :form-id="formId"
+    >
+    </Fix>
     <v-layout v-if='hasValidation' row wrap>
       <v-flex xs12 mt-2 mb-2>
         <v-divider></v-divider>
@@ -40,19 +55,17 @@
 
 <script>
   import validationMixin from '../QuestionValiationMixin'
+  import Fix from '../Fix'
 
   export default {
     name: 'short-answer',
     mixins: [
       validationMixin
     ],
-    props: {
-      'answers': {
-        default: function () {
-          return []
-        }
-      }
+    components: {
+      Fix
     },
+    props: ['answers', 'sectionId', 'formId'],
     data () {
       return {
         validationTypes: [
