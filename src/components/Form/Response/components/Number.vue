@@ -2,10 +2,10 @@
   <v-layout row>
     <v-flex xs12>
       <v-text-field
-        name="short-answer"
-        :value="message"
+        name="number"
+        v-model="message"
         @change="onSave($event)"
-        :rules="[validate]"
+        :rules="[rules.number, validate]"
         :disabled="disabled"
         :prefix="prefix"
         :suffix="suffix"
@@ -21,11 +21,30 @@
   import validationMixin from '../ResponseValidationMixin'
 
   export default {
-    name: 'short-answer',
+    name: 'Number',
     mixins: [validationMixin],
     props: ['question', 'answers', 'responses', 'disabled', 'formId', 'sectionId', 'questionId'],
+    data () {
+      return {
+        message: null,
+        rules: {
+          number: value => {
+            return value === Math.floor(value).toString() || 'This value should be a whole number.'
+          }
+        }
+      }
+    },
     methods: {
       onSave (value) {
+        if (this.validate(value) !== true) {
+          return
+        }
+
+        if (this.rules.number(value) !== true) {
+          value = parseInt(value)
+          this.message = value
+        }
+
         if (this.responses.length) {
           this.$emit('update-response', [null, value, this.responses[0].id])
         } else {
@@ -34,12 +53,6 @@
       }
     },
     computed: {
-      message () {
-        if (this.responses.length) {
-          return this.responses[0].response
-        }
-        return ''
-      },
       meta () {
         const question = this.$store.getters.loadedQuestion(this.formId, this.sectionId, this.questionId)
         if (!question.metas.length) {
@@ -83,6 +96,11 @@
           return null
         }
         return this.value
+      }
+    },
+    mounted () {
+      if (this.responses.length) {
+        this.message = this.responses[0].response
       }
     }
   }

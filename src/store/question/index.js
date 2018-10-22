@@ -5,6 +5,27 @@ const MOVE_URL = '/move'
 
 export default {
   actions: {
+    loadQuestion ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.get(SECTION_URL + payload.sectionId + QUESTION_URL + '/' + payload.id)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const loadedObj = {
+              formId: payload.formId,
+              sectionId: payload.sectionId,
+              question: response['data']['question']
+            }
+            commit('updateQuestion', loadedObj)
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
     loadQuestions ({commit}, payload) {
       commit('setLoading', true)
       window.axios.get(SECTION_URL + payload.sectionId + QUESTION_URL)

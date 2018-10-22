@@ -1,20 +1,5 @@
 <template>
   <div>
-    <v-layout row>
-      <v-flex xs10>
-        <v-text-field
-          name="short-answer"
-          value="Short Answer"
-          disabled
-        ></v-text-field>
-      </v-flex>
-    </v-layout>
-    <Fix
-      :question-id="questionId"
-      :section-id="sectionId"
-      :form-id="formId"
-    >
-    </Fix>
     <v-layout v-if='hasValidation' row wrap>
       <v-flex xs12 mt-2 mb-2>
         <v-divider></v-divider>
@@ -50,6 +35,12 @@
         ></v-text-field>
       </v-flex>
     </v-layout>
+    <Fix
+      :question-id="questionId"
+      :section-id="sectionId"
+      :form-id="formId"
+    >
+    </Fix>
   </div>
 </template>
 
@@ -58,7 +49,7 @@
   import Fix from '../Fix'
 
   export default {
-    name: 'short-answer',
+    name: 'Decimal',
     mixins: [
       validationMixin
     ],
@@ -69,7 +60,7 @@
     data () {
       return {
         validationTypes: [
-          'Number', 'Words', 'Letters', 'Email', 'Decimal validation'
+          'Number', 'Decimal validation'
         ]
       }
     },

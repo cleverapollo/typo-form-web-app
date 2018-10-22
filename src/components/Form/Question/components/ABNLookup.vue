@@ -7,7 +7,7 @@
   import validationMixin from '../QuestionValiationMixin'
 
   export default {
-    name: 'short-answer',
+    name: 'abn-lookup',
     mixins: [
       validationMixin
     ],
@@ -17,8 +17,6 @@
           return []
         }
       }
-    },
-    mounted () {
     }
   }
 </script>

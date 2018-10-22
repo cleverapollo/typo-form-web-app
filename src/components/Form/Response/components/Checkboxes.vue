@@ -23,6 +23,7 @@
           >
           </v-checkbox>
           <v-text-field
+            :label="answer.answer"
             :disabled="!enabled"
             v-model="responseValue"
             @change="onUpdate(answer.id)"
@@ -47,7 +48,7 @@
     data () {
       return {
         checkAnswers: [],
-        responseValue: 'Other...'
+        responseValue: null
       }
     },
     mounted () {
@@ -98,7 +99,7 @@
         } else {
           this.$emit('delete-response', this.responseIdFromAnswer(answerId))
           if (answerId === this.other.id) {
-            this.responseValue = 'Other...'
+            this.responseValue = null
           }
         }
       },
