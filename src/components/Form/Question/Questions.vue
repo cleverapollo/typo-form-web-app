@@ -430,9 +430,9 @@
         }
       },
       setQuestionType (str) {
-        this.questionTypeId = _.findIndex(this.questionTypes, type => {
+        this.questionTypeId = _.find(this.questionTypes, type => {
           return type.type === str
-        }) + 1
+        }).id
       },
       checkUpdateName: function () {
         if (this.editedName !== this.question.question) {
