@@ -242,7 +242,7 @@
     <DeleteConfirmDialog @delete-action="onDeleteSection" :visible="deleteSection" @close="deleteSection = false"></DeleteConfirmDialog>
 
     <!-- //Move Section -->
-    <ParentSectionDialog @move-action="onMoveSection" :visible="moveSection" @close="moveSection = false" :formId="formId" :sectionId="section.parent_section_id" flag="Section"></ParentSectionDialog>
+    <ParentSectionDialog @move-action="onMoveSection" :visible="moveSection" @close="moveSection = false" :formId="formId" :sectionId="section.id" flag="Section"></ParentSectionDialog>
 
     <!-- //Show snackbar -->
     <Snackbar :snackbar="snackbarVisible" @dismissed="snackbarVisible = false"></Snackbar>
@@ -560,22 +560,12 @@
             max_rows: this.max_rows
           })
       },
-      onMoveSection (parentSectionId) {
-        const childrenSection = this.$store.getters.loadedChildrenSection(this.formId, parentSectionId)
-        let order = 1
-        if (childrenSection.length) {
-          order = childrenSection[childrenSection.length - 1].order + 1
-        }
-
-        this.$store.dispatch('updateSection', {
+      onMoveSection (args) {
+        this.$store.dispatch('moveSection', {
           formId: this.formId,
-          id: this.section.id,
-          parentSectionId: parentSectionId,
-          name: this.editedName,
-          repeatable: this.hasRepeatableQuestions,
-          min_rows: this.min_rows,
-          max_rows: this.max_rows,
-          order: order
+          sectionId: this.section.id,
+          parentSectionId: args[0],
+          order: args[1]
         })
       },
       onDeleteSection () {
