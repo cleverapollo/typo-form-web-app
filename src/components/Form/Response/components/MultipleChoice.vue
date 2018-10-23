@@ -13,7 +13,7 @@
             v-if="answer.parameter"
           >
           </v-radio>
-          <v-layout row wrap v-else>
+          <v-layout row wrap class="radio-other" v-else>
             <v-radio
               color="info"
               :disabled="disabled"
@@ -82,8 +82,18 @@
   }
 </script>
 
-<style scoped>
-  .input-group.radio-group {
-    padding-top:0;
+<style>
+  .question-group .v-input--radio-group .v-input__control {
+    width:100%;
+  }
+  .question-group .v-input--radio-group .v-input__control .v-text-field__slot .v-label {
+    top:6px;
+  }
+  .question-group .v-input--radio-group .v-input__control .v-text-field__slot .v-label.v-label--active {
+    top:12px;
+  }
+  .question-group .radio-other {
+    position:relative;
+    top:-20px;
   }
 </style>

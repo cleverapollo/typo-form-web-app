@@ -1,6 +1,10 @@
 <template>
   <v-layout row wrap justify-space-around>
-    <v-flex xs5>
+    <v-flex xs12 mt-2 mb-2>
+      <v-divider />
+    </v-flex>
+    <v-flex xs12 body-2>Affix Icons</v-flex>
+    <v-flex xs6>
       <v-autocomplete
         :items="types"
         label="Type"
@@ -8,12 +12,17 @@
         @change="onFix"
       ></v-autocomplete>
     </v-flex>
-    <v-flex xs5>
+    <v-flex xs5 offset-xs1>
       <v-text-field
         label="Content"
         v-model="value"
         @change="onFix"
       ></v-text-field>
+    </v-flex>
+    <v-flex xs12>
+      <p class="text-xs-right">
+        <a href="https://material.io/tools/icons/" target="_blank">View available material design icons</a>
+      </p>
     </v-flex>
   </v-layout>
 </template>
