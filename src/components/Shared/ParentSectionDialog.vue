@@ -87,7 +87,7 @@
         })
       },
       items () {
-        if (this.selectedSectionId === null) {
+        if (this.selectedSectionId === null && this.flag === 'Question') {
           return []
         }
 
