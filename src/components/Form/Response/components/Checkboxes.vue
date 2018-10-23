@@ -73,7 +73,7 @@
       },
       enabled: {
         get () {
-          return this.responses.find((response) => response.answer_id === this.other.id)
+          return this.other ? this.responses.find((response) => response.answer_id === this.other.id) : false
         },
         set (value) {
           this.onSave(this.other.id)
@@ -98,7 +98,7 @@
           this.$emit('create-response', [answerId, null])
         } else {
           this.$emit('delete-response', this.responseIdFromAnswer(answerId))
-          if (answerId === this.other.id) {
+          if (this.other && answerId === this.other.id) {
             this.responseValue = null
           }
         }

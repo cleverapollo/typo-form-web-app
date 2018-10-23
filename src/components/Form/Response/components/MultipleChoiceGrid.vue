@@ -21,7 +21,6 @@
                   v-for='(column, index2) in computedColumns'
                   :key='"column " + index2'
                   :value="column.id"
-                  :label="column.answer"
                   @change="onSave(row.id, column.id)"
                   :style="'width: ' + 100/computedColumns.length + '%'"
                   class="mx-0"
