@@ -63,7 +63,7 @@
       onSave (answerId) {
         if (this.responses.length) {
           let updateResponse = null
-          if (answerId === this.other.id) {
+          if (this.other && this.other.id === answerId) {
             updateResponse = this.responseValue
           } else {
             this.responseValue = null
