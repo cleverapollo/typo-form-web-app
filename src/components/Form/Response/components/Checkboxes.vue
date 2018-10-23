@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <v-layout row v-for='(answer, index) in answers' :key='"Option " + index' :class='"item" + index'>
+      <v-layout row v-for='(answer, index) in answers' :key='"Option " + index' :class='"item" + index + " checkbox"'>
         <v-checkbox 
           color="info"
           :disabled="disabled"
@@ -112,3 +112,15 @@
     }
   }
 </script>
+
+<style>
+.question-group .checkbox:nth-child(n+2) .v-input--selection-controls {
+  margin-top:0px;
+}
+.question-group .checkbox .v-input--selection-controls .v-input__slot {
+  margin-bottom:8px;
+}
+.question-group .checkbox .v-input.v-text-field {
+  padding-top:0px;
+}
+</style>

@@ -76,3 +76,9 @@
     }
   }
 </script>
+
+<style>
+.question-group .v-input--slider {
+  margin-top:30px;
+}
+</style>
