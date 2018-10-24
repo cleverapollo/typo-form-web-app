@@ -172,7 +172,7 @@
     <!-- //Delete Question -->
     <DeleteConfirmDialog @delete-action="onDeleteQuestion" :visible="deleteQuestion" @close="deleteQuestion = false"></DeleteConfirmDialog>
     <!-- //Move Question -->
-    <ParentSectionDialog @move-action="onMoveQuestion" :visible="moveQuestion" @close="moveQuestion = false" :formId="formId" :sectionId="sectionId" flag="Question"></ParentSectionDialog>
+    <ParentSectionDialog @move-action="onMoveQuestion" :visible="moveQuestion" @close="moveQuestion = false" :formId="formId" :sectionId="question.id" flag="Question"></ParentSectionDialog>
   </v-container>
 </template>
 
@@ -543,19 +543,13 @@
           id: this.question.id
         })
       },
-      onMoveQuestion (parentSectionId) {
-        const section = this.$store.getters.loadedSection(this.formId, parentSectionId)
-        let order = 1
-        if (section.questions.length) {
-          order = section.questions[section.questions.length - 1].order + 1
-        }
-
+      onMoveQuestion (args) {
         this.$store.dispatch('moveQuestion', {
           formId: this.formId,
           questionId: this.question.id,
           oldParentSectionId: this.sectionId,
-          parentSectionId: parentSectionId,
-          order: order
+          parentSectionId: args[0],
+          order: args[1]
         })
       },
       moveAnswer (args) {

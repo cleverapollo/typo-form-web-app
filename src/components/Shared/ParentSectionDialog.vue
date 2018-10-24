@@ -17,6 +17,24 @@
           item-value="id"
           v-model="selectedSectionId"
         ></v-select>
+
+        <v-select
+          :items="items"
+          label="Before"
+          item-text="question"
+          item-value="order"
+          v-model="order"
+          v-if="flag==='Question'"
+        ></v-select>
+
+        <v-select
+          :items="items"
+          label="Before"
+          item-text="name"
+          item-value="order"
+          v-model="order"
+          v-if="flag==='Section'"
+        ></v-select>
       </v-card-text>
 
       <!-- //Actions -->
@@ -39,7 +57,8 @@
     props: ['visible', 'formId', 'sectionId', 'flag'],
     data () {
       return {
-        selectedSectionId: this.sectionId
+        selectedSectionId: null,
+        order: 1
       }
     },
     computed: {
@@ -49,6 +68,8 @@
         },
         set (value) {
           if (!value) {
+            this.selectedSectionId = null
+            this.order = 1
             this.$emit('close')
           }
         }
@@ -58,14 +79,42 @@
           if (this.flag === 'Question') {
             return !this.$store.getters.loadedChildrenSection(this.formId, section.id).length
           } else {
-            return this.$store.getters.loadedChildrenSection(this.formId, section.id).length
+            if (section.id === this.sectionId) {
+              return false
+            }
+            return !section.questions.length
           }
         })
+      },
+      items () {
+        if (this.selectedSectionId === null && this.flag === 'Question') {
+          return []
+        }
+
+        let items = []
+        if (this.flag === 'Question') {
+          items = this.$store.getters.loadedSection(this.formId, this.selectedSectionId).questions.slice(0)
+        } else {
+          items = this.$store.getters.loadedChildrenSection(this.formId, this.selectedSectionId)
+        }
+
+        let order = 1
+        if (items.length) {
+          order = items[items.length - 1].order + 1
+        }
+
+        if (this.flag === 'Question') {
+          items.push({question: 'At Last', order: order})
+        } else {
+          items.push({name: 'At Last', order: order})
+        }
+
+        return items
       }
     },
     methods: {
       onMove () {
-        this.$emit('move-action', this.selectedSectionId)
+        this.$emit('move-action', [this.selectedSectionId, this.order])
         this.reset()
       },
       close () {
