@@ -48,6 +48,13 @@
                           <v-list-tile-content>Delete Submission</v-list-tile-content>
                         </v-list-tile>
 
+                        <v-list-tile @click.stop="duplicateSubmission">
+                          <v-list-tile-avatar>
+                            <v-icon>content_copy</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>Duplicate Submission</v-list-tile-content>
+                        </v-list-tile>
+
                         <v-list-tile @click.stop="onOpenSubmission" v-if="status==='Closed' && userIsApplicationAdmin">
                           <v-list-tile-avatar>
                             <v-icon>assignment</v-icon>
@@ -269,6 +276,12 @@
           return role.id === roleId
         })
         return role ? role.name : 'undefined'
+      },
+      duplicateSubmission: function () {
+        this.$store.dispatch('duplicateSubmission', {
+          formId: this.formId,
+          id: this.submission.id
+        })
       },
       onOpenSubmission: function () {
         const statusIndex = _.findIndex(this.statuses, status => {
