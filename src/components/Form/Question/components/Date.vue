@@ -21,7 +21,7 @@
           v-model='activeValidationType'
         ></v-select>
       </v-flex>
-      <v-flex v-if='"Date between" === activeValidationType || "Date before" === activeValidationType' xs3 offset-xs1>
+      <v-flex v-if='"Date between" === activeValidationType || "Date after" === activeValidationType' xs3 offset-xs1>
         <v-dialog
           ref="dialog"
           v-model="minModal"
@@ -44,7 +44,7 @@
           </v-date-picker>
         </v-dialog>
       </v-flex>
-      <v-flex xs3 offset-xs1 v-if='"Future date" !== activeValidationType && "Date before" !== activeValidationType'>
+      <v-flex xs3 offset-xs1 v-if='"Future date" !== activeValidationType && "Date after" !== activeValidationType'>
         <v-dialog
           ref="dialog"
           v-model="maxModal"
@@ -116,7 +116,7 @@
         this.$emit('remove-validation')
       },
       updateActiveValidationType (value) {
-        this.updateValidation(value, this.minInput, this.maxInput)
+        this.updateValidation(value, this.minDate, this.maxDate)
       }
     },
     computed: {
@@ -165,10 +165,23 @@
     },
     watch: {
       minDate (value) {
-        this.updateValidation('', value, this.maxInput)
+        if (value && this.minModal) {
+          this.updateValidation('', value, this.maxDate)
+        }
+        this.minModal = false
       },
       maxDate (value) {
-        this.updateValidation('', this.minInput, value)
+        if (value && this.maxModal) {
+          this.updateValidation('', this.minDate, value)
+        }
+        this.maxModal = false
+      },
+      validations (value) {
+        if (value && value.length && value.length === 1) {
+          const validationData = value[0].validation_data.split(',')
+          this.minDate = (validationData[0] !== '0') ? validationData[0] : null
+          this.maxDate = (validationData[1] !== '0') ? validationData[1] : null
+        }
       }
     }
   }
