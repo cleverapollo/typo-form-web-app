@@ -130,6 +130,7 @@
                         :section="element"
                         :formId="formId"
                         :submissionId="submissionId"
+                        :key="'section' + element.id"
                         v-if="element.questions"
                       ></sections>
 
@@ -147,6 +148,7 @@
                         :formId="formId"
                         :sectionId="section.id"
                         :index="index + 1"
+                        :key="'question' + element.id"
                         v-if="element.answers && getQuestionType(element.question_type_id) === 'Content Block'"
                       ></QuestionContentBlock>
                     </v-flex>
