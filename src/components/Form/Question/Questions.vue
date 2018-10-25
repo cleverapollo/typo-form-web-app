@@ -238,6 +238,7 @@
           'Multiple choice': true,
           'Checkboxes': true,
           'Dropdown': true,
+          'Date': true,
           'Number': true,
           'Decimal': true,
           'Email': true,

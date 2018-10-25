@@ -116,6 +116,18 @@
             </v-flex>
           </v-layout>
 
+          <!-- //Support Text -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-textarea
+                name="support"
+                label="Support Text"
+                v-model="support_text"
+              >
+              </v-textarea>
+            </v-flex>
+          </v-layout>
+
         </v-card-text>
 
         <!-- //Actions -->
@@ -151,6 +163,7 @@
       return {
         name: null,
         css: null,
+        support_text: null,
         primary_color: null,
         secondary_color: null,
         logo: [],
@@ -259,6 +272,7 @@
         let application = {
           slug: this.application.slug,
           css: this.css,
+          supportText: this.support_text,
           logo: this.applicationLogo,
           primary_color: this.primary_color,
           secondary_color: this.secondary_color,
@@ -289,6 +303,7 @@
     created: function () {
       this.name = this.application.name
       this.css = this.application.css
+      this.support_text = this.application.support_text
       this.icon = this.application.icon !== null ? [JSON.parse(this.application.icon)] : []
       this.primary_color = this.application.primary_color
       this.secondary_color = this.application.secondary_color

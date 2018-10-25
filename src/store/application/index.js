@@ -158,6 +158,7 @@ export default {
       const application = {
         name: payload.name,
         css: payload.css,
+        support_text: payload.supportText,
         icon: payload.icon,
         logo: payload.logo,
         primary_color: payload.primary_color,

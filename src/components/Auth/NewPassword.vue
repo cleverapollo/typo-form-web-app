@@ -134,7 +134,11 @@
       loading () {
         return this.$store.getters.loading
       },
+
       supportText () {
+        if (this.application && this.application.support_text) {
+          return this.application.support_text
+        }
         return 'For support, please contact <a href="mailto:support@informed365.com" target="_blank">Informed 365 Help Desk</a>.'
       },
       application () {
