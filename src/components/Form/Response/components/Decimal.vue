@@ -26,7 +26,7 @@
     props: ['question', 'answers', 'responses', 'disabled', 'formId', 'sectionId', 'questionId'],
     data () {
       return {
-        message: null,
+        message: '',
         rules: {
           float: value => {
             return value === parseFloat(value).toString() || 'This value should be a decimal.'

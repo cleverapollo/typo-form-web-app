@@ -26,7 +26,7 @@
     props: ['question', 'answers', 'responses', 'disabled', 'formId', 'sectionId', 'questionId'],
     data () {
       return {
-        message: null,
+        message: '',
         rules: {
           number: value => {
             return value === Math.floor(value).toString() || 'This value should be a whole number.'

@@ -13,8 +13,9 @@ export default {
   },
   methods: {
     countDecimals (value) {
-      if (Math.floor(value) === value) return 0
-      return value.toString().split('.')[1].length || 0
+      if (!value || Math.floor(value) === value) return 0
+      const numbers = value.toString().split('.')
+      return numbers.length > 1 ? numbers[1].length : 0
     },
     validate (value) {
       if (this.activeValidationType) {
@@ -56,6 +57,25 @@ export default {
         } else if (this.activeValidationType === 'Decimal validation') {
           if (isNaN(value) || this.countDecimals(value) > this.maxValue) {
             return `Maximum ${this.maxValue} decimals allowed.`
+          }
+          return true
+        } else if (this.activeValidationType === 'Minimum Value') {
+          if (parseInt(value) < this.minValue) {
+            return `This value must be greater than or equal to ${this.minValue}.`
+          }
+          return true
+        } else if (this.activeValidationType === 'Maximum Value') {
+          if (parseInt(value) > this.maxValue) {
+            return `This value must be less than or equal to ${this.maxValue}.`
+          }
+          return true
+        } else if (this.activeValidationType === 'Between') {
+          if (!this._isNumeric(value)) {
+            return 'This value must be a number.'
+          } else if (parseInt(value) < this.minValue) {
+            return `This value must be greater than or equal to ${this.minValue}.`
+          } else if (parseInt(value) > this.maxValue && this.maxValue !== 0) {
+            return `This value must be less than or equal to ${this.maxValue}.`
           }
           return true
         } else {
