@@ -41,9 +41,21 @@
             <v-flex xs12>
               <v-text-field
                 name="content"
-                label="Content"
+                label="Completed Submission Content"
                 id="content"
                 v-model="content"
+                required
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-text-field
+                name="help"
+                label="Help Modal Content"
+                id="help"
+                v-model="help"
                 required
               ></v-text-field>
             </v-flex>
@@ -102,7 +114,8 @@
         showProgress: parseInt(this.form.show_progress),
         csv: this.form.csv,
         csvFileName: 'Please Upload CSV.',
-        content: this.form.metas.length ? JSON.parse(this.form.metas[0].metadata).content : ''
+        content: this.form.metas.length ? JSON.parse(this.form.metas[0].metadata).content : '',
+        help: this.form.metas.length ? JSON.parse(this.form.metas[0].metadata).help : ''
       }
     },
     methods: {
@@ -142,7 +155,7 @@
       },
       createMeta () {
         this.$store.dispatch('createMeta', {
-          metadata: JSON.stringify({content: this.content}),
+          metadata: JSON.stringify({content: this.content, help: this.help}),
           metableId: this.form.id,
           metableType: 'forms'
         })
@@ -150,7 +163,7 @@
       updateMeta () {
         this.$store.dispatch('updateMeta', {
           id: this.form.metas[0].id,
-          metadata: JSON.stringify({content: this.content}),
+          metadata: JSON.stringify({content: this.content, help: this.help}),
           metableId: this.form.id,
           metableType: 'forms'
         })

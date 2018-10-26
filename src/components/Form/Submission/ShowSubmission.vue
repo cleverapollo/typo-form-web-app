@@ -150,6 +150,9 @@
     <!-- //Show Completed -->
     <CompletedSubmission :snackbar="submitted" :content="content" @dismissed="submitted = false"></CompletedSubmission>
 
+    <!-- //Show Help Modal -->
+    <HelpModal :visible="helpModal && help" :content="help" @close="helpModal = false"></HelpModal>
+
   </v-layout>
 </template>
 
@@ -160,6 +163,7 @@
   import EditSubmission from './EditSubmission'
   import FormNavigation from '../FormNavigation'
   import CompletedSubmission from './CompletedSubmission'
+  import HelpModal from './HelpModal'
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
@@ -171,14 +175,16 @@
         deleteSubmission: false,
         snackbar: false,
         slug: window.location.hostname.split('.')[0],
-        submitted: false
+        submitted: false,
+        helpModal: false
       }
     },
     components: {
       FormView,
       EditSubmission,
       CompletedSubmission,
-      FormNavigation
+      FormNavigation,
+      HelpModal
     },
     computed: {
       application () {
@@ -289,6 +295,12 @@
           '<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>' +
           '<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>' +
           '</svg>'
+      },
+      help () {
+        if (this.meta && this.meta.help) {
+          return this.meta.help
+        }
+        return null
       }
     },
     methods: {
@@ -353,6 +365,7 @@
           this.$store.dispatch('loadSections', this.formId)
           this.$store.dispatch('loadValidations', this.formId)
           this.$store.dispatch('loadTriggers', this.formId)
+          this.helpModal = true
         })
       this.$store.dispatch('selectSection', null)
     }
