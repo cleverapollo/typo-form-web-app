@@ -37,6 +37,18 @@
             </v-flex>
           </v-layout>
 
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-text-field
+                name="content"
+                label="Content"
+                id="content"
+                v-model="content"
+                required
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+
           <v-layout row wrap pt-4>
             <v-flex xs12>
               <v-checkbox label="Show Progress" v-model="showProgress" light></v-checkbox>
@@ -89,7 +101,8 @@
         editedName: this.form.name,
         showProgress: parseInt(this.form.show_progress),
         csv: this.form.csv,
-        csvFileName: 'Please Upload CSV.'
+        csvFileName: 'Please Upload CSV.',
+        content: this.form.metas.length ? JSON.parse(this.form.metas[0].metadata).content : ''
       }
     },
     methods: {
@@ -107,6 +120,13 @@
           showProgress: this.showProgress,
           csv: this.csv
         })
+          .then((response) => {
+            if (this.form.metas.length) {
+              this.updateMeta()
+            } else {
+              this.createMeta()
+            }
+          })
       },
       onCancel () {
         this.editedName = this.form.name
@@ -119,6 +139,21 @@
           this.csv = files[0]
           this.csvFileName = this.csv.name
         }
+      },
+      createMeta () {
+        this.$store.dispatch('createMeta', {
+          metadata: JSON.stringify({content: this.content}),
+          metableId: this.form.id,
+          metableType: 'forms'
+        })
+      },
+      updateMeta () {
+        this.$store.dispatch('updateMeta', {
+          id: this.form.metas[0].id,
+          metadata: JSON.stringify({content: this.content}),
+          metableId: this.form.id,
+          metableType: 'forms'
+        })
       }
     },
     computed: {

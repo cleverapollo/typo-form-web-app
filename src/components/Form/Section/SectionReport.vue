@@ -152,6 +152,10 @@
           case 'Date':
           case 'Time':
           case 'Linear scale':
+          case 'Number':
+          case 'Decimal':
+          case 'Email':
+          case 'Percent':
             if (responses.length) {
               response = responses[0].response
             }

@@ -119,21 +119,25 @@ export default {
         headers: {'content-type': 'multipart/form-data'}
       }
 
-      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + '/' + payload.id, formData, config)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              slug: payload.slug,
-              form: response['data']['form']
+      return new Promise((resolve, reject) => {
+        window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + '/' + payload.id, formData, config)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const updateObj = {
+                slug: payload.slug,
+                form: response['data']['form']
+              }
+              commit('updateForm', updateObj)
+              resolve(response)
             }
-            commit('updateForm', updateObj)
-          }
-        )
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
+          )
+          .catch(error => {
+            console.log(error)
+            commit('setLoading', false)
+            reject(error)
+          })
+      })
     },
     deleteForm ({commit}, payload) {
       commit('setLoading', true)

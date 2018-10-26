@@ -147,6 +147,9 @@
     <!-- //Show snackbar -->
     <Snackbar :snackbar="snackbar" @dismissed="snackbar = false"></Snackbar>
 
+    <!-- //Show Completed -->
+    <CompletedSubmission :snackbar="submitted" :content="content" @dismissed="submitted = false"></CompletedSubmission>
+
   </v-layout>
 </template>
 
@@ -156,6 +159,7 @@
   import FormView from '../FormView'
   import EditSubmission from './EditSubmission'
   import FormNavigation from '../FormNavigation'
+  import CompletedSubmission from './CompletedSubmission'
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
@@ -166,12 +170,14 @@
       return {
         deleteSubmission: false,
         snackbar: false,
-        slug: window.location.hostname.split('.')[0]
+        slug: window.location.hostname.split('.')[0],
+        submitted: false
       }
     },
     components: {
       FormView,
       EditSubmission,
+      CompletedSubmission,
       FormNavigation
     },
     computed: {
@@ -268,6 +274,21 @@
       },
       lastSaved () {
         return moment(this.submission.updated_at.date).format('MMM Do YYYY h:mm A')
+      },
+      meta () {
+        if (!this.form || !this.form.metas.length) {
+          return null
+        }
+        return JSON.parse(this.form.metas[0].metadata)
+      },
+      content () {
+        if (this.meta && this.meta.content) {
+          return this.meta.content
+        }
+        return '<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">' +
+          '<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>' +
+          '<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>' +
+          '</svg>'
       }
     },
     methods: {
@@ -312,14 +333,15 @@
           return status.status === 'Closed'
         })
 
-        this.$store.dispatch('updateSubmission',
-          {
-            formId: this.formId,
-            id: this.submissionId,
-            statusId: this.statuses[statusIndex].id
-          }
-        )
-        scroll(0, 0)
+        this.$store.dispatch('updateSubmission', {
+          formId: this.formId,
+          id: this.submissionId,
+          statusId: this.statuses[statusIndex].id
+        })
+          .then((response) => {
+            this.submitted = true
+            scroll(0, 0)
+          })
       }
     },
     created () {

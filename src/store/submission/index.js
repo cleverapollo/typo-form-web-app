@@ -192,21 +192,25 @@ export default {
         submission.progress = parseInt(payload.progress)
       }
 
-      window.axios.put(FORM_URL + payload.formId + SUBMISSION_URL + '/' + payload.id, submission)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              formId: payload.formId,
-              submission: response['data']['submission']
+      return new Promise((resolve, reject) => {
+        window.axios.put(FORM_URL + payload.formId + SUBMISSION_URL + '/' + payload.id, submission)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const updateObj = {
+                formId: payload.formId,
+                submission: response['data']['submission']
+              }
+              commit('updateSubmission', updateObj)
+              resolve(response)
             }
-            commit('updateSubmission', updateObj)
-          }
-        )
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
+          )
+          .catch(error => {
+            console.log(error)
+            commit('setLoading', false)
+            reject(error)
+          })
+      })
     },
     duplicateSubmission ({commit}, payload) {
       commit('setLoading', true)
