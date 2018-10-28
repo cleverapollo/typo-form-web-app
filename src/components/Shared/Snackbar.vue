@@ -6,7 +6,7 @@
     bottom
     left
   >
-    Progress saved
+    {{ content }}
     <v-btn
       dark
       flat
@@ -19,7 +19,7 @@
 
 <script>
   export default {
-    props: ['snackbar'],
+    props: ['snackbar', 'content'],
     methods: {
       onClose () {
         this.$emit('dismissed')

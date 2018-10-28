@@ -214,21 +214,25 @@ export default {
     },
     duplicateSubmission ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.post(FORM_URL + payload.formId + SUBMISSION_URL + '/' + payload.id)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const createdObj = {
-              formId: payload.formId,
-              submission: response['data']['submission']
+      return new Promise((resolve, reject) => {
+        window.axios.post(FORM_URL + payload.formId + SUBMISSION_URL + '/' + payload.id)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const createdObj = {
+                formId: payload.formId,
+                submission: response['data']['submission']
+              }
+              commit('createSubmission', createdObj)
+              resolve(response)
             }
-            commit('createSubmission', createdObj)
-          }
-        )
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
+          )
+          .catch(error => {
+            console.log(error)
+            commit('setLoading', false)
+            reject(error)
+          })
+      })
     },
     deleteSubmission ({commit}, payload) {
       commit('setLoading', true)

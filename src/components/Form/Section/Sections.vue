@@ -247,7 +247,7 @@
     <ParentSectionDialog @move-action="onMoveSection" :visible="moveSection" @close="moveSection = false" :formId="formId" :sectionId="section.id" flag="Section"></ParentSectionDialog>
 
     <!-- //Show snackbar -->
-    <Snackbar :snackbar="snackbarVisible" @dismissed="snackbarVisible = false"></Snackbar>
+    <Snackbar content="Progress saved" :snackbar="snackbarVisible" @dismissed="snackbarVisible = false"></Snackbar>
   </v-card>
 </template>
 

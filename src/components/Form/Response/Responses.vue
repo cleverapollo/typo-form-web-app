@@ -33,7 +33,7 @@
     ></component>
 
     <!-- //Show snackbar -->
-    <Snackbar :snackbar="snackbarVisible" @dismissed="snackbarVisible = false"></Snackbar>
+    <Snackbar content="Progress saved" :snackbar="snackbarVisible" @dismissed="snackbarVisible = false"></Snackbar>
   </v-flex>
 </template>
 

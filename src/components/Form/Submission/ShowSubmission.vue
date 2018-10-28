@@ -135,6 +135,17 @@
 
             </v-card-actions>
 
+            <v-btn
+              absolute
+              fab
+              bottom
+              right
+              color="info"
+              @click="helpModal = true"
+            >
+              <v-icon>help</v-icon>
+            </v-btn>
+
           </v-card>
         </v-flex>
 
@@ -145,13 +156,16 @@
     <DeleteConfirmDialog @delete-action="onDeleteSubmission" :visible="deleteSubmission" @close="deleteSubmission = false"></DeleteConfirmDialog>
 
     <!-- //Show snackbar -->
-    <Snackbar :snackbar="snackbar" @dismissed="snackbar = false"></Snackbar>
+    <Snackbar content="Progress saved" :snackbar="snackbar" @dismissed="snackbar = false"></Snackbar>
 
     <!-- //Show Completed -->
     <CompletedSubmission :snackbar="submitted" :content="content" @dismissed="submitted = false"></CompletedSubmission>
 
     <!-- //Show Help Modal -->
     <HelpModal :visible="helpModal && help" :content="help" @close="helpModal = false"></HelpModal>
+
+    <!-- //Duplicate submission -->
+    <Snackbar content="Submission is duplicated" :snackbar="duplicated" @dismissed="duplicated = false"></Snackbar>
 
   </v-layout>
 </template>
@@ -176,7 +190,8 @@
         snackbar: false,
         slug: window.location.hostname.split('.')[0],
         submitted: false,
-        helpModal: false
+        helpModal: false,
+        duplicated: false
       }
     },
     components: {
@@ -291,10 +306,7 @@
         if (this.meta && this.meta.content) {
           return this.meta.content
         }
-        return '<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">' +
-          '<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>' +
-          '<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>' +
-          '</svg>'
+        return null
       },
       help () {
         if (this.meta && this.meta.help) {
@@ -315,6 +327,9 @@
           formId: this.formId,
           id: this.submission.id
         })
+          .then((response) => {
+            this.duplicated = true
+          })
       },
       onOpenSubmission: function () {
         const statusIndex = _.findIndex(this.statuses, status => {
@@ -365,7 +380,6 @@
           this.$store.dispatch('loadSections', this.formId)
           this.$store.dispatch('loadValidations', this.formId)
           this.$store.dispatch('loadTriggers', this.formId)
-          this.helpModal = true
         })
       this.$store.dispatch('selectSection', null)
     }
