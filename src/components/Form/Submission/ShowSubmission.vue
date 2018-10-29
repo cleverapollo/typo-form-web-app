@@ -63,6 +63,15 @@
                         </v-list-tile>
                       </v-list>
                     </v-menu>
+                    <v-btn
+                      flat
+                      icon
+                      color="info"
+                      v-if="help"
+                      @click="helpModal = true"
+                    >
+                      <v-icon class="white--text">help</v-icon>
+                    </v-btn>
                   </div>
                 </v-flex>
 
@@ -135,17 +144,6 @@
 
             </v-card-actions>
 
-            <v-btn
-              absolute
-              fab
-              bottom
-              right
-              color="info"
-              @click="helpModal = true"
-            >
-              <v-icon>help</v-icon>
-            </v-btn>
-
           </v-card>
         </v-flex>
 
@@ -165,7 +163,7 @@
     <HelpModal :visible="helpModal && help" :content="help" @close="helpModal = false"></HelpModal>
 
     <!-- //Duplicate submission -->
-    <Snackbar content="Submission is duplicated" :snackbar="duplicated" @dismissed="duplicated = false"></Snackbar>
+    <DuplicateSubmission :visible="duplicated" :content="duplicatedContent" @close="duplicated = false"></DuplicateSubmission>
 
   </v-layout>
 </template>
@@ -178,6 +176,7 @@
   import FormNavigation from '../FormNavigation'
   import CompletedSubmission from './CompletedSubmission'
   import HelpModal from './HelpModal'
+  import DuplicateSubmission from './DuplicateSubmission'
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
@@ -191,7 +190,8 @@
         slug: window.location.hostname.split('.')[0],
         submitted: false,
         helpModal: false,
-        duplicated: false
+        duplicated: false,
+        duplicatedContent: ''
       }
     },
     components: {
@@ -199,7 +199,8 @@
       EditSubmission,
       CompletedSubmission,
       FormNavigation,
-      HelpModal
+      HelpModal,
+      DuplicateSubmission
     },
     computed: {
       application () {
@@ -329,6 +330,7 @@
         })
           .then((response) => {
             this.duplicated = true
+            this.duplicatedContent = response.data.submission.id
           })
       },
       onOpenSubmission: function () {

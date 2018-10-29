@@ -4,6 +4,7 @@
      :timeout="3000"
      color="white"
      bottom
+     class="v-snackbar-completed"
   >
     <v-container>
       <v-layout>
@@ -39,11 +40,11 @@
     }
   }
 </script>
-<style scoped>
-  .v-snack {
+<style>
+  .v-snackbar-completed {
     height: 100%;
   }
-  .v-snack__content {
+  .v-snackbar-completed .v-snack__content {
     color: black;
     height: 100%;
   }
