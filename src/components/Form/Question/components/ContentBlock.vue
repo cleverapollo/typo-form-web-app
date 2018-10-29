@@ -28,6 +28,9 @@
 
     <v-layout pa-3 class="card_actions">
       <v-spacer></v-spacer>
+      <v-btn slot="activator" color="grey darken-2" flat icon @click="moveQuestion = true">
+        <v-icon>fullscreen</v-icon>
+      </v-btn>
       <v-btn color="grey darken-2" flat icon @click="duplicateQuestion">
         <v-icon>content_copy</v-icon>
       </v-btn>
@@ -38,6 +41,8 @@
 
     <!-- //Delete Question -->
     <DeleteConfirmDialog @delete-action="onDeleteQuestion" :visible="deleteQuestion" @close="deleteQuestion = false"></DeleteConfirmDialog>
+    <!-- //Move Question -->
+    <ParentSectionDialog @move-action="onMoveQuestion" :visible="moveQuestion" @close="moveQuestion = false" :formId="formId" :sectionId="question.id" flag="Question"></ParentSectionDialog>
   </v-container>
 </template>
 
@@ -52,7 +57,8 @@
       return {
         editedQuestion: this.question.question || 'Content Block',
         editedDescription: this.question.description,
-        deleteQuestion: false
+        deleteQuestion: false,
+        moveQuestion: false
       }
     },
     computed: {
@@ -82,6 +88,15 @@
           formId: this.formId,
           sectionId: this.sectionId,
           id: this.question.id
+        })
+      },
+      onMoveQuestion (args) {
+        this.$store.dispatch('moveQuestion', {
+          formId: this.formId,
+          questionId: this.question.id,
+          oldParentSectionId: this.sectionId,
+          parentSectionId: args[0],
+          order: args[1]
         })
       }
     },
