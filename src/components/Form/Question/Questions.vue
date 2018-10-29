@@ -194,6 +194,7 @@
   import Decimal from './components/Decimal'
   import Email from './components/Email'
   import Percent from './components/Percent'
+  import PhoneNumber from './components/PhoneNumber'
   import * as _ from 'lodash'
 
   import triggers from '../Triggers'
@@ -230,7 +231,8 @@
           'Number': Number,
           'Decimal': Decimal,
           'Email': Email,
-          'Percent': Percent
+          'Percent': Percent,
+          'Phone number': PhoneNumber
         },
         ifRequireValidation: {
           'Short answer': true,
@@ -313,6 +315,10 @@
           {
             action: 'opacity',
             title: 'Percent'
+          },
+          {
+            action: 'phone',
+            title: 'Phone number'
           }
         ],
         validationTypes: this.$store.getters.validationTypes,

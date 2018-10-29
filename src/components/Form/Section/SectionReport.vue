@@ -156,6 +156,7 @@
           case 'Decimal':
           case 'Email':
           case 'Percent':
+          case 'Phone number':
             if (responses.length) {
               response = responses[0].response
             }
