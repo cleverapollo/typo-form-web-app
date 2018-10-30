@@ -377,8 +377,8 @@
       this.$store.dispatch('loadUsers', this.slug)
       this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadForms', this.slug)
-      this.$store.dispatch('loadAllSubmissions', this.slug)
-        .then(() => {
+      this.$store.dispatch('loadAllSubmission', {slug: this.slug, id: this.id})
+        .then((response) => {
           this.$store.dispatch('loadSections', this.formId)
           this.$store.dispatch('loadValidations', this.formId)
           this.$store.dispatch('loadTriggers', this.formId)

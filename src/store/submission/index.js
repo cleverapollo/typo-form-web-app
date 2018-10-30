@@ -39,10 +39,17 @@ export default {
     },
     updateSubmission (state, payload) {
       let submissions = Object.assign({}, state.loadedSubmissions)
+      if (!submissions[payload.formId]) {
+        submissions[payload.formId] = []
+      }
       const index = submissions[payload.formId].findIndex(submission => {
         return submission.id === payload.submission.id
       })
-      submissions[payload.formId].splice(index, 1, payload.submission)
+      if (index) {
+        submissions[payload.formId].splice(index, 1, payload.submission)
+      } else {
+        submissions[payload.formId].push(payload.submission)
+      }
       state.loadedSubmissions = submissions
     },
     deleteSubmission (state, payload) {
@@ -110,6 +117,29 @@ export default {
             console.log(error)
           }
         )
+    },
+    loadAllSubmission ({commit}, payload) {
+      commit('setLoading', true)
+      return new Promise((resolve, reject) => {
+        window.axios.get(APPLICATION_URL + payload.slug + SUBMISSION_URL + '/' + payload.id)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const updateObj = {
+                formId: response['data']['submission']['form']['id'],
+                submission: response['data']['submission']
+              }
+              commit('updateSubmission', updateObj)
+              resolve(response)
+            }
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              reject(error)
+            }
+          )
+      })
     },
     loadAllSubmissions ({commit}, slug) {
       commit('setLoading', true)

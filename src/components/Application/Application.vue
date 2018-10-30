@@ -185,7 +185,7 @@
       this.$store.dispatch('loadTeams', this.slug)
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadAllSubmissions', this.slug)
-      if (this.userIsAdmin) {
+      if (this.userIsApplicationAdmin) {
         this.$store.dispatch('loadUsers', this.slug)
       }
     }
