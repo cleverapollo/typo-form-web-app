@@ -21,7 +21,7 @@
           v-model='activeValidationType'
         ></v-select>
       </v-flex>
-      <v-flex v-if='"Date between" === activeValidationType || "Date after" === activeValidationType' xs3 offset-xs1>
+      <v-flex v-if='"Date before" !== activeValidationType' xs3 offset-xs1>
         <v-dialog
           ref="dialog"
           v-model="minModal"
@@ -37,7 +37,12 @@
             prepend-icon="event"
             readonly
           ></v-text-field>
-          <v-date-picker v-model="minDate" scrollable :readonly="disabled">
+          <v-date-picker
+            v-model="minDate"
+            scrollable
+            :readonly="disabled"
+            :min='"Future date" === activeValidationType ? today : ""'
+          >
             <v-spacer></v-spacer>
             <v-btn flat color="primary" @click="minModal = false">Cancel</v-btn>
             <v-btn flat color="primary" @click="$refs.dialog.save(minDate)">OK</v-btn>
@@ -82,14 +87,15 @@
         validationTypes: [
           'Date after', 'Date before', 'Date between', 'Future date'
         ],
-        minDate: null,
+        minDate: new Date().toISOString().substr(0, 10),
         minModal: false,
-        maxDate: null,
+        maxDate: new Date().toISOString().substr(0, 10),
         maxModal: false,
         eventsAdapter: {
           'validation-create': this.checkCreateValidation.bind(this),
           'validation-remove': this.checkRemoveValidation.bind(this)
-        }
+        },
+        today: new Date().toISOString().substr(0, 10)
       }
     },
     methods: {
@@ -108,11 +114,29 @@
       },
       updateValidation (validationType, minInput, maxInput) {
         const vType = validationType || this.activeValidationType
-        const min = minInput || 0
-        const max = maxInput || 0
+        let min = minInput || 0
+        let max = maxInput || 0
+
+        if (vType === 'Date after') {
+          max = 0
+        }
+
+        if (vType === 'Date before') {
+          min = 0
+        }
+
+        if (vType === 'Future date') {
+          max = 0
+          if (new Date(min) < new Date()) {
+            min = new Date().toISOString().substr(0, 10)
+          }
+        }
+
         this.$emit('update-validation', vType, min, max)
       },
       removeValidation () {
+        this.minDate = new Date().toISOString().substr(0, 10)
+        this.maxDate = new Date().toISOString().substr(0, 10)
         this.$emit('remove-validation')
       },
       updateActiveValidationType (value) {
@@ -152,8 +176,8 @@
 
       if (this.validations && this.validations.length && this.validations.length === 1) {
         const validationData = this.validations[0].validation_data.split(',')
-        this.minDate = (validationData[0] !== '0') ? validationData[0] : null
-        this.maxDate = (validationData[1] !== '0') ? validationData[1] : null
+        this.minDate = (validationData[0] !== '0') ? validationData[0] : new Date().toISOString().substr(0, 10)
+        this.maxDate = (validationData[1] !== '0') ? validationData[1] : new Date().toISOString().substr(0, 10)
       }
 
       this.$root.$on('validation-create', this.eventsAdapter['validation-create'])
@@ -179,8 +203,8 @@
       validations (value) {
         if (value && value.length && value.length === 1) {
           const validationData = value[0].validation_data.split(',')
-          this.minDate = (validationData[0] !== '0') ? validationData[0] : null
-          this.maxDate = (validationData[1] !== '0') ? validationData[1] : null
+          this.minDate = (validationData[0] !== '0') ? validationData[0] : new Date().toISOString().substr(0, 10)
+          this.maxDate = (validationData[1] !== '0') ? validationData[1] : new Date().toISOString().substr(0, 10)
         }
       }
     }
