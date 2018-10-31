@@ -29,6 +29,7 @@ import ShowForm from '@/components/Form/ShowForm'
 import Submissions from '@/components/Form/Submission/Submissions'
 import ShowSubmission from '@/components/Form/Submission/ShowSubmission'
 import SubmissionFilter from '@/components/Form/Submission/SubmissionFilter'
+import ReportBuilder from '@/components/Form/Submission/ReportBuilder'
 
 import {store} from '@/store'
 
@@ -160,6 +161,15 @@ const router = new Router({
       name: 'ShowSubmission',
       component: ShowSubmission,
       props: true,
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/report',
+      name: 'ReportBuilder',
+      component: ReportBuilder,
       meta: {
         application: true,
         requiresAuth: true
