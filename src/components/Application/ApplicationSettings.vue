@@ -128,6 +128,18 @@
             </v-flex>
           </v-layout>
 
+          <!-- //Join Flag -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-switch
+                name="join"
+                label="Allow to join to the application"
+                v-model="join_flag"
+              >
+              </v-switch>
+            </v-flex>
+          </v-layout>
+
         </v-card-text>
 
         <!-- //Actions -->
@@ -164,6 +176,7 @@
         name: null,
         css: null,
         support_text: null,
+        join_flag: null,
         primary_color: null,
         secondary_color: null,
         logo: [],
@@ -273,6 +286,7 @@
           slug: this.application.slug,
           css: this.css,
           supportText: this.support_text,
+          joinFlag: this.join_flag,
           logo: this.applicationLogo,
           primary_color: this.primary_color,
           secondary_color: this.secondary_color,
@@ -304,6 +318,7 @@
       this.name = this.application.name
       this.css = this.application.css
       this.support_text = this.application.support_text
+      this.join_flag = this.application.join_flag
       this.icon = this.application.icon !== null ? [JSON.parse(this.application.icon)] : []
       this.primary_color = this.application.primary_color
       this.secondary_color = this.application.secondary_color

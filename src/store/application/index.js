@@ -159,6 +159,7 @@ export default {
         name: payload.name,
         css: payload.css,
         support_text: payload.supportText,
+        join_flag: payload.joinFlag,
         icon: payload.icon,
         logo: payload.logo,
         primary_color: payload.primary_color,
