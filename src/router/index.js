@@ -210,9 +210,7 @@ router.beforeEach((to, from, next) => {
     }
     // Redirect Authenticated Users where no application found
     if (store.getters.user && !application.slug && to.meta.application) {
-      router.push({
-        path: '/applications'
-      })
+      window.location.href = '/applications?application=false'
     }
     next()
   })
