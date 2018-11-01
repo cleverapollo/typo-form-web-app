@@ -44,64 +44,139 @@
       </v-layout>
     </v-flex>
 
-    <!-- //Dashboard Widgets -->
-    <v-flex xs12>
-      <v-layout row wrap>
-        <v-flex xs12>
-          <v-container fluid grid-list-md>
-            <v-layout row wrap>
+    <v-container fluid grid-list-lg>
 
-              <v-flex
-                pointer
-                @click="onList(item.type)"
-                v-for="item in items"
-                v-if="!item.admin || userIsApplicationAdmin"
-                :key="item.title"
-                sm12 md3>
-                <v-card :color="item.color" class="white--text">
-                  <v-container fluid grid-list-lg>
-                    <v-layout row>
-                      <v-flex xs3>
-                        <v-icon size="65">{{ item.icon }}</v-icon>
-                      </v-flex>
-                      <v-flex xs9 text-xs-right>
-                        <div class="display-2">
-                          <countTo :startVal="countToStart" :endVal="getPropertyCount(item.type)" :duration="countToDuration"></countTo>
-                        </div>
-                        <div class="medium">{{ item.title }}</div>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card>
-              </v-flex>
-
-            </v-layout>
-          </v-container>
+      <!-- Summary Widgets -->
+      <v-layout row justify-space-around>
+        <v-flex
+          pointer
+          @click="onList(item.type)"
+          v-for="item in items"
+          v-if="!item.admin || userIsApplicationAdmin"
+          :key="item.title"
+          sm-12 md-3>
+          <v-card>
+            <v-container fluid grid-list-lg>
+              <v-layout row>
+                <v-flex xs3>
+                  <v-icon size="65" :color="item.color">{{ item.icon }}</v-icon>
+                </v-flex>
+                <v-flex xs9 text-xs-right>
+                  <div class="display-2">
+                    <countTo :startVal="countToStart" :endVal="getPropertyCount(item.type)" :duration="countToDuration"></countTo>
+                  </div>
+                  <div class="body-1">{{ item.title }}</div>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card>
         </v-flex>
       </v-layout>
-    </v-flex>
 
-    <!-- //Delete Application -->
-    <DeleteConfirmDialog @delete-action="onDeleteApplication" :visible="deleteApplication" @close="deleteApplication = false"></DeleteConfirmDialog>
+      <!-- // New Users Widget -->
+      <v-layout row justify-space-around fill-height v-if="userIsApplicationAdmin">
+
+        <!-- // New Users -->
+        <v-flex xs-4>
+          <v-card>
+            <v-card-title>
+              <div class="title font-weight-regular">New Users</div>
+            </v-card-title>
+            <v-list two-line v-if="getNewUsers().length">
+              <template v-for="(item, index) in getNewUsers()">
+                <v-list-tile 
+                  :key="index"
+                  avatar>
+                  <v-list-tile-avatar>
+                    <v-icon size="48" color="primary">account_circle</v-icon>
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>
+                    <v-list-tile-title>{{ item.first_name + ' ' + item.last_name }}</v-list-tile-title>
+                    <v-list-tile-sub-title>{{ item.email }}</v-list-tile-sub-title>
+                  </v-list-tile-content>
+                  <v-list-tile-action>
+                    <div class="body-1 pt-3">Joined</div>
+                    <v-list-tile-action-text>{{ getTimeSince(item.created_at.date) }}</v-list-tile-action-text>
+                  </v-list-tile-action>
+                </v-list-tile>
+                <v-divider 
+                  v-if="index + 1 < getNewUsers().length"
+                  :key="index"
+                ></v-divider>
+              </template>
+            </v-list>
+            <v-card-text v-else>
+              <div class="text-xs-center">
+                <v-icon size="60" class="pa-1">person_add</v-icon>
+                <p class="body-1">No results, why don't you <router-link to="/users" tag="a">invite a user</router-link>?</p>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+
+        <!-- // Invited Users -->
+        <v-flex xs-4>
+          <v-card>
+            <v-card-title>
+              <div class="title font-weight-regular">Invited Users</div>
+            </v-card-title>
+            <v-list two-line v-if="getInvitedUsers().length">
+              <template v-for="(item, index) in getInvitedUsers()">
+                <v-list-tile 
+                  :key="index"
+                  avatar>
+                  <v-list-tile-avatar>
+                    <v-icon size="48" color="primary">account_circle</v-icon>
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>
+                    <v-list-tile-title>{{ item.invitee }}</v-list-tile-title>
+                    <v-list-tile-sub-title>Invited by {{ getUserName(item.intiver_id) }} as a {{ getRole(item.application_role_id) }}</v-list-tile-sub-title>
+                  </v-list-tile-content>
+                  <v-list-tile-action>
+                    <div class="body-1 pt-3">Invited</div>
+                    <v-list-tile-action-text>{{ getTimeSince(item.created_at.date) }}</v-list-tile-action-text>
+                  </v-list-tile-action>
+                </v-list-tile>
+                <v-divider 
+                  v-if="index + 1 < getInvitedUsers().length"
+                  :key="index"
+                ></v-divider>
+              </template>
+            </v-list>
+            <v-card-text v-else>
+              <div class="text-xs-center">
+                <v-icon size="60" class="pa-1">person_add</v-icon>
+                <p class="body-1">No results, why don't you <router-link to="/users" tag="a">invite a user</router-link>?</p>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+
+      </v-layout>
+
+    </v-container>
 
   </v-layout>
+
 </template>
 
 <script>
   import countTo from 'vue-count-to'
+  import moment from 'moment'
+  import * as _ from 'lodash'
+
   export default {
     data () {
       return {
         items: [
-          { title: 'Submissions', type: 'submissions', icon: 'assignment', color: 'green', admin: false },
+          { title: 'Submissions', type: 'submissions', icon: 'assignment', color: 'blue', admin: false },
           { title: 'Forms', type: 'forms', icon: 'content_paste', color: 'orange', admin: true },
-          { title: 'Users', type: 'users', icon: 'person', color: 'blue', admin: true },
-          { title: 'Teams', type: 'teams', icon: 'people', color: 'purple', admin: false }
+          { title: 'Users', type: 'users', icon: 'person', color: 'red', admin: true },
+          { title: 'Teams', type: 'teams', icon: 'people', color: 'green', admin: false }
         ],
         countToStart: 0,
         countToDuration: 3000,
         joinUrlDialog: false,
-        deleteApplication: false,
         slug: window.location.hostname.split('.')[0]
       }
     },
@@ -179,6 +254,34 @@
           case 'submissions': return this.submissionsCount
           default: return 0
         }
+      },
+      getNewUsers () {
+        // Last 90 Days
+        let numberOfDays = 90
+        let newUsers = this.$store.getters.loadedUsers(this.slug).filter((user) => {
+          return moment(user.created_at.date).isSameOrAfter(moment().subtract(numberOfDays, 'd'), 'days')
+        })
+        // Sort by date DESC
+        return _.sortBy(newUsers, (user) => {
+          return user.created_at.date
+        }).reverse().slice(0, 4)
+      },
+      getInvitedUsers () {
+        // Sort by date ASC
+        let invitedUsers = this.$store.getters.invitedUsers(this.slug)
+        return _.sortBy(invitedUsers, user => {
+          return user.created_at.date
+        }).slice(0, 4)
+      },
+      getTimeSince (time) {
+        return moment(time).fromNow()
+      },
+      getUserName (userId) {
+        // Find user by id
+        let user = _.find(this.users, user => {
+          return user.id === userId
+        })
+        return user ? user.first_name + ' ' + user.last_name : 'System Administrator'
       }
     },
     created () {
@@ -191,7 +294,6 @@
     }
   }
 </script>
-
 
 <style scoped>
   .pointer {
