@@ -8,15 +8,13 @@
           <h1 class="headline primary--text py-3">Dashboard</h1>
           <v-spacer></v-spacer>
 
+          <!--
           <div class="text-xs-right">
-
-            <!-- //Share Link -->
             <v-dialog v-model="joinUrlDialog" persistent max-width="600">
               <v-btn slot="activator" icon v-if="userIsApplicationAdmin">
                 <v-icon>share</v-icon>
               </v-btn>
               <v-card>
-                <!-- //Title -->
                 <v-card-title>
                   <div class="title mb-2 mt-2">Share Application</div>
                 </v-card-title>
@@ -39,6 +37,7 @@
               </v-card>
             </v-dialog>
           </div>
+          -->
 
         </v-flex>
       </v-layout>
@@ -109,6 +108,7 @@
           <v-card
             to="/users"
             height="100%"
+            class="widget-scroll"
             >
             <v-card-title>
               <div class="title font-weight-regular">New Users</div>
@@ -149,6 +149,7 @@
           <v-card
             to="/users"
             height="100%"
+            class="widget-scroll"
             >
             <v-card-title>
               <div class="title font-weight-regular">Invited Users</div>
@@ -189,6 +190,7 @@
           <v-card
             to="/users"
             height="100%"
+            class="widget-scroll"
             >
             <v-card-title>
               <div class="title font-weight-regular">User Activity</div>
@@ -234,9 +236,13 @@
             outline
             block
             large
-            @click.stop="exportApplicationData()"
-          >
+            @click.native="getApplicationDataExport()"
+            :disabled="loadingExport"
+            :loading="loadingExport">
             Export Application Data
+            <span slot="loader" class="custom-loader">
+              <v-icon light>cached</v-icon>
+              </span>
             <v-icon right dark>save_alt</v-icon>
           </v-btn>
         </v-flex>
@@ -282,7 +288,8 @@
         countToStart: 0,
         countToDuration: 3000,
         joinUrlDialog: false,
-        slug: window.location.hostname.split('.')[0]
+        slug: window.location.hostname.split('.')[0],
+        loadingExport: false
       }
     },
     components: {
@@ -350,26 +357,34 @@
         let invitedUsers = this.$store.getters.invitedUsers(this.slug)
         return _.sortBy(invitedUsers, user => {
           return user.created_at.date
-        }).slice(0, 4)
+        })
       },
       getActiveUsers () {
         let newUsers = this.$store.getters.loadedUsers(this.slug)
         // Sort by date DESC
         return _.sortBy(newUsers, (user) => {
           return user.updated_at.date
-        }).reverse().slice(0, 4)
+        }).reverse()
       },
       user () {
         return this.$store.getters.user
       }
     },
     methods: {
-      exportApplicationData () {
+      getApplicationDataExport () {
+        this.loadingExport = true
         window.axios.get(process.env.API_URL + 'application/' + this.slug + '/export')
         .then(response => {
           if (response.data.file.url) {
-            window.location.assign(response.data.file.url)
+            let a = document.createElement('a')
+            a.download = response.data.file.name
+            a.href = response.data.file.url
+            a.click()
           }
+        }).catch(error => {
+          console.log(error)
+        }).then(() => {
+          this.loadingExport = false
         })
       },
       getUserApplicationJoined (userId) {
@@ -379,7 +394,7 @@
           })
           return user ? this.getTimeSince(user.created_at.date) : 'N/A'
         } else {
-          return this.getTimeSince(this.user.created_at.date)
+          return this.user ? this.getTimeSince(this.user.created_at.date) : 'N/A'
         }
       },
       getUserApplicationRole () {
@@ -444,5 +459,9 @@
   }
   .wrap-text {
     overflow-wrap: break-word;
+  }
+  .widget-scroll .v-list {
+    max-height:250px;
+    overflow: auto;
   }
 </style>
