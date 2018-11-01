@@ -14,7 +14,7 @@
             <v-tabs dark slider-color="white" color="info">
               <v-tab href="#active">Active Users</v-tab>
               <v-tab href="#invited">Invited Users</v-tab>
-              <v-tab-item id="active">
+              <v-tab-item value="active">
 
                 <!-- //User Search -->
                 <v-card-title>
@@ -34,7 +34,6 @@
                   :headers="userHeaders"
                   :items="users"
                   :search="userSearch"
-                  hide-actions
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.first_name }}</td>
@@ -42,6 +41,7 @@
                     <td>{{ props.item.email }}</td>
                     <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
+                    <td>{{ props.item.updated_at.date | moment }}</td>
                     <td v-if='userIsApplicationAdmin' class="justify-center layout px-0">
                       <EditUser :user="props.item" :slug="slug"></EditUser>
                       <v-btn icon class="mx-0" @click="onDeleteUser(props.item.id)">
@@ -54,7 +54,7 @@
                   </v-alert>
                 </v-data-table>
               </v-tab-item>
-              <v-tab-item id="invited">
+              <v-tab-item value="invited">
 
                 <!-- //Invited User Search -->
                 <v-card-title>
@@ -74,7 +74,6 @@
                   :headers="invitedHeaders"
                   :items="invitedUsers"
                   :search="invitedUserSearch"
-                  hide-actions
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.invitee }}</td>
@@ -176,7 +175,8 @@
           { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
           { text: 'Email', value: 'email', sortable: true, align: 'left' },
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Joined', value: 'created_at.date', sortable: true, align: 'left' }
+          { text: 'Joined', value: 'created_at.date', sortable: true, align: 'left' },
+          { text: 'Last Active', value: 'updated_at.date', sortable: true, align: 'left' }
         ]
         if (this.userIsApplicationAdmin) {
           defaultUserHeaders.push({ text: 'Actions', sortable: false, align: 'center' })
