@@ -152,9 +152,7 @@ export default {
         if (!state.loadedUsers[slug]) {
           return []
         }
-        return state.loadedUsers[slug].sort((userA, userB) => {
-          return userA.id > userB.id
-        })
+        return state.loadedUsers[slug]
       }
     },
     loadedSubmissionUsers (state) {
@@ -174,9 +172,7 @@ export default {
         if (!state.invitedUsers[slug]) {
           return []
         }
-        return state.invitedUsers[slug].sort((userA, userB) => {
-          return userA.id > userB.id
-        })
+        return state.invitedUsers[slug]
       }
     },
     loadedUser (state) {
