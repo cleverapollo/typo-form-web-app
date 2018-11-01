@@ -82,8 +82,8 @@
             <v-card-title>
               <div class="title font-weight-regular">New Users</div>
             </v-card-title>
-            <v-list two-line v-if="getNewUsers().length">
-              <template v-for="(item, index) in getNewUsers()">
+            <v-list two-line v-if="getNewUsers.length">
+              <template v-for="(item, index) in getNewUsers">
                 <v-list-tile 
                   :key="index"
                   avatar>
@@ -100,7 +100,7 @@
                   </v-list-tile-action>
                 </v-list-tile>
                 <v-divider 
-                  v-if="index + 1 < getNewUsers().length"
+                  v-if="index + 1 < getNewUsers.length"
                   :key="index"
                 ></v-divider>
               </template>
@@ -120,8 +120,8 @@
             <v-card-title>
               <div class="title font-weight-regular">Invited Users</div>
             </v-card-title>
-            <v-list two-line v-if="getInvitedUsers().length">
-              <template v-for="(item, index) in getInvitedUsers()">
+            <v-list two-line v-if="getInvitedUsers.length">
+              <template v-for="(item, index) in getInvitedUsers">
                 <v-list-tile 
                   :key="index"
                   avatar>
@@ -130,7 +130,7 @@
                   </v-list-tile-avatar>
                   <v-list-tile-content>
                     <v-list-tile-title>{{ item.invitee }}</v-list-tile-title>
-                    <v-list-tile-sub-title>Invited by {{ getUserName(item.intiver_id) }} as a {{ getRole(item.application_role_id) }}</v-list-tile-sub-title>
+                    <v-list-tile-sub-title>Invited by {{ getUserName(item.inviter_id) }} as a {{ getRole(item.application_role_id) }}</v-list-tile-sub-title>
                   </v-list-tile-content>
                   <v-list-tile-action>
                     <div class="body-1 pt-3">Invited</div>
@@ -138,7 +138,7 @@
                   </v-list-tile-action>
                 </v-list-tile>
                 <v-divider 
-                  v-if="index + 1 < getInvitedUsers().length"
+                  v-if="index + 1 < getInvitedUsers.length"
                   :key="index"
                 ></v-divider>
               </template>
@@ -228,32 +228,6 @@
       },
       formsCount () {
         return this.$store.getters.loadedForms(this.slug).length
-      }
-    },
-    methods: {
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
-      },
-      onDeleteApplication () {
-        this.$store.dispatch('deleteApplication', {
-          slug: this.slug
-        })
-        this.$router.push('/applications')
-      },
-      onList (type) {
-        this.$router.push('/' + type)
-      },
-      getPropertyCount (type) {
-        switch (type) {
-          case 'users': return this.usersCount
-          case 'teams': return this.teamsCount
-          case 'forms': return this.formsCount
-          case 'submissions': return this.submissionsCount
-          default: return 0
-        }
       },
       getNewUsers () {
         // Last 90 Days
@@ -272,6 +246,26 @@
         return _.sortBy(invitedUsers, user => {
           return user.created_at.date
         }).slice(0, 4)
+      }
+    },
+    methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
+      onList (type) {
+        this.$router.push('/' + type)
+      },
+      getPropertyCount (type) {
+        switch (type) {
+          case 'users': return this.usersCount
+          case 'teams': return this.teamsCount
+          case 'forms': return this.formsCount
+          case 'submissions': return this.submissionsCount
+          default: return 0
+        }
       },
       getTimeSince (time) {
         return moment(time).fromNow()
