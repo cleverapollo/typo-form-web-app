@@ -15,62 +15,15 @@
                 <div class="title">Filters</div>
               <v-container>
 
-                <v-layout row justify-center v-for="(filter, index) in filters" :key="index">
-                  <v-flex xs1 px-3>
+                <template v-for="(filter, index) in filters">
 
-                  </v-flex>
+                  <ReportComponent
+                    :filter="filter"
+                    @delete-filter="deleteFilter"
+                    :key="'filter' + index"
+                  />
 
-                  <!-- // Source -->
-                  <v-flex xs3 px-3>
-                    <v-autocomplete
-                      :items="sources"
-                      label="Source"
-                      v-model="filter.source"
-                      item-text="question"
-                      item-value="question"
-                      single-line
-                    >
-                      <template
-                        slot="selection"
-                        slot-scope="data"
-                      >
-                        {{ data.item.question }}
-                      </template>
-                      <template
-                        slot="item"
-                        slot-scope="data"
-                      >
-                        <v-list-tile-content>
-                          <v-list-tile-title>{{data.item.question}}</v-list-tile-title>
-                          <v-list-tile-sub-title>{{data.item.group}}</v-list-tile-sub-title>
-                        </v-list-tile-content>
-                      </template>
-                    </v-autocomplete>
-                  </v-flex>
-
-                  <!-- // Query -->
-                  <v-flex xs3 px-3>
-                    <v-autocomplete
-                      label="Query"
-                    >
-                    </v-autocomplete>
-                  </v-flex>
-
-                  <!-- // Value -->
-                  <v-flex xs3 px-3>
-                    <v-autocomplete
-                      label="Value"
-                    >
-                    </v-autocomplete>
-                  </v-flex>
-
-                  <!-- // Actions -->
-                  <v-flex xs2 px-3 mt-2>
-                    <v-btn outline color="error" @click.stop="deleteFilter(index)">
-                      <v-icon>delete</v-icon>
-                    </v-btn>
-                  </v-flex>
-                </v-layout>
+                </template>
 
                 <!-- // Action Buttons -->
                 <v-layout row justify-center>
@@ -133,6 +86,7 @@
 
 <script>
 import * as _ from 'lodash'
+import ReportComponent from './ReportComponent'
 export default {
   name: 'ReportBuilder',
   data () {
@@ -145,39 +99,24 @@ export default {
       slug: window.location.hostname.split('.')[0]
     }
   },
+  components: {
+    ReportComponent
+  },
   computed: {
     user () {
       return this.$store.getters.user
-    },
-    sources () {
-      let sources = [
-        {'group': 'Submission Detail', 'question': 'Form'},
-        {'group': 'Submission Detail', 'question': 'Owner'},
-        {'group': 'Submission Detail', 'question': 'Owner Email'},
-        {'group': 'Submission Detail', 'question': 'Team'},
-        {'group': 'Submission Detail', 'question': 'Progress'},
-        {'group': 'Submission Detail', 'question': 'Period Start'},
-        {'group': 'Submission Detail', 'question': 'Period End'},
-        {'group': 'Submission Detail', 'question': 'Status'},
-        {'group': 'Submission Detail', 'question': 'Created'},
-        {'group': 'Submission Detail', 'question': 'Modified'}
-      ]
-      const questions = this.$store.getters.loadedApplicationQuestions(this.slug)
-      _.forEach(questions, (question) => {
-        sources.push({'group': question.form_name + ' > ' + question.section_name, 'question': question.question, 'id': question.id})
-      }, this)
-      return sources
-    },
-    comparators () {
-      return this.$store.getters.comparators
     }
   },
   methods: {
+    jsonCopy (src) {
+      return JSON.parse(JSON.stringify(src))
+    },
     deleteFilter (index) {
       this.filters.splice(index, 1)
     },
-    addFilter (index) {
-      this.filters.push(this.filterTemplate)
+    addFilter () {
+      const newFilter = this.jsonCopy(this.filterTemplate)
+      this.filters.push(newFilter)
     },
     applyFilters () {
       // Clear data and headers
@@ -190,9 +129,8 @@ export default {
     }
   },
   created: function () {
-    this.filters.push(this.filterTemplate)
+    this.addFilter()
     if (this.user) {
-      this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadForms', this.slug)
         .then((response) => {
           const forms = response.data.forms
