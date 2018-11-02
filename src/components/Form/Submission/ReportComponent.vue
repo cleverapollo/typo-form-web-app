@@ -9,6 +9,7 @@
         item-text="question"
         item-value="question"
         single-line
+        return-object
       >
         <template
           slot="selection"
@@ -53,7 +54,7 @@
     </v-flex>
 
     <!-- //User Input -->
-    <v-flex xs3 px-3 v-if='selectedTriggerType && selectedTriggerType.value'>
+    <v-flex xs3 px-3 v-else-if='selectedTriggerType && selectedTriggerType.value'>
       <v-flex xs12 v-if="parentQuestionType == 8 || parentQuestionType == 9">
         <v-autocomplete
           v-model="filter.value"
@@ -71,6 +72,10 @@
           v-model="filter.value"
         ></v-text-field>
       </v-flex>
+    </v-flex>
+
+    <!-- // Formatting -->
+    <v-flex xs3 px-3 v-else>
     </v-flex>
 
     <!-- // Actions -->
@@ -91,7 +96,7 @@ export default {
       slug: window.location.hostname.split('.')[0]
     }
   },
-  props: ['filter'],
+  props: ['filter', 'index'],
   computed: {
     questions () {
       return this.$store.getters.loadedApplicationQuestions(this.slug)
@@ -121,7 +126,7 @@ export default {
       return this.$store.getters.triggerTypes
     },
     parentQuestion () {
-      const questionSource = this.sources.find((source) => source.question === this.filter.source)
+      const questionSource = this.sources.find((source) => source.question_id === this.filter.source.id || source.question === this.filter.source.question)
       if (!questionSource || !questionSource.id) {
         return null
       }

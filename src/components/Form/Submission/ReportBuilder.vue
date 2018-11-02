@@ -21,8 +21,9 @@
                     :filter="filter"
                     @delete-filter="deleteFilter"
                     :key="'filter' + index"
+                    :index="index"
+                    v-on:deleteFilter="deleteFilter"
                   />
-
                 </template>
 
                 <!-- // Action Buttons -->
@@ -58,7 +59,12 @@
               :search="search"
             >
               <template slot="items" slot-scope="props">
-                <!--
+                <tr>
+                  <template v-for="(item, key) in props.item">
+                    <td v-bind:key="'filter'+key">{{ item }}</td>
+                  </template>
+                </tr>
+                <!-- 
                 <tr @click="onSubmission(props.item.id)">
                   <td>{{ props.item.form.name }}</td>
                   <td>{{ props.item.owner }}</td>
@@ -105,6 +111,9 @@ export default {
   computed: {
     user () {
       return this.$store.getters.user
+    },
+    questions () {
+      return this.$store.getters.loadedApplicationQuestions(this.slug)
     }
   },
   methods: {
@@ -119,13 +128,64 @@ export default {
       this.filters.push(newFilter)
     },
     applyFilters () {
-      // Clear data and headers
-      this.data.splice(0, this.data.length)
+      this.setHeaders()
+      this.setData()
+    },
+    setHeaders () {
+      // Replace existing headers with new headers
       this.headers.splice(0, this.headers.length)
-      // Add new headers
-      _.forEach(this.filters, (filter, key) => {
-        this.headers.push({ text: filter.source, value: filter.source })
+      _.forEach(this.filters, (filter, index) => {
+        this.headers.push({ text: filter.source.question, value: 'filter' + index })
       })
+    },
+    setData () {
+      // Remove existing data
+      this.data.splice(0, this.data.length)
+      console.log(this.questions)
+      // Filter Submissions
+      let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
+      /*
+      _.forEach(submissions, (submission, index) => {
+        let row = []
+        _.forEach(submission.responses, response => {
+          _.forEach(this.filters, filter => {
+            if (response.answer_id === filter.answer) {
+              let col = ''
+              _.forEach(this.questions, question => {
+                if (filter.source.id === question.id) {
+                  _.forEach(question.answers, answer => {
+                    if (response.answer === answer.id) {
+                      col = answer.answer
+                    }
+                  })
+                }
+              })
+            }
+          })
+        })
+        console.log(row)
+        if (row.length === this.filters.length) {
+          this.data.push(row)
+        }
+      })
+      */
+
+     _.forEach(submissions, submission => {
+       let data = []
+       _.forEach(this.filters, (filter, index) => {
+         // console.log(filter)
+         let value = 'Test'
+         _.forEach(submission.responses, response => {
+          // console.log(response)
+          
+           
+         })
+         data['filter' + index] = value
+       })
+       console.log(data)
+       this.data.push(data)
+      console.log(this.data)
+     })
     }
   },
   created: function () {
