@@ -19,10 +19,9 @@
 
                   <ReportComponent
                     :filter="filter"
-                    @delete-filter="deleteFilter"
+                    @deleteFilter="deleteFilter"
                     :key="'filter' + index"
                     :index="index"
-                    v-on:deleteFilter="deleteFilter"
                   />
                 </template>
 
@@ -93,6 +92,8 @@
 <script>
 import * as _ from 'lodash'
 import ReportComponent from './ReportComponent'
+import QuestionCompareMixin from './QuestionCompareMixin.js'
+
 export default {
   name: 'ReportBuilder',
   data () {
@@ -105,6 +106,7 @@ export default {
       slug: window.location.hostname.split('.')[0]
     }
   },
+  mixins: [QuestionCompareMixin],
   components: {
     ReportComponent
   },
@@ -141,51 +143,80 @@ export default {
     setData () {
       // Remove existing data
       this.data.splice(0, this.data.length)
-      console.log(this.questions)
       // Filter Submissions
       let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
-      /*
       _.forEach(submissions, (submission, index) => {
         let row = []
-        _.forEach(submission.responses, response => {
-          _.forEach(this.filters, filter => {
-            if (response.answer_id === filter.answer) {
-              let col = ''
-              _.forEach(this.questions, question => {
-                if (filter.source.id === question.id) {
-                  _.forEach(question.answers, answer => {
-                    if (response.answer === answer.id) {
-                      col = answer.answer
-                    }
-                  })
-                }
-              })
+        _.forEach(this.filters, filter => {
+          if (!filter.source) {
+            return
+          }
+          if (filter.source.group === 'Submission Detail') {
+            let response = ''
+            switch (filter.source.question) {
+              case 'Form':
+                response = submission.form.name
+                break
+              case 'Owner':
+                response = submission.user.first_name + ' ' + submission.user.last_name
+                break
+              case 'Owner Email':
+                response = submission.user.email
+                break
+              case 'Team':
+                response = submission.team.name
+                break
+              case 'Progress':
+                response = submission.progress
+                break
+              case 'Period Start':
+                response = submission.period_start
+                break
+              case 'Period End':
+                response = submission.period_end
+                break
+              case 'Status':
+                response = this.getStatus(submission.status_id)
+                break
+              case 'Created':
+                response = submission.created_at.date
+                break
+              case 'Modified':
+                response = submission.updated_at.date
+                break
             }
-          })
+            // Question, Responses, ComparatorID, QuestionTrigger.answer, QuestionTrigger.value
+            const question = {question_type_id: 1, answers: []}
+            const responses = [{answer_id: null, response: response}]
+            const compareResult = this.compareResponse(question, responses, filter.query, filter.answer, filter.value)
+            if (compareResult) {
+              row.push({filter: filter, responses: responses})
+            }
+          } else {
+            const question = this.questions.find((question) => {
+              return question.id === filter.source.id
+            })
+            const responses = submission.responses.filter((response) => {
+              return response.question_id === filter.source.id
+            })
+            const order = Math.max(responses.map(response => response.order))
+            for (let i = 1; i <= order; i++) {
+              const orderResponses = responses.filter((response) => {
+                return response.order === i
+              })
+              const compareResult = this.compareResponse(question, orderResponses, filter.query, filter.answer, filter.value)
+              if (compareResult) {
+                row.push({filter: filter, responses: orderResponses})
+                break
+              }
+            }
+          }
         })
-        console.log(row)
         if (row.length === this.filters.length) {
           this.data.push(row)
         }
       })
-      */
-
-     _.forEach(submissions, submission => {
-       let data = []
-       _.forEach(this.filters, (filter, index) => {
-         // console.log(filter)
-         let value = 'Test'
-         _.forEach(submission.responses, response => {
-          // console.log(response)
-          
-           
-         })
-         data['filter' + index] = value
-       })
-       console.log(data)
-       this.data.push(data)
       console.log(this.data)
-     })
     }
   },
   created: function () {
