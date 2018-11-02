@@ -240,9 +240,6 @@
             :disabled="loadingExport"
             :loading="loadingExport">
             Export Application Data
-            <span slot="loader" class="custom-loader">
-              <v-icon light>cached</v-icon>
-              </span>
             <v-icon right dark>save_alt</v-icon>
           </v-btn>
         </v-flex>
@@ -350,7 +347,7 @@
         // Sort by date DESC
         return _.sortBy(newUsers, (user) => {
           return user.created_at.date
-        }).reverse().slice(0, 4)
+        }).reverse()
       },
       getInvitedUsers () {
         // Sort by date ASC
@@ -394,7 +391,7 @@
           })
           return user ? this.getTimeSince(user.created_at.date) : 'N/A'
         } else {
-          return this.user ? this.getTimeSince(this.user.created_at.date) : 'N/A'
+          return this.user && this.user.created_at ? this.getTimeSince(this.user.created_at.date) : 'N/A'
         }
       },
       getUserApplicationRole () {
