@@ -240,9 +240,6 @@
             :disabled="loadingExport"
             :loading="loadingExport">
             Export Application Data
-            <span slot="loader" class="custom-loader">
-              <v-icon light>cached</v-icon>
-              </span>
             <v-icon right dark>save_alt</v-icon>
           </v-btn>
         </v-flex>
