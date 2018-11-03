@@ -33,6 +33,11 @@ export default {
       })
       return status ? status.status : 'undefined'
     },
+    triggerType (questionTypeId, comparatorId) {
+      return this.triggerTypes.filter((triggerType) => {
+        return triggerType.question_type_id === questionTypeId && triggerType.comparator_id === comparatorId
+      })[0]
+    },
     // Question, Responses, ComparatorID, QuestionTrigger.answer, QuestionTrigger.value
     compareResponse (question, parentResponses, comparatorID, answer, value) {
       let questionTypeID = question.question_type_id
@@ -218,10 +223,65 @@ export default {
 
       return false
     },
-    triggerType (questionTypeId, comparatorId) {
-      return this.triggerTypes.filter((triggerType) => {
-        return triggerType.question_type_id === questionTypeId && triggerType.comparator_id === comparatorId
-      })[0]
+    questionToResponse (item, responses) {
+      // [{"id":55,"question_id":2,"response":"pfasdfasd","answer_id":null,"order":1}]
+      const questionType = this.getQuestionType(item.question_type_id)
+      let response = ''
+      switch (questionType) {
+        case 'Short answer':
+        case 'Paragraph':
+        case 'Date':
+        case 'Time':
+        case 'Linear scale':
+        case 'Number':
+        case 'Decimal':
+        case 'Email':
+        case 'Percent':
+        case 'Phone number':
+          if (responses.length) {
+            response = responses[0].response
+          }
+          break
+        case 'File upload':
+          if (responses.length) {
+            response = '<a href="' + responses[0].response + '" target="_blank">Download File</a>'
+          }
+          break
+        case 'Multiple choice':
+        case 'Checkboxes':
+        case 'Dropdown':
+          const result = responses.map((response) => {
+            const answer = item.answers.find((answer) => {
+              return answer.id === response.answer_id
+            })
+            return answer.answer
+          })
+          response = result.join(', ')
+          break
+        case 'Multiple choice grid':
+        case 'Checkbox grid':
+          const result1 = responses.map((response) => {
+            const answer = item.answers.find((answer) => {
+              return answer.id === response.answer_id
+            })
+            const res = item.answers.find((answer) => {
+              return answer.id === parseInt(response.response)
+            })
+            return '(' + answer.answer + ', ' + res.answer + ')'
+          })
+          response = result1.join(', ')
+          break
+        case 'ABN Lookup':
+          if (responses.length) {
+            // response = JSON.parse(responses[0].response).Abn
+            response = responses[0].response
+          }
+          break
+        case 'Content Block':
+          response = item.description
+          break
+      }
+      return response
     }
   }
 }

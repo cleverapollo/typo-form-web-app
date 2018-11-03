@@ -4,6 +4,38 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Report Builder</h1>
+
+          <div class="text-xs-right">
+
+            <!-- //Share Link -->
+            <v-dialog v-model="joinUrlDialog" persistent max-width="600">
+              <v-btn slot="activator" icon>
+                <v-icon>share</v-icon>
+              </v-btn>
+              <v-card>
+                <!-- //Title -->
+                <v-card-title>
+                  <div class="title mb-2 mt-2">Share Report URL</div>
+                </v-card-title>
+
+                <v-card-text>
+                  <v-layout row wrap>
+                    <v-flex xs12 pb-3>Invite other users to this report by sharing the following link.</v-flex>
+                    <v-flex xs12 class="wrap-text">{{ joinURL }}</v-flex>
+                  </v-layout>
+                </v-card-text>
+
+                <v-divider></v-divider>
+                <v-card-actions>
+                  <v-layout row py-2>
+                    <v-flex xs12 class="text-xs-right">
+                      <v-btn color="primary" @click="joinUrlDialog = false" >Close</v-btn>
+                    </v-flex>
+                  </v-layout>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </div>
         </v-flex>
         <v-flex d-flex xs12>
           <p>Add filters below to start building your custom report.</p>
@@ -60,18 +92,9 @@
               <template slot="items" slot-scope="props">
                 <tr>
                   <template v-for="(item, key) in props.item">
-                    <td v-bind:key="'filter'+key">{{ item }}</td>
+                    <td v-bind:key="'filter'+key">{{item}}</td>
                   </template>
                 </tr>
-                <!-- 
-                <tr @click="onSubmission(props.item.id)">
-                  <td>{{ props.item.form.name }}</td>
-                  <td>{{ props.item.owner }}</td>
-                  <td>{{ props.item.created_at.date | moment }}</td>
-                  <td>{{ props.item.updated_at.date | moment }}</td>
-                  <td>{{ props.item.status }}</td>
-                </tr>
-                -->
               </template>
               <v-alert slot="no-results" :value="true" color="error" icon="warning">
                 Your filters returned no results. Try changing your filters.
@@ -103,7 +126,8 @@ export default {
       data: [],
       filters: [],
       filterTemplate: { source: '', query: '', value: '', answer: '' },
-      slug: window.location.hostname.split('.')[0]
+      slug: window.location.hostname.split('.')[0],
+      joinUrlDialog: false
     }
   },
   mixins: [QuestionCompareMixin],
@@ -116,6 +140,9 @@ export default {
     },
     questions () {
       return this.$store.getters.loadedApplicationQuestions(this.slug)
+    },
+    joinURL () {
+      return window.location.origin + '/report?filter=' + encodeURIComponent(JSON.stringify(this.filters))
     }
   },
   methods: {
@@ -146,7 +173,7 @@ export default {
       // Filter Submissions
       let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
       _.forEach(submissions, (submission, index) => {
-        let row = []
+        let row = {}
         _.forEach(this.filters, filter => {
           if (!filter.source) {
             return
@@ -190,7 +217,7 @@ export default {
             const responses = [{answer_id: null, response: response}]
             const compareResult = this.compareResponse(question, responses, filter.query, filter.answer, filter.value)
             if (compareResult) {
-              row.push({filter: filter, responses: responses})
+              row[filter.source.question] = filter.value
             }
           } else {
             const question = this.questions.find((question) => {
@@ -206,22 +233,21 @@ export default {
               })
               const compareResult = this.compareResponse(question, orderResponses, filter.query, filter.answer, filter.value)
               if (compareResult) {
-                row.push({filter: filter, responses: orderResponses})
+                row[filter.source.question] = this.questionToResponse(question, orderResponses)
                 break
               }
             }
           }
         })
-        if (row.length === this.filters.length) {
+        if (Object.keys(row).length === this.filters.length) {
           this.data.push(row)
         }
       })
-      console.log(this.data)
     }
   },
   created: function () {
-    this.addFilter()
     if (this.user) {
+      this.$store.dispatch('loadAllSubmissions', this.slug)
       this.$store.dispatch('loadForms', this.slug)
         .then((response) => {
           const forms = response.data.forms
@@ -229,7 +255,15 @@ export default {
             this.$store.dispatch('loadSections', form.id)
           })
         })
-      this.$store.dispatch('loadAllSubmissions', this.slug)
+        .then(() => {
+          const filter = this.$route.query.filter
+          if (filter) {
+            this.filters = JSON.parse(decodeURIComponent(filter))
+          }
+          if (!this.filters.length) {
+            this.addFilter()
+          }
+        })
     }
   }
 }
