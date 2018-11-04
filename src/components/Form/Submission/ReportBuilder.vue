@@ -215,9 +215,13 @@ export default {
             // Question, Responses, ComparatorID, QuestionTrigger.answer, QuestionTrigger.value
             const question = {question_type_id: 1, answers: []}
             const responses = [{answer_id: null, response: response}]
-            const compareResult = this.compareResponse(question, responses, filter.query, filter.answer, filter.value)
-            if (compareResult) {
-              row[filter.source.question] = filter.value
+            if (filter.query !== '') {
+              const compareResult = this.compareResponse(question, responses, filter.query, filter.answer, filter.value)
+              if (compareResult) {
+                row[filter.source.question] = response
+              }
+            } else {
+              row[filter.source.question] = response
             }
           } else {
             const question = this.questions.find((question) => {
@@ -231,8 +235,13 @@ export default {
               const orderResponses = responses.filter((response) => {
                 return response.order === i
               })
-              const compareResult = this.compareResponse(question, orderResponses, filter.query, filter.answer, filter.value)
-              if (compareResult) {
+              if (filter.query !== '') {
+                const compareResult = this.compareResponse(question, orderResponses, filter.query, filter.answer, filter.value)
+                if (compareResult) {
+                  row[filter.source.question] = this.questionToResponse(question, orderResponses)
+                  break
+                }
+              } else {
                 row[filter.source.question] = this.questionToResponse(question, orderResponses)
                 break
               }
