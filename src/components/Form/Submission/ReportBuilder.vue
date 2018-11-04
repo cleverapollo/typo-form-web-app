@@ -4,6 +4,38 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Report Builder</h1>
+
+          <div class="text-xs-right">
+
+            <!-- //Share Link -->
+            <v-dialog v-model="joinUrlDialog" persistent max-width="600">
+              <v-btn slot="activator" icon>
+                <v-icon>share</v-icon>
+              </v-btn>
+              <v-card>
+                <!-- //Title -->
+                <v-card-title>
+                  <div class="title mb-2 mt-2">Share Report URL</div>
+                </v-card-title>
+
+                <v-card-text>
+                  <v-layout row wrap>
+                    <v-flex xs12 pb-3>Invite other users to this report by sharing the following link.</v-flex>
+                    <v-flex xs12 class="wrap-text">{{ joinURL }}</v-flex>
+                  </v-layout>
+                </v-card-text>
+
+                <v-divider></v-divider>
+                <v-card-actions>
+                  <v-layout row py-2>
+                    <v-flex xs12 class="text-xs-right">
+                      <v-btn color="primary" @click="joinUrlDialog = false" >Close</v-btn>
+                    </v-flex>
+                  </v-layout>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </div>
         </v-flex>
         <v-flex d-flex xs12>
           <p>Add filters below to start building your custom report.</p>
@@ -15,62 +47,15 @@
                 <div class="title">Filters</div>
               <v-container>
 
-                <v-layout row justify-center v-for="(filter, index) in filters" :key="index">
-                  <v-flex xs1 px-3>
+                <template v-for="(filter, index) in filters">
 
-                  </v-flex>
-
-                  <!-- // Source -->
-                  <v-flex xs3 px-3>
-                    <v-autocomplete
-                      :items="sources"
-                      label="Source"
-                      v-model="filter.source"
-                      item-text="question"
-                      item-value="question"
-                      single-line
-                    >
-                      <template
-                        slot="selection"
-                        slot-scope="data"
-                      >
-                        {{ data.item.question }}
-                      </template>
-                      <template
-                        slot="item"
-                        slot-scope="data"
-                      >
-                        <v-list-tile-content>
-                          <v-list-tile-title>{{data.item.question}}</v-list-tile-title>
-                          <v-list-tile-sub-title>{{data.item.group}}</v-list-tile-sub-title>
-                        </v-list-tile-content>
-                      </template>
-                    </v-autocomplete>
-                  </v-flex>
-
-                  <!-- // Query -->
-                  <v-flex xs3 px-3>
-                    <v-autocomplete
-                      label="Query"
-                    >
-                    </v-autocomplete>
-                  </v-flex>
-
-                  <!-- // Value -->
-                  <v-flex xs3 px-3>
-                    <v-autocomplete
-                      label="Value"
-                    >
-                    </v-autocomplete>
-                  </v-flex>
-
-                  <!-- // Actions -->
-                  <v-flex xs2 px-3 mt-2>
-                    <v-btn outline color="error" @click.stop="deleteFilter(index)">
-                      <v-icon>delete</v-icon>
-                    </v-btn>
-                  </v-flex>
-                </v-layout>
+                  <ReportComponent
+                    :filter="filter"
+                    @deleteFilter="deleteFilter"
+                    :key="'filter' + index"
+                    :index="index"
+                  />
+                </template>
 
                 <!-- // Action Buttons -->
                 <v-layout row justify-center>
@@ -105,15 +90,11 @@
               :search="search"
             >
               <template slot="items" slot-scope="props">
-                <!--
-                <tr @click="onSubmission(props.item.id)">
-                  <td>{{ props.item.form.name }}</td>
-                  <td>{{ props.item.owner }}</td>
-                  <td>{{ props.item.created_at.date | moment }}</td>
-                  <td>{{ props.item.updated_at.date | moment }}</td>
-                  <td>{{ props.item.status }}</td>
+                <tr>
+                  <template v-for="(item, key) in props.item">
+                    <td v-bind:key="'filter'+key">{{item}}</td>
+                  </template>
                 </tr>
-                -->
               </template>
               <v-alert slot="no-results" :value="true" color="error" icon="warning">
                 Your filters returned no results. Try changing your filters.
@@ -133,6 +114,9 @@
 
 <script>
 import * as _ from 'lodash'
+import ReportComponent from './ReportComponent'
+import QuestionCompareMixin from './QuestionCompareMixin.js'
+
 export default {
   name: 'ReportBuilder',
   data () {
@@ -142,57 +126,137 @@ export default {
       data: [],
       filters: [],
       filterTemplate: { source: '', query: '', value: '', answer: '' },
-      slug: window.location.hostname.split('.')[0]
+      slug: window.location.hostname.split('.')[0],
+      joinUrlDialog: false
     }
+  },
+  mixins: [QuestionCompareMixin],
+  components: {
+    ReportComponent
   },
   computed: {
     user () {
       return this.$store.getters.user
     },
-    sources () {
-      let sources = [
-        {'group': 'Submission Detail', 'question': 'Form'},
-        {'group': 'Submission Detail', 'question': 'Owner'},
-        {'group': 'Submission Detail', 'question': 'Owner Email'},
-        {'group': 'Submission Detail', 'question': 'Team'},
-        {'group': 'Submission Detail', 'question': 'Progress'},
-        {'group': 'Submission Detail', 'question': 'Period Start'},
-        {'group': 'Submission Detail', 'question': 'Period End'},
-        {'group': 'Submission Detail', 'question': 'Status'},
-        {'group': 'Submission Detail', 'question': 'Created'},
-        {'group': 'Submission Detail', 'question': 'Modified'}
-      ]
-      const questions = this.$store.getters.loadedApplicationQuestions(this.slug)
-      _.forEach(questions, (question) => {
-        sources.push({'group': question.form_name + ' > ' + question.section_name, 'question': question.question, 'id': question.id})
-      }, this)
-      return sources
+    questions () {
+      return this.$store.getters.loadedApplicationQuestions(this.slug)
     },
-    comparators () {
-      return this.$store.getters.comparators
+    joinURL () {
+      return window.location.origin + '/report?filter=' + encodeURIComponent(JSON.stringify(this.filters))
     }
   },
   methods: {
+    jsonCopy (src) {
+      return JSON.parse(JSON.stringify(src))
+    },
     deleteFilter (index) {
       this.filters.splice(index, 1)
     },
-    addFilter (index) {
-      this.filters.push(this.filterTemplate)
+    addFilter () {
+      const newFilter = this.jsonCopy(this.filterTemplate)
+      this.filters.push(newFilter)
     },
     applyFilters () {
-      // Clear data and headers
-      this.data.splice(0, this.data.length)
+      this.setHeaders()
+      this.setData()
+    },
+    setHeaders () {
+      // Replace existing headers with new headers
       this.headers.splice(0, this.headers.length)
-      // Add new headers
-      _.forEach(this.filters, (filter, key) => {
-        this.headers.push({ text: filter.source, value: filter.source })
+      _.forEach(this.filters, (filter, index) => {
+        this.headers.push({ text: filter.source.question, value: 'filter' + index })
+      })
+    },
+    setData () {
+      // Remove existing data
+      this.data.splice(0, this.data.length)
+      // Filter Submissions
+      let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
+      _.forEach(submissions, (submission, index) => {
+        let row = {}
+        _.forEach(this.filters, filter => {
+          if (!filter.source) {
+            return
+          }
+          if (filter.source.group === 'Submission Detail') {
+            let response = ''
+            switch (filter.source.question) {
+              case 'Form':
+                response = submission.form.name
+                break
+              case 'Owner':
+                response = submission.user.first_name + ' ' + submission.user.last_name
+                break
+              case 'Owner Email':
+                response = submission.user.email
+                break
+              case 'Team':
+                response = submission.team.name
+                break
+              case 'Progress':
+                response = submission.progress
+                break
+              case 'Period Start':
+                response = submission.period_start
+                break
+              case 'Period End':
+                response = submission.period_end
+                break
+              case 'Status':
+                response = this.getStatus(submission.status_id)
+                break
+              case 'Created':
+                response = submission.created_at.date
+                break
+              case 'Modified':
+                response = submission.updated_at.date
+                break
+            }
+            // Question, Responses, ComparatorID, QuestionTrigger.answer, QuestionTrigger.value
+            const question = {question_type_id: 1, answers: []}
+            const responses = [{answer_id: null, response: response}]
+            if (filter.query !== '') {
+              const compareResult = this.compareResponse(question, responses, filter.query, filter.answer, filter.value)
+              if (compareResult) {
+                row[filter.source.question] = response
+              }
+            } else {
+              row[filter.source.question] = response
+            }
+          } else {
+            const question = this.questions.find((question) => {
+              return question.id === filter.source.id
+            })
+            const responses = submission.responses.filter((response) => {
+              return response.question_id === filter.source.id
+            })
+            const order = Math.max(responses.map(response => response.order))
+            for (let i = 1; i <= order; i++) {
+              const orderResponses = responses.filter((response) => {
+                return response.order === i
+              })
+              if (filter.query !== '') {
+                const compareResult = this.compareResponse(question, orderResponses, filter.query, filter.answer, filter.value)
+                if (compareResult) {
+                  row[filter.source.question] = this.questionToResponse(question, orderResponses)
+                  break
+                }
+              } else {
+                row[filter.source.question] = this.questionToResponse(question, orderResponses)
+                break
+              }
+            }
+          }
+        })
+        if (Object.keys(row).length === this.filters.length) {
+          this.data.push(row)
+        }
       })
     }
   },
   created: function () {
-    this.filters.push(this.filterTemplate)
     if (this.user) {
-      this.$store.dispatch('loadForms', this.slug)
+      this.$store.dispatch('loadAllSubmissions', this.slug)
       this.$store.dispatch('loadForms', this.slug)
         .then((response) => {
           const forms = response.data.forms
@@ -200,7 +264,15 @@ export default {
             this.$store.dispatch('loadSections', form.id)
           })
         })
-      this.$store.dispatch('loadAllSubmissions', this.slug)
+        .then(() => {
+          const filter = this.$route.query.filter
+          if (filter) {
+            this.filters = JSON.parse(decodeURIComponent(filter))
+          }
+          if (!this.filters.length) {
+            this.addFilter()
+          }
+        })
     }
   }
 }
