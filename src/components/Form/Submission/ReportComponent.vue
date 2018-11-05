@@ -1,90 +1,91 @@
 <template>
-  <v-layout row>
-    <!-- // Source -->
-    <v-flex offset-xs1 xs3 px-3>
-      <v-autocomplete
-        :items="sources"
-        label="Source"
-        v-model="filter.source"
-        item-text="question"
-        item-value="question"
-        single-line
-        return-object
-      >
-        <template
-          slot="selection"
-          slot-scope="data"
-        >
-          {{ data.item.question }}
-        </template>
-        <template
-          slot="item"
-          slot-scope="data"
-        >
-          <v-list-tile-content>
-            <v-list-tile-title>{{data.item.question}}</v-list-tile-title>
-            <v-list-tile-sub-title>{{data.item.group}}</v-list-tile-sub-title>
-          </v-list-tile-content>
-        </template>
-      </v-autocomplete>
-    </v-flex>
-
-    <!-- // Query -->
-    <v-flex xs3 px-3>
-      <v-autocomplete
-        label="Query"
-        v-model="filter.query"
-        :items="query"
-        item-text="comparator"
-        item-value="id"
-      >
-      </v-autocomplete>
-    </v-flex>
-
-    <!-- //Selected Answer -->
-    <v-flex xs3 px-3 v-if='selectedTriggerType && selectedTriggerType.answer'>
-      <v-autocomplete
-        :items="parentQuestionType == 8 || parentQuestionType == 9 ? falseAnswers : answers"
-        item-text="answer"
-        item-value="id"
-        v-model="filter.answer"
-        label="Answer"
-        single-line
-      ></v-autocomplete>
-    </v-flex>
-
-    <!-- //User Input -->
-    <v-flex xs3 px-3 v-else-if='selectedTriggerType && selectedTriggerType.value'>
-      <v-flex xs12 v-if="parentQuestionType == 8 || parentQuestionType == 9">
+  <div>
+    <v-layout row>
+      <!-- // Source -->
+      <v-flex xs4 px-3>
         <v-autocomplete
-          v-model="filter.value"
-          :items="trueAnswers"
+          :items="sources"
+          label="Source"
+          v-model="filter.source"
+          item-text="question"
+          item-value="question"
+          single-line
+          return-object
+        >
+          <template
+            slot="selection"
+            slot-scope="data"
+          >
+            {{ data.item.question }}
+          </template>
+          <template
+            slot="item"
+            slot-scope="data"
+          >
+            <v-list-tile-content>
+              <v-list-tile-title>{{data.item.question}}</v-list-tile-title>
+              <v-list-tile-sub-title>{{data.item.group}}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </template>
+        </v-autocomplete>
+      </v-flex>
+
+      <!-- // Query -->
+      <v-flex xs3 px-3>
+        <v-autocomplete
+          label="Query"
+          v-model="filter.query"
+          :items="query"
+          item-text="comparator"
+          item-value="id"
+        >
+        </v-autocomplete>
+      </v-flex>
+
+      <!-- //Selected Answer -->
+      <v-flex xs3 px-3 v-if='selectedTriggerType && selectedTriggerType.answer'>
+        <v-autocomplete
+          :items="parentQuestionType == 8 || parentQuestionType == 9 ? falseAnswers : answers"
           item-text="answer"
           item-value="id"
-          label="Value"
+          v-model="filter.answer"
+          label="Answer"
           single-line
         ></v-autocomplete>
       </v-flex>
-      <v-flex xs12 v-else>
-        <v-text-field
-          label="Value"
-          type="text"
-          v-model="filter.value"
-        ></v-text-field>
+
+      <!-- //User Input -->
+      <v-flex xs3 px-3 v-else>
+        <v-flex xs12 v-if="parentQuestionType == 8 || parentQuestionType == 9">
+          <v-autocomplete
+            v-model="filter.value"
+            :items="trueAnswers"
+            item-text="answer"
+            item-value="id"
+            label="Value"
+            single-line
+            :disabled="!selectedTriggerType"
+          ></v-autocomplete>
+        </v-flex>
+        <v-flex xs12 v-else>
+          <v-text-field
+            label="Value"
+            type="text"
+            v-model="filter.value"
+            :disabled="!selectedTriggerType"
+          ></v-text-field>
+        </v-flex>
       </v-flex>
-    </v-flex>
 
-    <!-- // Formatting -->
-    <v-flex xs3 px-3 v-else>
-    </v-flex>
-
-    <!-- // Actions -->
-    <v-flex xs2 px-3 mt-2 text-xs-right>
-      <v-btn outline color="error" @click.stop="deleteFilter(index)">
-        <v-icon>delete</v-icon>
-      </v-btn>
-    </v-flex>
-  </v-layout>
+      <!-- // Actions -->
+      <v-flex xs2 px-3 mt-2 text-xs-right>
+        <v-btn outline color="error" @click.stop="deleteFilter(index)">
+          <v-icon>delete</v-icon>
+        </v-btn>
+      </v-flex>
+    </v-layout>
+    <v-divider class="my-3"></v-divider>
+  </div>
 </template>
 
 <script>

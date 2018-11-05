@@ -15,12 +15,12 @@
               <v-card>
                 <!-- //Title -->
                 <v-card-title>
-                  <div class="title mb-2 mt-2">Share Report URL</div>
+                  <div class="title mb-2 mt-2">Share Report</div>
                 </v-card-title>
 
                 <v-card-text>
                   <v-layout row wrap>
-                    <v-flex xs12 pb-3>Invite other users to this report by sharing the following link.</v-flex>
+                    <v-flex xs12 pb-3>Share this report with others or bookmark the report to view again at a later date using the URL below.</v-flex>
                     <v-flex xs12 class="wrap-text">{{ joinURL }}</v-flex>
                   </v-layout>
                 </v-card-text>
@@ -38,7 +38,7 @@
           </div>
         </v-flex>
         <v-flex d-flex xs12>
-          <p>Add filters below to start building your custom report.</p>
+          <p>Add filters below to start building your custom report, each filter will be displayed as a column in the report and you can add as many filters as you need.</p>
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -59,10 +59,10 @@
 
                 <!-- // Action Buttons -->
                 <v-layout row justify-center>
-                  <v-flex xs2 px-3>
+                  <v-flex xs3 px-3>
                     <v-btn block color="primary" @click.stop="addFilter">Add Filter</v-btn>
                   </v-flex>
-                  <v-flex xs2 px-3>
+                  <v-flex xs3 px-3>
                     <v-btn block color="success" @click.stop="applyFilters">Apply Filters</v-btn>
                   </v-flex>
                 </v-layout>
@@ -88,6 +88,7 @@
               :headers="headers"
               :items="data"
               :search="search"
+              :pagination.sync="pagination"
             >
               <template slot="items" slot-scope="props">
                 <tr>
@@ -127,7 +128,10 @@ export default {
       filters: [],
       filterTemplate: { source: '', query: '', value: '', answer: '' },
       slug: window.location.hostname.split('.')[0],
-      joinUrlDialog: false
+      joinUrlDialog: false,
+      pagination: {
+        rowsPerPage: 25
+      }
     }
   },
   mixins: [QuestionCompareMixin],

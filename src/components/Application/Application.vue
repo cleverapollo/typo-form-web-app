@@ -230,7 +230,7 @@
 
       <v-layout v-if="userIsApplicationAdmin" justify-space-between row>
        <!-- // Export Application Data -->
-        <v-flex xs12>
+        <v-flex xs6>
           <v-btn
             color="primary"
             outline
@@ -245,7 +245,6 @@
         </v-flex>
 
         <!-- // Report Builder -->
-        <!--
         <v-flex xs6>
           <v-btn
             color="primary"
@@ -258,7 +257,6 @@
             <v-icon right dark>description</v-icon>
           </v-btn>
         </v-flex>
-        -->
 
       </v-layout>
 
