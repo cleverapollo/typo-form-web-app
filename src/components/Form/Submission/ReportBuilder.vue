@@ -188,7 +188,7 @@ export default {
       // Replace existing headers with new headers
       this.headers.splice(0, this.headers.length)
       _.forEach(this.filters, (filter, index) => {
-        this.headers.push({ text: filter.source.question, value: 'filter' + index })
+        this.headers.push({ text: filter.source.question, value: filter.source.question })
       })
     },
     setData () {
