@@ -8,6 +8,7 @@ const VALIDATION_TYPE_URL = `${API_URL}validation-type`
 const COMPARATOR_URL = `${API_URL}comparator`
 const TRIGGER_TYPE_URL = `${API_URL}trigger-type`
 const ANSWER_SORT_URL = `${API_URL}answer-sort`
+const REPORT_URL = `${API_URL}short-url`
 
 export default {
   state: {
@@ -19,7 +20,8 @@ export default {
     roles: [],
     statuses: [],
     comparators: [],
-    triggerTypes: []
+    triggerTypes: [],
+    reportURL: null
   },
   mutations: {
     setLoading (state, payload) {
@@ -54,6 +56,9 @@ export default {
     },
     setAnswerSorts (state, payload) {
       state.answerSorts = payload
+    },
+    setReportURL (state, payload) {
+      state.reportURL = payload
     }
   },
   actions: {
@@ -206,6 +211,42 @@ export default {
             console.log(error)
           }
         )
+    },
+    setReportURL ({commit}, payload) {
+      commit('setLoading', true)
+      window.axios.post(REPORT_URL, {url: payload})
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setReportURL', response['data']['short_url'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
+    loadReportURL ({commit}, payload) {
+      commit('setLoading', true)
+      return new Promise((resolve, reject) => {
+        window.axios.get(REPORT_URL + '/' + payload)
+          .then(
+            response => {
+              commit('setLoading', false)
+              commit('setReportURL', response['data']['short_url'])
+              resolve(response['data']['short_url'])
+            }
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     }
   },
   getters: {
@@ -246,6 +287,9 @@ export default {
     },
     answerSorts (state) {
       return state.answerSorts
+    },
+    reportURL (state) {
+      return state.reportURL
     }
   }
 }

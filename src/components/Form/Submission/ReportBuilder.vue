@@ -6,12 +6,15 @@
           <h1 class="headline primary--text py-3">Report Builder</h1>
 
           <div class="text-xs-right">
+            <v-btn
+              icon
+              @click="openDialog"
+            >
+              <v-icon>share</v-icon>
+            </v-btn>
 
             <!-- //Share Link -->
             <v-dialog v-model="joinUrlDialog" persistent max-width="600">
-              <v-btn slot="activator" icon>
-                <v-icon>share</v-icon>
-              </v-btn>
               <v-card>
                 <!-- //Title -->
                 <v-card-title>
@@ -21,7 +24,7 @@
                 <v-card-text>
                   <v-layout row wrap>
                     <v-flex xs12 pb-3>Invite other users to this report by sharing the following link.</v-flex>
-                    <v-flex xs12 class="wrap-text">{{ joinURL }}</v-flex>
+                    <v-flex xs12 class="wrap-text">{{ reportURL }}</v-flex>
                   </v-layout>
                 </v-card-text>
 
@@ -141,11 +144,21 @@ export default {
     questions () {
       return this.$store.getters.loadedApplicationQuestions(this.slug)
     },
-    joinURL () {
-      return window.location.origin + '/report?filter=' + encodeURIComponent(JSON.stringify(this.filters))
+    reportURL () {
+      const reportURL = this.$store.getters.reportURL
+      if (reportURL) {
+        return window.location.origin + '/report?filter=' + reportURL.short_url
+      }
+      return window.location.origin + '/report'
     }
   },
   methods: {
+    openDialog () {
+      if (this.filters.length && this.filters[0].source) {
+        this.$store.dispatch('setReportURL', JSON.stringify(this.filters))
+      }
+      this.joinUrlDialog = true
+    },
     jsonCopy (src) {
       return JSON.parse(JSON.stringify(src))
     },
@@ -256,6 +269,15 @@ export default {
   },
   created: function () {
     if (this.user) {
+      const filter = this.$route.query.filter
+      if (filter) {
+        this.$store.dispatch('loadReportURL', filter)
+          .then((response) => {
+            this.filters = JSON.parse(response.url)
+          })
+      } else {
+        this.addFilter()
+      }
       this.$store.dispatch('loadAllSubmissions', this.slug)
       this.$store.dispatch('loadForms', this.slug)
         .then((response) => {
@@ -263,15 +285,6 @@ export default {
           _.forEach(forms, (form) => {
             this.$store.dispatch('loadSections', form.id)
           })
-        })
-        .then(() => {
-          const filter = this.$route.query.filter
-          if (filter) {
-            this.filters = JSON.parse(decodeURIComponent(filter))
-          }
-          if (!this.filters.length) {
-            this.addFilter()
-          }
         })
     }
   }
