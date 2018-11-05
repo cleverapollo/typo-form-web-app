@@ -154,17 +154,6 @@
 
       </v-card>
     </v-flex>
-
-    <v-flex xs6>
-      <v-btn flat secondary @click.stop="exportApplicationData">Export Application Data</v-btn>
-    </v-flex>
-
-    <!-- //Delete Application -->
-    <v-flex xs6 text-xs-right v-if="isSuperUser">
-      <v-btn flat secondary @click.stop="deleteApplication = true">Delete Application</v-btn>
-    </v-flex>
-    <DeleteConfirmDialog @delete-action="onDeleteApplication" :visible="deleteApplication" @close="deleteApplication = false"></DeleteConfirmDialog>
-
   </v-layout>
 
 </template>
@@ -253,33 +242,16 @@
       loading () {
         return this.$store.getters.loading
       },
-      joinURL () {
-        return window.location.origin + '/join/application/' + this.application.share_token
-      },
       valid () {
         return this.name.length > 0
       }
     },
     methods: {
-      exportApplicationData () {
-        window.axios.get(process.env.API_URL + 'application/' + this.slug + '/export')
-        .then(response => {
-          if (response.data.file.url) {
-            window.open(response.data.file.url, '_blank')
-          }
-        })
-      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId
         })
         return role ? role.name : 'undefined'
-      },
-      onDeleteApplication () {
-        this.$store.dispatch('deleteApplication', {
-          slug: this.slug
-        })
-        this.$router.push('/applications')
       },
       saveApplication () {
         let application = {
@@ -310,6 +282,7 @@
               } else {
                 subdomain[0] = slug
               }
+              this.$router.push('/')
             })
           })
       }

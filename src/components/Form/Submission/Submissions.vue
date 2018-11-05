@@ -34,8 +34,10 @@
                 <tr @click="onSubmission(props.item.id)">
                   <td>{{ props.item.form.name }}</td>
                   <td>{{ props.item.owner }}</td>
+                  <td>{{ props.item.user.email }}</td>
                   <td>{{ props.item.created_at.date | moment }}</td>
                   <td>{{ props.item.updated_at.date | moment }}</td>
+                  <td>{{ props.item.progress }}%</td>
                   <td>{{ props.item.status }}</td>
                 </tr>
               </template>
@@ -78,8 +80,10 @@
         headers: [
           { text: 'Submission', value: 'form.name', sortable: true, align: 'left' },
           { text: 'Owner', value: 'owner', sortable: true, align: 'left' },
+          { text: 'Email', value: 'user.email' },
           { text: 'Created', value: 'created_at.date', sortable: true, align: 'left' },
           { text: 'Modified', value: 'updated_at.date', sortable: true, align: 'left' },
+          { text: 'Progress', value: 'progress', sortable: true, align: 'left' },
           { text: 'Status', value: 'status', sortable: true, align: 'left' }
         ],
         slug: window.location.hostname.split('.')[0]
