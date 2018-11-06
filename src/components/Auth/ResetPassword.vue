@@ -74,7 +74,7 @@
 
               <v-layout row>
                 <v-flex xs12 text-xs-left class="mt-4">
-                  <span>Im ready to </span>
+                  <span>I'm ready to </span>
                   <router-link :to="{ path: '/login', query: $route.query}">Log In</router-link>
                 </v-flex>
               </v-layout>
