@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import VueAuthenticate from 'vue-authenticate'
 import VueAxios from 'vue-axios'
+import JsonExcel from 'vue-json-excel'
 import axios from 'axios'
 import 'babel-polyfill'
 
@@ -87,6 +88,7 @@ Vue.component('DeleteConfirmDialog', DeleteConfirmDialog)
 Vue.component('ParentSectionDialog', ParentSectionDialog)
 Vue.component('FileUpload', FileUpload)
 Vue.component('ApplicationLoading', ApplicationLoading)
+Vue.component('downloadExcel', JsonExcel)
 
 /* eslint-disable no-new */
 function createApp () {

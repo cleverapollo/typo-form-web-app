@@ -47,7 +47,7 @@
           <v-card>
 
             <v-card-title>
-                <div class="title">Filters</div>
+              <div class="title">Filters</div>
               <v-container>
 
                 <template v-for="(filter, index) in filters">
@@ -74,6 +74,32 @@
             </v-card-title>
             <v-divider></v-divider>
 
+            <v-card-title class="text-xs-center">
+              <v-layout>
+                <v-flex>
+                  <v-btn>
+                    <download-excel
+                      :data="data"
+                      name="Report Builder.xls"
+                    >
+                      EXCEL
+                    </download-excel>
+                  </v-btn>
+
+                  <v-btn>
+                    <download-excel
+                      :data="data"
+                      name="Report Builder.csv"
+                      type="csv"
+                    >
+                      CSV
+                    </download-excel>
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+            </v-card-title>
+            <v-divider></v-divider>
+
             <v-card-title>
               <div class="title">Results</div>
               <v-spacer></v-spacer>
@@ -94,9 +120,9 @@
               :pagination.sync="pagination"
             >
               <template slot="items" slot-scope="props">
-                <tr>
+                <tr @click="onSubmission(props.item.id)">
                   <template v-for="(item, key) in props.item">
-                    <td v-bind:key="'filter'+key">{{item}}</td>
+                    <td v-bind:key="'filter'+key" v-if="key != 'ID'">{{item}}</td>
                   </template>
                 </tr>
               </template>
@@ -158,6 +184,9 @@ export default {
     }
   },
   methods: {
+    onSubmission (id) {
+      this.$router.push('/submissions/' + id)
+    },
     openDialog () {
       if (this.filters.length && this.filters[0].source) {
         this.$store.dispatch('setReportURL', JSON.stringify(this.filters))
@@ -198,6 +227,7 @@ export default {
       let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
       _.forEach(submissions, (submission, index) => {
         let row = {}
+        row['ID'] = submission.id
         _.forEach(this.filters, filter => {
           if (!filter.source) {
             return
@@ -254,7 +284,10 @@ export default {
             const responses = submission.responses.filter((response) => {
               return response.question_id === filter.source.id
             })
-            const order = Math.max(responses.map(response => response.order))
+            let order = 1
+            if (responses.length) {
+              order = Math.max(responses.map(response => response.order))
+            }
             for (let i = 1; i <= order; i++) {
               const orderResponses = responses.filter((response) => {
                 return response.order === i
@@ -272,7 +305,7 @@ export default {
             }
           }
         })
-        if (Object.keys(row).length === this.filters.length) {
+        if (Object.keys(row).length === this.filters.length + 1) {
           this.data.push(row)
         }
       })
