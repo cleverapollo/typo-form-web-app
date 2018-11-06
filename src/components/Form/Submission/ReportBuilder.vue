@@ -80,15 +80,6 @@
                   <v-btn>
                     <download-excel
                       :data="data"
-                      name="Report Builder.xls"
-                    >
-                      EXCEL
-                    </download-excel>
-                  </v-btn>
-
-                  <v-btn>
-                    <download-excel
-                      :data="data"
                       name="Report Builder.csv"
                       type="csv"
                     >
@@ -120,7 +111,7 @@
               :pagination.sync="pagination"
             >
               <template slot="items" slot-scope="props">
-                <tr @click="onSubmission(props.item.id)">
+                <tr @click="onSubmission(props.item.ID)">
                   <template v-for="(item, key) in props.item">
                     <td v-bind:key="'filter'+key" v-if="key != 'ID'">{{item}}</td>
                   </template>
