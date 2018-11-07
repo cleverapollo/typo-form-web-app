@@ -31,14 +31,20 @@
               hide-actions
             >
               <template slot="items" slot-scope="props">
-                <tr @click="onSubmission(props.item.id)">
-                  <td>{{ props.item.form.name }}</td>
-                  <td>{{ props.item.owner }}</td>
-                  <td>{{ props.item.user.email }}</td>
-                  <td>{{ props.item.created_at.date | moment }}</td>
-                  <td>{{ props.item.updated_at.date | moment }}</td>
-                  <td>{{ props.item.progress }}%</td>
-                  <td>{{ props.item.status }}</td>
+                <tr>
+                  <td @click="onSubmission(props.item.id)">{{ props.item.form.name }}</td>
+                  <td @click="onSubmission(props.item.id)">{{ props.item.owner }}</td>
+                  <td @click="onSubmission(props.item.id)">{{ props.item.user.email }}</td>
+                  <td @click="onSubmission(props.item.id)">{{ props.item.created_at.date | moment }}</td>
+                  <td @click="onSubmission(props.item.id)">{{ props.item.updated_at.date | moment }}</td>
+                  <td @click="onSubmission(props.item.id)">{{ props.item.progress }}%</td>
+                  <td @click="onSubmission(props.item.id)">{{ props.item.status }}</td>
+                  <td class="justify-center layout px-0">
+                    <EditSubmission :slug="slug" :submission="props.item" :formId="props.item.form.id" :btnRect="true" :key="props.item.id"></EditSubmission>
+                    <v-btn icon class="mx-0" @click="onDeleteSubmission(props.item.id, props.item.form.id)">
+                      <v-icon color="pink">delete</v-icon>
+                    </v-btn>
+                  </td>
                 </tr>
               </template>
               <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -60,18 +66,20 @@
     </v-tooltip>
 
     <!-- //Create Submission -->
-    <CreateSubmission :visible="createSubmission" :slug="slug" @close="createSubmission = false"></CreateSubmission>
+    <CreateSubmission :visible="createSubmission" :slug="slug" @close="createSubmission = false" key="CreateSubmission"></CreateSubmission>
   </v-layout>
 </template>
 
 <script>
   import CreateSubmission from './CreateSubmission'
+  import EditSubmission from './EditSubmission'
   import moment from 'moment'
 
   export default {
     name: 'Submissions',
     components: {
-      CreateSubmission
+      CreateSubmission,
+      EditSubmission
     },
     data () {
       return {
@@ -84,7 +92,8 @@
           { text: 'Created', value: 'created_at.date', sortable: true, align: 'left' },
           { text: 'Modified', value: 'updated_at.date', sortable: true, align: 'left' },
           { text: 'Progress', value: 'progress', sortable: true, align: 'left' },
-          { text: 'Status', value: 'status', sortable: true, align: 'left' }
+          { text: 'Status', value: 'status', sortable: true, align: 'left' },
+          { text: 'Action', value: 'action', sortable: true, align: 'left' }
         ],
         slug: window.location.hostname.split('.')[0]
       }
@@ -106,19 +115,19 @@
       }
     },
     methods: {
-      onSubmission (id) {
-        this.$router.push('/submissions/' + id)
-      },
-      status (id) {
-        return this.statuses.find(e => { return e.id === id }).status
-      },
-      onDeleteSubmission: function (formId, id) {
+      onDeleteSubmission: function (id, formId) {
         this.$store.dispatch('deleteSubmission',
           {
             formId: formId,
             id: id
           }
         )
+      },
+      onSubmission (id) {
+        this.$router.push('/submissions/' + id)
+      },
+      status (id) {
+        return this.statuses.find(e => { return e.id === id }).status
       }
     },
     created: function () {
@@ -127,6 +136,7 @@
         this.$store.dispatch('loadTeams', this.slug)
         this.$store.dispatch('loadForms', this.slug)
         this.$store.dispatch('loadAllSubmissions', this.slug)
+        this.$store.dispatch('loadAllTeamUsers', this.slug)
       }
     },
     filters: {

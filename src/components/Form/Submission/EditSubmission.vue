@@ -179,13 +179,6 @@
         }
         return this.$store.getters.loadedSubmissionUsers(this.slug)
       }
-    },
-    watch: {
-      teamId (value) {
-        if (value) {
-          this.$store.dispatch('loadTeamUsers', {slug: this.slug, teamId: value})
-        }
-      }
     }
   }
 </script>

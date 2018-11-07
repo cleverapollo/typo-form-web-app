@@ -80,7 +80,7 @@
                   <v-btn>
                     <download-excel
                       :data="data"
-                      name="Report Builder.csv"
+                      :name="fileName"
                       type="csv"
                     >
                       CSV
@@ -160,6 +160,12 @@ export default {
     ReportComponent
   },
   computed: {
+    application () {
+      return this.$store.getters.loadedApplication(this.slug)
+    },
+    fileName () {
+      return this.application.name + ' Report ' + moment().format('YYYY-MM-DD [at] LTS') + '.csv'
+    },
     user () {
       return this.$store.getters.user
     },

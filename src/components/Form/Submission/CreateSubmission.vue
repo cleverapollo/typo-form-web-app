@@ -193,13 +193,6 @@
         return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       }
     },
-    watch: {
-      teamId (value) {
-        if (value) {
-          this.$store.dispatch('loadTeamUsers', {slug: this.slug, teamId: value})
-        }
-      }
-    },
     methods: {
       getRole (roleId) {
         const role = this.roles.find((role) => {

@@ -1,3 +1,5 @@
+import * as _ from 'lodash'
+
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application/`
 const TEAM_URL = `/team/`
@@ -52,6 +54,34 @@ export default {
     }
   },
   actions: {
+    loadAllTeamUsers ({commit}, slug) {
+      commit('setLoading', true)
+      window.axios.get(APPLICATION_URL + slug + TEAM_URL + 'user')
+        .then(
+          response => {
+            commit('setLoading', false)
+            _.forEach(response['data']['users'], (users, index) => {
+              const updateLoadedObj = {
+                teamId: users['team_id'],
+                users: users['current']
+              }
+              commit('setLoadedTeamUsers', updateLoadedObj)
+
+              const updateInvitedObj = {
+                teamId: users['team_id'],
+                users: users['unaccepted']
+              }
+              commit('setInvitedTeamUsers', updateInvitedObj)
+            })
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
     loadTeamUsers ({commit}, payload) {
       commit('setLoading', true)
       window.axios.get(APPLICATION_URL + payload.slug + TEAM_URL + payload.teamId + USER_URL)

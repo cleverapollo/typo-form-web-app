@@ -96,7 +96,7 @@
         :section-id="sectionId"
         :form-id="formId"
         :answers="answers"
-        :has-validation="mandatory && hasValidation"
+        :has-validation="hasValidation"
         @create-answer="createAnswer"
         @delete-answer="deleteAnswer"
         @delete-answers="deleteAnswers"
@@ -154,13 +154,7 @@
         </v-btn>
 
         <v-list>
-          <v-list-tile v-if="mandatory" @click="createRemoveValidation">
-            <v-list-tile-title>
-              {{ validationString }}
-            </v-list-tile-title>
-          </v-list-tile>
-
-          <v-list-tile v-else disabled>
+          <v-list-tile @click="createRemoveValidation">
             <v-list-tile-title>
               {{ validationString }}
             </v-list-tile-title>
