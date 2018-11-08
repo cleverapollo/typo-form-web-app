@@ -43,7 +43,7 @@
                     <v-btn icon class="mx-0" @click="duplicateSubmission(props.item.id, props.item.form.id)">
                       <v-icon color="teal">content_copy</v-icon>
                     </v-btn>
-                    <v-btn icon class="mx-0" @click="onDeleteSubmission(props.item.id, props.item.form.id)">
+                    <v-btn icon class="mx-0" @click="showDeleteSubmission(props.item.id, props.item.form.id)">
                       <v-icon color="pink">delete</v-icon>
                     </v-btn>
                   </td>
@@ -69,17 +69,25 @@
 
     <!-- //Create Form -->
     <CreateSubmission :visible="createSubmission" :slug="slug" @close="createSubmission = false" key="CreateSubmission"></CreateSubmission>
+
+    <!-- //Delete Form -->
+    <DeleteConfirmDialog @delete-action="onDeleteSubmission" :visible="deleteSubmission" @close="deleteSubmission = false"></DeleteConfirmDialog>
+
+    <!-- //Duplicate form -->
+    <DuplicateSubmission :visible="duplicated" :content="duplicatedContent" @close="duplicated = false"></DuplicateSubmission>
   </v-layout>
 </template>
 
 <script>
   import CreateSubmission from './CreateSubmission'
+  import DuplicateSubmission from './DuplicateSubmission'
   import moment from 'moment'
 
   export default {
     name: 'Submissions',
     components: {
-      CreateSubmission
+      CreateSubmission,
+      DuplicateSubmission
     },
     data () {
       return {
@@ -95,7 +103,12 @@
           { text: 'Status', value: 'status', sortable: true, align: 'left' },
           { text: 'Action', value: 'action', sortable: true, align: 'left' }
         ],
-        slug: window.location.hostname.split('.')[0]
+        slug: window.location.hostname.split('.')[0],
+        selectedId: 0,
+        selectedFormId: 0,
+        deleteSubmission: false,
+        duplicated: false,
+        duplicatedContent: false
       }
     },
     computed: {
@@ -115,15 +128,20 @@
       }
     },
     methods: {
-      onDeleteSubmission: function (id, formId) {
+      showDeleteSubmission (id, formId) {
+        this.selectedId = id
+        this.selectedFormId = formId
+        this.deleteSubmission = true
+      },
+      onDeleteSubmission () {
         this.$store.dispatch('deleteSubmission',
           {
-            formId: formId,
-            id: id
+            formId: this.selectedFormId,
+            id: this.selectedId
           }
         )
       },
-      duplicateSubmission: function (id, formId) {
+      duplicateSubmission (id, formId) {
         this.$store.dispatch('duplicateSubmission', {
           formId: formId,
           id: id
