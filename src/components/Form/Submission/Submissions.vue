@@ -3,10 +3,10 @@
     <v-flex d-flex xs12>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <h1 class="headline primary--text py-3">Submissions</h1>
+          <h1 class="headline primary--text py-3">Forms</h1>
         </v-flex>
         <v-flex d-flex xs12>
-          <p>Select an existing submission below or <a href="#" @click.stop="createSubmission = true">create a new submission</a>.</p>
+          <p>Select an existing form below or <a href="#" @click.stop="createSubmission = true">create a new form</a>.</p>
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -23,7 +23,7 @@
               ></v-text-field>
             </v-card-title>
 
-            <!-- //Submissions -->
+            <!-- //Forms -->
             <v-data-table
               :headers="headers"
               :items="submissions"
@@ -40,7 +40,9 @@
                   <td @click="onSubmission(props.item.id)">{{ props.item.progress }}%</td>
                   <td @click="onSubmission(props.item.id)">{{ props.item.status }}</td>
                   <td class="justify-center layout px-0">
-                    <EditSubmission :slug="slug" :submission="props.item" :formId="props.item.form.id" :btnRect="true" :key="props.item.id"></EditSubmission>
+                    <v-btn icon class="mx-0" @click="duplicateSubmission(props.item.id, props.item.form.id)">
+                      <v-icon color="teal">content_copy</v-icon>
+                    </v-btn>
                     <v-btn icon class="mx-0" @click="onDeleteSubmission(props.item.id, props.item.form.id)">
                       <v-icon color="pink">delete</v-icon>
                     </v-btn>
@@ -62,31 +64,29 @@
       <v-btn slot="activator" fixed dark bottom right fab router class="red" @click.stop="createSubmission = true">
         <v-icon>add</v-icon>
       </v-btn>
-      <span>Create Submission</span>
+      <span>Create Form</span>
     </v-tooltip>
 
-    <!-- //Create Submission -->
+    <!-- //Create Form -->
     <CreateSubmission :visible="createSubmission" :slug="slug" @close="createSubmission = false" key="CreateSubmission"></CreateSubmission>
   </v-layout>
 </template>
 
 <script>
   import CreateSubmission from './CreateSubmission'
-  import EditSubmission from './EditSubmission'
   import moment from 'moment'
 
   export default {
     name: 'Submissions',
     components: {
-      CreateSubmission,
-      EditSubmission
+      CreateSubmission
     },
     data () {
       return {
         createSubmission: false,
         search: '',
         headers: [
-          { text: 'Submission', value: 'form.name', sortable: true, align: 'left' },
+          { text: 'Form', value: 'form.name', sortable: true, align: 'left' },
           { text: 'Owner', value: 'owner', sortable: true, align: 'left' },
           { text: 'Email', value: 'user.email' },
           { text: 'Created', value: 'created_at.date', sortable: true, align: 'left' },
@@ -122,6 +122,16 @@
             id: id
           }
         )
+      },
+      duplicateSubmission: function (id, formId) {
+        this.$store.dispatch('duplicateSubmission', {
+          formId: formId,
+          id: id
+        })
+          .then((response) => {
+            this.duplicated = true
+            this.duplicatedContent = response.data.submission.id
+          })
       },
       onSubmission (id) {
         this.$router.push('/submissions/' + id)

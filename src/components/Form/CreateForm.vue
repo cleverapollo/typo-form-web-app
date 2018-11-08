@@ -9,7 +9,7 @@
 
       <!-- //Title -->
       <v-card-title>
-        <div class="title mb-2 mt-2">Create Form</div>
+        <div class="title mb-2 mt-2">Create Form Builder</div>
       </v-card-title>
 
       <!-- //Content -->

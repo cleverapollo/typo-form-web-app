@@ -10,11 +10,11 @@
           <v-alert
             :value="status != 'Open'"
             type="success">
-            This submission is {{ status.toLowerCase() }}.
+            This form is {{ status.toLowerCase() }}.
           </v-alert>
         </v-flex>
 
-        <!-- //Submission Layout -->
+        <!-- //Form Layout -->
         <v-flex xs12>
           <v-card>
 
@@ -45,21 +45,21 @@
                           <v-list-tile-avatar>
                             <v-icon>delete</v-icon>
                           </v-list-tile-avatar>
-                          <v-list-tile-content>Delete Submission</v-list-tile-content>
+                          <v-list-tile-content>Delete Form</v-list-tile-content>
                         </v-list-tile>
 
                         <v-list-tile @click.stop="duplicateSubmission">
                           <v-list-tile-avatar>
                             <v-icon>content_copy</v-icon>
                           </v-list-tile-avatar>
-                          <v-list-tile-content>Duplicate Submission</v-list-tile-content>
+                          <v-list-tile-content>Duplicate Form</v-list-tile-content>
                         </v-list-tile>
 
                         <v-list-tile @click.stop="onOpenSubmission" v-if="status==='Closed' && userIsApplicationAdmin">
                           <v-list-tile-avatar>
                             <v-icon>assignment</v-icon>
                           </v-list-tile-avatar>
-                          <v-list-tile-content>Open Submission</v-list-tile-content>
+                          <v-list-tile-content>Open Form</v-list-tile-content>
                         </v-list-tile>
                       </v-list>
                     </v-menu>
@@ -78,7 +78,7 @@
               </v-layout>
             </v-card-title>
 
-            <!-- // Submission Information -->
+            <!-- // Form Information -->
             <v-card-text>
               <v-layout row wrap>
                 <v-flex xs12 sm6>
@@ -104,7 +104,7 @@
             </v-card-text>
             <v-divider></v-divider>
 
-            <!-- //Form Content -->
+            <!-- //Form Builder Content -->
             <v-card-text>
               <v-layout row wrap>
 
@@ -138,7 +138,7 @@
                   </v-btn>
                 </v-flex>
                 <v-flex xs12 text-xs-center class="mt-3">
-                  <p class="caption">This form can only be submitted once all mandatory questions have been answered.</p>
+                  <p class="caption">This form builder can only be submitted once all mandatory questions have been answered.</p>
                 </v-flex>
               </v-layout>
 
@@ -150,7 +150,7 @@
       </v-layout>
     </v-flex>
 
-    <!-- //Delete Submission -->
+    <!-- //Delete Form -->
     <DeleteConfirmDialog @delete-action="onDeleteSubmission" :visible="deleteSubmission" @close="deleteSubmission = false"></DeleteConfirmDialog>
 
     <!-- //Show snackbar -->
@@ -162,7 +162,7 @@
     <!-- //Show Help Modal -->
     <HelpModal :visible="helpModal && help" :content="help" @close="helpModal = false"></HelpModal>
 
-    <!-- //Duplicate submission -->
+    <!-- //Duplicate form -->
     <DuplicateSubmission :visible="duplicated" :content="duplicatedContent" @close="duplicated = false"></DuplicateSubmission>
 
   </v-layout>

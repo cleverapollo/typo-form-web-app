@@ -2,20 +2,20 @@
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
       <v-card-title>
-        <div class="title mb-2 mt-2">Create Submission</div>
+        <div class="title mb-2 mt-2">Create Form</div>
       </v-card-title>
       <v-card-text>
 
         <v-layout row wrap>
 
-          <!-- //Forms -->
+          <!-- //Form Builders -->
           <v-flex xs12>
             <v-autocomplete
               :items="forms"
               item-value="id"
               item-text="name"
               v-model="formId"
-              label="Form"
+              label="Form Builder"
             ></v-autocomplete>
           </v-flex>
 
@@ -42,7 +42,7 @@
           </v-flex>
 
           <!-- //Period Start -->
-          <div class="body-2">Is this submission for a set period? If so, set the date below (optional)</div>
+          <div class="body-2">Is this form for a set period? If so, set the date below (optional)</div>
           <v-flex xs12 sm6>
 
             <v-dialog
@@ -212,7 +212,7 @@
           .then(response => {
             this.reset()
 
-            // Redirect to the submission
+            // Redirect to the form
             if (response.data.submission.id) {
               this.$router.push('/submissions/' + response.data.submission.id)
             }

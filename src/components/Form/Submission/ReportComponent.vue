@@ -104,16 +104,16 @@ export default {
     },
     sources () {
       let sources = [
-        {'group': 'Submission Detail', 'question': 'Form'},
-        {'group': 'Submission Detail', 'question': 'Owner'},
-        {'group': 'Submission Detail', 'question': 'Owner Email'},
-        {'group': 'Submission Detail', 'question': 'Team'},
-        {'group': 'Submission Detail', 'question': 'Progress'},
-        {'group': 'Submission Detail', 'question': 'Period Start'},
-        {'group': 'Submission Detail', 'question': 'Period End'},
-        {'group': 'Submission Detail', 'question': 'Status'},
-        {'group': 'Submission Detail', 'question': 'Created'},
-        {'group': 'Submission Detail', 'question': 'Modified'}
+        {'group': 'Form Detail', 'question': 'Form Builder'},
+        {'group': 'Form Detail', 'question': 'Owner'},
+        {'group': 'Form Detail', 'question': 'Owner Email'},
+        {'group': 'Form Detail', 'question': 'Team'},
+        {'group': 'Form Detail', 'question': 'Progress'},
+        {'group': 'Form Detail', 'question': 'Period Start'},
+        {'group': 'Form Detail', 'question': 'Period End'},
+        {'group': 'Form Detail', 'question': 'Status'},
+        {'group': 'Form Detail', 'question': 'Created'},
+        {'group': 'Form Detail', 'question': 'Modified'}
       ]
       _.forEach(this.questions, (question) => {
         sources.push({'group': question.form_name + ' > ' + question.section_name, 'question': question.question, 'id': question.id})

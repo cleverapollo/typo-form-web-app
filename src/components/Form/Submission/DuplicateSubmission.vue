@@ -5,7 +5,7 @@
 
       <!-- //Title -->
       <v-card-title>
-        <div class="title mb-2 mt-2">Submission Duplicated</div>
+        <div class="title mb-2 mt-2">Form Duplicated</div>
       </v-card-title>
 
       <!-- //Content -->
@@ -23,7 +23,7 @@
       <v-card-actions>
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
-            <v-btn flat @click.stop="goToDuplicate">Go to Duplicated Submission</v-btn>
+            <v-btn flat @click.stop="goToDuplicate">Go to Duplicated Form</v-btn>
             <v-btn flat @click.stop="close">Close</v-btn>
           </v-flex>
         </v-layout>

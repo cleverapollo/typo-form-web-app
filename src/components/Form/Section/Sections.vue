@@ -97,7 +97,7 @@
 
       <triggers :formId="formId" :question="section" :questionOptions="questionOptions" type="Section" v-if="questionOptions.length > 0 && submissionId === -1"></triggers>
       
-      <!-- //Form -->
+      <!-- //Form Builder -->
       <template v-if="submissionId == -1">
         <v-flex xs12>
 
@@ -162,7 +162,7 @@
         </v-flex>
       </template>
 
-      <!-- //Submission -->
+      <!-- //Form Builder -->
       <template v-else>
 
         <!-- //Standard -->

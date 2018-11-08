@@ -1,14 +1,14 @@
 <template>
   <v-dialog width="600px" persistent v-model="editForm">
     <div slot="activator">
-      Edit Form
+      Edit Form Builder
     </div>
 
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex>
-            <h2>Edit Form</h2>
+            <h2>Edit Form Builder</h2>
           </v-flex>
           <v-flex class="text-xs-right">
             <v-spacer></v-spacer>
@@ -41,7 +41,7 @@
             <v-flex xs12>
               <v-text-field
                 name="content"
-                label="Completed Submission Content"
+                label="Completed Form Content"
                 id="content"
                 v-model="content"
                 required

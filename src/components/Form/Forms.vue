@@ -5,13 +5,13 @@
 
         <!-- //Title -->
         <v-flex d-flex xs12>
-          <h1 class="headline primary--text py-3">Forms</h1>
+          <h1 class="headline primary--text py-3">Form Builder</h1>
         </v-flex>
         <v-flex d-flex xs12>
-          <p>Select an existing form below or <a href="#" @click.stop="createForm = true">create a new form</a>.</p>
+          <p>Select an existing form builder below or <a href="#" @click.stop="createForm = true">create a new form builder</a>.</p>
         </v-flex>
 
-        <!-- //Form List -->
+        <!-- //Form Builder List -->
         <v-flex d-flex xs12 v-if="forms.length">
           <v-card>
             <v-list one-line>
@@ -31,22 +31,22 @@
           </v-card>
         </v-flex>
 
-        <!-- //No Forms -->
+        <!-- //No Form Builders -->
         <v-flex xs12 pa-2 v-else>
           <v-alert value="true" type="info">
-            It looks like you don't have access to any forms yet.
+            It looks like you don't have access to any form builder yet.
           </v-alert>
         </v-flex>
 
       </v-layout>
     </v-flex>
 
-    <!-- //Create Form -->
+    <!-- //Create Form Builder -->
     <v-tooltip top>
       <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="createForm = true" v-if="userIsApplicationAdmin">
         <v-icon>add</v-icon>
       </v-btn>
-      <span>Create Form</span>
+      <span>Create Form Builder</span>
     </v-tooltip>
 
     <CreateForm :slug="slug" :visible="createForm" v-if="userIsApplicationAdmin" @close="createForm = false"></CreateForm>

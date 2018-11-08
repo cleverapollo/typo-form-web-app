@@ -3,7 +3,7 @@
     <v-flex d-flex xs12>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <div class="subheading py-2 px-3">Filtered Submissions</div>
+          <div class="subheading py-2 px-3">Filtered Forms</div>
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -53,7 +53,7 @@
                   required
                 ></v-select>
               </v-flex>
-              <v-flex xs10 offset-xs1 sm1 offset-sm1 d-flex v-if="element.source.group != 'Submission Detail'">
+              <v-flex xs10 offset-xs1 sm1 offset-sm1 d-flex v-if="element.source.group != 'Form Detail'">
                 <v-autocomplete
                   :items="answers(element.source)"
                   item-text="answer"
@@ -98,7 +98,7 @@
             </v-flex>
           </v-layout>
 
-            <!-- //Submissions -->
+            <!-- //Forms -->
             <v-data-table
               :headers="headers"
               :items="submissions"
@@ -149,13 +149,13 @@
       headers () {
         let headers = []
         _.forEach(this.filters, function (filter) {
-          if (filter.source.group === 'Submission Detail') {
+          if (filter.source.group === 'Form Detail') {
             if (filter.source.question === 'ID') {
               headers.push({ text: 'ID', value: 'id', sortable: true, align: 'left' })
-            } else if (filter.source.question === 'Form ID') {
-              headers.push({ text: 'Form ID', value: 'form.id', sortable: true, align: 'left' })
-            } else if (filter.source.question === 'Form') {
-              headers.push({ text: 'Form', value: 'form.name', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Form Builder ID') {
+              headers.push({ text: 'Form Builder ID', value: 'form.id', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Form Builder') {
+              headers.push({ text: 'Form Builder', value: 'form.name', sortable: true, align: 'left' })
             } else if (filter.source.question === 'User ID') {
               headers.push({ text: 'User ID', value: 'user.id', sortable: true, align: 'left' })
             } else if (filter.source.question === 'User') {
@@ -200,19 +200,19 @@
       },
       sources () {
         let sources = [
-          {'group': 'Submission Detail', 'question': 'ID'},
-          {'group': 'Submission Detail', 'question': 'Form ID'},
-          {'group': 'Submission Detail', 'question': 'Form'},
-          {'group': 'Submission Detail', 'question': 'User ID'},
-          {'group': 'Submission Detail', 'question': 'User'},
-          {'group': 'Submission Detail', 'question': 'Team ID'},
-          {'group': 'Submission Detail', 'question': 'Team'},
-          {'group': 'Submission Detail', 'question': 'Progress'},
-          {'group': 'Submission Detail', 'question': 'Period Start'},
-          {'group': 'Submission Detail', 'question': 'Period End'},
-          {'group': 'Submission Detail', 'question': 'Status'},
-          {'group': 'Submission Detail', 'question': 'Created Date'},
-          {'group': 'Submission Detail', 'question': 'Updated Date'}
+          {'group': 'Form Detail', 'question': 'ID'},
+          {'group': 'Form Detail', 'question': 'Form Builder ID'},
+          {'group': 'Form Detail', 'question': 'Form Builder'},
+          {'group': 'Form Detail', 'question': 'User ID'},
+          {'group': 'Form Detail', 'question': 'User'},
+          {'group': 'Form Detail', 'question': 'Team ID'},
+          {'group': 'Form Detail', 'question': 'Team'},
+          {'group': 'Form Detail', 'question': 'Progress'},
+          {'group': 'Form Detail', 'question': 'Period Start'},
+          {'group': 'Form Detail', 'question': 'Period End'},
+          {'group': 'Form Detail', 'question': 'Status'},
+          {'group': 'Form Detail', 'question': 'Created Date'},
+          {'group': 'Form Detail', 'question': 'Updated Date'}
         ]
         const questions = this.$store.getters.loadedApplicationQuestions(this.slug)
         _.forEach(questions, (question) => {
@@ -230,7 +230,7 @@
           return null
         }
 
-        if (source.group === 'Submission Detail') {
+        if (source.group === 'Form Detail') {
           return null
         }
 
@@ -272,8 +272,8 @@
         return this.question(source).answers
       },
       filterComparators (source) {
-        if (source.group === 'Submission Detail') {
-          if (source.question === 'Form' || source.question === 'User' || source.question === 'Team' || source.question === 'Status') {
+        if (source.group === 'Form Detail') {
+          if (source.question === 'Form Builder' || source.question === 'User' || source.question === 'Team' || source.question === 'Status') {
             return this.comparators.filter((comparator) => {
               return comparator.comparator === 'equals' ||
                 comparator.comparator === 'not equal to' ||
@@ -318,7 +318,7 @@
             continue
           }
           let newParameter = {}
-          if (this.filters[i].source.group === 'Submission Detail') {
+          if (this.filters[i].source.group === 'Form Detail') {
             newParameter = {
               source: this.filters[i].source.question,
               query: this.filters[i].query,

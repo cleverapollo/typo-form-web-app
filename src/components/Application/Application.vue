@@ -275,8 +275,8 @@
     data () {
       return {
         items: [
-          { title: 'Submissions', type: 'submissions', icon: 'assignment', color: 'blue', admin: false },
-          { title: 'Forms', type: 'forms', icon: 'content_paste', color: 'orange', admin: true },
+          { title: 'Forms', type: 'submissions', icon: 'assignment', color: 'blue', admin: false },
+          { title: 'Form Builder', type: 'forms', icon: 'content_paste', color: 'orange', admin: true },
           { title: 'Users', type: 'users', icon: 'person', color: 'red', admin: true },
           { title: 'Teams', type: 'teams', icon: 'people', color: 'green', admin: false }
         ],

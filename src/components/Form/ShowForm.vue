@@ -3,10 +3,10 @@
     <v-flex d-flex xs12>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <h1 class="headline primary--text py-3">Edit Form</h1>
+          <h1 class="headline primary--text py-3">Edit Form Builder</h1>
         </v-flex>
 
-        <!-- //Form Layout -->
+        <!-- //Form Builder Layout -->
         <v-flex xs12>
           <v-card>
 
@@ -50,7 +50,7 @@
                             <v-icon>delete</v-icon>
                           </v-list-tile-avatar>
                           <v-list-tile-content>
-                            Delete Form
+                            Delete Form Builder
                           </v-list-tile-content>
                         </v-list-tile>
 
@@ -94,7 +94,7 @@
       </v-layout>
     </v-flex>
 
-    <!-- //Delete Form -->
+    <!-- //Delete Form Builder -->
     <DeleteConfirmDialog @delete-action="onDeleteForm" :visible="deleteForm" @close="deleteForm = false"></DeleteConfirmDialog>
   </v-layout>
 </template>

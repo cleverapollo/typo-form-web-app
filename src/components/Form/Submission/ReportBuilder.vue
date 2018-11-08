@@ -138,6 +138,7 @@ import * as _ from 'lodash'
 import moment from 'moment'
 import ReportComponent from './ReportComponent'
 import QuestionCompareMixin from './QuestionCompareMixin.js'
+import UrlMixin from './UrlMixin.js'
 
 export default {
   name: 'ReportBuilder',
@@ -155,7 +156,7 @@ export default {
       }
     }
   },
-  mixins: [QuestionCompareMixin],
+  mixins: [QuestionCompareMixin, UrlMixin],
   components: {
     ReportComponent
   },
@@ -186,7 +187,7 @@ export default {
     },
     openDialog () {
       if (this.filters.length && this.filters[0].source) {
-        this.$store.dispatch('setReportURL', JSON.stringify(this.filters))
+        this.createUrl(JSON.stringify(this.filters))
       }
       this.joinUrlDialog = true
     },
@@ -229,10 +230,10 @@ export default {
           if (!filter.source) {
             return
           }
-          if (filter.source.group === 'Submission Detail') {
+          if (filter.source.group === 'Form Detail') {
             let response = ''
             switch (filter.source.question) {
-              case 'Form':
+              case 'Form Builder':
                 response = submission.form.name
                 break
               case 'Owner':
@@ -310,15 +311,7 @@ export default {
   },
   created: function () {
     if (this.user) {
-      const filter = this.$route.query.filter
-      if (filter) {
-        this.$store.dispatch('loadReportURL', filter)
-          .then((response) => {
-            this.filters = JSON.parse(response.url)
-          })
-      } else {
-        this.addFilter()
-      }
+      this.getUrl()
       this.$store.dispatch('loadAllSubmissions', this.slug)
       this.$store.dispatch('loadForms', this.slug)
         .then((response) => {
