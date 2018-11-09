@@ -9,7 +9,7 @@
 
       <!-- //Title -->
       <v-card-title>
-        <div class="title mb-2 mt-2">Create Team</div>
+        <div class="title mb-2 mt-2">Create Organisation</div>
       </v-card-title>
 
       <!-- //Content -->
@@ -84,12 +84,12 @@
         if (!this.validForm) {
           return false
         }
-        const teamData = {
+        const organisationData = {
           slug: this.slug,
           name: this.name,
           description: this.description
         }
-        this.$store.dispatch('createTeam', teamData)
+        this.$store.dispatch('createOrganisation', organisationData)
           .then(response => {
             this.reset()
           })

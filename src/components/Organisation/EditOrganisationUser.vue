@@ -1,16 +1,16 @@
 <template>
-  <v-dialog persistent v-model="editInvitedTeamUser" max-width="600px">
+  <v-dialog persistent v-model="editOrganisationUser" max-width="600px">
     <v-btn icon slot="activator" class="mx-0"><v-icon color="teal">edit</v-icon></v-btn>
     <v-card>
 
       <!-- //Title -->
       <v-card-title>
-        <div class="title mb-2 mt-2">Edit Invited User</div>
+        <div class="title mb-2 mt-2">Edit User</div>
       </v-card-title>
 
       <!-- //Content -->
       <v-card-text>
-        <v-layout row wrap>
+        <v-layout row>
           <v-flex xs12>
             <v-text-field
               name="email"
@@ -41,39 +41,40 @@
           </v-flex>
         </v-layout>
       </v-card-actions>
+
     </v-card>
   </v-dialog>
 </template>
 
 <script>
   export default {
-    props: ['user', 'slug', 'teamId'],
+    props: ['user', 'slug', 'organisationId'],
     data () {
       return {
         id: this.user.id,
-        editInvitedTeamUser: false,
-        editedEmail: this.user.invitee,
-        editedRole: this.user.team_role_id
+        editOrganisationUser: false,
+        editedEmail: this.user.email,
+        editedRole: this.user.organisation_role_id
       }
     },
     methods: {
       onSaveChanges () {
-        if (this.editedRole !== this.user.team_role_id) {
-          this.$store.dispatch('updateInvitedTeamUser',
+        if (this.editedRole !== this.user.organisation_role_id) {
+          this.$store.dispatch('updateOrganisationUser',
             {
               slug: this.slug,
-              teamId: this.teamId,
+              organisationId: this.organisationId,
               id: this.id,
               email: this.editedEmail,
-              roleId: this.editedRole
+              organisationRoleId: this.editedRole
             })
         }
-        this.editInvitedTeamUser = false
+        this.editOrganisationUser = false
       },
       onCancel () {
-        this.editedEmail = this.user.invitee
-        this.editedRole = this.user.team_role_id
-        this.editInvitedTeamUser = false
+        this.editedEmail = this.user.email
+        this.editedRole = this.user.organisation_role_id
+        this.editOrganisationUser = false
       }
     },
     computed: {

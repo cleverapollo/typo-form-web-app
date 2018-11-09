@@ -107,7 +107,7 @@ export default {
         {'group': 'Form Detail', 'question': 'Form Builder'},
         {'group': 'Form Detail', 'question': 'Owner'},
         {'group': 'Form Detail', 'question': 'Owner Email'},
-        {'group': 'Form Detail', 'question': 'Team'},
+        {'group': 'Form Detail', 'question': 'Organisation'},
         {'group': 'Form Detail', 'question': 'Progress'},
         {'group': 'Form Detail', 'question': 'Period Start'},
         {'group': 'Form Detail', 'question': 'Period End'},

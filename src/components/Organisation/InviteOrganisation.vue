@@ -24,7 +24,7 @@
                 :items="invitationRoles"
                 item-text="name"
                 item-value="id"
-                v-model="item.team_role_id"
+                v-model="item.organisation_role_id"
                 label="Role"
                 single-line
                 required
@@ -64,10 +64,10 @@
 <script>
   import * as _ from 'lodash'
   export default {
-    props: ['slug', 'teamId', 'visible'],
+    props: ['slug', 'organisationId', 'visible'],
     data () {
       return {
-        invitations: [{ email: '', team_role_id: '' }]
+        invitations: [{ email: '', organisation_role_id: '' }]
       }
     },
     computed: {
@@ -92,11 +92,11 @@
     },
     methods: {
       close () {
-        this.invitations = [{ email: '', team_role_id: '' }]
+        this.invitations = [{ email: '', organisation_role_id: '' }]
         this.show = false
       },
       addUser () {
-        this.invitations.push({ email: '', team_role_id: '' })
+        this.invitations.push({ email: '', organisation_role_id: '' })
       },
       removeUser (index) {
         this.invitations.splice(index, 1)
@@ -109,7 +109,7 @@
           return
         }
         this.show = false
-        this.$store.dispatch('inviteTeam', {invitations: invitations, id: this.teamId, slug: this.slug})
+        this.$store.dispatch('inviteOrganisation', {invitations: invitations, id: this.organisationId, slug: this.slug})
       },
       multiEmail (insertIndex, value) {
         if (!value.includes(',')) {
@@ -122,7 +122,7 @@
           if (index === 0) {
             return
           }
-          _this.invitations.splice(insertIndex + index, 0, { email: value, team_role_id: _this.invitations[insertIndex].team_role_id })
+          _this.invitations.splice(insertIndex + index, 0, { email: value, organisation_role_id: _this.invitations[insertIndex].organisation_role_id })
         })
       }
     }

@@ -2,10 +2,10 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import application from './application'
-import team from './team'
+import organisation from './organisation'
 import form from './form'
 import user from './user'
-import teamuser from './teamuser'
+import organisationuser from './organisationuser'
 import section from './section'
 import question from './question'
 import answer from './answer'
@@ -23,10 +23,10 @@ export const store = new Vuex.Store({
   modules: {
     auth: auth,
     application: application,
-    team: team,
+    organisation: organisation,
     form: form,
     user: user,
-    teamuser: teamuser,
+    organisationuser: organisationuser,
     section: section,
     question: question,
     answer: answer,

@@ -30,14 +30,14 @@
             ></v-autocomplete>
           </v-flex>
 
-          <!-- //Teams -->
-          <v-flex xs12 v-if="teams.length">
+          <!-- //Organisations -->
+          <v-flex xs12 v-if="organisations.length">
             <v-autocomplete
-              :items="teams"
+              :items="organisations"
               item-value="id"
               item-text="name"
-              v-model="teamId"
-              label="Team"
+              v-model="organisationId"
+              label="Organisation"
             ></v-autocomplete>
           </v-flex>
 
@@ -136,7 +136,7 @@
         periodEnd: null,
         periodStartModal: false,
         periodEndModal: false,
-        teamId: null,
+        organisationId: null,
         userId: null
       }
     },
@@ -151,8 +151,8 @@
           }
         }
       },
-      teams () {
-        return this.$store.getters.loadedTeams(this.slug)
+      organisations () {
+        return this.$store.getters.loadedOrganisations(this.slug)
       },
       forms () {
         return _.sortBy(this.$store.getters.loadedForms(this.slug), element => {
@@ -163,8 +163,8 @@
         return this.$store.getters.roles
       },
       users () {
-        if (this.teamId) {
-          return this.$store.getters.loadedSubmissionTeamUsers(this.teamId)
+        if (this.organisationId) {
+          return this.$store.getters.loadedSubmissionOrganisationUsers(this.organisationId)
         }
         return this.$store.getters.loadedSubmissionUsers(this.slug)
       },
@@ -203,7 +203,7 @@
       save () {
         let data = {
           formId: this.formId,
-          teamId: this.teamId,
+          organisationId: this.organisationId,
           userId: this.userId,
           periodStart: this.periodStart,
           periodEnd: this.periodEnd
@@ -227,7 +227,7 @@
         this.periodEnd = null
         this.periodStartMenu = false
         this.periodEndMenu = false
-        this.teamId = null
+        this.organisationId = null
         this.userId = null
         this.show = false
       }

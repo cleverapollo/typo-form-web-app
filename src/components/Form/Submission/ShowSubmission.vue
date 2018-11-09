@@ -279,10 +279,10 @@
         return this.progressNumber === 100
       },
       submissionOwner () {
-        if (this.submission.team == null) {
+        if (this.submission.organisation == null) {
           return this.submission.user.first_name + ' ' + this.submission.user.last_name
         } else {
-          return this.submission.team.name
+          return this.submission.organisation.name
         }
       },
       submissionPeriod () {
@@ -375,7 +375,7 @@
     },
     created () {
       this.$store.dispatch('loadUsers', this.slug)
-      this.$store.dispatch('loadTeams', this.slug)
+      this.$store.dispatch('loadOrganisations', this.slug)
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadAllSubmission', {slug: this.slug, id: this.id})
         .then((response) => {

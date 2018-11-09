@@ -1,11 +1,11 @@
 <template>
-  <v-dialog width="600px" persistent v-model="editTeam">
-    <div slot="activator">Edit Team</div>
+  <v-dialog width="600px" persistent v-model="editOrganisation">
+    <div slot="activator">Edit Organisation</div>
     <v-card>
 
       <!-- //Title -->
       <v-card-title>
-        <div class="title mb-2 mt-2">Edit Team</div>
+        <div class="title mb-2 mt-2">Edit Organisation</div>
       </v-card-title>
 
       <!-- //Content -->
@@ -45,13 +45,13 @@
 
 <script>
   export default {
-    props: ['team', 'slug'],
+    props: ['organisation', 'slug'],
     data () {
       return {
-        id: this.team.id,
-        editTeam: false,
-        editedName: this.team.name,
-        editedDescription: this.team.description
+        id: this.organisation.id,
+        editOrganisation: false,
+        editedName: this.organisation.name,
+        editedDescription: this.organisation.description
       }
     },
     methods: {
@@ -59,8 +59,8 @@
         if (this.editedName.trim() === '') {
           return
         }
-        this.editTeam = false
-        this.$store.dispatch('updateTeam',
+        this.editOrganisation = false
+        this.$store.dispatch('updateOrganisation',
           {
             slug: this.slug,
             id: this.id,
@@ -69,9 +69,9 @@
           })
       },
       onCancel () {
-        this.editedName = this.team.name
-        this.editedDescription = this.team.description
-        this.editTeam = false
+        this.editedName = this.organisation.name
+        this.editedDescription = this.organisation.description
+        this.editOrganisation = false
       }
     }
   }

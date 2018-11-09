@@ -278,7 +278,7 @@
           { title: 'Forms', type: 'submissions', icon: 'assignment', color: 'blue', admin: false },
           { title: 'Form Builder', type: 'forms', icon: 'content_paste', color: 'orange', admin: true },
           { title: 'Users', type: 'users', icon: 'person', color: 'red', admin: true },
-          { title: 'Teams', type: 'teams', icon: 'people', color: 'green', admin: false }
+          { title: 'Organisations', type: 'organisations', icon: 'people', color: 'green', admin: false }
         ],
         countToStart: 0,
         countToDuration: 3000,
@@ -327,8 +327,8 @@
       usersCount () {
         return this.$store.getters.loadedUsers(this.slug).length
       },
-      teamsCount () {
-        return this.$store.getters.loadedTeams(this.slug).length
+      organisationsCount () {
+        return this.$store.getters.loadedOrganisations(this.slug).length
       },
       submissionsCount () {
         return this.$store.getters.loadedAllSubmissions(this.slug).length
@@ -407,7 +407,7 @@
       getPropertyCount (type) {
         switch (type) {
           case 'users': return this.usersCount
-          case 'teams': return this.teamsCount
+          case 'organisations': return this.organisationsCount
           case 'forms': return this.formsCount
           case 'submissions': return this.submissionsCount
           default: return 0
@@ -440,7 +440,7 @@
       }
     },
     created () {
-      this.$store.dispatch('loadTeams', this.slug)
+      this.$store.dispatch('loadOrganisations', this.slug)
       this.$store.dispatch('loadForms', this.slug)
       this.$store.dispatch('loadAllSubmissions', this.slug)
       this.$store.dispatch('loadUsers', this.slug)

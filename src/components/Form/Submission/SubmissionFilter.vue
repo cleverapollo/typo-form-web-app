@@ -160,10 +160,10 @@
               headers.push({ text: 'User ID', value: 'user.id', sortable: true, align: 'left' })
             } else if (filter.source.question === 'User') {
               headers.push({ text: 'User', value: 'user.name', sortable: true, align: 'left' })
-            } else if (filter.source.question === 'Team ID') {
-              headers.push({ text: 'Team ID', value: 'team.id', sortable: true, align: 'left' })
-            } else if (filter.source.question === 'Team') {
-              headers.push({ text: 'Team', value: 'team.name', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Organisation ID') {
+              headers.push({ text: 'Organisation ID', value: 'organisation.id', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Organisation') {
+              headers.push({ text: 'Organisation', value: 'organisation.name', sortable: true, align: 'left' })
             } else if (filter.source.question === 'Progress') {
               headers.push({ text: 'Progress', value: 'progress', sortable: true, align: 'left' })
             } else if (filter.source.question === 'Period Start') {
@@ -187,7 +187,7 @@
         let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
         submissions.forEach((submission) => {
           submission.user.name = submission.user.first_name + ' ' + submission.user.last_name
-          submission.owner = submission.team ? submission.team.name : submission.user.first_name + ' ' + submission.user.last_name
+          submission.owner = submission.organisation ? submission.organisation.name : submission.user.first_name + ' ' + submission.user.last_name
           submission.status = this.status(submission.status_id)
         })
         return submissions
@@ -205,8 +205,8 @@
           {'group': 'Form Detail', 'question': 'Form Builder'},
           {'group': 'Form Detail', 'question': 'User ID'},
           {'group': 'Form Detail', 'question': 'User'},
-          {'group': 'Form Detail', 'question': 'Team ID'},
-          {'group': 'Form Detail', 'question': 'Team'},
+          {'group': 'Form Detail', 'question': 'Organisation ID'},
+          {'group': 'Form Detail', 'question': 'Organisation'},
           {'group': 'Form Detail', 'question': 'Progress'},
           {'group': 'Form Detail', 'question': 'Period Start'},
           {'group': 'Form Detail', 'question': 'Period End'},
@@ -273,7 +273,7 @@
       },
       filterComparators (source) {
         if (source.group === 'Form Detail') {
-          if (source.question === 'Form Builder' || source.question === 'User' || source.question === 'Team' || source.question === 'Status') {
+          if (source.question === 'Form Builder' || source.question === 'User' || source.question === 'Organisation' || source.question === 'Status') {
             return this.comparators.filter((comparator) => {
               return comparator.comparator === 'equals' ||
                 comparator.comparator === 'not equal to' ||
@@ -344,7 +344,7 @@
     },
     created: function () {
       this.$store.dispatch('loadUsers', this.slug)
-      this.$store.dispatch('loadTeams', this.slug)
+      this.$store.dispatch('loadOrganisations', this.slug)
       this.$store.dispatch('loadForms', this.slug)
         .then((response) => {
           const forms = response.data.forms

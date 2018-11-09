@@ -56,7 +56,7 @@
             } else {
               subdomain[0] = slug
             }
-            window.location.href = url[0] + '://' + subdomain.join('.') + '/teams/' + response.data.data.id
+            window.location.href = url[0] + '://' + subdomain.join('.') + '/organisations/' + response.data.data.id
           }
         })
         .catch(error => {

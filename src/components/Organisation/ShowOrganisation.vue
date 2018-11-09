@@ -1,11 +1,11 @@
 <template>
-  <v-layout row wrap v-if='team'>
+  <v-layout row wrap v-if='organisation'>
     <v-flex d-flex xs12>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <h1 class="headline primary--text py-3">{{ team.name }}</h1>
+          <h1 class="headline primary--text py-3">{{ organisation.name }}</h1>
           <div class="text-xs-right">
-            <v-menu offset-y bottom left v-if="isTeamAdmin">
+            <v-menu offset-y bottom left v-if="isOrganisationAdmin">
               <v-btn icon slot="activator">
                 <v-icon>more_vert</v-icon>
               </v-btn>
@@ -16,16 +16,16 @@
                     <v-icon>edit</v-icon>
                   </v-list-tile-avatar>
                   <v-list-tile-content>
-                    <EditTeam :team="team" :slug="slug" class="my-1"></EditTeam>
+                    <EditOrganisation :organisation="organisation" :slug="slug" class="my-1"></EditOrganisation>
                   </v-list-tile-content>
                 </v-list-tile>
 
-                <v-list-tile @click.stop="deleteTeam = true">
+                <v-list-tile @click.stop="deleteOrganisation = true">
                   <v-list-tile-avatar>
                     <v-icon>delete</v-icon>
                   </v-list-tile-avatar>
                   <v-list-tile-content>
-                    Delete Team
+                    Delete Organisation
                   </v-list-tile-content>
                 </v-list-tile>
               </v-list>
@@ -33,8 +33,8 @@
           </div>
         </v-flex>
         <v-flex xs12>
-          <div class="subheading py-2 px-3 break-all">{{ team.description }}</div>
-          <div class="subheading py-2 px-3 break-all" v-if="isTeamAdmin">{{ joinURL }}</div>
+          <div class="subheading py-2 px-3 break-all">{{ organisation.description }}</div>
+          <div class="subheading py-2 px-3 break-all" v-if="isOrganisationAdmin">{{ joinURL }}</div>
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -69,9 +69,9 @@
                     <td>{{ props.item.email }}</td>
                     <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
-                    <td v-if='isTeamAdmin' class="justify-center layout px-0">
-                      <EditTeamUser :user="props.item" :slug="slug" :teamId="id"></EditTeamUser>
-                      <v-btn icon class="mx-0" @click="onDeleteTeamUser(props.item.id)">
+                    <td v-if='isOrganisationAdmin' class="justify-center layout px-0">
+                      <EditOrganisationUser :user="props.item" :slug="slug" :organisationId="id"></EditOrganisationUser>
+                      <v-btn icon class="mx-0" @click="onDeleteOrganisationUser(props.item.id)">
                         <v-icon color="pink">delete</v-icon>
                       </v-btn>
                     </td>
@@ -107,9 +107,9 @@
                     <td>{{ props.item.invitee }}</td>
                     <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
-                    <td v-if='isTeamAdmin' class="justify-center layout px-0">
-                      <EditInvitedTeamUser :user="props.item" :slug="slug" :teamId="id"></EditInvitedTeamUser>
-                      <v-btn icon class="mx-0" @click="onDeleteInvitedTeamUser(props.item.id)">
+                    <td v-if='isOrganisationAdmin' class="justify-center layout px-0">
+                      <EditInvitedOrganisationUser :user="props.item" :slug="slug" :organisationId="id"></EditInvitedOrganisationUser>
+                      <v-btn icon class="mx-0" @click="onDeleteInvitedOrganisationUser(props.item.id)">
                         <v-icon color="pink">delete</v-icon>
                       </v-btn>
                     </td>
@@ -126,26 +126,26 @@
       </v-layout>
     </v-flex>
 
-    <v-tooltip top v-if="isTeamAdmin">
+    <v-tooltip top v-if="isOrganisationAdmin">
       <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="inviteUsers = true">
         <v-icon>add</v-icon>
       </v-btn>
       <span>Invite Users</span>
     </v-tooltip>
 
-    <!-- //Invite Team -->
-    <InviteTeam :slug="slug" :teamId="id" :visible="inviteUsers" @close="inviteUsers = false"></InviteTeam>
+    <!-- //Invite Organisation -->
+    <InviteOrganisation :slug="slug" :organisationId="id" :visible="inviteUsers" @close="inviteUsers = false"></InviteOrganisation>
 
-    <!-- //Delete Team -->
-    <DeleteConfirmDialog @delete-action="onDeleteTeam" :visible="deleteTeam" @close="deleteTeam = false"></DeleteConfirmDialog>
+    <!-- //Delete Organisation -->
+    <DeleteConfirmDialog @delete-action="onDeleteOrganisation" :visible="deleteOrganisation" @close="deleteOrganisation = false"></DeleteConfirmDialog>
   </v-layout>
 </template>
 
 <script>
-  import InviteTeam from './InviteTeam'
-  import EditTeam from './EditTeam'
-  import EditTeamUser from './EditTeamUser'
-  import EditInvitedTeamUser from './EditInvitedTeamUser'
+  import InviteOrganisation from './InviteOrganisation'
+  import EditOrganisation from './EditOrganisation'
+  import EditOrganisationUser from './EditOrganisationUser'
+  import EditInvitedOrganisationUser from './EditInvitedOrganisationUser'
   import moment from 'moment'
   export default {
     props: ['id'],
@@ -154,34 +154,34 @@
         userSearch: '',
         invitedUserSearch: '',
         inviteUsers: false,
-        deleteTeam: false,
+        deleteOrganisation: false,
         slug: window.location.hostname.split('.')[0]
       }
     },
     components: {
-      InviteTeam,
-      EditTeam,
-      EditTeamUser,
-      EditInvitedTeamUser
+      InviteOrganisation,
+      EditOrganisation,
+      EditOrganisationUser,
+      EditInvitedOrganisationUser
     },
     computed: {
       roles () {
         return this.$store.getters.roles
       },
-      team () {
-        return this.$store.getters.loadedTeam(this.slug, parseInt(this.id))
+      organisation () {
+        return this.$store.getters.loadedOrganisation(this.slug, parseInt(this.id))
       },
-      isTeamAdmin () {
+      isOrganisationAdmin () {
         return this.userIsAdmin || this.isSuperUser
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
       },
       userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.team) {
+        if (!this.userIsAuthenticated || !this.organisation) {
           return false
         }
-        return this.getRole(this.team.team_role_id) === 'Admin'
+        return this.getRole(this.organisation.organisation_role_id) === 'Admin'
       },
       isSuperUser () {
         if (!this.userIsAuthenticated) {
@@ -190,21 +190,21 @@
         return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       users () {
-        let users = this.$store.getters.loadedTeamUsers(parseInt(this.id))
+        let users = this.$store.getters.loadedOrganisationUsers(parseInt(this.id))
         users.forEach((user) => {
-          user.role = this.getRole(user.team_role_id)
+          user.role = this.getRole(user.organisation_role_id)
         })
         return users
       },
       invitedUsers () {
-        let invitedUsers = this.$store.getters.invitedTeamUsers(parseInt(this.id))
+        let invitedUsers = this.$store.getters.invitedOrganisationUsers(parseInt(this.id))
         invitedUsers.forEach((invitedUser) => {
-          invitedUser.role = this.getRole(invitedUser.team_role_id)
+          invitedUser.role = this.getRole(invitedUser.organisation_role_id)
         })
         return invitedUsers
       },
       joinURL () {
-        return window.location.origin + '/join/team/' + this.team.share_token
+        return window.location.origin + '/join/organisation/' + this.organisation.share_token
       },
       userHeaders () {
         let defaultUserHeaders = [
@@ -214,7 +214,7 @@
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
           { text: 'Joined', value: 'created_at.date', sortable: true, align: 'left' }
         ]
-        if (this.isTeamAdmin) {
+        if (this.isOrganisationAdmin) {
           defaultUserHeaders.push({ text: 'Action', sortable: false, align: 'center' })
         }
         return defaultUserHeaders
@@ -225,7 +225,7 @@
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
           { text: 'Invited', value: 'created_at.date', sortable: true, align: 'left' }
         ]
-        if (this.isTeamAdmin) {
+        if (this.isOrganisationAdmin) {
           defaultInvitedHeaders.push({ text: 'Action', sortable: false, align: 'center' })
         }
         return defaultInvitedHeaders
@@ -235,33 +235,33 @@
       }
     },
     methods: {
-      onDeleteTeam () {
-        this.$store.dispatch('deleteTeam', {
+      onDeleteOrganisation () {
+        this.$store.dispatch('deleteOrganisation', {
           slug: this.slug,
-          id: this.team.id
+          id: this.organisation.id
         })
-        this.$router.push('/teams')
+        this.$router.push('/organisations')
       },
-      onDeleteTeamUser (teamUserId) {
-        this.$store.dispatch('deleteTeamUser', {
+      onDeleteOrganisationUser (organisationUserId) {
+        this.$store.dispatch('deleteOrganisationUser', {
           slug: this.slug,
-          teamId: this.team.id,
-          id: teamUserId
+          organisationId: this.organisation.id,
+          id: organisationUserId
         })
           .then(() => {
-            if (this.user.id === teamUserId) {
-              this.$store.dispatch('loadTeams', this.slug)
+            if (this.user.id === organisationUserId) {
+              this.$store.dispatch('loadOrganisations', this.slug)
                 .then(() => {
-                  this.$router.push('/teams')
+                  this.$router.push('/organisations')
                 })
             }
           })
       },
-      onDeleteInvitedTeamUser (teamUserId) {
-        this.$store.dispatch('deleteInvitedTeamUser', {
+      onDeleteInvitedOrganisationUser (organisationUserId) {
+        this.$store.dispatch('deleteInvitedOrganisationUser', {
           slug: this.slug,
-          teamId: this.team.id,
-          id: teamUserId
+          organisationId: this.organisation.id,
+          id: organisationUserId
         })
       },
       getRole (roleId) {
@@ -272,8 +272,8 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadTeams', this.slug)
-      this.$store.dispatch('loadTeamUsers', {slug: this.slug, teamId: this.id})
+      this.$store.dispatch('loadOrganisations', this.slug)
+      this.$store.dispatch('loadOrganisationUsers', {slug: this.slug, organisationId: this.id})
     },
     filters: {
       moment: function (date) {

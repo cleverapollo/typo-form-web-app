@@ -34,14 +34,14 @@
             ></v-autocomplete>
           </v-flex>
 
-          <!-- //Teams -->
+          <!-- //Organisations -->
           <v-flex xs12>
             <v-autocomplete
-              :items="teams"
+              :items="organisations"
               item-value="id"
               item-text="name"
-              v-model="teamId"
-              label="Working as a team? Select your team."
+              v-model="organisationId"
+              label="Working as a organisation? Select your organisation."
             ></v-autocomplete>
           </v-flex>
           
@@ -139,7 +139,7 @@
         periodStart: this.submission.period_start ? this.submission.period_start.substring(0, 10) : null,
         periodEndModal: false,
         periodEnd: this.submission.period_end ? this.submission.period_end.substring(0, 10) : null,
-        teamId: this.submission.team ? this.submission.team.id : null,
+        organisationId: this.submission.organisation ? this.submission.organisation.id : null,
         userId: this.submission.user ? this.submission.user.id : null
       }
     },
@@ -150,7 +150,7 @@
         let submissionData = {
           id: this.id,
           formId: this.formId,
-          teamId: this.teamId,
+          organisationId: this.organisationId,
           userId: this.userId,
           periodStart: this.periodStart,
           periodEnd: this.periodEnd
@@ -162,7 +162,7 @@
         this.editSubmission = false
         this.periodStart = this.submission.period_start ? this.submission.period_start.substring(0, 10) : null
         this.periodEnd = this.submission.period_end ? this.submission.period_end.substring(0, 10) : null
-        this.teamId = this.submission.team ? this.submission.team.id : null
+        this.organisationId = this.submission.organisation ? this.submission.organisation.id : null
         this.userId = this.submission.user ? this.submission.user.id : null
       }
     },
@@ -170,12 +170,12 @@
       loading () {
         return this.$store.getters.loading
       },
-      teams () {
-        return this.$store.getters.loadedTeams(this.slug)
+      organisations () {
+        return this.$store.getters.loadedOrganisations(this.slug)
       },
       users () {
-        if (this.teamId) {
-          return this.$store.getters.loadedSubmissionTeamUsers(this.teamId)
+        if (this.organisationId) {
+          return this.$store.getters.loadedSubmissionOrganisationUsers(this.organisationId)
         }
         return this.$store.getters.loadedSubmissionUsers(this.slug)
       }

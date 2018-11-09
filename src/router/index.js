@@ -17,9 +17,9 @@ import ApplicationSettings from '@/components/Application/ApplicationSettings'
 // Users
 import Users from '@/components/User/Users'
 
-// Teams
-import Teams from '@/components/Team/Teams'
-import ShowTeam from '@/components/Team/ShowTeam'
+// Organisations
+import Organisations from '@/components/Organisation/Organisations'
+import ShowOrganisation from '@/components/Organisation/ShowOrganisation'
 
 // Forms
 import Forms from '@/components/Form/Forms'
@@ -92,18 +92,18 @@ const router = new Router({
       }
     },
     {
-      path: '/teams',
-      name: 'Teams',
-      component: Teams,
+      path: '/organisations',
+      name: 'Organisations',
+      component: Organisations,
       meta: {
         application: true,
         requiresAuth: true
       }
     },
     {
-      path: '/teams/:id',
-      name: 'ShowTeam',
-      component: ShowTeam,
+      path: '/organisations/:id',
+      name: 'ShowOrganisation',
+      component: ShowOrganisation,
       props: true,
       meta: {
         application: true,

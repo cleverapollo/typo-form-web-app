@@ -118,7 +118,7 @@
       submissions () {
         let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
         submissions.forEach((submission) => {
-          submission.owner = submission.team ? submission.team.name : submission.user.first_name + ' ' + submission.user.last_name
+          submission.owner = submission.organisation ? submission.organisation.name : submission.user.first_name + ' ' + submission.user.last_name
           submission.status = this.status(submission.status_id)
         })
         return submissions
@@ -161,10 +161,10 @@
     created: function () {
       if (this.user) {
         this.$store.dispatch('loadUsers', this.slug)
-        this.$store.dispatch('loadTeams', this.slug)
+        this.$store.dispatch('loadOrganisations', this.slug)
         this.$store.dispatch('loadForms', this.slug)
         this.$store.dispatch('loadAllSubmissions', this.slug)
-        this.$store.dispatch('loadAllTeamUsers', this.slug)
+        this.$store.dispatch('loadAllOrganisationUsers', this.slug)
       }
     },
     filters: {

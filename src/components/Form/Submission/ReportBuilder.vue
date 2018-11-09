@@ -242,8 +242,8 @@ export default {
               case 'Owner Email':
                 response = submission.user.email
                 break
-              case 'Team':
-                response = submission.team.name
+              case 'Organisation':
+                response = submission.organisation.name
                 break
               case 'Progress':
                 response = submission.progress

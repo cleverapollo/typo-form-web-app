@@ -40,7 +40,7 @@
           if (this.type === 'application') {
             this.$router.push('/' + response.data.data.slug)
           } else {
-            this.$router.push('/' + response.data.slug + '/teams/' + response.data.data.id)
+            this.$router.push('/' + response.data.slug + '/organisations/' + response.data.data.id)
           }
         })
         .catch(error => {

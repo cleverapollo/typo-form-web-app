@@ -173,8 +173,8 @@ export default {
         submission.user_id = payload.userId
       }
 
-      if (payload.teamId) {
-        submission.team_id = payload.teamId
+      if (payload.organisationId) {
+        submission.organisation_id = payload.organisationId
       }
 
       return new Promise((resolve, reject) => {
@@ -202,7 +202,7 @@ export default {
       commit('setLoading', true)
 
       let submission = {
-        team_id: payload.teamId,
+        organisation_id: payload.organisationId,
         user_id: payload.userId
       }
 
@@ -357,27 +357,27 @@ export default {
         })
       }
     },
-    loadedSubmissionTeams (state, getters, rootState) {
+    loadedSubmissionOrganisations (state, getters, rootState) {
       return (slug, formId) => {
-        if (!rootState.team.loadedTeams[slug]) {
+        if (!rootState.organisation.loadedOrganisations[slug]) {
           return []
         }
 
-        let teams = rootState.team.loadedTeams[slug].slice(0)
-        teams.push({id: 0, name: 'No Team'})
+        let organisations = rootState.organisation.loadedOrganisations[slug].slice(0)
+        organisations.push({id: 0, name: 'No Organisation'})
         const submissions = state.loadedSubmissions[formId]
         if (submissions) {
           for (var i = 0; i < submissions.length; i++) {
-            teams = teams.filter((team) => {
-              if (!submissions[i].team) {
-                return team.id !== 0
+            organisations = organisations.filter((organisation) => {
+              if (!submissions[i].organisation) {
+                return organisation.id !== 0
               } else {
-                return submissions[i].team.name !== team.name
+                return submissions[i].organisation.name !== organisation.name
               }
             })
           }
         }
-        return teams
+        return organisations
       }
     }
   }
