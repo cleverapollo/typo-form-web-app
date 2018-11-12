@@ -106,7 +106,7 @@ export default {
           }, this)
         }
       }
-      let progress = questionCount !== 0 ? responseCount * 100 / questionCount : 0
+      let progress = questionCount !== 0 ? responseCount * 100 / questionCount : 100
       return progress < 0 ? 0 : progress > 100 ? 100 : progress
     },
     isSectionTrigger (item) {

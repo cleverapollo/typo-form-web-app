@@ -132,14 +132,16 @@
                   ></formNavigation>
                 </v-flex>
 
-                <v-flex xs12 md4 offset-md4 class="mt-4">
-                  <v-btn block color="success" @click=onSendSubmission :disabled="!sendAble">
-                    Submit
-                  </v-btn>
-                </v-flex>
-                <v-flex xs12 text-xs-center class="mt-3">
-                  <p class="caption">This form builder can only be submitted once all mandatory questions have been answered.</p>
-                </v-flex>
+                <template v-if="submittable">
+                  <v-flex xs12 md4 offset-md4 class="my-3" v-if="sendAble">
+                    <v-btn block color="success" @click=onSendSubmission :disabled="!sendAble">
+                      Submit
+                    </v-btn>
+                  </v-flex>
+                  <v-flex xs12 text-xs-center class="my-3" v-else>
+                    <p class="caption">This form can only be submitted once all mandatory questions have been answered.</p>
+                  </v-flex>
+                </template>
               </v-layout>
 
             </v-card-actions>
@@ -263,20 +265,11 @@
         })
         return status ? status.status : 'undefined'
       },
+      submittable () {
+        return this.form.allow_submit === 1
+      },
       sendAble () {
-        if (new Date(this.periodStart).getTime() - new Date().getTime() > 0 || new Date(this.periodEnd).getTime() - new Date().getTime() < 0) {
-          return false
-        }
-
-        if (this.form.allow_submit === 0) {
-          return false
-        }
-
-        if (this.status !== 'Open') {
-          return false
-        }
-
-        return this.progressNumber === 100
+        return this.submittable && this.status === 'Open' && this.progressNumber >= 100
       },
       submissionOwner () {
         if (this.submission.organisation == null) {

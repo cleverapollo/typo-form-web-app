@@ -2,7 +2,8 @@
 
   <v-list>
     <v-list-group
-      v-for="(item, index) in list"
+      v-for="(item, index) in sectionList"
+      v-model="item.active"
       :key="item.id"
       v-if="!isSectionTrigger(item) || submissionId === -1"
     >
@@ -41,6 +42,14 @@
         opened: true
       }
     },
+    computed: {
+      sectionList () {
+        return _.forEach(this.list, item => {
+          item.active = item.id && item.id === this.section.parent_section_id
+          return item
+        })
+      }
+    },
     methods: {
       children (item) {
         return _.sortBy(this.$store.getters.loadedChildrenSection(this.formId, item.id), element => {
@@ -56,7 +65,7 @@
         }
       },
       active (item) {
-        return (this.section && item.id === this.section.id) ? 'active' : ''
+        return (this.section && item.id === this.section.id) ? 'active' : null
       }
     }
   }
