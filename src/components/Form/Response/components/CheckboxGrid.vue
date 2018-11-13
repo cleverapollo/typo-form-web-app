@@ -33,14 +33,14 @@
 <script>
   export default {
     name: 'checkbox-grid',
-    props: ['question', 'answers', 'responses', 'submissionId', 'disabled'],
+    props: ['question', 'answers', 'responses', 'formId', 'disabled'],
     data () {
       return {
         checkAnswers: []
       }
     },
     watch: {
-      submissionId (value) {
+      formId (value) {
         this.created()
       }
     },

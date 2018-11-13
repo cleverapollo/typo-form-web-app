@@ -1,5 +1,5 @@
 const API_URL = process.env.API_URL
-const FORM_URL = `${API_URL}form/`
+const FORM_TEMPLATE_URL = `${API_URL}form-builder/`
 const SECTION_URL = '/section'
 const MOVE_URL = '/move'
 
@@ -11,42 +11,42 @@ export default {
   mutations: {
     setLoadedSections (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      sections[payload.formId] = payload.sections
+      sections[payload.formTemplateId] = payload.sections
       state.loadedSections = sections
     },
     createSection (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      if (!sections[payload.formId]) {
-        sections[payload.formId] = []
+      if (!sections[payload.formTemplateId]) {
+        sections[payload.formTemplateId] = []
       }
-      sections[payload.formId].push(payload.section)
+      sections[payload.formTemplateId].push(payload.section)
       state.loadedSections = sections
     },
     updateSection (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const index = sections[payload.formId].findIndex(section => {
+      const index = sections[payload.formTemplateId].findIndex(section => {
         return section.id === payload.section.id
       })
-      sections[payload.formId].splice(index, 1, payload.section)
+      sections[payload.formTemplateId].splice(index, 1, payload.section)
       state.loadedSections = sections
     },
     moveSection (state, payload) {
       const parentSectionId = payload.section ? payload.section.id : null
       if (payload.section !== null) {
-        const index = state.loadedSections[payload.formId].findIndex(section => {
+        const index = state.loadedSections[payload.formTemplateId].findIndex(section => {
           return section.id === parentSectionId
         })
-        state.loadedSections[payload.formId].splice(index, 1, payload.section)
+        state.loadedSections[payload.formTemplateId].splice(index, 1, payload.section)
       }
 
-      const childSections = state.loadedSections[payload.formId].filter((section) => {
+      const childSections = state.loadedSections[payload.formTemplateId].filter((section) => {
         return section.parent_section_id === parentSectionId && section.order >= payload.order
       })
       childSections.map(function (section) {
         section.order = section.order + 1
       })
 
-      const section = state.loadedSections[payload.formId].find((section) => {
+      const section = state.loadedSections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       section.order = payload.order
@@ -54,7 +54,7 @@ export default {
     },
     deleteSection (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      sections[payload.formId] = sections[payload.formId].filter(e => {
+      sections[payload.formTemplateId] = sections[payload.formTemplateId].filter(e => {
         return e.id !== payload.id
       })
       state.loadedSections = sections
@@ -65,7 +65,7 @@ export default {
 
     setLoadedQuestions (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       section.questions = payload.questions
@@ -73,20 +73,20 @@ export default {
     },
     createQuestion (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       section.questions.push(payload.question)
       state.loadedSections = sections
     },
     duplicateQuestion (state, payload) {
-      const childSections = state.loadedSections[payload.formId].filter((section) => {
+      const childSections = state.loadedSections[payload.formTemplateId].filter((section) => {
         return section.parent_section_id === payload.sectionId && section.order >= payload.question.order
       })
       childSections.map(function (section) {
         section.order = section.order + 1
       })
-      const section = state.loadedSections[payload.formId].find((section) => {
+      const section = state.loadedSections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       if (section) {
@@ -100,7 +100,7 @@ export default {
     },
     updateQuestion (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       const index = section.questions.findIndex(question => {
@@ -110,20 +110,20 @@ export default {
       state.loadedSections = sections
     },
     moveQuestion (state, payload) {
-      const oldSection = state.loadedSections[payload.formId].find((section) => {
+      const oldSection = state.loadedSections[payload.formTemplateId].find((section) => {
         return section.id === payload.oldSectionId
       })
       oldSection.questions = oldSection.questions.filter(e => {
         return e.id !== payload.questionId
       })
 
-      const index = state.loadedSections[payload.formId].findIndex(section => {
+      const index = state.loadedSections[payload.formTemplateId].findIndex(section => {
         return section.id === payload.section.id
       })
-      state.loadedSections[payload.formId].splice(index, 1, payload.section)
+      state.loadedSections[payload.formTemplateId].splice(index, 1, payload.section)
 
       const parentSectionId = payload.section.id
-      const childSections = state.loadedSections[payload.formId].filter((section) => {
+      const childSections = state.loadedSections[payload.formTemplateId].filter((section) => {
         return section.parent_section_id === parentSectionId && section.order >= payload.order
       })
       childSections.map(function (section) {
@@ -132,7 +132,7 @@ export default {
     },
     deleteQuestion (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       section.questions = section.questions.filter(e => {
@@ -142,7 +142,7 @@ export default {
     },
     deleteQuestions (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       section.questions = []
@@ -151,7 +151,7 @@ export default {
 
     setLoadedAnswers (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
@@ -162,7 +162,7 @@ export default {
     },
     createAnswer (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
@@ -173,7 +173,7 @@ export default {
     },
     updateAnswer (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
@@ -187,7 +187,7 @@ export default {
     },
     deleteAnswer (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
@@ -200,7 +200,7 @@ export default {
     },
     deleteAnswers (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
@@ -211,7 +211,7 @@ export default {
     },
     changeAnswers (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
-      const section = sections[payload.formId].find((section) => {
+      const section = sections[payload.formTemplateId].find((section) => {
         return section.id === payload.sectionId
       })
       const question = section.questions.find((question) => {
@@ -224,14 +224,14 @@ export default {
     }
   },
   actions: {
-    loadSections ({commit}, formId) {
+    loadSections ({commit}, formTemplateId) {
       commit('setLoading', true)
-      window.axios.get(FORM_URL + formId + SECTION_URL)
+      window.axios.get(FORM_TEMPLATE_URL + formTemplateId + SECTION_URL)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formId: formId,
+              formTemplateId: formTemplateId,
               sections: response['data']['sections']
             }
             commit('setLoadedSections', updateObj)
@@ -251,12 +251,12 @@ export default {
       if (payload.parentSectionId !== -1) {
         section.parent_section_id = payload.parentSectionId
       }
-      window.axios.post(FORM_URL + payload.formId + SECTION_URL, section)
+      window.axios.post(FORM_TEMPLATE_URL + payload.formTemplateId + SECTION_URL, section)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               section: response['data']['section']
             }
             commit('createSection', createObj)
@@ -290,12 +290,12 @@ export default {
       if (payload.order) {
         updateObj.order = payload.order
       }
-      window.axios.put(FORM_URL + payload.formId + SECTION_URL + '/' + payload.id, updateObj)
+      window.axios.put(FORM_TEMPLATE_URL + payload.formTemplateId + SECTION_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               section: response['data']['section']
             }
             commit('updateSection', updateObj)
@@ -312,12 +312,12 @@ export default {
         parent_section_id: payload.parentSectionId,
         order: payload.order
       }
-      window.axios.post(FORM_URL + payload.formId + SECTION_URL + '/' + payload.sectionId + MOVE_URL, moveObj)
+      window.axios.post(FORM_TEMPLATE_URL + payload.formTemplateId + SECTION_URL + '/' + payload.sectionId + MOVE_URL, moveObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               sectionId: payload.sectionId,
               order: payload.order,
               section: response['data']['data']
@@ -332,7 +332,7 @@ export default {
     },
     deleteSection ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + payload.formId + SECTION_URL + '/' + payload.id)
+      window.axios.delete(FORM_TEMPLATE_URL + payload.formTemplateId + SECTION_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteSection', payload)
@@ -348,42 +348,42 @@ export default {
   },
   getters: {
     loadedSections (state) {
-      return (formId) => {
-        if (!state.loadedSections[formId]) {
+      return (formTemplateId) => {
+        if (!state.loadedSections[formTemplateId]) {
           return []
         }
-        return state.loadedSections[formId]
+        return state.loadedSections[formTemplateId]
       }
     },
     loadedSection (state) {
-      return (formId, sectionId) => {
-        if (!state.loadedSections[formId]) {
+      return (formTemplateId, sectionId) => {
+        if (!state.loadedSections[formTemplateId]) {
           return null
         }
-        return state.loadedSections[formId].find((section) => {
+        return state.loadedSections[formTemplateId].find((section) => {
           return section.id === sectionId
         })
       }
     },
     loadedChildrenSection (state) {
-      return (formId, parentSectionId) => {
-        if (!state.loadedSections[formId]) {
+      return (formTemplateId, parentSectionId) => {
+        if (!state.loadedSections[formTemplateId]) {
           return []
         }
-        return state.loadedSections[formId].filter((section) => {
+        return state.loadedSections[formTemplateId].filter((section) => {
           return section.parent_section_id === parentSectionId
         })
       }
     },
     loadedChildren (state) {
-      return (formId, parentSectionId) => {
-        if (!state.loadedSections[formId]) {
+      return (formTemplateId, parentSectionId) => {
+        if (!state.loadedSections[formTemplateId]) {
           return []
         }
-        const childSections = state.loadedSections[formId].filter((section) => {
+        const childSections = state.loadedSections[formTemplateId].filter((section) => {
           return section.parent_section_id === parentSectionId
         })
-        const section = state.loadedSections[formId].find((section) => {
+        const section = state.loadedSections[formTemplateId].find((section) => {
           return section.id === parentSectionId
         })
         let childQuestions = []

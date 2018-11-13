@@ -17,7 +17,7 @@
 <script>
   export default {
     name: 'Percent',
-    props: ['question', 'answers', 'responses', 'disabled', 'formId', 'questionId'],
+    props: ['question', 'answers', 'responses', 'disabled', 'formTemplateId', 'questionId'],
     methods: {
       onSave (value) {
         if (this.responses.length) {
@@ -71,7 +71,7 @@
         return this.$store.getters.validationTypes
       },
       validations () {
-        return this.$store.getters.loadedQuestionValidation(this.formId, this.questionId)
+        return this.$store.getters.loadedQuestionValidation(this.formTemplateId, this.questionId)
       }
     }
   }

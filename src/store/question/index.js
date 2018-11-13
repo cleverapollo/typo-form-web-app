@@ -12,7 +12,7 @@ export default {
           response => {
             commit('setLoading', false)
             const loadedObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               sectionId: payload.sectionId,
               question: response['data']['question']
             }
@@ -33,7 +33,7 @@ export default {
           response => {
             commit('setLoading', false)
             const createObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               sectionId: payload.sectionId,
               questions: response['data']['questions']
             }
@@ -60,7 +60,7 @@ export default {
           response => {
             commit('setLoading', false)
             const createdObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               sectionId: payload.sectionId,
               question: response['data']['question']
             }
@@ -100,7 +100,7 @@ export default {
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               sectionId: payload.sectionId,
               question: response['data']['question']
             }
@@ -119,7 +119,7 @@ export default {
           response => {
             commit('setLoading', false)
             const createdObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               sectionId: payload.sectionId,
               question: response['data']['question']
             }
@@ -142,7 +142,7 @@ export default {
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               questionId: payload.questionId,
               oldSectionId: payload.oldParentSectionId,
               order: payload.order,
@@ -183,11 +183,11 @@ export default {
   },
   getters: {
     loadedQuestions (state, getters, rootState) {
-      return (formId, sectionId) => {
-        if (!rootState.section.loadedSections[formId]) {
+      return (formTemplateId, sectionId) => {
+        if (!rootState.section.loadedSections[formTemplateId]) {
           return []
         }
-        const section = rootState.section.loadedSections[formId].find((section) => {
+        const section = rootState.section.loadedSections[formTemplateId].find((section) => {
           return section.id === sectionId
         })
         if (!section) {
@@ -199,33 +199,33 @@ export default {
       }
     },
     loadedAllQuestions (state, getters, rootState) {
-      return (formId) => {
-        if (!rootState.section.loadedSections[formId]) {
+      return (formTemplateId) => {
+        if (!rootState.section.loadedSections[formTemplateId]) {
           return []
         }
         let questions = []
-        for (let i = 0; i < rootState.section.loadedSections[formId].length; i++) {
-          questions = questions.concat(rootState.section.loadedSections[formId][i].questions)
+        for (let i = 0; i < rootState.section.loadedSections[formTemplateId].length; i++) {
+          questions = questions.concat(rootState.section.loadedSections[formTemplateId][i].questions)
         }
         return questions
       }
     },
     loadedApplicationQuestions (state, getters, rootState) {
       return (slug) => {
-        if (!rootState.form.loadedForms[slug]) {
+        if (!rootState.formTemplate.loadedFormTemplates[slug]) {
           return []
         }
-        const forms = rootState.form.loadedForms[slug]
+        const formTemplates = rootState.formTemplate.loadedFormTemplates[slug]
         let questions = []
-        for (let j = 0; j < forms.length; j++) {
-          if (!rootState.section.loadedSections[forms[j].id]) {
+        for (let j = 0; j < formTemplates.length; j++) {
+          if (!rootState.section.loadedSections[formTemplates[j].id]) {
             continue
           }
-          for (let i = 0; i < rootState.section.loadedSections[forms[j].id].length; i++) {
-            for (let k = 0; k < rootState.section.loadedSections[forms[j].id][i].questions.length; k++) {
-              let question = rootState.section.loadedSections[forms[j].id][i].questions[k]
-              question['section_name'] = rootState.section.loadedSections[forms[j].id][i].name
-              question['form_name'] = forms[j].name
+          for (let i = 0; i < rootState.section.loadedSections[formTemplates[j].id].length; i++) {
+            for (let k = 0; k < rootState.section.loadedSections[formTemplates[j].id][i].questions.length; k++) {
+              let question = rootState.section.loadedSections[formTemplates[j].id][i].questions[k]
+              question['section_name'] = rootState.section.loadedSections[formTemplates[j].id][i].name
+              question['form_template_name'] = formTemplates[j].name
               questions.push(question)
             }
           }
@@ -234,11 +234,11 @@ export default {
       }
     },
     loadedQuestion (state, getters, rootState) {
-      return (formId, sectionId, questionId) => {
-        if (!rootState.section.loadedSections[formId]) {
+      return (formTemplateId, sectionId, questionId) => {
+        if (!rootState.section.loadedSections[formTemplateId]) {
           return null
         }
-        const section = rootState.section.loadedSections[formId].find((section) => {
+        const section = rootState.section.loadedSections[formTemplateId].find((section) => {
           return section.id === sectionId
         })
         if (!section) {
@@ -250,12 +250,12 @@ export default {
       }
     },
     loadedAllQuestion (state, getters, rootState) {
-      return (formId, questionId) => {
-        if (!rootState.section.loadedSections[formId]) {
+      return (formTemplateId, questionId) => {
+        if (!rootState.section.loadedSections[formTemplateId]) {
           return null
         }
-        for (let i = 0; i < rootState.section.loadedSections[formId].length; i++) {
-          let question = rootState.section.loadedSections[formId][i].questions.find((question) => {
+        for (let i = 0; i < rootState.section.loadedSections[formTemplateId].length; i++) {
+          let question = rootState.section.loadedSections[formTemplateId][i].questions.find((question) => {
             return question.id === questionId
           })
           if (question) {

@@ -1,12 +1,12 @@
 <template>
-  <v-card flat active-class="active-section" v-if="!isSectionTrigger(section) || submissionId === -1">
+  <v-card flat active-class="active-section" v-if="!isSectionTrigger(section) || formId === -1">
 
     <v-card-title class="pb-1">
       <div class="subheading font-weight-medium">{{ this.getSectionName(section) }}</div>
     </v-card-title>
 
     <v-card-text>
-      <!-- //Submission -->
+      <!-- //Form -->
       <!-- //Standard -->
       <v-layout row wrap v-if="!section.repeatable">
         <template>
@@ -57,7 +57,7 @@
 
   export default {
     name: 'SectionReport',
-    props: ['section', 'formId', 'submissionId'],
+    props: ['section', 'formTemplateId', 'formId'],
     mixins: [TriggerMixin],
     data () {
       return {
@@ -79,26 +79,26 @@
     },
     computed: {
       sections () {
-        return this.$store.getters.loadedSections(this.formId)
+        return this.$store.getters.loadedSections(this.formTemplateId)
       },
-      submission () {
-        if (!this.submissionId) {
+      form () {
+        if (!this.formId) {
           return null
         }
-        return this.$store.getters.loadedSubmission(parseInt(this.formId), parseInt(this.submissionId))
+        return this.$store.getters.loadedForm(parseInt(this.formTemplateId), parseInt(this.formId))
       },
       statuses () {
         return this.$store.getters.statuses
       },
       status () {
-        if (!this.submission) {
+        if (!this.form) {
           return null
         }
-        return this.getStatus(this.submission.status_id)
+        return this.getStatus(this.form.status_id)
       },
       list: {
         get () {
-          return _.sortBy(this.$store.getters.loadedChildren(this.formId, this.section.id), element => {
+          return _.sortBy(this.$store.getters.loadedChildren(this.formTemplateId, this.section.id), element => {
             return element.order
           })
         },
@@ -142,7 +142,7 @@
       },
       answer (item, order) {
         const questionType = this.getQuestionType(item.question_type_id)
-        const responses = this.submission.responses.filter((response) => {
+        const responses = this.form.responses.filter((response) => {
           return response.question_id === item.id && response.order === order
         })
         let response = ''

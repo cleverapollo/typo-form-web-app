@@ -16,7 +16,7 @@
 <script>
   export default {
     name: 'dropdown',
-    props: ['question', 'answers', 'responses', 'submissionId', 'disabled', 'hasValidation'],
+    props: ['question', 'answers', 'responses', 'formId', 'disabled', 'hasValidation'],
     computed: {
       computedOptions () {
         return this.answers

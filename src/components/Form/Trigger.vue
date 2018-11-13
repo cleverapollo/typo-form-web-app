@@ -113,7 +113,7 @@
 
 <script>
   export default {
-    props: ['formId', 'trigger', 'questionOptions', 'isLast'],
+    props: ['formTemplateId', 'trigger', 'questionOptions', 'isLast'],
     data () {
       return {
         parentQuestionId: this.trigger.parent_question_id,
@@ -129,7 +129,7 @@
     },
     computed: {
       parentQuestion () {
-        return this.$store.getters.loadedAllQuestion(this.formId, this.parentQuestionId)
+        return this.$store.getters.loadedAllQuestion(this.formTemplateId, this.parentQuestionId)
       },
       answers () {
         return this.parentQuestion.answers
@@ -169,7 +169,7 @@
     },
     methods: {
       getSection (questionId) {
-        const allSections = this.$store.getters.loadedSections(this.formId)
+        const allSections = this.$store.getters.loadedSections(this.formTemplateId)
         const section = allSections.find((section) => {
           return section.questions.find((question) => {
             return question.id === questionId
@@ -206,14 +206,14 @@
       },
       deleteTrigger () {
         this.$store.dispatch('deleteTrigger', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           id: this.trigger.id
         })
       },
       updateTrigger () {
         this.$store.dispatch('updateTrigger', {
           id: this.trigger.id,
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           parentQuestionId: this.parentQuestionId,
           parentAnswerId: this.parentAnswerId,
           value: this.value,

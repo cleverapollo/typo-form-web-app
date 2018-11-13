@@ -54,7 +54,7 @@
 
 <script>
   export default {
-    props: ['visible', 'formId', 'sectionId', 'flag'],
+    props: ['visible', 'formTemplateId', 'sectionId', 'flag'],
     data () {
       return {
         selectedSectionId: null,
@@ -75,9 +75,9 @@
         }
       },
       sections () {
-        return this.$store.getters.loadedSections(this.formId).filter((section) => {
+        return this.$store.getters.loadedSections(this.formTemplateId).filter((section) => {
           if (this.flag === 'Question') {
-            return !this.$store.getters.loadedChildrenSection(this.formId, section.id).length
+            return !this.$store.getters.loadedChildrenSection(this.formTemplateId, section.id).length
           } else {
             if (section.id === this.sectionId) {
               return false
@@ -93,9 +93,9 @@
 
         let items = []
         if (this.flag === 'Question') {
-          items = this.$store.getters.loadedSection(this.formId, this.selectedSectionId).questions.slice(0)
+          items = this.$store.getters.loadedSection(this.formTemplateId, this.selectedSectionId).questions.slice(0)
         } else {
-          items = this.$store.getters.loadedChildrenSection(this.formId, this.selectedSectionId)
+          items = this.$store.getters.loadedChildrenSection(this.formTemplateId, this.selectedSectionId)
         }
 
         let order = 1

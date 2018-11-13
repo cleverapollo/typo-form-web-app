@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 
 export default {
   props: {
-    'formId': {
+    'formTemplateId': {
       type: Number,
       required: true
     },
@@ -95,7 +95,7 @@ export default {
   computed: {
     activeValidationType: {
       get: function () {
-        const validations = this.$store.getters.loadedQuestionValidation(this.formId, this.questionId)
+        const validations = this.$store.getters.loadedQuestionValidation(this.formTemplateId, this.questionId)
         const validationTypes = this.$store.getters.validationTypes
         let validationType = null
         if (validations && validations.length && validations.length === 1 && validationTypes && validationTypes.length > 0) {
@@ -113,7 +113,7 @@ export default {
       }
     },
     minValue () {
-      const validations = this.$store.getters.loadedQuestionValidation(this.formId, this.questionId)
+      const validations = this.$store.getters.loadedQuestionValidation(this.formTemplateId, this.questionId)
       let minVal
       if (validations && validations.length && validations.length === 1) {
         const validationData = validations[0].validation_data
@@ -124,7 +124,7 @@ export default {
       return minVal
     },
     maxValue () {
-      const validations = this.$store.getters.loadedQuestionValidation(this.formId, this.questionId)
+      const validations = this.$store.getters.loadedQuestionValidation(this.formTemplateId, this.questionId)
       let maxVal
       if (validations && validations.length && validations.length === 1) {
         const validationData = validations[0].validation_data

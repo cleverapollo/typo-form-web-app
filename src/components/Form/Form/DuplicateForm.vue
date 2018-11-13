@@ -54,7 +54,7 @@
       },
       goToDuplicate () {
         this.show = false
-        this.$router.push('/submissions/' + this.content)
+        this.$router.push('/forms/' + this.content)
       }
     }
   }

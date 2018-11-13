@@ -55,7 +55,7 @@
 
 <script>
   import * as _ from 'lodash'
-  import CreateForm from './CreateForm'
+  import CreateForm from './CreateFormTemplate'
   export default {
     data () {
       return {

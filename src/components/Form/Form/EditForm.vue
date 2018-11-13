@@ -1,46 +1,50 @@
 <template>
-  <v-dialog v-model="show" persistent max-width="600px">
+  <v-dialog width="600px" persistent v-model="editForm">
+    <v-btn
+      icon
+      slot="activator"
+      class="mx-0"
+      v-if="btnRect"
+    >
+      <v-icon color="teal">
+        edit
+      </v-icon>
+    </v-btn>
+    <div
+      slot="activator"
+      v-else>
+      Edit Form
+    </div>
     <v-card>
       <v-card-title>
-        <div class="title mb-2 mt-2">Create Form</div>
+        <div class="title mb-2 mt-2">Edit Form</div>
       </v-card-title>
-      <v-card-text>
 
+      <v-card-text>
         <v-layout row wrap>
 
-          <!-- //Form Builders -->
-          <v-flex xs12>
-            <v-autocomplete
-              :items="forms"
-              item-value="id"
-              item-text="name"
-              v-model="formId"
-              label="Form Builder"
-            ></v-autocomplete>
-          </v-flex>
-
           <!-- //Users -->
-          <v-flex xs12 v-if="userIsApplicationAdmin">
+          <v-flex xs12>
             <v-autocomplete
               :items="users"
               item-value="id"
               item-text="name"
               v-model="userId"
-              label="Owner"
+              label="Who is the primary contact for this form?"
             ></v-autocomplete>
           </v-flex>
 
           <!-- //Organisations -->
-          <v-flex xs12 v-if="organisations.length">
+          <v-flex xs12>
             <v-autocomplete
               :items="organisations"
               item-value="id"
               item-text="name"
               v-model="organisationId"
-              label="Organisation"
+              label="Working as a organisation? Select your organisation."
             ></v-autocomplete>
           </v-flex>
-
+          
           <!-- //Period Start -->
           <div class="body-2">Is this form for a set period? If so, set the date below (optional)</div>
           <v-flex xs12 sm6>
@@ -97,19 +101,18 @@
             </v-dialog>
 
           </v-flex>
-
         </v-layout>
-
       </v-card-text>
+      
       <v-divider></v-divider>
       <v-card-actions>
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
-            <v-btn flat @click.stop="close">Cancel</v-btn>
+            <v-btn flat @click.stop="onCancel">Cancel</v-btn>
             <v-btn
               flat
               class="primary"
-              @click="save"
+              @click="onSave"
               :disabled="loading"
               :loading="loading"
             >
@@ -126,110 +129,55 @@
 </template>
 
 <script>
-  import * as _ from 'lodash'
   export default {
-    props: ['visible', 'slug'],
+    props: ['slug', 'form', 'formTemplateId', 'btnRect'],
     data () {
       return {
-        formId: null,
-        periodStart: null,
-        periodEnd: null,
+        id: this.form.id,
+        editForm: false,
         periodStartModal: false,
+        periodStart: this.form.period_start ? this.form.period_start.substring(0, 10) : null,
         periodEndModal: false,
-        organisationId: null,
-        userId: null
-      }
-    },
-    computed: {
-      show: {
-        get () {
-          return this.visible
-        },
-        set (value) {
-          if (!value) {
-            this.$emit('close')
-          }
-        }
-      },
-      organisations () {
-        return this.$store.getters.loadedOrganisations(this.slug)
-      },
-      forms () {
-        return _.sortBy(this.$store.getters.loadedForms(this.slug), element => {
-          return element.name.toLowerCase()
-        })
-      },
-      roles () {
-        return this.$store.getters.roles
-      },
-      users () {
-        if (this.organisationId) {
-          return this.$store.getters.loadedSubmissionOrganisationUsers(this.organisationId)
-        }
-        return this.$store.getters.loadedSubmissionUsers(this.slug)
-      },
-      loading () {
-        return this.$store.getters.loading
-      },
-      application () {
-        return this.$store.getters.loadedApplication(this.slug)
-      },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsApplicationAdmin () {
-        return this.userIsAdmin || this.isSuperUser
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.application_role_id) === 'Admin'
-      },
-      isSuperUser () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
+        periodEnd: this.form.period_end ? this.form.period_end.substring(0, 10) : null,
+        organisationId: this.form.organisation ? this.form.organisation.id : null,
+        userId: this.form.user ? this.form.user.id : null
       }
     },
     methods: {
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
-      },
-      save () {
-        let data = {
-          formId: this.formId,
+      onSave () {
+        this.editForm = false
+
+        let formData = {
+          id: this.id,
+          formTemplateId: this.formTemplateId,
           organisationId: this.organisationId,
           userId: this.userId,
           periodStart: this.periodStart,
           periodEnd: this.periodEnd
         }
-        this.$store.dispatch('createSubmission', data)
-          .then(response => {
-            this.reset()
 
-            // Redirect to the form
-            if (response.data.submission.id) {
-              this.$router.push('/submissions/' + response.data.submission.id)
-            }
-          })
+        this.$store.dispatch('updateForm', formData)
       },
-      close () {
-        this.reset()
+      onCancel () {
+        this.editForm = false
+        this.periodStart = this.form.period_start ? this.form.period_start.substring(0, 10) : null
+        this.periodEnd = this.form.period_end ? this.form.period_end.substring(0, 10) : null
+        this.organisationId = this.form.organisation ? this.form.organisation.id : null
+        this.userId = this.form.user ? this.form.user.id : null
+      }
+    },
+    computed: {
+      loading () {
+        return this.$store.getters.loading
       },
-      reset () {
-        this.formId = null
-        this.periodStart = null
-        this.periodEnd = null
-        this.periodStartMenu = false
-        this.periodEndMenu = false
-        this.organisationId = null
-        this.userId = null
-        this.show = false
+      organisations () {
+        return this.$store.getters.loadedOrganisations(this.slug)
+      },
+      users () {
+        if (this.organisationId) {
+          return this.$store.getters.loadedFormOrganisationUsers(this.organisationId)
+        }
+        return this.$store.getters.loadedFormUsers(this.slug)
       }
     }
   }

@@ -1,9 +1,9 @@
 <template>
-  <v-layout row wrap v-if='submission'>
+  <v-layout row wrap v-if='form'>
     <v-flex xs12>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <h1 class="headline primary--text py-3">{{ submission.form.name }}</h1>
+          <h1 class="headline primary--text py-3">{{ form.formTemplate.name }}</h1>
         </v-flex>
 
         <v-flex xs12 class="mb-3">
@@ -22,7 +22,7 @@
             <v-card-title class="info white--text">
               <v-layout row wrap>
                 <v-flex d-flex xs12>
-                  <div class="title pt-3">{{ submissionOwner }}</div>
+                  <div class="title pt-3">{{ formOwner }}</div>
 
                   <!-- //Menu -->
                   <div class="text-xs-right">
@@ -37,25 +37,25 @@
                             <v-icon>edit</v-icon>
                           </v-list-tile-avatar>
                           <v-list-tile-content>
-                            <EditSubmission :slug="slug" :submission="submission" :formId="formId"></EditSubmission>
+                            <EditForm :slug="slug" :form="form" :formTemplateId="formTemplateId"></EditForm>
                           </v-list-tile-content>
                         </v-list-tile>
 
-                        <v-list-tile @click.stop="deleteSubmission = true">
+                        <v-list-tile @click.stop="deleteForm = true">
                           <v-list-tile-avatar>
                             <v-icon>delete</v-icon>
                           </v-list-tile-avatar>
                           <v-list-tile-content>Delete Form</v-list-tile-content>
                         </v-list-tile>
 
-                        <v-list-tile @click.stop="duplicateSubmission">
+                        <v-list-tile @click.stop="duplicateForm">
                           <v-list-tile-avatar>
                             <v-icon>content_copy</v-icon>
                           </v-list-tile-avatar>
                           <v-list-tile-content>Duplicate Form</v-list-tile-content>
                         </v-list-tile>
 
-                        <v-list-tile @click.stop="onOpenSubmission" v-if="status==='Closed' && userIsApplicationAdmin">
+                        <v-list-tile @click.stop="onOpenForm" v-if="status==='Closed' && userIsApplicationAdmin">
                           <v-list-tile-avatar>
                             <v-icon>assignment</v-icon>
                           </v-list-tile-avatar>
@@ -83,7 +83,7 @@
               <v-layout row wrap>
                 <v-flex xs12 sm6>
                   <div class="body pb-3">Last Saved: {{ lastSaved }}</div>
-                  <div class="body" v-if='periodStart || periodEnd'>Period: {{ submissionPeriod }}</div>
+                  <div class="body" v-if='periodStart || periodEnd'>Period: {{ formPeriod }}</div>
                 </v-flex>
 
                 <!-- //Progress -->
@@ -104,15 +104,15 @@
             </v-card-text>
             <v-divider></v-divider>
 
-            <!-- //Form Builder Content -->
+            <!-- //Form Template Content -->
             <v-card-text>
               <v-layout row wrap>
 
                 <v-flex d-flex xs12>
                   <form-view
                     :slug="slug"
+                    :formTemplateId="formTemplateId"
                     :formId="formId"
-                    :submissionId="submissionId"
                   ></form-view>
                 </v-flex>
 
@@ -127,14 +127,14 @@
                 <v-flex xs12 v-if="sections.length > 1">
                   <formNavigation
                     :slug="slug"
+                    :formTemplateId="formTemplateId"
                     :formId="formId"
-                    :submissionId="submissionId"
                   ></formNavigation>
                 </v-flex>
 
                 <template v-if="submittable">
                   <v-flex xs12 md4 offset-md4 class="my-3" v-if="sendAble">
-                    <v-btn block color="success" @click=onSendSubmission :disabled="!sendAble">
+                    <v-btn block color="success" @click=onSendForm :disabled="!sendAble">
                       Submit
                     </v-btn>
                   </v-flex>
@@ -153,19 +153,19 @@
     </v-flex>
 
     <!-- //Delete Form -->
-    <DeleteConfirmDialog @delete-action="onDeleteSubmission" :visible="deleteSubmission" @close="deleteSubmission = false"></DeleteConfirmDialog>
+    <DeleteConfirmDialog @delete-action="onDeleteForm" :visible="deleteForm" @close="deleteForm = false"></DeleteConfirmDialog>
 
     <!-- //Show snackbar -->
     <Snackbar content="Progress saved" :snackbar="snackbar" @dismissed="snackbar = false"></Snackbar>
 
     <!-- //Show Completed -->
-    <CompletedSubmission :snackbar="submitted" :content="content" @dismissed="submitted = false"></CompletedSubmission>
+    <CompletedForm :snackbar="submitted" :content="content" @dismissed="submitted = false"></CompletedForm>
 
     <!-- //Show Help Modal -->
     <HelpModal :visible="helpModal && help" :content="help" @close="helpModal = false"></HelpModal>
 
-    <!-- //Duplicate form -->
-    <DuplicateSubmission :visible="duplicated" :content="duplicatedContent" @close="duplicated = false"></DuplicateSubmission>
+    <!-- //Duplicate formTemplate -->
+    <DuplicateForm :visible="duplicated" :content="duplicatedContent" @close="duplicated = false"></DuplicateForm>
 
   </v-layout>
 </template>
@@ -174,20 +174,20 @@
   import * as _ from 'lodash'
   import moment from 'moment'
   import FormView from '../FormView'
-  import EditSubmission from './EditSubmission'
+  import EditForm from './EditForm'
   import FormNavigation from '../FormNavigation'
-  import CompletedSubmission from './CompletedSubmission'
+  import CompletedForm from './CompletedForm'
   import HelpModal from './HelpModal'
-  import DuplicateSubmission from './DuplicateSubmission'
+  import DuplicateForm from './DuplicateForm'
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
-    name: 'ShowSubmission',
+    name: 'ShowForm',
     props: ['id'],
     mixins: [TriggerMixin],
     data () {
       return {
-        deleteSubmission: false,
+        deleteForm: false,
         snackbar: false,
         slug: window.location.hostname.split('.')[0],
         submitted: false,
@@ -198,11 +198,11 @@
     },
     components: {
       FormView,
-      EditSubmission,
-      CompletedSubmission,
+      EditForm,
+      CompletedForm,
       FormNavigation,
       HelpModal,
-      DuplicateSubmission
+      DuplicateForm
     },
     computed: {
       application () {
@@ -227,22 +227,22 @@
         return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       sections () {
-        return this.$store.getters.loadedSections(this.formId)
-      },
-      submissionId () {
-        return parseInt(this.id)
-      },
-      submission () {
-        return this.$store.getters.loadedApplicationSubmission(this.slug, this.submissionId)
+        return this.$store.getters.loadedSections(this.formTemplateId)
       },
       formId () {
-        if (!this.submission) {
-          return null
-        }
-        return this.submission.form.id
+        return parseInt(this.id)
       },
       form () {
-        return this.$store.getters.loadedForm(this.slug, this.formId)
+        return this.$store.getters.loadedApplicationForm(this.slug, this.formId)
+      },
+      formTemplateId () {
+        if (!this.form) {
+          return null
+        }
+        return this.form.formTemplate.id
+      },
+      formTemplate () {
+        return this.$store.getters.loadedFormTemplate(this.slug, this.formTemplateId)
       },
       statuses () {
         return this.$store.getters.statuses
@@ -251,34 +251,34 @@
         return this.$store.getters.roles
       },
       periodStart () {
-        return this.submission.period_start ? this.submission.period_start.substring(0, 10) : ''
+        return this.form.period_start ? this.form.period_start.substring(0, 10) : ''
       },
       periodEnd () {
-        return this.submission.period_end ? this.submission.period_end.substring(0, 10) : ''
+        return this.form.period_end ? this.form.period_end.substring(0, 10) : ''
       },
       progressNumber () {
-        return this.status === 'Open' ? this.progress(parseInt(this.formId), this.submissionId) : 100
+        return this.status === 'Open' ? this.progress(parseInt(this.formTemplateId), this.formId) : 100
       },
       status () {
         const status = this.statuses.find((status) => {
-          return status.id === this.submission.status_id
+          return status.id === this.form.status_id
         })
         return status ? status.status : 'undefined'
       },
       submittable () {
-        return this.form.allow_submit === 1
+        return this.formTemplate.allow_submit === 1
       },
       sendAble () {
         return this.submittable && this.status === 'Open' && this.progressNumber >= 100
       },
-      submissionOwner () {
-        if (this.submission.organisation == null) {
-          return this.submission.user.first_name + ' ' + this.submission.user.last_name
+      formOwner () {
+        if (this.form.organisation == null) {
+          return this.form.user.first_name + ' ' + this.form.user.last_name
         } else {
-          return this.submission.organisation.name
+          return this.form.organisation.name
         }
       },
-      submissionPeriod () {
+      formPeriod () {
         if (this.periodStart && this.periodEnd) {
           return moment(this.periodStart).format('MMM Do YYYY') + ' - ' + moment(this.periodEnd).format('MMM Do YYYY')
         } else if (this.periodStart || this.periodEnd) {
@@ -288,13 +288,13 @@
         }
       },
       lastSaved () {
-        return moment(this.submission.updated_at.date).format('MMM Do YYYY h:mm A')
+        return moment(this.form.updated_at.date).format('MMM Do YYYY h:mm A')
       },
       meta () {
-        if (!this.form || !this.form.metas.length) {
+        if (!this.formTemplate || !this.formTemplate.metas.length) {
           return null
         }
-        return JSON.parse(this.form.metas[0].metadata)
+        return JSON.parse(this.formTemplate.metas[0].metadata)
       },
       content () {
         if (this.meta && this.meta.content) {
@@ -316,48 +316,48 @@
         })
         return role ? role.name : 'undefined'
       },
-      duplicateSubmission: function () {
-        this.$store.dispatch('duplicateSubmission', {
-          formId: this.formId,
-          id: this.submission.id
+      duplicateForm: function () {
+        this.$store.dispatch('duplicateForm', {
+          formTemplateId: this.formTemplateId,
+          id: this.form.id
         })
           .then((response) => {
             this.duplicated = true
-            this.duplicatedContent = response.data.submission.id
+            this.duplicatedContent = response.data.form.id
           })
       },
-      onOpenSubmission: function () {
+      onOpenForm: function () {
         const statusIndex = _.findIndex(this.statuses, status => {
           return status.status === 'Open'
         })
 
-        this.$store.dispatch('updateSubmission',
+        this.$store.dispatch('updateForm',
           {
-            formId: this.formId,
-            id: this.submissionId,
+            formTemplateId: this.formTemplateId,
+            id: this.formId,
             statusId: this.statuses[statusIndex].id
           }
         )
       },
-      onDeleteSubmission: function () {
-        this.$store.dispatch('deleteSubmission',
+      onDeleteForm: function () {
+        this.$store.dispatch('deleteForm',
           {
-            formId: this.formId,
-            id: this.submissionId
+            formTemplateId: this.formTemplateId,
+            id: this.formId
           }
         )
           .then(() => {
-            this.$router.push('/submissions')
+            this.$router.push('/forms')
           })
       },
-      onSendSubmission: function () {
+      onSendForm: function () {
         const statusIndex = _.findIndex(this.statuses, status => {
           return status.status === 'Closed'
         })
 
-        this.$store.dispatch('updateSubmission', {
-          formId: this.formId,
-          id: this.submissionId,
+        this.$store.dispatch('updateForm', {
+          formTemplateId: this.formTemplateId,
+          id: this.formId,
           statusId: this.statuses[statusIndex].id
         })
           .then((response) => {
@@ -369,12 +369,12 @@
     created () {
       this.$store.dispatch('loadUsers', this.slug)
       this.$store.dispatch('loadOrganisations', this.slug)
-      this.$store.dispatch('loadForms', this.slug)
-      this.$store.dispatch('loadAllSubmission', {slug: this.slug, id: this.id})
+      this.$store.dispatch('loadFormTemplates', this.slug)
+      this.$store.dispatch('loadAllForm', {slug: this.slug, id: this.id})
         .then((response) => {
-          this.$store.dispatch('loadSections', this.formId)
-          this.$store.dispatch('loadValidations', this.formId)
-          this.$store.dispatch('loadTriggers', this.formId)
+          this.$store.dispatch('loadSections', this.formTemplateId)
+          this.$store.dispatch('loadValidations', this.formTemplateId)
+          this.$store.dispatch('loadTriggers', this.formTemplateId)
         })
       this.$store.dispatch('selectSection', null)
     }

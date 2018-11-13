@@ -275,8 +275,8 @@
     data () {
       return {
         items: [
-          { title: 'Forms', type: 'submissions', icon: 'assignment', color: 'blue', admin: false },
-          { title: 'Form Builder', type: 'forms', icon: 'content_paste', color: 'orange', admin: true },
+          { title: 'Forms', type: 'forms', icon: 'assignment', color: 'blue', admin: false },
+          { title: 'Form Templates', type: 'formTemplates', icon: 'content_paste', color: 'orange', admin: true },
           { title: 'Users', type: 'users', icon: 'person', color: 'red', admin: true },
           { title: 'Organisations', type: 'organisations', icon: 'people', color: 'green', admin: false }
         ],
@@ -330,11 +330,11 @@
       organisationsCount () {
         return this.$store.getters.loadedOrganisations(this.slug).length
       },
-      submissionsCount () {
-        return this.$store.getters.loadedAllSubmissions(this.slug).length
-      },
       formsCount () {
-        return this.$store.getters.loadedForms(this.slug).length
+        return this.$store.getters.loadedAllForms(this.slug).length
+      },
+      formTemplatesCount () {
+        return this.$store.getters.loadedFormTemplates(this.slug).length
       },
       getNewUsers () {
         // Last 90 Days
@@ -408,8 +408,8 @@
         switch (type) {
           case 'users': return this.usersCount
           case 'organisations': return this.organisationsCount
+          case 'formTemplates': return this.formTemplatesCount
           case 'forms': return this.formsCount
-          case 'submissions': return this.submissionsCount
           default: return 0
         }
       },
@@ -441,8 +441,8 @@
     },
     created () {
       this.$store.dispatch('loadOrganisations', this.slug)
-      this.$store.dispatch('loadForms', this.slug)
-      this.$store.dispatch('loadAllSubmissions', this.slug)
+      this.$store.dispatch('loadFormTemplates', this.slug)
+      this.$store.dispatch('loadAllForms', this.slug)
       this.$store.dispatch('loadUsers', this.slug)
     }
   }

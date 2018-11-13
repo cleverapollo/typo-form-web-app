@@ -38,7 +38,7 @@
   import moment from 'moment'
   export default {
     name: 'date-component',
-    props: ['question', 'answers', 'responses', 'disabled', 'formId', 'questionId'],
+    props: ['question', 'answers', 'responses', 'disabled', 'formTemplateId', 'questionId'],
     data () {
       return {
         date: this.responses.length ? this.formatDate(this.responses[0].response) : null,
@@ -52,7 +52,7 @@
     },
     computed: {
       validations () {
-        return this.$store.getters.loadedQuestionValidation(this.formId, this.questionId)
+        return this.$store.getters.loadedQuestionValidation(this.formTemplateId, this.questionId)
       },
       minValue () {
         let minVal = null

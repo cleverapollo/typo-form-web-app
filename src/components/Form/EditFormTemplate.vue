@@ -1,14 +1,14 @@
 <template>
-  <v-dialog width="600px" persistent v-model="editForm">
+  <v-dialog width="600px" persistent v-model="editFormTemplate">
     <div slot="activator">
-      Edit Form Builder
+      Edit Form Template
     </div>
 
     <v-card>
       <v-container>
         <v-layout row wrap>
           <v-flex>
-            <h2>Edit Form Builder</h2>
+            <h2>Edit Form Template</h2>
           </v-flex>
           <v-flex class="text-xs-right">
             <v-spacer></v-spacer>
@@ -41,7 +41,7 @@
             <v-flex xs12>
               <v-text-field
                 name="content"
-                label="Completed Form Content"
+                label="Completed Form Template Content"
                 id="content"
                 v-model="content"
                 required
@@ -105,17 +105,17 @@
 
 <script>
   export default {
-    props: ['form', 'slug'],
+    props: ['formTemplate', 'slug'],
     data () {
       return {
-        id: this.form.id,
-        editForm: false,
-        editedName: this.form.name,
-        showProgress: parseInt(this.form.show_progress),
-        csv: this.form.csv,
+        id: this.formTemplate.id,
+        editFormTemplate: false,
+        editedName: this.formTemplate.name,
+        showProgress: parseInt(this.formTemplate.show_progress),
+        csv: this.formTemplate.csv,
         csvFileName: 'Please Upload CSV.',
-        content: this.form.metas.length ? JSON.parse(this.form.metas[0].metadata).content : '',
-        help: this.form.metas.length ? JSON.parse(this.form.metas[0].metadata).help : ''
+        content: this.formTemplate.metas.length ? JSON.parse(this.formTemplate.metas[0].metadata).content : '',
+        help: this.formTemplate.metas.length ? JSON.parse(this.formTemplate.metas[0].metadata).help : ''
       }
     },
     methods: {
@@ -124,9 +124,9 @@
           return
         }
 
-        this.editForm = false
+        this.editFormTemplate = false
 
-        this.$store.dispatch('updateForm', {
+        this.$store.dispatch('updateFormTemplate', {
           slug: this.slug,
           id: this.id,
           name: this.editedName,
@@ -134,7 +134,7 @@
           csv: this.csv
         })
           .then((response) => {
-            if (this.form.metas.length) {
+            if (this.formTemplate.metas.length) {
               this.updateMeta()
             } else {
               this.createMeta()
@@ -142,8 +142,8 @@
           })
       },
       onCancel () {
-        this.editedName = this.form.name
-        this.editForm = false
+        this.editedName = this.formTemplate.name
+        this.editFormTemplate = false
       },
       onFileChange (e) {
         const files = e.target.files || e.dataTransfer.files
@@ -156,16 +156,16 @@
       createMeta () {
         this.$store.dispatch('createMeta', {
           metadata: JSON.stringify({content: this.content, help: this.help}),
-          metableId: this.form.id,
-          metableType: 'forms'
+          metableId: this.formTemplate.id,
+          metableType: 'formTemplates'
         })
       },
       updateMeta () {
         this.$store.dispatch('updateMeta', {
-          id: this.form.metas[0].id,
+          id: this.formTemplate.metas[0].id,
           metadata: JSON.stringify({content: this.content, help: this.help}),
-          metableId: this.form.id,
-          metableType: 'forms'
+          metableId: this.formTemplate.id,
+          metableType: 'formTemplates'
         })
       }
     },

@@ -1,5 +1,5 @@
 const API_URL = process.env.API_URL
-const FORM_URL = `${API_URL}form/`
+const FORM_TEMPLATE_URL = `${API_URL}form-builder/`
 const TRIGGER_URL = '/trigger'
 
 export default {
@@ -9,42 +9,42 @@ export default {
   mutations: {
     setLoadedTriggers (state, payload) {
       let triggers = Object.assign({}, state.loadedTriggers)
-      triggers[payload.formId] = payload.triggers
+      triggers[payload.formTemplateId] = payload.triggers
       state.loadedTriggers = triggers
     },
     createTrigger (state, payload) {
       let triggers = Object.assign({}, state.loadedTriggers)
-      if (!triggers[payload.formId]) {
-        triggers[payload.formId] = []
+      if (!triggers[payload.formTemplateId]) {
+        triggers[payload.formTemplateId] = []
       }
-      triggers[payload.formId].push(payload.trigger)
+      triggers[payload.formTemplateId].push(payload.trigger)
       state.loadedTriggers = triggers
     },
     updateTrigger (state, payload) {
       let triggers = Object.assign({}, state.loadedTriggers)
-      const index = triggers[payload.formId].findIndex(trigger => {
+      const index = triggers[payload.formTemplateId].findIndex(trigger => {
         return trigger.id === payload.trigger.id
       })
-      triggers[payload.formId].splice(index, 1, payload.trigger)
+      triggers[payload.formTemplateId].splice(index, 1, payload.trigger)
       state.loadedTriggers = triggers
     },
     deleteTrigger (state, payload) {
       let triggers = Object.assign({}, state.loadedTriggers)
-      triggers[payload.formId] = triggers[payload.formId].filter(e => {
+      triggers[payload.formTemplateId] = triggers[payload.formTemplateId].filter(e => {
         return e.id !== payload.id
       })
       state.loadedTriggers = triggers
     }
   },
   actions: {
-    loadTriggers ({commit}, formId) {
+    loadTriggers ({commit}, formTemplateId) {
       commit('setLoading', true)
-      window.axios.get(FORM_URL + formId + TRIGGER_URL)
+      window.axios.get(FORM_TEMPLATE_URL + formTemplateId + TRIGGER_URL)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              formId: formId,
+              formTemplateId: formTemplateId,
               triggers: response['data']['triggers']
             }
             commit('setLoadedTriggers', createObj)
@@ -66,12 +66,12 @@ export default {
         operator: payload.operator,
         value: ''
       }
-      window.axios.post(FORM_URL + payload.formId + TRIGGER_URL, trigger)
+      window.axios.post(FORM_TEMPLATE_URL + payload.formTemplateId + TRIGGER_URL, trigger)
         .then(
           response => {
             commit('setLoading', false)
             const createdObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               trigger: response['data']['trigger']
             }
             commit('createTrigger', createdObj)
@@ -105,12 +105,12 @@ export default {
       if (payload.operator !== undefined) {
         updateObj.operator = payload.operator
       }
-      window.axios.put(FORM_URL + payload.formId + TRIGGER_URL + '/' + payload.id, updateObj)
+      window.axios.put(FORM_TEMPLATE_URL + payload.formTemplateId + TRIGGER_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               trigger: response['data']['trigger']
             }
             commit('updateTrigger', updateObj)
@@ -123,7 +123,7 @@ export default {
     },
     deleteTrigger ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + payload.formId + TRIGGER_URL + '/' + payload.id)
+      window.axios.delete(FORM_TEMPLATE_URL + payload.formTemplateId + TRIGGER_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteTrigger', payload)
@@ -136,29 +136,29 @@ export default {
   },
   getters: {
     loadedTriggers (state) {
-      return (formId) => {
-        if (!state.loadedTriggers[formId]) {
+      return (formTemplateId) => {
+        if (!state.loadedTriggers[formTemplateId]) {
           return []
         }
-        return state.loadedTriggers[formId]
+        return state.loadedTriggers[formTemplateId]
       }
     },
     loadedTrigger (state) {
-      return (formId, triggerId) => {
-        if (!state.loadedTriggers[formId]) {
+      return (formTemplateId, triggerId) => {
+        if (!state.loadedTriggers[formTemplateId]) {
           return null
         }
-        return state.loadedTriggers[formId].find((trigger) => {
+        return state.loadedTriggers[formTemplateId].find((trigger) => {
           return trigger.id === triggerId
         })
       }
     },
     loadedQuestionTrigger (state) {
-      return (formId, questionId) => {
-        if (!state.loadedTriggers[formId]) {
+      return (formTemplateId, questionId) => {
+        if (!state.loadedTriggers[formTemplateId]) {
           return []
         }
-        return state.loadedTriggers[formId].filter((trigger) => {
+        return state.loadedTriggers[formTemplateId].filter((trigger) => {
           return trigger.question_id === questionId
         })
       }

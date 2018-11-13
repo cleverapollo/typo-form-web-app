@@ -1,13 +1,13 @@
 <template>
   <v-layout row wrap>
 
-    <template v-if='submissionId !== -1 && status === "Closed"'>
+    <template v-if='formId !== -1 && status === "Closed"'>
       <template v-for="(element, index) in sortedSections">
         <v-flex xs12>
           <SectionReport
             :section="element"
+            :formTemplateId="formTemplateId"
             :formId="formId"
-            :submissionId="submissionId"
             v-if="element.questions.length"
           ></SectionReport>
         </v-flex>
@@ -17,10 +17,10 @@
       <!-- //Setions -->
       <v-flex xs12 class="sm3" v-if='sections.length > 1'>
         <form-tree
-          :formId="formId"
+          :formTemplateId="formTemplateId"
           :section="section"
           :list="list"
-          :submissionId="submissionId"
+          :formId="formId"
           @section-clicked="sectionClicked"
         ></form-tree>
       </v-flex>
@@ -29,8 +29,8 @@
       <v-flex xs12 :class='"sm" + (sections.length > 1 ? 9 : 12)'>
         <sections
           :section="section"
+          :formTemplateId="formTemplateId"
           :formId="formId"
-          :submissionId="submissionId"
           v-if="section"
         ></sections>
       </v-flex>
@@ -47,7 +47,7 @@
   import SectionOperation from './SectionOperation.js'
 
   export default {
-    props: ['slug', 'formId', 'submissionId'],
+    props: ['slug', 'formTemplateId', 'formId'],
     mixins: [SectionOperation],
     components: {
       SectionReport,
@@ -56,14 +56,14 @@
     },
     computed: {
       sections () {
-        return this.$store.getters.loadedSections(this.formId)
+        return this.$store.getters.loadedSections(this.formTemplateId)
       },
       sortedSections () {
         return _.sortBy(this.sections, ['order'])
       },
       list: {
         get () {
-          return _.sortBy(this.$store.getters.loadedChildren(this.formId, null), element => {
+          return _.sortBy(this.$store.getters.loadedChildren(this.formTemplateId, null), element => {
             return element.order
           })
         },
@@ -77,26 +77,26 @@
         // If rtSection is null, then select first section
         if (!rtSection && sections.length) {
           rtSection = sections[0]
-          rtSection = this.getFirstChildSection(this.formId, rtSection)
+          rtSection = this.getFirstChildSection(this.formTemplateId, rtSection)
         }
         // If rtSection is triggered, then select its parent section
-        // rtSection = this.getParentSection(this.formId, rtSection)
-        // if view is respones, then select first section which has questions
-        if (this.submissionId !== -1) {
-          rtSection = this.getFirstChildSection(this.formId, rtSection)
+        // rtSection = this.getParentSection(this.formTemplateId, rtSection)
+        // if view is responses, then select first section which has questions
+        if (this.formId !== -1) {
+          rtSection = this.getFirstChildSection(this.formTemplateId, rtSection)
         }
         this.$store.dispatch('selectSection', rtSection)
         return rtSection
       },
-      submission () {
-        return this.$store.getters.loadedApplicationSubmission(this.slug, this.submissionId)
+      form () {
+        return this.$store.getters.loadedApplicationForm(this.slug, this.formId)
       },
       statuses () {
         return this.$store.getters.statuses
       },
       status () {
         const status = this.statuses.find((status) => {
-          return status.id === this.submission.status_id
+          return status.id === this.form.status_id
         })
         return status ? status.status : 'undefined'
       }

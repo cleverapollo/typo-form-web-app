@@ -104,7 +104,7 @@ export default {
     },
     sources () {
       let sources = [
-        {'group': 'Form Detail', 'question': 'Form Builder'},
+        {'group': 'Form Detail', 'question': 'Form Template'},
         {'group': 'Form Detail', 'question': 'Owner'},
         {'group': 'Form Detail', 'question': 'Owner Email'},
         {'group': 'Form Detail', 'question': 'Organisation'},
@@ -116,7 +116,7 @@ export default {
         {'group': 'Form Detail', 'question': 'Modified'}
       ]
       _.forEach(this.questions, (question) => {
-        sources.push({'group': question.form_name + ' > ' + question.section_name, 'question': question.question, 'id': question.id})
+        sources.push({'group': question.form_template_name + ' > ' + question.section_name, 'question': question.question, 'id': question.id})
       }, this)
       return sources
     },

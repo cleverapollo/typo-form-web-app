@@ -8,7 +8,7 @@
     </template>
     <v-flex xs12>
       <template v-for='(item, index) in triggers'>
-        <trigger :formId="formId" :trigger="item" :questionOptions="questionOptions" :isLast="isLast(index)"></trigger>
+        <trigger :formTemplateId="formTemplateId" :trigger="item" :questionOptions="questionOptions" :isLast="isLast(index)"></trigger>
         <v-divider v-if='!isLast(index)'></v-divider>
       </template>
 
@@ -26,13 +26,13 @@
   import trigger from './Trigger'
   import * as _ from 'lodash'
   export default {
-    props: ['formId', 'question', 'questionOptions', 'type'],
+    props: ['formTemplateId', 'question', 'questionOptions', 'type'],
     components: {
       trigger
     },
     computed: {
       triggers () {
-        let triggers = this.$store.getters.loadedQuestionTrigger(this.formId, this.question.id)
+        let triggers = this.$store.getters.loadedQuestionTrigger(this.formTemplateId, this.question.id)
         triggers = triggers.filter((trigger) => {
           if (this.type === 'Section') {
             return trigger.type === 'Section'
@@ -51,7 +51,7 @@
     methods: {
       createTrigger () {
         this.$store.dispatch('createTrigger', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           questionId: this.question.id,
           parentQuestionId: this.questionOptions[0].id,
           comparatorId: this.comparators[0].id,

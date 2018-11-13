@@ -49,7 +49,7 @@
 
 <script>
   export default {
-    props: ['parentSectionId', 'formId'],
+    props: ['parentSectionId', 'formTemplateId'],
     data () {
       return {
         createSection: false,
@@ -64,7 +64,7 @@
         this.createSection = false
         this.$store.dispatch('createSection',
           {
-            formId: this.formId,
+            formTemplateId: this.formTemplateId,
             parentSectionId: this.parentSectionId,
             name: this.editedName
           })

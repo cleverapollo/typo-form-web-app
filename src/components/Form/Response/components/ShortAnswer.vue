@@ -23,7 +23,7 @@
   export default {
     name: 'short-answer',
     mixins: [validationMixin],
-    props: ['question', 'answers', 'responses', 'disabled', 'formId', 'sectionId', 'questionId'],
+    props: ['question', 'answers', 'responses', 'disabled', 'formTemplateId', 'sectionId', 'questionId'],
     methods: {
       onSave (value) {
         if (this.responses.length) {
@@ -41,7 +41,7 @@
         return ''
       },
       meta () {
-        const question = this.$store.getters.loadedQuestion(this.formId, this.sectionId, this.questionId)
+        const question = this.$store.getters.loadedQuestion(this.formTemplateId, this.sectionId, this.questionId)
         if (!question.metas.length) {
           return null
         }

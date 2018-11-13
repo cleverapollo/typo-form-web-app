@@ -21,15 +21,15 @@ import Users from '@/components/User/Users'
 import Organisations from '@/components/Organisation/Organisations'
 import ShowOrganisation from '@/components/Organisation/ShowOrganisation'
 
-// Forms
-import Forms from '@/components/Form/Forms'
-import ShowForm from '@/components/Form/ShowForm'
+// FormTemplates
+import FormTemplates from '@/components/Form/FormTemplates'
+import ShowFormTemplate from '@/components/Form/ShowFormTemplate'
 
-// Submissions
-import Submissions from '@/components/Form/Submission/Submissions'
-import ShowSubmission from '@/components/Form/Submission/ShowSubmission'
-import SubmissionFilter from '@/components/Form/Submission/SubmissionFilter'
-import ReportBuilder from '@/components/Form/Submission/ReportBuilder'
+// Forms
+import Forms from '@/components/Form/Form/Forms'
+import ShowForm from '@/components/Form/Form/ShowForm'
+import FormFilter from '@/components/Form/Form/FormFilter'
+import ReportBuilder from '@/components/Form/Form/ReportBuilder'
 
 import {store} from '@/store'
 
@@ -74,7 +74,7 @@ const router = new Router({
     },
     {
       path: '/',
-      redirect: '/submissions'
+      redirect: '/forms'
     },
     {
       path: '/applications',
@@ -120,9 +120,37 @@ const router = new Router({
       }
     },
     {
+      path: '/formTemplate-builder',
+      name: 'FormTemplates',
+      component: FormTemplates,
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/formTemplate-builder/:id',
+      name: 'ShowFormTemplate',
+      component: ShowFormTemplate,
+      props: true,
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
+    },
+    {
       path: '/forms',
       name: 'Forms',
       component: Forms,
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/settings',
+      name: 'ApplicationSettings',
+      component: ApplicationSettings,
       meta: {
         application: true,
         requiresAuth: true
@@ -139,34 +167,6 @@ const router = new Router({
       }
     },
     {
-      path: '/submissions',
-      name: 'Submissions',
-      component: Submissions,
-      meta: {
-        application: true,
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/settings',
-      name: 'ApplicationSettings',
-      component: ApplicationSettings,
-      meta: {
-        application: true,
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/submissions/:id',
-      name: 'ShowSubmission',
-      component: ShowSubmission,
-      props: true,
-      meta: {
-        application: true,
-        requiresAuth: true
-      }
-    },
-    {
       path: '/report',
       name: 'ReportBuilder',
       component: ReportBuilder,
@@ -176,9 +176,9 @@ const router = new Router({
       }
     },
     {
-      path: '/submissionfilter',
-      name: 'SubmissionFilter',
-      component: SubmissionFilter,
+      path: '/formTemplate-filter',
+      name: 'FormFilter',
+      component: FormFilter,
       meta: {
         application: true,
         requiresAuth: true

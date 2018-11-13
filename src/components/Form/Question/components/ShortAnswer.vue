@@ -12,7 +12,7 @@
     <Fix
       :question-id="questionId"
       :section-id="sectionId"
-      :form-id="formId"
+      :form-template-id="formTemplateId"
     >
     </Fix>
     <v-layout v-if='hasValidation' row wrap>
@@ -65,7 +65,7 @@
     components: {
       Fix
     },
-    props: ['answers', 'sectionId', 'formId'],
+    props: ['answers', 'sectionId', 'formTemplateId'],
     data () {
       return {
         validationTypes: [

@@ -9,7 +9,7 @@
 
       <!-- //Title -->
       <v-card-title>
-        <div class="title mb-2 mt-2">Create Form Builder</div>
+        <div class="title mb-2 mt-2">Create Form Template</div>
       </v-card-title>
 
       <!-- //Content -->
@@ -33,7 +33,7 @@
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
             <v-btn flat @click.stop="close">Cancel</v-btn>
-            <v-btn class="primary" @click.stop="save" :disabled="!formIsValid">Save</v-btn>
+            <v-btn class="primary" @click.stop="save" :disabled="!formTemplateIsValid">Save</v-btn>
           </v-flex>
         </v-layout>
       </v-card-actions>
@@ -63,27 +63,27 @@
           }
         }
       },
-      formIsValid () {
+      formTemplateIsValid () {
         return this.name !== ''
       }
     },
     methods: {
       save () {
-        if (!this.formIsValid) {
+        if (!this.formTemplateIsValid) {
           return
         }
 
-        const formData = {
+        const formTemplateData = {
           slug: this.slug,
           name: this.name
         }
-        this.$store.dispatch('createForm', formData)
+        this.$store.dispatch('createFormTemplate', formTemplateData)
           .then(response => {
             this.close()
 
-            // Redirect to the form
-            if (response.data.form.id) {
-              this.$router.push('/forms/' + response.data.form.id)
+            // Redirect to the formTemplate Templates
+            if (response.data.formTemplate.id) {
+              this.$router.push('/formTemplate-builder/' + response.data.formTemplate.id)
             }
           })
           .catch(

@@ -15,7 +15,7 @@
 <script>
   export default {
     name: 'Number',
-    props: ['question', 'answers', 'responses', 'disabled', 'formId', 'sectionId', 'questionId'],
+    props: ['question', 'answers', 'responses', 'disabled', 'formTemplateId', 'sectionId', 'questionId'],
     data () {
       return {
         message: '',
@@ -41,7 +41,7 @@
     },
     computed: {
       meta () {
-        const question = this.$store.getters.loadedQuestion(this.formId, this.sectionId, this.questionId)
+        const question = this.$store.getters.loadedQuestion(this.formTemplateId, this.sectionId, this.questionId)
         if (!question.metas.length) {
           return null
         }

@@ -101,7 +101,7 @@
 
 <script>
   import FormView from './FormView'
-  import EditForm from './EditForm'
+  import EditForm from './EditFormTemplate'
   import CreateSection from './Section/CreateSection'
   import FormNavigation from './FormNavigation'
 

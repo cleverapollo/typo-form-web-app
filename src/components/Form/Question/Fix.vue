@@ -29,7 +29,7 @@
 
 <script>
   export default {
-    props: ['questionId', 'formId', 'sectionId'],
+    props: ['questionId', 'formTemplateId', 'sectionId'],
     name: 'Fix',
     data () {
       return {
@@ -65,7 +65,7 @@
     },
     computed: {
       question () {
-        return this.$store.getters.loadedQuestion(this.formId, this.sectionId, this.questionId)
+        return this.$store.getters.loadedQuestion(this.formTemplateId, this.sectionId, this.questionId)
       },
       meta () {
         if (!this.question.metas.length) {
@@ -95,7 +95,7 @@
         })
           .then(response => {
             this.$store.dispatch('loadQuestion', {
-              formId: this.formId,
+              formTemplateId: this.formTemplateId,
               sectionId: this.sectionId,
               id: this.questionId
             })
@@ -110,7 +110,7 @@
         })
           .then(response => {
             this.$store.dispatch('loadQuestion', {
-              formId: this.formId,
+              formTemplateId: this.formTemplateId,
               sectionId: this.sectionId,
               id: this.questionId
             })
@@ -125,7 +125,7 @@
         })
           .then(response => {
             this.$store.dispatch('loadQuestion', {
-              formId: this.formId,
+              formTemplateId: this.formTemplateId,
               sectionId: this.sectionId,
               id: this.questionId
             })
