@@ -32,15 +32,6 @@ export default {
                   const user = response['data']['user']
                   sessionStorage.setItem('token', user['api_token'])
                   commit('setUser', user)
-
-                  commit('clearUsers')
-                  commit('clearLoadedSections')
-                  commit('clearLoadedTriggers')
-                  commit('clearLoadedForms')
-                  commit('clearLoadedValidations')
-                  commit('clearLoadedSubmissions')
-                  commit('clearLoadedOrganisations')
-                  commit('clearOrganisationUsers')
                 }
               )
               .catch(
@@ -75,15 +66,6 @@ export default {
               sessionStorage.setItem('token', user['api_token'])
               commit('setUser', user)
               resolve(response)
-
-              commit('clearUsers')
-              commit('clearLoadedSections')
-              commit('clearLoadedTriggers')
-              commit('clearLoadedForms')
-              commit('clearLoadedValidations')
-              commit('clearLoadedSubmissions')
-              commit('clearLoadedOrganisations')
-              commit('clearOrganisationUsers')
             }
           )
           .catch(
@@ -108,15 +90,6 @@ export default {
               commit('setLoading', false)
               commit('setUser', response['data']['user'])
               resolve(response)
-
-              commit('clearUsers')
-              commit('clearLoadedSections')
-              commit('clearLoadedTriggers')
-              commit('clearLoadedForms')
-              commit('clearLoadedValidations')
-              commit('clearLoadedSubmissions')
-              commit('clearLoadedOrganisations')
-              commit('clearOrganisationUsers')
             }
           )
           .catch(
@@ -156,6 +129,14 @@ export default {
       window.axios.post(LOGOUT_URL)
         .then(response => {
           sessionStorage.removeItem('token')
+          commit('clearUsers')
+          commit('clearLoadedSections')
+          commit('clearLoadedTriggers')
+          commit('clearLoadedForms')
+          commit('clearLoadedValidations')
+          commit('clearLoadedSubmissions')
+          commit('clearLoadedOrganisations')
+          commit('clearOrganisationUsers')
         })
     },
     updateAuth ({commit}, payload) {
