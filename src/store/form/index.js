@@ -9,6 +9,9 @@ export default {
     loadedFormFilters: {}
   },
   mutations: {
+    clearLoadedForms (state) {
+      state.loadedForms = {}
+    },
     setLoadedForms (state, payload) {
       let forms = Object.assign({}, state.loadedForms)
       forms[payload.formTemplateId] = payload.forms

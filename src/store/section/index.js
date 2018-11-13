@@ -9,6 +9,9 @@ export default {
     selectedSection: null
   },
   mutations: {
+    clearLoadedSections (state) {
+      state.loadedSections = {}
+    },
     setLoadedSections (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
       sections[payload.formTemplateId] = payload.sections
