@@ -9,6 +9,10 @@ export default {
     invitedUsers: {}
   },
   mutations: {
+    clearUsers (state) {
+      state.loadedUsers = {}
+      state.invitedUsers = {}
+    },
     setLoadedUsers (state, payload) {
       let users = Object.assign({}, state.loadedUsers)
       users[payload.slug] = payload.users

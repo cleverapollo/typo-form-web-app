@@ -8,6 +8,9 @@ export default {
     loadedOrganisations: {}
   },
   mutations: {
+    clearLoadedOrganisations (state) {
+      state.loadedOrganisations = {}
+    },
     setLoadedOrganisations (state, payload) {
       let organisations = Object.assign({}, state.loadedOrganisations)
       organisations[payload.slug] = payload.organisations

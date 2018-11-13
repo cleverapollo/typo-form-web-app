@@ -8,6 +8,9 @@ export default {
     loadedForms: {}
   },
   mutations: {
+    clearLoadedForms (state) {
+      state.loadedForms = {}
+    },
     setLoadedForms (state, payload) {
       let forms = Object.assign({}, state.loadedForms)
       forms[payload.slug] = payload.forms

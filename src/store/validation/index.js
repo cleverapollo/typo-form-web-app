@@ -7,6 +7,9 @@ export default {
     loadedValidations: []
   },
   mutations: {
+    clearLoadedValidations (state) {
+      state.loadedValidations = {}
+    },
     setLoadedValidations (state, payload) {
       let validations = Object.assign({}, state.loadedValidations)
       validations[payload.formId] = payload.validations

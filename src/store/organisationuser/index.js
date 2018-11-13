@@ -12,6 +12,10 @@ export default {
     invitedOrganisationUsers: {}
   },
   mutations: {
+    clearOrganisationUsers (state) {
+      state.loadedOrganisationUsers = {}
+      state.invitedOrganisationUsers = {}
+    },
     setLoadedOrganisationUsers (state, payload) {
       let users = Object.assign({}, state.loadedOrganisationUsers)
       users[payload.organisationId] = payload.users

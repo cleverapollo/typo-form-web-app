@@ -7,6 +7,9 @@ export default {
     loadedTriggers: []
   },
   mutations: {
+    clearLoadedTriggers (state) {
+      state.loadedTriggers = {}
+    },
     setLoadedTriggers (state, payload) {
       let triggers = Object.assign({}, state.loadedTriggers)
       triggers[payload.formId] = payload.triggers

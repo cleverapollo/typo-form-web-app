@@ -9,6 +9,9 @@ export default {
     loadedSubmissionFilters: {}
   },
   mutations: {
+    clearLoadedSubmissions (state) {
+      state.loadedSubmissions = {}
+    },
     setLoadedSubmissions (state, payload) {
       let submissions = Object.assign({}, state.loadedSubmissions)
       submissions[payload.formId] = payload.submissions
