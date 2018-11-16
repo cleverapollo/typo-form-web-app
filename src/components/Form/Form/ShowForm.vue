@@ -3,7 +3,7 @@
     <v-flex xs12>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <h1 class="headline primary--text py-3">{{ form.formTemplate.name }}</h1>
+          <h1 class="headline primary--text py-3">{{ form.form_template.name }}</h1>
         </v-flex>
 
         <v-flex xs12 class="mb-3">
@@ -239,7 +239,7 @@
         if (!this.form) {
           return null
         }
-        return this.form.formTemplate.id
+        return this.form.form_template.id
       },
       formTemplate () {
         return this.$store.getters.loadedFormTemplate(this.slug, this.formTemplateId)
@@ -377,6 +377,7 @@
           this.$store.dispatch('loadTriggers', this.formTemplateId)
         })
       this.$store.dispatch('selectSection', null)
+      this.$store.dispatch('loadAllOrganisationUsers', this.slug)
     }
   }
 </script>

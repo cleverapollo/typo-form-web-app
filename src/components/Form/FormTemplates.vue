@@ -5,18 +5,18 @@
 
         <!-- //Title -->
         <v-flex d-flex xs12>
-          <h1 class="headline primary--text py-3">Form Builder</h1>
+          <h1 class="headline primary--text py-3">Form Template</h1>
         </v-flex>
         <v-flex d-flex xs12>
-          <p>Select an existing form builder below or <a href="#" @click.stop="createForm = true">create a new form builder</a>.</p>
+          <p>Select an existing form template below or <a href="#" @click.stop="createFormTemplate = true">create a new form template</a>.</p>
         </v-flex>
 
-        <!-- //Form Builder List -->
-        <v-flex d-flex xs12 v-if="forms.length">
+        <!-- //Form template List -->
+        <v-flex d-flex xs12 v-if="formTemplates.length">
           <v-card>
             <v-list one-line>
-              <template v-for="(item, index) in forms">
-                <v-list-tile :to="onLoadForm(item.id)" :key="item.id" avatar>
+              <template v-for="(item, index) in formTemplates">
+                <v-list-tile :to="onLoadFormTemplate(item.id)" :key="item.id" avatar>
                   <v-list-tile-avatar color="primary">
                     <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
                   </v-list-tile-avatar>
@@ -24,47 +24,47 @@
                     <v-list-tile-title class="black--text">{{ item.name }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
-                <v-divider v-if="index < forms.length -1"></v-divider>
+                <v-divider v-if="index < formTemplates.length -1"></v-divider>
               </template>
 
             </v-list>
           </v-card>
         </v-flex>
 
-        <!-- //No Form Builders -->
+        <!-- //No Form Templates -->
         <v-flex xs12 pa-2 v-else>
           <v-alert value="true" type="info">
-            It looks like you don't have access to any form builder yet.
+            It looks like you don't have access to any form template yet.
           </v-alert>
         </v-flex>
 
       </v-layout>
     </v-flex>
 
-    <!-- //Create Form Builder -->
+    <!-- //Create Form Template -->
     <v-tooltip top>
-      <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="createForm = true" v-if="userIsApplicationAdmin">
+      <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="createFormTemplate = true" v-if="userIsApplicationAdmin">
         <v-icon>add</v-icon>
       </v-btn>
-      <span>Create Form Builder</span>
+      <span>Create Form Template</span>
     </v-tooltip>
 
-    <CreateForm :slug="slug" :visible="createForm" v-if="userIsApplicationAdmin" @close="createForm = false"></CreateForm>
+    <CreateFormTemplate :slug="slug" :visible="createFormTemplate" v-if="userIsApplicationAdmin" @close="createFormTemplate = false"></CreateFormTemplate>
   </v-layout>
 </template>
 
 <script>
   import * as _ from 'lodash'
-  import CreateForm from './CreateFormTemplate'
+  import CreateFormTemplate from './CreateFormTemplate'
   export default {
     data () {
       return {
-        createForm: false,
+        createFormTemplate: false,
         slug: window.location.hostname.split('.')[0]
       }
     },
     components: {
-      CreateForm
+      CreateFormTemplate
     },
     computed: {
       roles () {
@@ -91,8 +91,8 @@
         }
         return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
-      forms () {
-        return _.sortBy(this.$store.getters.loadedForms(this.slug), element => {
+      formTemplates () {
+        return _.sortBy(this.$store.getters.loadedFormTemplates(this.slug), element => {
           return element.name.toLowerCase()
         })
       }
@@ -107,12 +107,12 @@
         })
         return role ? role.name : 'undefined'
       },
-      onLoadForm (id) {
-        return '/forms/' + id
+      onLoadFormTemplate (id) {
+        return '/form-builder/' + id
       }
     },
     created: function () {
-      this.$store.dispatch('loadForms', this.slug)
+      this.$store.dispatch('loadFormTemplates', this.slug)
     }
   }
 </script>

@@ -32,7 +32,7 @@
             >
               <template slot="items" slot-scope="props">
                 <tr>
-                  <td @click="onForm(props.item.id)">{{ props.item.formTemplate.name }}</td>
+                  <td @click="onForm(props.item.id)">{{ props.item.form_template.name }}</td>
                   <td @click="onForm(props.item.id)">{{ props.item.owner }}</td>
                   <td @click="onForm(props.item.id)">{{ props.item.user.email }}</td>
                   <td @click="onForm(props.item.id)">{{ props.item.created_at.date | moment }}</td>
@@ -40,10 +40,10 @@
                   <td @click="onForm(props.item.id)">{{ props.item.progress }}%</td>
                   <td @click="onForm(props.item.id)">{{ props.item.status }}</td>
                   <td class="justify-center layout px-0">
-                    <v-btn icon class="mx-0" @click="duplicateForm(props.item.id, props.item.formTemplate.id)">
+                    <v-btn icon class="mx-0" @click="duplicateForm(props.item.id, props.item.form_template.id)">
                       <v-icon color="teal">content_copy</v-icon>
                     </v-btn>
-                    <v-btn icon class="mx-0" @click="showDeleteForm(props.item.id, props.item.formTemplate.id)">
+                    <v-btn icon class="mx-0" @click="showDeleteForm(props.item.id, props.item.form_template.id)">
                       <v-icon color="pink">delete</v-icon>
                     </v-btn>
                   </td>

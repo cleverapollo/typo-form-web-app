@@ -34,7 +34,7 @@
   import TriggerMixin from './TriggerMixin.js'
   import * as _ from 'lodash'
   export default {
-    name: 'formTemplate-tree',
+    name: 'form-tree',
     props: ['formTemplateId', 'list', 'section', 'formId'],
     mixins: [TriggerMixin],
     data () {

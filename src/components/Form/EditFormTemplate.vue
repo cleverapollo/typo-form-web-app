@@ -157,7 +157,7 @@
         this.$store.dispatch('createMeta', {
           metadata: JSON.stringify({content: this.content, help: this.help}),
           metableId: this.formTemplate.id,
-          metableType: 'formTemplates'
+          metableType: 'form_templates'
         })
       },
       updateMeta () {
@@ -165,7 +165,7 @@
           id: this.formTemplate.metas[0].id,
           metadata: JSON.stringify({content: this.content, help: this.help}),
           metableId: this.formTemplate.id,
-          metableType: 'formTemplates'
+          metableType: 'form_templates'
         })
       }
     },

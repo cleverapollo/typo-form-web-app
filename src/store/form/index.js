@@ -21,11 +21,11 @@ export default {
       let forms = Object.assign({}, state.loadedForms)
       for (let i = 0; i < payload.forms.length; i++) {
         const form = payload.forms[i]
-        forms[form.formTemplate.id] = []
+        forms[form.form_template.id] = []
       }
       for (let i = 0; i < payload.forms.length; i++) {
         const form = payload.forms[i]
-        forms[form.formTemplate.id].push(form)
+        forms[form.form_template.id].push(form)
       }
       state.loadedForms = forms
     },
@@ -45,7 +45,7 @@ export default {
       const index = forms[payload.formTemplateId].findIndex(form => {
         return form.id === payload.form.id
       })
-      if (index) {
+      if (index != null) {
         forms[payload.formTemplateId].splice(index, 1, payload.form)
       } else {
         forms[payload.formTemplateId].push(payload.form)
@@ -126,7 +126,7 @@ export default {
             response => {
               commit('setLoading', false)
               const updateObj = {
-                formTemplateId: response['data']['form']['formTemplate']['id'],
+                formTemplateId: response['data']['form']['form_template']['id'],
                 form: response['data']['form']
               }
               commit('updateForm', updateObj)

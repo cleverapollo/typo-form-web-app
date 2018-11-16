@@ -82,8 +82,8 @@
             this.close()
 
             // Redirect to the formTemplate Templates
-            if (response.data.formTemplate.id) {
-              this.$router.push('/formTemplate-builder/' + response.data.formTemplate.id)
+            if (response.data.form_template.id) {
+              this.$router.push('/form-builder/' + response.data.form_template.id)
             }
           })
           .catch(

@@ -95,6 +95,9 @@
         return this.$store.getters.statuses
       },
       status () {
+        if (!this.form) {
+          return 'undefined'
+        }
         const status = this.statuses.find((status) => {
           return status.id === this.form.status_id
         })

@@ -120,7 +120,7 @@ const router = new Router({
       }
     },
     {
-      path: '/formTemplate-builder',
+      path: '/form-builder',
       name: 'FormTemplates',
       component: FormTemplates,
       meta: {
@@ -129,7 +129,7 @@ const router = new Router({
       }
     },
     {
-      path: '/formTemplate-builder/:id',
+      path: '/form-builder/:id',
       name: 'ShowFormTemplate',
       component: ShowFormTemplate,
       props: true,
