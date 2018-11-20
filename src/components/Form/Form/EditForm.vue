@@ -30,7 +30,7 @@
               item-value="id"
               item-text="name"
               v-model="userId"
-              label="Who is the primary contact for this form?"
+              label="Owner"
             ></v-autocomplete>
           </v-flex>
 
@@ -41,7 +41,7 @@
               item-value="id"
               item-text="name"
               v-model="organisationId"
-              label="Working as a organisation? Select your organisation."
+              label="Organisation"
             ></v-autocomplete>
           </v-flex>
           

@@ -108,7 +108,7 @@
             >
               <template slot="items" slot-scope="props">
                 <tr @click="onForm(props.item.id)" v-if="loadedFormFilters.indexOf(props.item.id) !== -1">
-                  <td>{{ props.item.formTemplate.name }}</td>
+                  <td>{{ props.item.form_template.name }}</td>
                   <td>{{ props.item.owner }}</td>
                   <td>{{ props.item.created_at.date | moment }}</td>
                   <td>{{ props.item.updated_at.date | moment }}</td>
@@ -153,9 +153,9 @@
             if (filter.source.question === 'ID') {
               headers.push({ text: 'ID', value: 'id', sortable: true, align: 'left' })
             } else if (filter.source.question === 'Form Template ID') {
-              headers.push({ text: 'Form Template ID', value: 'formTemplate.id', sortable: true, align: 'left' })
+              headers.push({ text: 'Form Template ID', value: 'form_template.id', sortable: true, align: 'left' })
             } else if (filter.source.question === 'Form Template') {
-              headers.push({ text: 'Form Template', value: 'formTemplate.name', sortable: true, align: 'left' })
+              headers.push({ text: 'Form Template', value: 'form_template.name', sortable: true, align: 'left' })
             } else if (filter.source.question === 'User ID') {
               headers.push({ text: 'User ID', value: 'user.id', sortable: true, align: 'left' })
             } else if (filter.source.question === 'User') {

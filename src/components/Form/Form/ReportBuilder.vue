@@ -234,7 +234,7 @@ export default {
             let response = ''
             switch (filter.source.question) {
               case 'Form Template':
-                response = form.formTemplate.name
+                response = form.form_template.name
                 break
               case 'Owner':
                 response = form.user.first_name + ' ' + form.user.last_name
@@ -315,7 +315,7 @@ export default {
       this.$store.dispatch('loadAllForms', this.slug)
       this.$store.dispatch('loadFormTemplates', this.slug)
         .then((response) => {
-          const formTemplates = response.data.formTemplates
+          const formTemplates = response.data.form_templates
           _.forEach(formTemplates, (formTemplate) => {
             this.$store.dispatch('loadSections', formTemplate.id)
           })

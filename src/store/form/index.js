@@ -164,10 +164,7 @@ export default {
       })
     },
     createForm ({commit, getters}, payload) {
-      let form = {
-        period_start: payload.periodStart,
-        period_end: payload.periodEnd
-      }
+      const form = {}
 
       if (payload.userId) {
         form.user_id = payload.userId

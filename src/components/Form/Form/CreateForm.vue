@@ -41,63 +41,6 @@
             ></v-autocomplete>
           </v-flex>
 
-          <!-- //Period Start -->
-          <div class="body-2">Is this form for a set period? If so, set the date below (optional)</div>
-          <v-flex xs12 sm6>
-
-            <v-dialog
-              ref="periodStartDialog"
-              v-model="periodStartModal"
-              :return-value.sync="periodStart"
-              persistent
-              lazy
-              full-width
-              width="290px"
-            >
-              <v-text-field
-                slot="activator"
-                v-model="periodStart"
-                prepend-icon="event"
-                label="Period Start"
-                readonly
-              ></v-text-field>
-              <v-date-picker v-model="periodStart" scrollable>
-                <v-spacer></v-spacer>
-                <v-btn flat color="primary" @click="periodStartModal = false">Cancel</v-btn>
-                <v-btn flat color="primary" @click="$refs.periodStartDialog.save(periodStart)">OK</v-btn>
-              </v-date-picker>
-            </v-dialog>
-
-          </v-flex>
-
-          <!-- //Period End -->
-          <v-flex xs12 sm6>
-
-            <v-dialog
-              ref="periodEndDialog"
-              v-model="periodEndModal"
-              :return-value.sync="periodEnd"
-              persistent
-              lazy
-              full-width
-              width="290px"
-            >
-              <v-text-field
-                slot="activator"
-                v-model="periodEnd"
-                prepend-icon="event"
-                label="Period End"
-                readonly
-              ></v-text-field>
-              <v-date-picker v-model="periodEnd" scrollable>
-                <v-spacer></v-spacer>
-                <v-btn flat color="primary" @click="periodEndModal = false">Cancel</v-btn>
-                <v-btn flat color="primary" @click="$refs.periodEndDialog.save(periodEnd)">OK</v-btn>
-              </v-date-picker>
-            </v-dialog>
-
-          </v-flex>
-
         </v-layout>
 
       </v-card-text>
@@ -132,10 +75,6 @@
     data () {
       return {
         formTemplateId: null,
-        periodStart: null,
-        periodEnd: null,
-        periodStartModal: false,
-        periodEndModal: false,
         organisationId: null,
         userId: null
       }
@@ -204,9 +143,7 @@
         let data = {
           formTemplateId: this.formTemplateId,
           organisationId: this.organisationId,
-          userId: this.userId,
-          periodStart: this.periodStart,
-          periodEnd: this.periodEnd
+          userId: this.userId
         }
         this.$store.dispatch('createForm', data)
           .then(response => {
@@ -223,10 +160,6 @@
       },
       reset () {
         this.formTemplateId = null
-        this.periodStart = null
-        this.periodEnd = null
-        this.periodStartMenu = false
-        this.periodEndMenu = false
         this.organisationId = null
         this.userId = null
         this.show = false

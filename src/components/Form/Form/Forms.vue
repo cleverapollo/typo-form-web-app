@@ -94,7 +94,7 @@
         createForm: false,
         search: '',
         headers: [
-          { text: 'FormTemplate', value: 'formTemplate.name', sortable: true, align: 'left' },
+          { text: 'FormTemplate', value: 'form_template.name', sortable: true, align: 'left' },
           { text: 'Owner', value: 'owner', sortable: true, align: 'left' },
           { text: 'Email', value: 'user.email' },
           { text: 'Created', value: 'created_at.date', sortable: true, align: 'left' },
