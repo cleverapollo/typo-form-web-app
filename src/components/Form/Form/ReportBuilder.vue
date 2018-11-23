@@ -80,11 +80,14 @@
                   <v-btn>
                     <download-excel
                       :data="data"
-                      :name="fileName"
+                      :name="fileName + '.csv'"
                       type="csv"
                     >
                       CSV
                     </download-excel>
+                  </v-btn>
+                  <v-btn @click="downloadPDF">
+                    PDF
                   </v-btn>
                 </v-flex>
               </v-layout>
@@ -139,6 +142,7 @@ import moment from 'moment'
 import ReportComponent from './ReportComponent'
 import QuestionCompareMixin from './QuestionCompareMixin.js'
 import UrlMixin from './UrlMixin.js'
+import JSPDF from 'jspdf'
 
 export default {
   name: 'ReportBuilder',
@@ -165,7 +169,7 @@ export default {
       return this.$store.getters.loadedApplication(this.slug)
     },
     fileName () {
-      return this.application.name + ' Report ' + moment().format('YYYY-MM-DD [at] LTS') + '.csv'
+      return this.application.name + ' Report ' + moment().format('YYYY-MM-DD [at] LTS')
     },
     user () {
       return this.$store.getters.user
@@ -307,6 +311,46 @@ export default {
           this.data.push(row)
         }
       })
+    },
+    downloadPDF () {
+      const doc = new JSPDF('p', 'pt', 'a4')
+      let source = '<table><thead><tr>'
+      _.forEach(this.headers, header => {
+        source += '<th>' + header.text + '</th>'
+      })
+      source += '</tr></thead><tbody>'
+      _.forEach(this.data, data => {
+        source += '<tr>'
+        _.forEach(this.headers, header => {
+          source += '<td>' + data[header.text] + '</td>'
+        })
+        source += '</tr>'
+      })
+      source += '</tbody></table>'
+
+      const margins = {
+        top: 10,
+        bottom: 10,
+        left: 10,
+        width: 595
+      }
+
+      doc.fromHTML(
+        source, // HTML string or DOM elem ref.
+        margins.left,
+        margins.top, {
+          'width': margins.width,
+          'elementHandlers': {
+            '.no-export': () => {
+              return true
+            }
+          }
+        },
+        () => {
+          doc.save(this.fileName + '.pdf')
+        },
+        margins
+      )
     }
   },
   created: function () {
