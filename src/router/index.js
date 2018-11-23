@@ -30,6 +30,7 @@ import Forms from '@/components/Form/Form/Forms'
 import ShowForm from '@/components/Form/Form/ShowForm'
 import FormFilter from '@/components/Form/Form/FormFilter'
 import ReportBuilder from '@/components/Form/Form/ReportBuilder'
+import ChartBuilder from '@/components/Form/Form/ChartBuilder'
 
 import {store} from '@/store'
 
@@ -170,6 +171,15 @@ const router = new Router({
       path: '/report',
       name: 'ReportBuilder',
       component: ReportBuilder,
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/chart',
+      name: 'ChartBuilder',
+      component: ChartBuilder,
       meta: {
         application: true,
         requiresAuth: true
