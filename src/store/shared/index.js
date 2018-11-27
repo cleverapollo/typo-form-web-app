@@ -2,6 +2,7 @@ const API_URL = process.env.API_URL
 const JOIN_URL = `${API_URL}join/`
 const QUESTION_TYPE_URL = `${API_URL}question-type`
 const ROLE_URL = `${API_URL}role`
+const TYPE_URL = `${API_URL}type`
 const PERIOD_URL = `${API_URL}period`
 const STATUS_URL = `${API_URL}status`
 const VALIDATION_TYPE_URL = `${API_URL}validation-type`
@@ -18,6 +19,7 @@ export default {
     validationTypes: [],
     periods: [],
     roles: [],
+    types: [],
     statuses: [],
     comparators: [],
     triggerTypes: [],
@@ -41,6 +43,9 @@ export default {
     },
     setRoles (state, payload) {
       state.roles = payload
+    },
+    setTypes (state, payload) {
+      state.types = payload
     },
     setPeriods (state, payload) {
       state.periods = payload
@@ -123,6 +128,22 @@ export default {
           response => {
             commit('setLoading', false)
             commit('setRoles', response['data']['roles'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
+    loadTypes ({commit}) {
+      commit('setLoading', true)
+      window.axios.get(TYPE_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setTypes', response['data']['types'])
           }
         )
         .catch(
@@ -275,6 +296,9 @@ export default {
     },
     roles (state) {
       return state.roles
+    },
+    types (state) {
+      return state.types
     },
     statuses (state) {
       return state.statuses

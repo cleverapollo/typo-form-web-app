@@ -276,7 +276,7 @@
       return {
         items: [
           { title: 'Forms', type: 'forms', icon: 'assignment', color: 'blue', admin: false },
-          { title: 'Form Templates', type: 'formTemplates', icon: 'content_paste', color: 'orange', admin: true },
+          { title: 'Form Templates', type: 'form-builder', icon: 'content_paste', color: 'orange', admin: true },
           { title: 'Users', type: 'users', icon: 'person', color: 'red', admin: true },
           { title: 'Organisations', type: 'organisations', icon: 'people', color: 'green', admin: false }
         ],
@@ -408,7 +408,7 @@
         switch (type) {
           case 'users': return this.usersCount
           case 'organisations': return this.organisationsCount
-          case 'formTemplates': return this.formTemplatesCount
+          case 'form-builder': return this.formTemplatesCount
           case 'forms': return this.formsCount
           default: return 0
         }

@@ -25,26 +25,14 @@
         <v-divider></v-divider>
         <v-card-text>
           <v-layout row wrap>
-
-            <!-- //Users -->
+            <!-- //Types -->
             <v-flex xs12>
               <v-autocomplete
-                      :items="users"
+                      :items="types"
                       item-value="id"
-                      item-text="name"
-                      v-model="userId"
-                      label="Owner"
-              ></v-autocomplete>
-            </v-flex>
-
-            <!-- //Organisations -->
-            <v-flex xs12>
-              <v-autocomplete
-                      :items="organisations"
-                      item-value="id"
-                      item-text="name"
-                      v-model="organisationId"
-                      label="Organisation"
+                      item-text="type"
+                      v-model="typeId"
+                      label="Audience"
               ></v-autocomplete>
             </v-flex>
           </v-layout>
@@ -140,8 +128,7 @@
         csvFileName: 'Please Upload CSV.',
         content: this.formTemplate.metas.length ? JSON.parse(this.formTemplate.metas[0].metadata).content : '',
         help: this.formTemplate.metas.length ? JSON.parse(this.formTemplate.metas[0].metadata).help : '',
-        organisationId: this.formTemplate.organisation ? this.formTemplate.organisation.id : null,
-        userId: this.formTemplate.user ? this.formTemplate.user.id : null
+        typeId: this.formTemplate.type_id
       }
     },
     methods: {
@@ -155,8 +142,7 @@
         this.$store.dispatch('updateFormTemplate', {
           slug: this.slug,
           id: this.id,
-          organisationId: this.organisationId,
-          userId: this.userId,
+          typeId: this.typeId,
           name: this.editedName,
           showProgress: this.showProgress,
           csv: this.csv
@@ -172,8 +158,7 @@
       onCancel () {
         this.editedName = this.formTemplate.name
         this.editFormTemplate = false
-        this.organisationId = this.formTemplate.organisation ? this.formTemplate.organisation.id : null
-        this.userId = this.formTemplate.user ? this.formTemplate.user.id : null
+        this.typeId = this.formTemplate.type_id
       },
       onFileChange (e) {
         const files = e.target.files || e.dataTransfer.files
@@ -203,14 +188,12 @@
       loading () {
         return this.$store.getters.loading
       },
-      organisations () {
-        return this.$store.getters.loadedOrganisations(this.slug)
-      },
-      users () {
-        if (this.organisationId) {
-          return this.$store.getters.loadedFormOrganisationUsers(this.organisationId)
-        }
-        return this.$store.getters.loadedFormUsers(this.slug)
+      types () {
+        let types = this.$store.getters.types
+        types.forEach((type) => {
+          type.type = type.name === 'application' ? 'User' : 'Organisation'
+        })
+        return types
       }
     }
   }

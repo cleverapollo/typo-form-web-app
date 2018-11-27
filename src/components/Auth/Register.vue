@@ -209,6 +209,7 @@
           this.$store.dispatch('loadPeriods')
           this.$store.dispatch('loadStatuses')
           this.$store.dispatch('loadRoles')
+          this.$store.dispatch('loadTypes')
           this.$store.dispatch('loadComparators')
           this.$store.dispatch('loadTriggerTypes')
           this.$store.dispatch('loadAnswerSorts')

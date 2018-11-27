@@ -26,25 +26,14 @@
           </v-flex>
         </v-layout>
 
-        <!-- //Users -->
-        <v-flex xs12 v-if="userIsApplicationAdmin">
+        <!-- //Types -->
+        <v-flex xs12 v-if="types.length">
           <v-autocomplete
-                  :items="users"
+                  :items="types"
                   item-value="id"
-                  item-text="name"
-                  v-model="userId"
-                  label="Owner"
-          ></v-autocomplete>
-        </v-flex>
-
-        <!-- //Organisations -->
-        <v-flex xs12 v-if="organisations.length">
-          <v-autocomplete
-                  :items="organisations"
-                  item-value="id"
-                  item-text="name"
-                  v-model="organisationId"
-                  label="Organisation"
+                  item-text="type"
+                  v-model="typeId"
+                  label="Audience"
           ></v-autocomplete>
         </v-flex>
       </v-card-text>
@@ -72,8 +61,7 @@
         name: '',
         error: false,
         errorString: '',
-        organisationId: null,
-        userId: null
+        typeId: null
       }
     },
     computed: {
@@ -87,53 +75,18 @@
           }
         }
       },
-      organisations () {
-        return this.$store.getters.loadedOrganisations(this.slug)
-      },
-      users () {
-        if (this.organisationId) {
-          return this.$store.getters.loadedFormOrganisationUsers(this.organisationId)
-        }
-        return this.$store.getters.loadedFormUsers(this.slug)
-      },
-      roles () {
-        return this.$store.getters.roles
+      types () {
+        let types = this.$store.getters.types
+        types.forEach((type) => {
+          type.type = type.name === 'application' ? 'User' : 'Organisation'
+        })
+        return types
       },
       formTemplateIsValid () {
         return this.name !== ''
-      },
-      loading () {
-        return this.$store.getters.loading
-      },
-      application () {
-        return this.$store.getters.loadedApplication(this.slug)
-      },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsApplicationAdmin () {
-        return this.userIsAdmin || this.isSuperUser
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.application_role_id) === 'Admin'
-      },
-      isSuperUser () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       }
     },
     methods: {
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
-      },
       save () {
         if (!this.formTemplateIsValid) {
           return
@@ -142,8 +95,7 @@
         const formTemplateData = {
           slug: this.slug,
           name: this.name,
-          organisationId: this.organisationId,
-          userId: this.userId
+          typeId: this.typeId
         }
         this.$store.dispatch('createFormTemplate', formTemplateData)
           .then(response => {
@@ -163,8 +115,7 @@
       },
       close () {
         this.name = ''
-        this.organisationId = null
-        this.userId = null
+        this.typeId = null
         this.show = false
       }
     }

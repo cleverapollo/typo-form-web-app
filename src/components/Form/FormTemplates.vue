@@ -112,11 +112,7 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadUsers', this.slug)
-      this.$store.dispatch('loadOrganisations', this.slug)
       this.$store.dispatch('loadFormTemplates', this.slug)
-      this.$store.dispatch('loadAllForms', this.slug)
-      this.$store.dispatch('loadAllOrganisationUsers', this.slug)
     }
   }
 </script>
