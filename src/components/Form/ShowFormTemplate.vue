@@ -134,10 +134,14 @@
       }
     },
     created: function () {
+      this.$store.dispatch('loadUsers', this.slug)
+      this.$store.dispatch('loadOrganisations', this.slug)
       this.$store.dispatch('loadFormTemplates', this.slug)
       this.$store.dispatch('loadSections', this.id)
       this.$store.dispatch('loadValidations', this.id)
       this.$store.dispatch('loadTriggers', this.id)
+      this.$store.dispatch('selectSection', null)
+      this.$store.dispatch('loadAllOrganisationUsers', this.slug)
       this.$store.dispatch('selectSection', null)
     }
   }

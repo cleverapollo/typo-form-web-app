@@ -24,6 +24,30 @@
 
         <v-divider></v-divider>
         <v-card-text>
+          <v-layout row wrap>
+
+            <!-- //Users -->
+            <v-flex xs12>
+              <v-autocomplete
+                      :items="users"
+                      item-value="id"
+                      item-text="name"
+                      v-model="userId"
+                      label="Owner"
+              ></v-autocomplete>
+            </v-flex>
+
+            <!-- //Organisations -->
+            <v-flex xs12>
+              <v-autocomplete
+                      :items="organisations"
+                      item-value="id"
+                      item-text="name"
+                      v-model="organisationId"
+                      label="Organisation"
+              ></v-autocomplete>
+            </v-flex>
+          </v-layout>
 
           <v-layout row wrap>
             <v-flex xs12>
@@ -115,7 +139,9 @@
         csv: this.formTemplate.csv,
         csvFileName: 'Please Upload CSV.',
         content: this.formTemplate.metas.length ? JSON.parse(this.formTemplate.metas[0].metadata).content : '',
-        help: this.formTemplate.metas.length ? JSON.parse(this.formTemplate.metas[0].metadata).help : ''
+        help: this.formTemplate.metas.length ? JSON.parse(this.formTemplate.metas[0].metadata).help : '',
+        organisationId: this.formTemplate.organisation ? this.formTemplate.organisation.id : null,
+        userId: this.formTemplate.user ? this.formTemplate.user.id : null
       }
     },
     methods: {
@@ -129,6 +155,8 @@
         this.$store.dispatch('updateFormTemplate', {
           slug: this.slug,
           id: this.id,
+          organisationId: this.organisationId,
+          userId: this.userId,
           name: this.editedName,
           showProgress: this.showProgress,
           csv: this.csv
@@ -144,6 +172,8 @@
       onCancel () {
         this.editedName = this.formTemplate.name
         this.editFormTemplate = false
+        this.organisationId = this.formTemplate.organisation ? this.formTemplate.organisation.id : null
+        this.userId = this.formTemplate.user ? this.formTemplate.user.id : null
       },
       onFileChange (e) {
         const files = e.target.files || e.dataTransfer.files
@@ -172,6 +202,15 @@
     computed: {
       loading () {
         return this.$store.getters.loading
+      },
+      organisations () {
+        return this.$store.getters.loadedOrganisations(this.slug)
+      },
+      users () {
+        if (this.organisationId) {
+          return this.$store.getters.loadedFormOrganisationUsers(this.organisationId)
+        }
+        return this.$store.getters.loadedFormUsers(this.slug)
       }
     }
   }

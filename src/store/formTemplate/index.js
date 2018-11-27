@@ -78,6 +78,14 @@ export default {
       const formTemplate = {
         name: payload.name
       }
+
+      if (payload.userId) {
+        formTemplate.user_id = payload.userId
+      }
+
+      if (payload.organisationId) {
+        formTemplate.organisation_id = payload.organisationId
+      }
       return new Promise((resolve, reject) => {
         window.axios.post(APPLICATION_URL + payload.slug + FORM_TEMPLATE_URL, formTemplate)
           .then(
@@ -106,6 +114,12 @@ export default {
 
       if (payload.name) {
         formData.append('name', payload.name)
+      }
+      if (payload.userId) {
+        formData.append('user_id', payload.userId)
+      }
+      if (payload.organisationId) {
+        formData.append('organisation_id', payload.organisationId)
       }
       if (payload.showProgress !== null) {
         formData.append('show_progress', payload.showProgress ? 1 : 0)
