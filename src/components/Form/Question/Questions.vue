@@ -189,6 +189,8 @@
   import Email from './components/Email'
   import Percent from './components/Percent'
   import PhoneNumber from './components/PhoneNumber'
+  import Address from './components/Address'
+  import URL from './components/URL'
   import * as _ from 'lodash'
 
   import triggers from '../Triggers'
@@ -226,7 +228,9 @@
           'Decimal': Decimal,
           'Email': Email,
           'Percent': Percent,
-          'Phone number': PhoneNumber
+          'Phone number': PhoneNumber,
+          'Address': Address,
+          'URL': URL
         },
         ifRequireValidation: {
           'Short answer': true,
@@ -238,7 +242,9 @@
           'Number': true,
           'Decimal': true,
           'Email': true,
-          'Percent': true
+          'Percent': true,
+          'Address': true,
+          'URL': true
         },
         menuItems: [
           {
@@ -313,6 +319,14 @@
           {
             action: 'phone',
             title: 'Phone number'
+          },
+          {
+            action: 'place',
+            title: 'Address'
+          },
+          {
+            action: 'link',
+            title: 'URL'
           }
         ],
         validationTypes: this.$store.getters.validationTypes,

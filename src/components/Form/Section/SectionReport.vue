@@ -157,6 +157,8 @@
           case 'Email':
           case 'Percent':
           case 'Phone number':
+          case 'Address':
+          case 'URL':
             if (responses.length) {
               response = responses[0].response
             }

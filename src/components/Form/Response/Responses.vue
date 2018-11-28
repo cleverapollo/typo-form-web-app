@@ -57,6 +57,8 @@
   import Email from './components/Email'
   import Percent from './components/Percent'
   import PhoneNumber from './components/PhoneNumber'
+  import Address from './components/Address'
+  import URL from './components/URL'
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
@@ -86,7 +88,9 @@
           'Decimal': Decimal,
           'Email': Email,
           'Percent': Percent,
-          'Phone number': PhoneNumber
+          'Phone number': PhoneNumber,
+          'Address': Address,
+          'URL': URL
         },
         snackbarVisible: false
       }

@@ -49,7 +49,7 @@
         <!-- //Selected Answer -->
         <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.answer'>
           <v-autocomplete
-            :items="parentQuestionType == 8 || parentQuestionType == 9 ? falseAnswers : answers"
+            :items="multiQuestionType ? falseAnswers : answers"
             item-text="answer"
             item-value="id"
             v-model="parentAnswerId"
@@ -61,7 +61,7 @@
 
         <!-- //User Input -->
         <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.value'>
-          <v-flex xs12 v-if="parentQuestionType == 8 || parentQuestionType == 9">
+          <v-flex xs12 v-if="multiQuestionType === 1">
             <v-autocomplete
               v-model="value"
               :items="trueAnswers"
@@ -144,8 +144,21 @@
           return !e.parameter
         })
       },
+      questionTypes () {
+        return this.$store.getters.questionTypes
+      },
       parentQuestionType () {
         return this.parentQuestion.question_type_id
+      },
+      multiQuestionType () {
+        if (this.getQuestionType(this.parentQuestionType) === 'Multiple choice grid' ||
+          this.getQuestionType(this.parentQuestionType) === 'Checkbox grid') {
+          return 1
+        }
+        if (this.getQuestionType(this.parentQuestionType) === 'Address') {
+          return 2
+        }
+        return 0
       },
       triggerTypes () {
         return this.$store.getters.triggerTypes.filter(e => {
@@ -168,6 +181,12 @@
       }
     },
     methods: {
+      getQuestionType (questionTypeId) {
+        const questionType = this.questionTypes.find((questionType) => {
+          return questionType.id === questionTypeId
+        })
+        return questionType ? questionType.type : 'undefined'
+      },
       getSection (questionId) {
         const allSections = this.$store.getters.loadedSections(this.formTemplateId)
         const section = allSections.find((section) => {
