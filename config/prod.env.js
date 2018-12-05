@@ -26,5 +26,7 @@ module.exports = {
 
   REDIRECT_URL: JSON.stringify(process.env.REDIRECT_URL),
 
-  ABR_GUID: JSON.stringify(process.env.ABR_GUID)
+  ABR_GUID: JSON.stringify(process.env.ABR_GUID),
+
+  GOOGLE_API_KEY: JSON.stringify(process.env.GOOGLE_API_KEY)
 }

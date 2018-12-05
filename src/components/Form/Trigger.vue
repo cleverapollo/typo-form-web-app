@@ -155,7 +155,8 @@
           this.getQuestionType(this.parentQuestionType) === 'Checkbox grid') {
           return 1
         }
-        if (this.getQuestionType(this.parentQuestionType) === 'Address') {
+        if (this.getQuestionType(this.parentQuestionType) === 'Address' ||
+          this.getQuestionType(this.parentQuestionType) === 'ABN Lookup') {
           return 2
         }
         return 0

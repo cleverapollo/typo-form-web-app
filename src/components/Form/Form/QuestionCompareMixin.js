@@ -50,14 +50,14 @@ export default {
       let questionAnswer = ''
       let questionValue = ''
       if (parentResponses.length > 0) {
-        if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown' || this.getQuestionType(questionTypeID) === 'Address') {
+        if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown') {
           let filteredResponses = parentResponses.filter(function (parentResponse) {
             return parentResponse.answer_id === answer
           })
           if (filteredResponses.length > 0) {
             questionAnswer = answer.toString()
           }
-        } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid') {
+        } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid' || this.getQuestionType(questionTypeID) === 'Address' || this.getQuestionType(questionTypeID) === 'ABN Lookup') {
           let filteredResponses = parentResponses.filter(function (parentResponse) {
             return parentResponse.answer_id === answer && parentResponse.response === value
           })
@@ -156,7 +156,7 @@ export default {
             return listValue.filter(element => element.includes(value)).length > 0
           } else if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
             return questionAnswer === answer
-          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid' || this.getQuestionType(questionTypeID) === 'Address') {
+          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid' || this.getQuestionType(questionTypeID) === 'Address' || this.getQuestionType(questionTypeID) === 'ABN Lookup') {
             return questionAnswer === answer && questionValue === value
           } else {
             if (!answerF) {
@@ -172,7 +172,7 @@ export default {
             return listValue.filter(element => element.includes(value)).length === 0
           } else if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
             return questionAnswer !== answer
-          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid' || this.getQuestionType(questionTypeID) === 'Address') {
+          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid' || this.getQuestionType(questionTypeID) === 'Address' || this.getQuestionType(questionTypeID) === 'ABN Lookup') {
             return questionAnswer !== answer || questionValue !== value
           } else {
             if (!answerF) {
@@ -238,7 +238,6 @@ export default {
         case 'Email':
         case 'Percent':
         case 'Phone number':
-        case 'Address':
         case 'URL':
           if (responses.length) {
             response = responses[0].response
@@ -262,6 +261,8 @@ export default {
           break
         case 'Multiple choice grid':
         case 'Checkbox grid':
+        case 'Address':
+        case 'ABN Lookup':
           const result1 = responses.map((response) => {
             const answer = item.answers.find((answer) => {
               return answer.id === response.answer_id
@@ -272,12 +273,6 @@ export default {
             return '(' + answer.answer + ', ' + res.answer + ')'
           })
           response = result1.join(', ')
-          break
-        case 'ABN Lookup':
-          if (responses.length) {
-            // response = JSON.parse(responses[0].response).Abn
-            response = responses[0].response
-          }
           break
         case 'Content Block':
           response = item.description

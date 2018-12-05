@@ -157,7 +157,6 @@
           case 'Email':
           case 'Percent':
           case 'Phone number':
-          case 'Address':
           case 'URL':
             if (responses.length) {
               response = responses[0].response
@@ -181,6 +180,8 @@
             break
           case 'Multiple choice grid':
           case 'Checkbox grid':
+          case 'Address':
+          case 'ABN Lookup':
             const result1 = responses.map((response) => {
               const answer = item.answers.find((answer) => {
                 return answer.id === response.answer_id
@@ -191,12 +192,6 @@
               return '(' + answer.answer + ', ' + res.answer + ')'
             })
             response = result1.join(', ')
-            break
-          case 'ABN Lookup':
-            if (responses.length) {
-              // response = JSON.parse(responses[0].response).Abn
-              response = responses[0].response
-            }
             break
           case 'Content Block':
             response = item.description
