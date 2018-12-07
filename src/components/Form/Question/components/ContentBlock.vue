@@ -22,7 +22,7 @@
         </v-flex>
       </v-layout>
 
-    <triggers :formId="formId" type="Question" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
+    <triggers :formTemplateId="formTemplateId" type="Question" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
 
     <v-divider></v-divider>
 
@@ -42,14 +42,14 @@
     <!-- //Delete Question -->
     <DeleteConfirmDialog @delete-action="onDeleteQuestion" :visible="deleteQuestion" @close="deleteQuestion = false"></DeleteConfirmDialog>
     <!-- //Move Question -->
-    <ParentSectionDialog @move-action="onMoveQuestion" :visible="moveQuestion" @close="moveQuestion = false" :formId="formId" :sectionId="question.id" flag="Question"></ParentSectionDialog>
+    <ParentSectionDialog @move-action="onMoveQuestion" :visible="moveQuestion" @close="moveQuestion = false" :formTemplateId="formTemplateId" :sectionId="question.id" flag="Question"></ParentSectionDialog>
   </v-container>
 </template>
 
 <script>
   import triggers from '../../Triggers'
   export default {
-    props: ['question', 'formId', 'sectionId', 'index'],
+    props: ['question', 'formTemplateId', 'sectionId', 'index'],
     components: {
       triggers
     },
@@ -63,13 +63,13 @@
     },
     computed: {
       questionOptions () {
-        return this.$store.getters.loadedAllQuestions(this.formId).filter((question) => { return question.id !== this.question.id })
+        return this.$store.getters.loadedAllQuestions(this.formTemplateId).filter((question) => { return question.id !== this.question.id })
       }
     },
     methods: {
       updateQuestion () {
         this.$store.dispatch('updateQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.sectionId,
           id: this.question.id,
           question: this.editedQuestion,
@@ -78,21 +78,21 @@
       },
       duplicateQuestion () {
         this.$store.dispatch('duplicateQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.sectionId,
           id: this.question.id
         })
       },
       onDeleteQuestion () {
         this.$store.dispatch('deleteQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.sectionId,
           id: this.question.id
         })
       },
       onMoveQuestion (args) {
         this.$store.dispatch('moveQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           questionId: this.question.id,
           oldParentSectionId: this.sectionId,
           parentSectionId: args[0],

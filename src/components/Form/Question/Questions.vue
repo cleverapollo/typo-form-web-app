@@ -94,7 +94,7 @@
         :is="questionComponent"
         :question-id="question.id"
         :section-id="sectionId"
-        :form-id="formId"
+        :form-template-id="formTemplateId"
         :answers="answers"
         :has-validation="hasValidation"
         @create-answer="createAnswer"
@@ -109,7 +109,7 @@
       ></component>
     </form>
 
-    <triggers :formId="formId" :question="question" :questionOptions="questionOptions" type="Question" v-if="questionOptions.length > 0"></triggers>
+    <triggers :formTemplateId="formTemplateId" :question="question" :questionOptions="questionOptions" type="Question" v-if="questionOptions.length > 0"></triggers>
 
     <v-toolbar pa-3>
       <v-spacer></v-spacer>
@@ -166,7 +166,7 @@
     <!-- //Delete Question -->
     <DeleteConfirmDialog @delete-action="onDeleteQuestion" :visible="deleteQuestion" @close="deleteQuestion = false"></DeleteConfirmDialog>
     <!-- //Move Question -->
-    <ParentSectionDialog @move-action="onMoveQuestion" :visible="moveQuestion" @close="moveQuestion = false" :formId="formId" :sectionId="question.id" flag="Question"></ParentSectionDialog>
+    <ParentSectionDialog @move-action="onMoveQuestion" :visible="moveQuestion" @close="moveQuestion = false" :formTemplateId="formTemplateId" :sectionId="question.id" flag="Question"></ParentSectionDialog>
   </v-container>
 </template>
 
@@ -189,12 +189,14 @@
   import Email from './components/Email'
   import Percent from './components/Percent'
   import PhoneNumber from './components/PhoneNumber'
+  import Address from './components/Address'
+  import URL from './components/URL'
   import * as _ from 'lodash'
 
   import triggers from '../Triggers'
 
   export default {
-    props: ['question', 'formId', 'sectionId', 'index'],
+    props: ['question', 'formTemplateId', 'sectionId', 'index'],
     components: {
       triggers
     },
@@ -226,7 +228,9 @@
           'Decimal': Decimal,
           'Email': Email,
           'Percent': Percent,
-          'Phone number': PhoneNumber
+          'Phone number': PhoneNumber,
+          'Address': Address,
+          'URL': URL
         },
         ifRequireValidation: {
           'Short answer': true,
@@ -238,7 +242,9 @@
           'Number': true,
           'Decimal': true,
           'Email': true,
-          'Percent': true
+          'Percent': true,
+          'Address': true,
+          'URL': true
         },
         menuItems: [
           {
@@ -313,10 +319,18 @@
           {
             action: 'phone',
             title: 'Phone number'
+          },
+          {
+            action: 'place',
+            title: 'Address'
+          },
+          {
+            action: 'link',
+            title: 'URL'
           }
         ],
         validationTypes: this.$store.getters.validationTypes,
-        validations: this.$store.getters.loadedQuestionValidation(this.formId, this.question.id),
+        validations: this.$store.getters.loadedQuestionValidation(this.formTemplateId, this.question.id),
         validationData: '',
         validationType: ''
       }
@@ -342,10 +356,10 @@
         return questionWidths
       },
       section () {
-        return this.$store.getters.loadedSection(this.formId, this.sectionId)
+        return this.$store.getters.loadedSection(this.formTemplateId, this.sectionId)
       },
       questionOptions () {
-        const allQuestions = this.$store.getters.loadedAllQuestions(this.formId).filter((question) => { return question.id !== this.question.id })
+        const allQuestions = this.$store.getters.loadedAllQuestions(this.formTemplateId).filter((question) => { return question.id !== this.question.id })
         // return _.sortBy(allQuestions, element => {
         //   return element.id
         // })
@@ -381,7 +395,7 @@
       },
       hasValidation () {
         this.validationTypes = this.$store.getters.validationTypes
-        this.validations = this.$store.getters.loadedQuestionValidation(this.formId, this.question.id)
+        this.validations = this.$store.getters.loadedQuestionValidation(this.formTemplateId, this.question.id)
         return !!(this.validations && this.validations.length && this.validations.length === 1)
       },
       questionTypeString: {
@@ -450,7 +464,7 @@
         const parameter = args[1]
         this.$store.dispatch('createAnswer',
           {
-            formId: this.formId,
+            formTemplateId: this.formTemplateId,
             sectionId: this.sectionId,
             questionId: this.question.id,
             answer: answer,
@@ -462,7 +476,7 @@
         const answer = args[1]
         this.$store.dispatch('updateAnswer',
           {
-            formId: this.formId,
+            formTemplateId: this.formTemplateId,
             sectionId: this.sectionId,
             questionId: this.question.id,
             id: id,
@@ -471,7 +485,7 @@
       },
       deleteAnswer: function (id) {
         this.$store.dispatch('deleteAnswer', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.sectionId,
           questionId: this.question.id,
           id: id
@@ -479,14 +493,14 @@
       },
       deleteAnswers: function () {
         this.$store.dispatch('deleteAnswers', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.sectionId,
           questionId: this.question.id
         })
       },
       changeAnswer: function () {
         this.$store.dispatch('changeAnswers', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.sectionId,
           questionId: this.question.id
         })
@@ -519,7 +533,7 @@
         }
         this.$store.dispatch('updateQuestion',
           {
-            formId: this.formId,
+            formTemplateId: this.formTemplateId,
             sectionId: this.sectionId,
             id: this.question.id,
             question: this.editedName,
@@ -532,21 +546,21 @@
       },
       duplicateQuestion () {
         this.$store.dispatch('duplicateQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.sectionId,
           id: this.question.id
         })
       },
       onDeleteQuestion () {
         this.$store.dispatch('deleteQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.sectionId,
           id: this.question.id
         })
       },
       onMoveQuestion (args) {
         this.$store.dispatch('moveQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           questionId: this.question.id,
           oldParentSectionId: this.sectionId,
           parentSectionId: args[0],
@@ -557,7 +571,7 @@
         const id = args[0]
         const order = args[1]
         this.$store.dispatch('moveAnswer', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.sectionId,
           questionId: this.question.id,
           id: id,
@@ -570,7 +584,7 @@
           return name === type.type
         }).id
         this.$store.dispatch('createValidation', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           questionId: this.question.id,
           validationTypeId: validationTypeId,
           validationData: `${args[1]},${args[2]}`
@@ -584,7 +598,7 @@
         const validationId = this.validations[0].id
         this.$store.dispatch('updateValidation', {
           id: validationId,
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           questionId: this.question.id,
           validationTypeId: validationTypeId,
           validationData: `${args[1]},${args[2]}`
@@ -597,7 +611,7 @@
         const validationId = this.validations[0].id
         this.$store.dispatch('deleteValidation', {
           id: validationId,
-          formId: this.formId
+          formTemplateId: this.formTemplateId
         })
       }
     }

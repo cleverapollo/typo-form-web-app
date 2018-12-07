@@ -1,5 +1,5 @@
 <template>
-  <v-card flat active-class="active-section" v-if="!isSectionTrigger(section) || submissionId === -1">
+  <v-card flat active-class="active-section" v-if="!isSectionTrigger(section) || formId === -1">
 
     <v-card-title>
       <v-flex>
@@ -18,7 +18,7 @@
         </div>
       </v-flex>
 
-      <v-flex style="min-width: 130px; max-width: 130px;" v-if="submissionId === -1">
+      <v-flex style="min-width: 130px; max-width: 130px;" v-if="formId === -1">
         <v-switch
           label="Repeatable"
           v-model="hasRepeatableQuestions"
@@ -26,7 +26,7 @@
         ></v-switch>
       </v-flex>
 
-      <v-menu offset-y bottom left v-if="submissionId === -1">
+      <v-menu offset-y bottom left v-if="formId === -1">
         <v-btn icon slot="activator">
           <v-icon>more_vert</v-icon>
         </v-btn>
@@ -37,7 +37,7 @@
               <v-icon>create_new_folder</v-icon>
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <CreateSection :parentSectionId="section.id" :formId="formId"></CreateSection>
+              <CreateSection :parentSectionId="section.id" :formTemplateId="formTemplateId"></CreateSection>
             </v-list-tile-content>
           </v-list-tile>
 
@@ -53,7 +53,7 @@
               <v-icon>add</v-icon>
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <CreateQuestion :sectionId="section.id" :formId="formId"></CreateQuestion>
+              <CreateQuestion :sectionId="section.id" :formTemplateId="formTemplateId"></CreateQuestion>
             </v-list-tile-content>
           </v-list-tile>
 
@@ -75,7 +75,7 @@
     </v-card-title>
 
     <v-card-text v-show="expanded">
-      <v-layout row wrap justify-space-around v-if="hasRepeatableQuestions && submissionId === -1">
+      <v-layout row wrap justify-space-around v-if="hasRepeatableQuestions && formId === -1">
         <v-flex xs5 style="min-width: 130px">
           <v-text-field
             label="Minimum rows count"
@@ -95,10 +95,10 @@
         </v-flex>
       </v-layout>
 
-      <triggers :formId="formId" :question="section" :questionOptions="questionOptions" type="Section" v-if="questionOptions.length > 0 && submissionId === -1"></triggers>
+      <triggers :formTemplateId="formTemplateId" :question="section" :questionOptions="questionOptions" type="Section" v-if="questionOptions.length > 0 && formId === -1"></triggers>
       
-      <!-- //Form Builder -->
-      <template v-if="submissionId == -1">
+      <!-- //Form Template -->
+      <template v-if="formId == -1">
         <v-flex xs12>
 
           <v-expansion-panel popout>
@@ -128,15 +128,15 @@
                       :class="'element' + element.id">
                       <sections
                         :section="element"
+                        :formTemplateId="formTemplateId"
                         :formId="formId"
-                        :submissionId="submissionId"
                         :key="'section' + element.id"
                         v-if="element.questions"
                       ></sections>
 
                       <questions
                         :question="element"
-                        :formId="formId"
+                        :formTemplateId="formTemplateId"
                         :sectionId="section.id"
                         :index="index + 1"
                         :key="'question' + element.id"
@@ -145,7 +145,7 @@
 
                       <QuestionContentBlock
                         :question="element"
-                        :formId="formId"
+                        :formTemplateId="formTemplateId"
                         :sectionId="section.id"
                         :index="index + 1"
                         :key="'question' + element.id"
@@ -162,7 +162,7 @@
         </v-flex>
       </template>
 
-      <!-- //Form Builder -->
+      <!-- //Form Template -->
       <template v-else>
 
         <!-- //Standard -->
@@ -170,10 +170,10 @@
           <template v-for="(element, index) in list" v-if="!isTrigger(element , 1)">
             <responses
               :question="element"
-              :formId="formId"
+              :formTemplateId="formTemplateId"
               :sectionId="section.id"
               :index="index + 1"
-              :submissionId="submissionId"
+              :formId="formId"
               :key="'question' + element.id"
               :order="1"
               :status="status"
@@ -200,10 +200,10 @@
             <template v-for="(element, index) in list"  v-if="!isTrigger(element, order)">
               <responses
                 :question="element"
-                :formId="formId"
+                :formTemplateId="formTemplateId"
                 :sectionId="section.id"
                 :index="index + 1"
-                :submissionId="submissionId"
+                :formId="formId"
                 :order="order"
                 :hide="list.length === 1 && order > 1"
                 :key="'question' + element.id + '-' + order"
@@ -228,7 +228,7 @@
 
           </v-layout>
 
-          <v-layout wrap v-if='submissionId !== -1 && hasRepeatableQuestions && (hasRepeatableQuestions < section.max_rows || !section.max_rows)'>
+          <v-layout wrap v-if='formId !== -1 && hasRepeatableQuestions && (hasRepeatableQuestions < section.max_rows || !section.max_rows)'>
             <v-btn dark block color="primary" @click="addSection" :disabled="status === 'Closed'">
               <v-icon dark>add</v-icon>
               Add {{section.name}}
@@ -244,7 +244,7 @@
     <DeleteConfirmDialog @delete-action="onDeleteSection" :visible="deleteSection" @close="deleteSection = false"></DeleteConfirmDialog>
 
     <!-- //Move Section -->
-    <ParentSectionDialog @move-action="onMoveSection" :visible="moveSection" @close="moveSection = false" :formId="formId" :sectionId="section.id" flag="Section"></ParentSectionDialog>
+    <ParentSectionDialog @move-action="onMoveSection" :visible="moveSection" @close="moveSection = false" :formTemplateId="formTemplateId" :sectionId="section.id" flag="Section"></ParentSectionDialog>
 
     <!-- //Show snackbar -->
     <Snackbar content="Progress saved" :snackbar="snackbarVisible" @dismissed="snackbarVisible = false"></Snackbar>
@@ -265,7 +265,7 @@
 
   export default {
     name: 'sections',
-    props: ['section', 'formId', 'submissionId'],
+    props: ['section', 'formTemplateId', 'formId'],
     mixins: [TriggerMixin],
     components: {
       draggable,
@@ -300,26 +300,26 @@
     },
     computed: {
       sections () {
-        return this.$store.getters.loadedSections(this.formId)
+        return this.$store.getters.loadedSections(this.formTemplateId)
       },
-      submission () {
-        if (!this.submissionId) {
+      form () {
+        if (!this.formId) {
           return null
         }
-        return this.$store.getters.loadedSubmission(parseInt(this.formId), parseInt(this.submissionId))
+        return this.$store.getters.loadedForm(parseInt(this.formTemplateId), parseInt(this.formId))
       },
       statuses () {
         return this.$store.getters.statuses
       },
       status () {
-        if (!this.submission) {
+        if (!this.form) {
           return null
         }
-        return this.getStatus(this.submission.status_id)
+        return this.getStatus(this.form.status_id)
       },
       list: {
         get () {
-          return _.sortBy(this.$store.getters.loadedChildren(this.formId, this.section.id), element => {
+          return _.sortBy(this.$store.getters.loadedChildren(this.formTemplateId, this.section.id), element => {
             return element.order
           })
         },
@@ -331,10 +331,10 @@
         return !this.list.length
       },
       responses () {
-        if (!this.submissionId) {
+        if (!this.formId) {
           return []
         }
-        let responses = this.submission.responses.filter((response) => {
+        let responses = this.form.responses.filter((response) => {
           const questions = this.section.questions.filter((question) => {
             return question.id === response.question_id
           })
@@ -358,7 +358,7 @@
         return !!this.list[0].answers
       },
       questionOptions () {
-        const allQuestions = this.$store.getters.loadedAllQuestions(this.formId)
+        const allQuestions = this.$store.getters.loadedAllQuestions(this.formTemplateId)
         // return _.sortBy(allQuestions, element => {
         //   return element.id
         // })
@@ -403,7 +403,7 @@
         const mandatory = args[3]
 
         this.$store.dispatch('createQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.section.id,
           question: qustionName,
           description: questionDescription,
@@ -416,7 +416,7 @@
           return questionType.type === 'Content Block'
         })
         this.$store.dispatch('createQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.section.id,
           question: 'Content Block',
           description: '',
@@ -426,7 +426,7 @@
       },
       deleteQuestion (id) {
         this.$store.dispatch('deleteQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.section.id,
           id: id
         })
@@ -435,7 +435,7 @@
         const index = args[0]
         const value = args[1]
         this.$store.dispatch('updateQuestion', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.section.id,
           id: index,
           question: value
@@ -445,7 +445,7 @@
         const questionId = args[0]
         const answer = args[1]
         this.$store.dispatch('createAnswer', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.section.id,
           questionId: questionId,
           answer: answer,
@@ -456,7 +456,7 @@
         const questionId = args[0]
         const index = args[1]
         this.$store.dispatch('deleteAnswer', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.section.id,
           questionId: questionId,
           id: index
@@ -467,7 +467,7 @@
         const index = args[1]
         const answer = args[2]
         this.$store.dispatch('updateAnswer', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.section.id,
           questionId: questionId,
           id: index,
@@ -475,7 +475,7 @@
         })
       },
       createResponse (args) {
-        if (this.submissionId <= 0) {
+        if (this.formId <= 0) {
           return
         }
         const answerId = args[0]
@@ -483,14 +483,14 @@
         const questionId = args[2]
         const order = args[3]
         this.$store.dispatch('createResponse', {
-          submissionId: parseInt(this.submissionId),
+          formId: parseInt(this.formId),
           questionId: questionId,
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           answerId: answerId,
           response: response,
           order: order
         }).then((response) => {
-          this.updateSubmission()
+          this.updateForm()
         })
       },
       updateResponse (args) {
@@ -500,47 +500,47 @@
         const questionId = args[3]
         const order = args[4]
         this.$store.dispatch('updateResponse', {
-          submissionId: parseInt(this.submissionId),
+          formId: parseInt(this.formId),
           questionId: questionId,
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           answerId: answerId,
           response: response,
           id: id,
           order: order
         }).then((response) => {
-          this.updateSubmission()
+          this.updateForm()
         })
       },
       deleteResponse (args) {
         this.$store.dispatch('deleteResponse', {
-          submissionId: parseInt(this.submissionId),
+          formId: parseInt(this.formId),
           questionId: args[1],
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           id: args[0]
         }).then((response) => {
-          this.updateSubmission()
+          this.updateForm()
         })
       },
       deleteSectionResponse (order) {
         this.$store.dispatch('deleteSectionResponse', {
-          submissionId: parseInt(this.submissionId),
-          formId: this.formId,
+          formId: parseInt(this.formId),
+          formTemplateId: this.formTemplateId,
           sectionId: this.section.id,
           order: order
         }).then((response) => {
-          this.updateSubmission()
+          this.updateForm()
         })
       },
-      updateSubmission () {
-        this.$store.dispatch('updateSubmission', {
-          id: parseInt(this.submissionId),
-          formId: this.formId,
-          progress: this.progress(parseInt(this.formId), parseInt(this.submissionId))
+      updateForm () {
+        this.$store.dispatch('updateForm', {
+          id: parseInt(this.formId),
+          formTemplateId: this.formTemplateId,
+          progress: this.progress(parseInt(this.formTemplateId), parseInt(this.formId))
         })
         this.snackbarVisible = true
       },
       setEditMode () {
-        if (this.submissionId === -1) {
+        if (this.formId === -1) {
           this.editMode = true
         }
       },
@@ -553,7 +553,7 @@
         }
         this.$store.dispatch('updateSection',
           {
-            formId: this.formId,
+            formTemplateId: this.formTemplateId,
             id: this.section.id,
             parentSectionId: this.section.parentSectionId,
             name: this.editedName,
@@ -564,7 +564,7 @@
       },
       onMoveSection (args) {
         this.$store.dispatch('moveSection', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.section.id,
           parentSectionId: args[0],
           order: args[1]
@@ -572,7 +572,7 @@
       },
       onDeleteSection () {
         this.$store.dispatch('deleteSection', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           id: this.section.id
         })
       },
@@ -587,7 +587,7 @@
         const id = args[1]
         const order = args[2]
         this.$store.dispatch('moveAnswer', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           sectionId: this.section.id,
           questionId: questionId,
           id: id,
@@ -599,7 +599,7 @@
         const order = args[1]
         this.$store.dispatch('moveQuestion',
           {
-            formId: this.formId,
+            formTemplateId: this.formTemplateId,
             questionId: id,
             oldParentSectionId: this.section.id,
             parentSectionId: this.section.id,
@@ -629,7 +629,7 @@
         const parentClass = evt.to.className
         const parentSectionId = parseInt(parentClass.substr(23))
 
-        const children = _.sortBy(this.$store.getters.loadedChildren(this.formId, parentSectionId), element => {
+        const children = _.sortBy(this.$store.getters.loadedChildren(this.formTemplateId, parentSectionId), element => {
           return element.order
         })
 
@@ -645,7 +645,7 @@
         const elementId = parseInt(elementClass.substr(36))
         this.$store.dispatch('moveQuestion',
           {
-            formId: this.formId,
+            formTemplateId: this.formTemplateId,
             questionId: elementId,
             oldParentSectionId: oldParentSectionId,
             parentSectionId: parentSectionId,

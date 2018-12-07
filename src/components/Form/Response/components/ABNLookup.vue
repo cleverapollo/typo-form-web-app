@@ -39,31 +39,33 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   export default {
     name: 'abn-lookup',
     props: ['question', 'answers', 'responses', 'disabled'],
     methods: {
       onSave (value) {
-        if (this.responses.length) {
-          this.$emit('update-response', [null, value, this.responses[0].id])
-        } else {
-          this.$emit('create-response', [null, value])
+        if (!value) {
+          return
         }
+        this.$emit('create-response', [null, value])
       }
     },
     computed: {
       value () {
-        let value = {
+        const value = {
           Abn: '',
           BusinessName: '',
           EntityName: '',
           EntityTypeName: '',
           Message: ''
         }
-
-        if (this.responses.length && this.responses[0].response !== '') {
-          value = JSON.parse(this.responses[0].response)
-        }
+        _.forEach(this.responses, response => {
+          const answer = this.answers.filter(answer => answer.id === response.answer_id)
+          if (answer.length) {
+            value[answer[0].answer] = response.response
+          }
+        })
         return value
       }
     }

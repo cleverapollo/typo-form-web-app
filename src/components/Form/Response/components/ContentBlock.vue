@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    props: ['question', 'formId', 'sectionId', 'index'],
+    props: ['question', 'formTemplateId', 'sectionId', 'index'],
     computed: {
       message () {
         return this.question.description

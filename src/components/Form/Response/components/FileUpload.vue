@@ -14,7 +14,7 @@
 <script>
   export default {
     name: 'fileupload',
-    props: ['question', 'submissionId', 'responses', 'disabled'],
+    props: ['question', 'formId', 'responses', 'disabled'],
     data () {
       return {
         files: this.setFiles(this.responses),

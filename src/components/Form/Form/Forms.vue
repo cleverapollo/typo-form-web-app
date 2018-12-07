@@ -6,7 +6,7 @@
           <h1 class="headline primary--text py-3">Forms</h1>
         </v-flex>
         <v-flex d-flex xs12>
-          <p>Select an existing form below or <a href="#" @click.stop="createSubmission = true">create a new form</a>.</p>
+          <p>Select an existing form below or <a href="#" @click.stop="createForm = true">create a new form</a>.</p>
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -26,24 +26,24 @@
             <!-- //Forms -->
             <v-data-table
               :headers="headers"
-              :items="submissions"
+              :items="forms"
               :search="search"
               hide-actions
             >
               <template slot="items" slot-scope="props">
                 <tr>
-                  <td @click="onSubmission(props.item.id)">{{ props.item.form.name }}</td>
-                  <td @click="onSubmission(props.item.id)">{{ props.item.owner }}</td>
-                  <td @click="onSubmission(props.item.id)">{{ props.item.user.email }}</td>
-                  <td @click="onSubmission(props.item.id)">{{ props.item.created_at.date | moment }}</td>
-                  <td @click="onSubmission(props.item.id)">{{ props.item.updated_at.date | moment }}</td>
-                  <td @click="onSubmission(props.item.id)">{{ props.item.progress }}%</td>
-                  <td @click="onSubmission(props.item.id)">{{ props.item.status }}</td>
+                  <td @click="onForm(props.item.id)">{{ props.item.form_template.name }}</td>
+                  <td @click="onForm(props.item.id)">{{ props.item.owner }}</td>
+                  <td @click="onForm(props.item.id)">{{ props.item.user.email }}</td>
+                  <td @click="onForm(props.item.id)">{{ props.item.created_at.date | moment }}</td>
+                  <td @click="onForm(props.item.id)">{{ props.item.updated_at.date | moment }}</td>
+                  <td @click="onForm(props.item.id)">{{ props.item.progress }}%</td>
+                  <td @click="onForm(props.item.id)">{{ props.item.status }}</td>
                   <td class="justify-center layout px-0">
-                    <v-btn icon class="mx-0" @click="duplicateSubmission(props.item.id, props.item.form.id)">
+                    <v-btn icon class="mx-0" @click="duplicateForm(props.item.id, props.item.form_template.id)">
                       <v-icon color="teal">content_copy</v-icon>
                     </v-btn>
-                    <v-btn icon class="mx-0" @click="showDeleteSubmission(props.item.id, props.item.form.id)">
+                    <v-btn icon class="mx-0" @click="showDeleteForm(props.item.id, props.item.form_template.id)">
                       <v-icon color="pink">delete</v-icon>
                     </v-btn>
                   </td>
@@ -61,40 +61,40 @@
 
     <!-- //Action Button -->
     <v-tooltip top>
-      <v-btn slot="activator" fixed dark bottom right fab router class="red" @click.stop="createSubmission = true">
+      <v-btn slot="activator" fixed dark bottom right fab router class="red" @click.stop="createForm = true">
         <v-icon>add</v-icon>
       </v-btn>
       <span>Create Form</span>
     </v-tooltip>
 
     <!-- //Create Form -->
-    <CreateSubmission :visible="createSubmission" :slug="slug" @close="createSubmission = false" key="CreateSubmission"></CreateSubmission>
+    <CreateForm :visible="createForm" :slug="slug" @close="createForm = false" key="CreateForm"></CreateForm>
 
     <!-- //Delete Form -->
-    <DeleteConfirmDialog @delete-action="onDeleteSubmission" :visible="deleteSubmission" @close="deleteSubmission = false"></DeleteConfirmDialog>
+    <DeleteConfirmDialog @delete-action="onDeleteForm" :visible="deleteForm" @close="deleteForm = false"></DeleteConfirmDialog>
 
-    <!-- //Duplicate form -->
-    <DuplicateSubmission :visible="duplicated" :content="duplicatedContent" @close="duplicated = false"></DuplicateSubmission>
+    <!-- //Duplicate formTemplate -->
+    <DuplicateForm :visible="duplicated" :content="duplicatedContent" @close="duplicated = false"></DuplicateForm>
   </v-layout>
 </template>
 
 <script>
-  import CreateSubmission from './CreateSubmission'
-  import DuplicateSubmission from './DuplicateSubmission'
+  import CreateForm from './CreateForm'
+  import DuplicateForm from './DuplicateForm'
   import moment from 'moment'
 
   export default {
-    name: 'Submissions',
+    name: 'Forms',
     components: {
-      CreateSubmission,
-      DuplicateSubmission
+      CreateForm,
+      DuplicateForm
     },
     data () {
       return {
-        createSubmission: false,
+        createForm: false,
         search: '',
         headers: [
-          { text: 'Form', value: 'form.name', sortable: true, align: 'left' },
+          { text: 'FormTemplate', value: 'form_template.name', sortable: true, align: 'left' },
           { text: 'Owner', value: 'owner', sortable: true, align: 'left' },
           { text: 'Email', value: 'user.email' },
           { text: 'Created', value: 'created_at.date', sortable: true, align: 'left' },
@@ -105,8 +105,8 @@
         ],
         slug: window.location.hostname.split('.')[0],
         selectedId: 0,
-        selectedFormId: 0,
-        deleteSubmission: false,
+        selectedFormTemplateId: 0,
+        deleteForm: false,
         duplicated: false,
         duplicatedContent: false
       }
@@ -115,44 +115,44 @@
       user () {
         return this.$store.getters.user
       },
-      submissions () {
-        let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
-        submissions.forEach((submission) => {
-          submission.owner = submission.organisation ? submission.organisation.name : submission.user.first_name + ' ' + submission.user.last_name
-          submission.status = this.status(submission.status_id)
+      forms () {
+        let forms = this.$store.getters.loadedAllForms(this.slug)
+        forms.forEach((form) => {
+          form.owner = form.organisation ? form.organisation.name : form.user.first_name + ' ' + form.user.last_name
+          form.status = this.status(form.status_id)
         })
-        return submissions
+        return forms
       },
       statuses () {
         return this.$store.getters.statuses
       }
     },
     methods: {
-      showDeleteSubmission (id, formId) {
+      showDeleteForm (id, formTemplateId) {
         this.selectedId = id
-        this.selectedFormId = formId
-        this.deleteSubmission = true
+        this.selectedFormTemplateId = formTemplateId
+        this.deleteForm = true
       },
-      onDeleteSubmission () {
-        this.$store.dispatch('deleteSubmission',
+      onDeleteForm () {
+        this.$store.dispatch('deleteForm',
           {
-            formId: this.selectedFormId,
+            formTemplateId: this.selectedFormTemplateId,
             id: this.selectedId
           }
         )
       },
-      duplicateSubmission (id, formId) {
-        this.$store.dispatch('duplicateSubmission', {
-          formId: formId,
+      duplicateForm (id, formTemplateId) {
+        this.$store.dispatch('duplicateForm', {
+          formTemplateId: formTemplateId,
           id: id
         })
           .then((response) => {
             this.duplicated = true
-            this.duplicatedContent = response.data.submission.id
+            this.duplicatedContent = response.data.form.id
           })
       },
-      onSubmission (id) {
-        this.$router.push('/submissions/' + id)
+      onForm (id) {
+        this.$router.push('/forms/' + id)
       },
       status (id) {
         return this.statuses.find(e => { return e.id === id }).status
@@ -162,8 +162,8 @@
       if (this.user) {
         this.$store.dispatch('loadUsers', this.slug)
         this.$store.dispatch('loadOrganisations', this.slug)
-        this.$store.dispatch('loadForms', this.slug)
-        this.$store.dispatch('loadAllSubmissions', this.slug)
+        this.$store.dispatch('loadFormTemplates', this.slug)
+        this.$store.dispatch('loadAllForms', this.slug)
         this.$store.dispatch('loadAllOrganisationUsers', this.slug)
       }
     },

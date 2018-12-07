@@ -1,18 +1,18 @@
 const API_URL = process.env.API_URL
-const SUBMISSION_URL = `${API_URL}submission/`
+const FORM_URL = `${API_URL}form/`
 const RESPONSE_URL = '/response'
 
 export default {
   actions: {
     loadResponses ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.get(SUBMISSION_URL + payload.submissionId + RESPONSE_URL)
+      window.axios.get(FORM_URL + payload.formId + RESPONSE_URL)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
+              formTemplateId: payload.formTemplateId,
               formId: payload.formId,
-              submissionId: payload.submissionId,
               responses: response['data']['responses']
             }
             commit('setLoadedResponses', createObj)
@@ -37,13 +37,13 @@ export default {
       }
 
       return new Promise((resolve, reject) => {
-        window.axios.post(SUBMISSION_URL + payload.submissionId + RESPONSE_URL, response)
+        window.axios.post(FORM_URL + payload.formId + RESPONSE_URL, response)
           .then(
             response => {
               commit('setLoading', false)
               const createdObj = {
+                formTemplateId: payload.formTemplateId,
                 formId: payload.formId,
-                submissionId: payload.submissionId,
                 response: response['data']['response']
               }
               commit('createResponse', createdObj)
@@ -71,13 +71,13 @@ export default {
       }
 
       return new Promise((resolve, reject) => {
-        window.axios.put(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + '/' + payload.id, updateObj)
+        window.axios.put(FORM_URL + payload.formId + RESPONSE_URL + '/' + payload.id, updateObj)
           .then(
             (response) => {
               commit('setLoading', false)
               const updateObj = {
+                formTemplateId: payload.formTemplateId,
                 formId: payload.formId,
-                submissionId: payload.submissionId,
                 oldId: payload.id,
                 response: response['data']['response']
               }
@@ -98,12 +98,12 @@ export default {
       commit('setLoading', true)
 
       return new Promise((resolve, reject) => {
-        window.axios.delete(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + '/section/' + payload.sectionId + '/' + payload.order)
+        window.axios.delete(FORM_URL + payload.formId + RESPONSE_URL + '/section/' + payload.sectionId + '/' + payload.order)
           .then(response => {
             commit('setLoading', false)
             const createObj = {
+              formTemplateId: payload.formTemplateId,
               formId: payload.formId,
-              submissionId: payload.submissionId,
               responses: response['data']['responses']
             }
             commit('setLoadedResponses', createObj)
@@ -122,7 +122,7 @@ export default {
       commit('setLoading', true)
 
       return new Promise((resolve, reject) => {
-        window.axios.delete(SUBMISSION_URL + payload.submissionId + RESPONSE_URL + '/' + payload.id)
+        window.axios.delete(FORM_URL + payload.formId + RESPONSE_URL + '/' + payload.id)
           .then(response => {
             commit('setLoading', false)
             commit('deleteResponse', payload)
@@ -140,35 +140,35 @@ export default {
   },
   getters: {
     loadedResponses (state, getters, rootState) {
-      return (formId, submissionId) => {
-        if (!rootState.submission.loadedSubmissions[formId]) {
+      return (formTemplateId, formId) => {
+        if (!rootState.form.loadedForms[formTemplateId]) {
           return []
         }
 
-        const submission = rootState.submission.loadedSubmissions[formId].find((submission) => {
-          return submission.id === submissionId
+        const form = rootState.form.loadedForms[formTemplateId].find((form) => {
+          return form.id === formId
         })
 
-        if (!submission) {
+        if (!form) {
           return []
         }
-        return submission.responses
+        return form.responses
       }
     },
     loadedResponse (state, getters, rootState) {
-      return (formId, submissionId, responseId) => {
-        if (!rootState.submission.loadedSubmissions[formId]) {
+      return (formTemplateId, formId, responseId) => {
+        if (!rootState.form.loadedForms[formTemplateId]) {
           return null
         }
 
-        const submission = rootState.submission.loadedSubmissions[formId].find((submission) => {
-          return submission.id === submissionId
+        const form = rootState.form.loadedForms[formTemplateId].find((form) => {
+          return form.id === formId
         })
 
-        if (!submission) {
+        if (!form) {
           return null
         }
-        return submission.responses.find((response) => {
+        return form.responses.find((response) => {
           return response.id === responseId
         })
       }

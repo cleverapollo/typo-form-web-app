@@ -1,12 +1,12 @@
 <template>
-  <v-layout row wrap v-if='form'>
+  <v-layout row wrap v-if='formTemplate'>
     <v-flex d-flex xs12>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <h1 class="headline primary--text py-3">Edit Form Builder</h1>
+          <h1 class="headline primary--text py-3">Edit Form Template</h1>
         </v-flex>
 
-        <!-- //Form Builder Layout -->
+        <!-- //Form Template Layout -->
         <v-flex xs12>
           <v-card>
 
@@ -14,7 +14,7 @@
             <v-card-title class="info white--text">
               <v-layout row wrap>
                 <v-flex d-flex xs12>
-                  <div class="title pt-3">{{ form.name }}</div>
+                  <div class="title pt-3">{{ formTemplate.name }}</div>
                   <v-spacer></v-spacer>
 
                   <!-- //Menu -->
@@ -32,7 +32,7 @@
                             <v-icon>create_new_folder</v-icon>
                           </v-list-tile-avatar>
                           <v-list-tile-content>
-                            <CreateSection :parentSectionId="-1" :formId="id"></CreateSection>
+                            <CreateSection :parentSectionId="-1" :formTemplateId="id"></CreateSection>
                           </v-list-tile-content>
                         </v-list-tile>
 
@@ -41,16 +41,16 @@
                             <v-icon>edit</v-icon>
                           </v-list-tile-avatar>
                           <v-list-tile-content>
-                            <EditForm :form="form" :slug="slug"></EditForm>
+                            <EditFormTemplate :formTemplate="formTemplate" :slug="slug"></EditFormTemplate>
                           </v-list-tile-content>
                         </v-list-tile>
 
-                        <v-list-tile @click.stop="deleteForm = true">
+                        <v-list-tile @click.stop="deleteFormTemplate = true">
                           <v-list-tile-avatar>
                             <v-icon>delete</v-icon>
                           </v-list-tile-avatar>
                           <v-list-tile-content>
-                            Delete Form Builder
+                            Delete Form Template
                           </v-list-tile-content>
                         </v-list-tile>
 
@@ -68,8 +68,8 @@
                 <v-flex d-flex xs12>
                   <form-view
                     :slug="slug"
-                    :formId="id"
-                    :submissionId="-1"
+                    :formTemplateId="id"
+                    :formId="-1"
                   ></form-view>
                 </v-flex>
 
@@ -82,8 +82,8 @@
 
               <formNavigation
                 :slug="slug"
-                :formId="id"
-                :submissionId="-1"
+                :formTemplateId="id"
+                :formId="-1"
               ></formNavigation>
 
             </v-card-actions>
@@ -94,14 +94,14 @@
       </v-layout>
     </v-flex>
 
-    <!-- //Delete Form Builder -->
-    <DeleteConfirmDialog @delete-action="onDeleteForm" :visible="deleteForm" @close="deleteForm = false"></DeleteConfirmDialog>
+    <!-- //Delete Form Template -->
+    <DeleteConfirmDialog @delete-action="onDeleteFormTemplate" :visible="deleteFormTemplate" @close="deleteFormTemplate = false"></DeleteConfirmDialog>
   </v-layout>
 </template>
 
 <script>
   import FormView from './FormView'
-  import EditForm from './EditForm'
+  import EditFormTemplate from './EditFormTemplate'
   import CreateSection from './Section/CreateSection'
   import FormNavigation from './FormNavigation'
 
@@ -109,32 +109,32 @@
     props: ['id'],
     components: {
       FormView,
-      EditForm,
+      EditFormTemplate,
       CreateSection,
       FormNavigation
     },
     data () {
       return {
-        deleteForm: false,
+        deleteFormTemplate: false,
         slug: window.location.hostname.split('.')[0]
       }
     },
     computed: {
-      form () {
-        return this.$store.getters.loadedForm(this.slug, parseInt(this.id))
+      formTemplate () {
+        return this.$store.getters.loadedFormTemplate(this.slug, parseInt(this.id))
       }
     },
     methods: {
-      onDeleteForm () {
-        this.$store.dispatch('deleteForm', {
+      onDeleteFormTemplate () {
+        this.$store.dispatch('deleteFormTemplate', {
           slug: this.slug,
-          id: this.form.id
+          id: this.formTemplate.id
         })
-        this.$router.push('/forms')
+        this.$router.push('/form-builder')
       }
     },
     created: function () {
-      this.$store.dispatch('loadForms', this.slug)
+      this.$store.dispatch('loadFormTemplates', this.slug)
       this.$store.dispatch('loadSections', this.id)
       this.$store.dispatch('loadValidations', this.id)
       this.$store.dispatch('loadTriggers', this.id)

@@ -159,7 +159,7 @@ export default {
         return state.loadedUsers[slug]
       }
     },
-    loadedSubmissionUsers (state) {
+    loadedFormUsers (state) {
       return (slug) => {
         if (!state.loadedUsers[slug]) {
           return []

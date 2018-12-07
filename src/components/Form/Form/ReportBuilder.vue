@@ -80,11 +80,14 @@
                   <v-btn>
                     <download-excel
                       :data="data"
-                      :name="fileName"
+                      :name="fileName + '.csv'"
                       type="csv"
                     >
                       CSV
                     </download-excel>
+                  </v-btn>
+                  <v-btn @click="downloadPDF">
+                    PDF
                   </v-btn>
                 </v-flex>
               </v-layout>
@@ -111,7 +114,7 @@
               :pagination.sync="pagination"
             >
               <template slot="items" slot-scope="props">
-                <tr @click="onSubmission(props.item.ID)">
+                <tr @click="onForm(props.item.ID)">
                   <template v-for="(item, key) in props.item">
                     <td v-bind:key="'filter'+key" v-if="key != 'ID'">{{item}}</td>
                   </template>
@@ -139,6 +142,7 @@ import moment from 'moment'
 import ReportComponent from './ReportComponent'
 import QuestionCompareMixin from './QuestionCompareMixin.js'
 import UrlMixin from './UrlMixin.js'
+import JSPDF from 'jspdf'
 
 export default {
   name: 'ReportBuilder',
@@ -165,7 +169,7 @@ export default {
       return this.$store.getters.loadedApplication(this.slug)
     },
     fileName () {
-      return this.application.name + ' Report ' + moment().format('YYYY-MM-DD [at] LTS') + '.csv'
+      return this.application.name + ' Report ' + moment().format('YYYY-MM-DD [at] LTS')
     },
     user () {
       return this.$store.getters.user
@@ -182,8 +186,8 @@ export default {
     }
   },
   methods: {
-    onSubmission (id) {
-      this.$router.push('/submissions/' + id)
+    onForm (id) {
+      this.$router.push('/forms/' + id)
     },
     openDialog () {
       if (this.filters.length && this.filters[0].source) {
@@ -221,11 +225,11 @@ export default {
     setData () {
       // Remove existing data
       this.data.splice(0, this.data.length)
-      // Filter Submissions
-      let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
-      _.forEach(submissions, (submission, index) => {
+      // Filter Forms
+      let forms = this.$store.getters.loadedAllForms(this.slug)
+      _.forEach(forms, (form, index) => {
         let row = {}
-        row['ID'] = submission.id
+        row['ID'] = form.id
         _.forEach(this.filters, filter => {
           if (!filter.source) {
             return
@@ -233,35 +237,35 @@ export default {
           if (filter.source.group === 'Form Detail') {
             let response = ''
             switch (filter.source.question) {
-              case 'Form Builder':
-                response = submission.form.name
+              case 'Form Template':
+                response = form.form_template.name
                 break
               case 'Owner':
-                response = submission.user.first_name + ' ' + submission.user.last_name
+                response = form.user.first_name + ' ' + form.user.last_name
                 break
               case 'Owner Email':
-                response = submission.user.email
+                response = form.user.email
                 break
               case 'Organisation':
-                response = submission.organisation.name
+                response = form.organisation.name
                 break
               case 'Progress':
-                response = submission.progress
+                response = form.progress
                 break
               case 'Period Start':
-                response = this.date(submission.period_start)
+                response = this.date(form.period_start)
                 break
               case 'Period End':
-                response = this.date(submission.period_end)
+                response = this.date(form.period_end)
                 break
               case 'Status':
-                response = this.getStatus(submission.status_id)
+                response = this.getStatus(form.status_id)
                 break
               case 'Created':
-                response = this.date(submission.created_at.date)
+                response = this.date(form.created_at.date)
                 break
               case 'Modified':
-                response = this.date(submission.updated_at.date)
+                response = this.date(form.updated_at.date)
                 break
             }
             // Question, Responses, ComparatorID, QuestionTrigger.answer, QuestionTrigger.value
@@ -279,7 +283,7 @@ export default {
             const question = this.questions.find((question) => {
               return question.id === filter.source.id
             })
-            const responses = submission.responses.filter((response) => {
+            const responses = form.responses.filter((response) => {
               return response.question_id === filter.source.id
             })
             let order = 1
@@ -307,17 +311,57 @@ export default {
           this.data.push(row)
         }
       })
+    },
+    downloadPDF () {
+      const doc = new JSPDF('p', 'pt', 'a4')
+      let source = '<table><thead><tr>'
+      _.forEach(this.headers, header => {
+        source += '<th>' + header.text + '</th>'
+      })
+      source += '</tr></thead><tbody>'
+      _.forEach(this.data, data => {
+        source += '<tr>'
+        _.forEach(this.headers, header => {
+          source += '<td>' + data[header.text] + '</td>'
+        })
+        source += '</tr>'
+      })
+      source += '</tbody></table>'
+
+      const margins = {
+        top: 10,
+        bottom: 10,
+        left: 10,
+        width: 595
+      }
+
+      doc.fromHTML(
+        source, // HTML string or DOM elem ref.
+        margins.left,
+        margins.top, {
+          'width': margins.width,
+          'elementHandlers': {
+            '.no-export': () => {
+              return true
+            }
+          }
+        },
+        () => {
+          doc.save(this.fileName + '.pdf')
+        },
+        margins
+      )
     }
   },
   created: function () {
     if (this.user) {
       this.getUrl()
-      this.$store.dispatch('loadAllSubmissions', this.slug)
-      this.$store.dispatch('loadForms', this.slug)
+      this.$store.dispatch('loadAllForms', this.slug)
+      this.$store.dispatch('loadFormTemplates', this.slug)
         .then((response) => {
-          const forms = response.data.forms
-          _.forEach(forms, (form) => {
-            this.$store.dispatch('loadSections', form.id)
+          const formTemplates = response.data.form_templates
+          _.forEach(formTemplates, (formTemplate) => {
+            this.$store.dispatch('loadSections', formTemplate.id)
           })
         })
     }

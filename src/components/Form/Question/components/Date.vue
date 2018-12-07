@@ -81,7 +81,7 @@
 
   export default {
     name: 'date-component',
-    props: ['answers', 'sectionId', 'formId', 'hasValidation', 'questionId', 'disabled'],
+    props: ['answers', 'sectionId', 'formTemplateId', 'hasValidation', 'questionId', 'disabled'],
     data () {
       return {
         validationTypes: [
@@ -146,7 +146,7 @@
     computed: {
       activeValidationType: {
         get: function () {
-          const validations = this.$store.getters.loadedQuestionValidation(this.formId, this.questionId)
+          const validations = this.$store.getters.loadedQuestionValidation(this.formTemplateId, this.questionId)
           const validationTypes = this.$store.getters.validationTypes
           let validationType = null
           if (validations && validations.length && validations.length === 1 && validationTypes && validationTypes.length > 0) {
@@ -166,7 +166,7 @@
         }
       },
       validations () {
-        return this.$store.getters.loadedQuestionValidation(this.formId, this.questionId)
+        return this.$store.getters.loadedQuestionValidation(this.formTemplateId, this.questionId)
       }
     },
     mounted () {

@@ -49,7 +49,7 @@
         <!-- //Selected Answer -->
         <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.answer'>
           <v-autocomplete
-            :items="parentQuestionType == 8 || parentQuestionType == 9 ? falseAnswers : answers"
+            :items="multiQuestionType ? falseAnswers : answers"
             item-text="answer"
             item-value="id"
             v-model="parentAnswerId"
@@ -61,7 +61,7 @@
 
         <!-- //User Input -->
         <v-flex xs12 sm3 offset-sm1 v-if='selectedTriggerType && selectedTriggerType.value'>
-          <v-flex xs12 v-if="parentQuestionType == 8 || parentQuestionType == 9">
+          <v-flex xs12 v-if="multiQuestionType === 1">
             <v-autocomplete
               v-model="value"
               :items="trueAnswers"
@@ -113,7 +113,7 @@
 
 <script>
   export default {
-    props: ['formId', 'trigger', 'questionOptions', 'isLast'],
+    props: ['formTemplateId', 'trigger', 'questionOptions', 'isLast'],
     data () {
       return {
         parentQuestionId: this.trigger.parent_question_id,
@@ -129,7 +129,7 @@
     },
     computed: {
       parentQuestion () {
-        return this.$store.getters.loadedAllQuestion(this.formId, this.parentQuestionId)
+        return this.$store.getters.loadedAllQuestion(this.formTemplateId, this.parentQuestionId)
       },
       answers () {
         return this.parentQuestion.answers
@@ -144,8 +144,22 @@
           return !e.parameter
         })
       },
+      questionTypes () {
+        return this.$store.getters.questionTypes
+      },
       parentQuestionType () {
         return this.parentQuestion.question_type_id
+      },
+      multiQuestionType () {
+        if (this.getQuestionType(this.parentQuestionType) === 'Multiple choice grid' ||
+          this.getQuestionType(this.parentQuestionType) === 'Checkbox grid') {
+          return 1
+        }
+        if (this.getQuestionType(this.parentQuestionType) === 'Address' ||
+          this.getQuestionType(this.parentQuestionType) === 'ABN Lookup') {
+          return 2
+        }
+        return 0
       },
       triggerTypes () {
         return this.$store.getters.triggerTypes.filter(e => {
@@ -168,8 +182,14 @@
       }
     },
     methods: {
+      getQuestionType (questionTypeId) {
+        const questionType = this.questionTypes.find((questionType) => {
+          return questionType.id === questionTypeId
+        })
+        return questionType ? questionType.type : 'undefined'
+      },
       getSection (questionId) {
-        const allSections = this.$store.getters.loadedSections(this.formId)
+        const allSections = this.$store.getters.loadedSections(this.formTemplateId)
         const section = allSections.find((section) => {
           return section.questions.find((question) => {
             return question.id === questionId
@@ -206,14 +226,14 @@
       },
       deleteTrigger () {
         this.$store.dispatch('deleteTrigger', {
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           id: this.trigger.id
         })
       },
       updateTrigger () {
         this.$store.dispatch('updateTrigger', {
           id: this.trigger.id,
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           parentQuestionId: this.parentQuestionId,
           parentAnswerId: this.parentAnswerId,
           value: this.value,

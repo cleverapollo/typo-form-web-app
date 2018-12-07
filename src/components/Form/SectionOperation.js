@@ -3,13 +3,13 @@ import * as _ from 'lodash'
 export default {
   mixins: [TriggerMixin],
   methods: {
-    getParentSection (formId, rtSection) {
+    getParentSection (formTemplateId, rtSection) {
       let repeat = true
       let ptSection = rtSection
 
       while (repeat) {
         if (this.isSectionTrigger(ptSection)) {
-          ptSection = this.$store.getters.loadedSection(formId, ptSection.parent_section_id)
+          ptSection = this.$store.getters.loadedSection(formTemplateId, ptSection.parent_section_id)
         } else {
           repeat = false
         }
@@ -17,13 +17,13 @@ export default {
 
       return ptSection
     },
-    getLastChildSection (formId, rtSection) {
+    getLastChildSection (formTemplateId, rtSection) {
       let repeat = true
       let ptSection = rtSection
 
       while (repeat) {
         const parentId = (ptSection ? ptSection.id : null)
-        let children = _.sortBy(this.$store.getters.loadedChildren(formId, parentId), element => {
+        let children = _.sortBy(this.$store.getters.loadedChildren(formTemplateId, parentId), element => {
           return element.order
         })
         if (children.length > 0) {
@@ -46,13 +46,13 @@ export default {
 
       return ptSection
     },
-    getFirstChildSection (formId, rtSection) {
+    getFirstChildSection (formTemplateId, rtSection) {
       let repeat = true
       let ptSection = rtSection
 
       while (repeat) {
         const parentId = (ptSection ? ptSection.id : null)
-        let children = _.sortBy(this.$store.getters.loadedChildren(formId, parentId), element => {
+        let children = _.sortBy(this.$store.getters.loadedChildren(formTemplateId, parentId), element => {
           return element.order
         })
         if (children.length > 0) {

@@ -271,20 +271,6 @@
         }
 
         this.$store.dispatch('updateApplication', application)
-          .then(response => {
-            this.$store.dispatch('loadApplication', response.data.application.slug)
-            .then((response) => {
-              const slug = response.data.application.slug
-              const url = window.location.origin.split('://')
-              const subdomain = url[1].split('.')
-              if (subdomain[0] === 'informed365') {
-                subdomain.unshift(slug)
-              } else {
-                subdomain[0] = slug
-              }
-              this.$router.push('/')
-            })
-          })
       }
     },
     created: function () {

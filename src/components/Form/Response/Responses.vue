@@ -22,9 +22,9 @@
       :question-id="question.id"
       :question="editedName"
       :mandatory="question.mandatory"
-      :form-id="formId"
+      :form-template-id="formTemplateId"
       :section-id="sectionId"
-      :submission-id="submissionId"
+      :form-id="formId"
       :disabled="status === 'Closed'"
       :hasValidation="hasValidation"
       @create-response="createResponse"
@@ -57,10 +57,12 @@
   import Email from './components/Email'
   import Percent from './components/Percent'
   import PhoneNumber from './components/PhoneNumber'
+  import Address from './components/Address'
+  import URL from './components/URL'
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
-    props: ['question', 'formId', 'submissionId', 'index', 'sectionId', 'order', 'hide', 'status'],
+    props: ['question', 'formTemplateId', 'formId', 'index', 'sectionId', 'order', 'hide', 'status'],
     mixins: [TriggerMixin],
     data () {
       return {
@@ -86,7 +88,9 @@
           'Decimal': Decimal,
           'Email': Email,
           'Percent': Percent,
-          'Phone number': PhoneNumber
+          'Phone number': PhoneNumber,
+          'Address': Address,
+          'URL': URL
         },
         snackbarVisible: false
       }
@@ -118,11 +122,11 @@
         return this.$store.getters.answerSorts
       },
       responses () {
-        if (!this.submissionId) {
+        if (!this.formId) {
           return []
         }
-        let submission = this.$store.getters.loadedSubmission(this.formId, parseInt(this.submissionId))
-        return submission.responses.filter((response) => {
+        let form = this.$store.getters.loadedForm(this.formTemplateId, parseInt(this.formId))
+        return form.responses.filter((response) => {
           return response.question_id === this.question.id && response.order === this.order
         })
       },
@@ -151,7 +155,7 @@
       },
       hasValidation () {
         this.validationTypes = this.$store.getters.validationTypes
-        this.validations = this.$store.getters.loadedQuestionValidation(this.formId, this.question.id)
+        this.validations = this.$store.getters.loadedQuestionValidation(this.formTemplateId, this.question.id)
         return !!(this.validations && this.validations.length && this.validations.length === 1)
       }
     },
@@ -162,20 +166,20 @@
         }) + 1
       },
       createResponse (args) {
-        if (!this.submissionId) {
+        if (!this.formId) {
           return
         }
         const answerId = args[0]
         const response = args[1]
         this.$store.dispatch('createResponse', {
-          submissionId: parseInt(this.submissionId),
+          formId: parseInt(this.formId),
           questionId: this.question.id,
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           answerId: answerId,
           response: response,
           order: this.order
         }).then((response) => {
-          this.updateSubmission()
+          this.updateForm()
         })
       },
       updateResponse (args) {
@@ -183,32 +187,32 @@
         const response = args[1]
         const id = args[2]
         this.$store.dispatch('updateResponse', {
-          submissionId: parseInt(this.submissionId),
+          formId: parseInt(this.formId),
           questionId: this.question.id,
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           answerId: answerId,
           response: response,
           id: id,
           order: this.order
         }).then((response) => {
-          this.updateSubmission()
+          this.updateForm()
         })
       },
       deleteResponse (id) {
         this.$store.dispatch('deleteResponse', {
-          submissionId: parseInt(this.submissionId),
+          formId: parseInt(this.formId),
           questionId: this.question.id,
-          formId: this.formId,
+          formTemplateId: this.formTemplateId,
           id: id
         }).then((response) => {
-          this.updateSubmission()
+          this.updateForm()
         })
       },
-      updateSubmission () {
-        this.$store.dispatch('updateSubmission', {
-          id: parseInt(this.submissionId),
-          formId: this.formId,
-          progress: this.progress(parseInt(this.formId), parseInt(this.submissionId))
+      updateForm () {
+        this.$store.dispatch('updateForm', {
+          id: parseInt(this.formId),
+          formTemplateId: this.formTemplateId,
+          progress: this.progress(parseInt(this.formTemplateId), parseInt(this.formId))
         })
        // this.snackbarVisible = true
       }

@@ -192,7 +192,7 @@ export default {
         })
       }
     },
-    loadedSubmissionOrganisationUsers (state) {
+    loadedFormOrganisationUsers (state) {
       return (organisationId) => {
         if (!state.loadedOrganisationUsers[organisationId]) {
           return []

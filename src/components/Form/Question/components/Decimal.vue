@@ -38,7 +38,7 @@
     <Fix
       :question-id="questionId"
       :section-id="sectionId"
-      :form-id="formId"
+      :form-template-id="formTemplateId"
     >
     </Fix>
   </div>
@@ -56,7 +56,7 @@
     components: {
       Fix
     },
-    props: ['answers', 'sectionId', 'formId'],
+    props: ['answers', 'sectionId', 'formTemplateId'],
     data () {
       return {
         validationTypes: [

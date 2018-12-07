@@ -1,5 +1,5 @@
 const API_URL = process.env.API_URL
-const FORM_URL = `${API_URL}form/`
+const FORM_TEMPLATE_URL = `${API_URL}form-builder/`
 const VALIDATION_URL = '/validation'
 
 export default {
@@ -12,42 +12,42 @@ export default {
     },
     setLoadedValidations (state, payload) {
       let validations = Object.assign({}, state.loadedValidations)
-      validations[payload.formId] = payload.validations
+      validations[payload.formTemplateId] = payload.validations
       state.loadedValidations = validations
     },
     createValidation (state, payload) {
       let validations = Object.assign({}, state.loadedValidations)
-      if (!validations[payload.formId]) {
-        validations[payload.formId] = []
+      if (!validations[payload.formTemplateId]) {
+        validations[payload.formTemplateId] = []
       }
-      validations[payload.formId].push(payload.validation)
+      validations[payload.formTemplateId].push(payload.validation)
       state.loadedValidations = validations
     },
     updateValidation (state, payload) {
       let validations = Object.assign({}, state.loadedValidations)
-      const index = validations[payload.formId].findIndex(validation => {
+      const index = validations[payload.formTemplateId].findIndex(validation => {
         return validation.id === payload.validation.id
       })
-      validations[payload.formId].splice(index, 1, payload.validation)
+      validations[payload.formTemplateId].splice(index, 1, payload.validation)
       state.loadedValidations = validations
     },
     deleteValidation (state, payload) {
       let validations = Object.assign({}, state.loadedValidations)
-      validations[payload.formId] = validations[payload.formId].filter(e => {
+      validations[payload.formTemplateId] = validations[payload.formTemplateId].filter(e => {
         return e.id !== payload.id
       })
       state.loadedValidations = validations
     }
   },
   actions: {
-    loadValidations ({commit}, formId) {
+    loadValidations ({commit}, formTemplateId) {
       commit('setLoading', true)
-      window.axios.get(FORM_URL + formId + VALIDATION_URL)
+      window.axios.get(FORM_TEMPLATE_URL + formTemplateId + VALIDATION_URL)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              formId: formId,
+              formTemplateId: formTemplateId,
               validations: response['data']['validations']
             }
             commit('setLoadedValidations', createObj)
@@ -66,12 +66,12 @@ export default {
         validation_type_id: payload.validationTypeId,
         validation_data: payload.validationData
       }
-      window.axios.post(FORM_URL + payload.formId + VALIDATION_URL, validation)
+      window.axios.post(FORM_TEMPLATE_URL + payload.formTemplateId + VALIDATION_URL, validation)
         .then(
           response => {
             commit('setLoading', false)
             const createObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               validation: response['data']['validation']
             }
             commit('createValidation', createObj)
@@ -96,12 +96,12 @@ export default {
       if (payload.validationData) {
         updateObj.validation_data = payload.validationData
       }
-      window.axios.put(FORM_URL + payload.formId + VALIDATION_URL + '/' + payload.id, updateObj)
+      window.axios.put(FORM_TEMPLATE_URL + payload.formTemplateId + VALIDATION_URL + '/' + payload.id, updateObj)
         .then(
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               validation: response['data']['validation']
             }
             commit('updateValidation', updateObj)
@@ -114,7 +114,7 @@ export default {
     },
     deleteValidation ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(FORM_URL + payload.formId + VALIDATION_URL + '/' + payload.id)
+      window.axios.delete(FORM_TEMPLATE_URL + payload.formTemplateId + VALIDATION_URL + '/' + payload.id)
         .then(() => {
           commit('setLoading', false)
           commit('deleteValidation', payload)
@@ -127,29 +127,29 @@ export default {
   },
   getters: {
     loadedValidations (state) {
-      return (formId) => {
-        if (!state.loadedValidations[formId]) {
+      return (formTemplateId) => {
+        if (!state.loadedValidations[formTemplateId]) {
           return []
         }
-        return state.loadedValidations[formId]
+        return state.loadedValidations[formTemplateId]
       }
     },
     loadedValidation (state) {
-      return (formId, validationId) => {
-        if (!state.loadedValidations[formId]) {
+      return (formTemplateId, validationId) => {
+        if (!state.loadedValidations[formTemplateId]) {
           return null
         }
-        return state.loadedValidations[formId].find((validation) => {
+        return state.loadedValidations[formTemplateId].find((validation) => {
           return validation.id === validationId
         })
       }
     },
     loadedQuestionValidation (state) {
-      return (formId, questionId) => {
-        if (!state.loadedValidations[formId]) {
+      return (formTemplateId, questionId) => {
+        if (!state.loadedValidations[formTemplateId]) {
           return []
         }
-        return state.loadedValidations[formId].filter((validation) => {
+        return state.loadedValidations[formTemplateId].filter((validation) => {
           return validation.question_id === questionId
         })
       }

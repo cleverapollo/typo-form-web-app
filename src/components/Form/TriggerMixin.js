@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 export default {
   computed: {
     allResponses () {
-      return this.$store.getters.loadedResponses(this.formId, parseInt(this.submissionId))
+      return this.$store.getters.loadedResponses(this.formTemplateId, parseInt(this.formId))
     },
     questionTypes () {
       return this.$store.getters.questionTypes
@@ -15,8 +15,8 @@ export default {
     }
   },
   methods: {
-    progress (formId, submissionId) {
-      const sections = this.$store.getters.loadedSections(formId)
+    progress (formTemplateId, formId) {
+      const sections = this.$store.getters.loadedSections(formTemplateId)
       let questionCount = 0
       let responseCount = 0
       sections.forEach(function (section) {
@@ -27,7 +27,7 @@ export default {
           for (let i = 1; i <= section.repeatable; i++) {
             let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, i))
             questions.forEach(function (question) {
-              let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id && response.order === i)
+              let responses = this.$store.getters.loadedResponses(formTemplateId, formId).filter(response => response.question_id === question.id && response.order === i)
               let responseLength = responses.length ? 1 : 0
               let questionLength = 1
               if (this.getQuestionType(question.question_type_id) === 'Multiple choice grid' || this.getQuestionType(question.question_type_id) === 'Checkbox grid') {
@@ -41,7 +41,7 @@ export default {
         } else {
           let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, 1))
           questions.forEach(function (question) {
-            let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
+            let responses = this.$store.getters.loadedResponses(formTemplateId, formId).filter(response => response.question_id === question.id)
             let responseLength = responses.length ? 1 : 0
             let questionLength = 1
             if (this.getQuestionType(question.question_type_id) === 'Multiple choice grid' || this.getQuestionType(question.question_type_id) === 'Checkbox grid') {
@@ -57,8 +57,8 @@ export default {
       let progress = questionCount !== 0 ? responseCount * 100 / questionCount : 0
       return progress < 0 ? 0 : progress > 100 ? 100 : progress
     },
-    sectionProgress (formId, sectionId, submissionId) {
-      const section = this.$store.getters.loadedSection(formId, sectionId)
+    sectionProgress (formTemplateId, sectionId, formId) {
+      const section = this.$store.getters.loadedSection(formTemplateId, sectionId)
       let questionCount = 0
       let responseCount = 0
       if (this.isSectionTrigger(section)) {
@@ -68,7 +68,7 @@ export default {
         for (let i = 1; i <= section.repeatable; i++) {
           let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, i))
           questions.forEach(function (question) {
-            let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id && response.order === i)
+            let responses = this.$store.getters.loadedResponses(formTemplateId, formId).filter(response => response.question_id === question.id && response.order === i)
             let responseLength = responses.length ? 1 : 0
             let questionLength = 1
             if (this.getQuestionType(question.question_type_id) === 'Multiple choice grid' || this.getQuestionType(question.question_type_id) === 'Checkbox grid') {
@@ -80,12 +80,12 @@ export default {
           }, this)
         }
       } else {
-        const childrenSections = this.$store.getters.loadedChildrenSection(formId, sectionId)
+        const childrenSections = this.$store.getters.loadedChildrenSection(formTemplateId, sectionId)
         if (childrenSections.length) {
           let _this = this
           let progress = 100
           childrenSections.forEach(function (section) {
-            const childProgress = _this.sectionProgress(formId, section.id, submissionId)
+            const childProgress = _this.sectionProgress(formTemplateId, section.id, formId)
             if (childProgress !== 100) {
               progress = 0
             }
@@ -94,7 +94,7 @@ export default {
         } else {
           let questions = section.questions.filter(question => question.mandatory && !this.isTrigger(question, 1))
           questions.forEach(function (question) {
-            let responses = this.$store.getters.loadedResponses(formId, submissionId).filter(response => response.question_id === question.id)
+            let responses = this.$store.getters.loadedResponses(formTemplateId, formId).filter(response => response.question_id === question.id)
             let responseLength = responses.length ? 1 : 0
             let questionLength = 1
             if (this.getQuestionType(question.question_type_id) === 'Multiple choice grid' || this.getQuestionType(question.question_type_id) === 'Checkbox grid') {
@@ -116,7 +116,7 @@ export default {
       let hideSectionTrigger = true
       const $this = this
       if (!item.questions.length) {
-        let childrenSection = this.$store.getters.loadedChildrenSection(this.formId, item.id)
+        let childrenSection = this.$store.getters.loadedChildrenSection(this.formTemplateId, item.id)
         _.forEach(childrenSection, function (section) {
           if (!$this.isSectionTrigger(section)) {
             hideSectionTrigger = false
@@ -151,7 +151,7 @@ export default {
         return false
       }
       let type = (question.questions ? 'Section' : 'Question')
-      let questionTriggers = this.$store.getters.loadedQuestionTrigger(this.formId, question.id)
+      let questionTriggers = this.$store.getters.loadedQuestionTrigger(this.formTemplateId, question.id)
       questionTriggers = questionTriggers.filter((trigger) => {
         if (type === 'Section') {
           return trigger.type === 'Section'
@@ -171,7 +171,7 @@ export default {
 
       while (index < questionTriggers.length) {
         const questionTrigger = questionTriggers[index]
-        const parentQuestion = this.$store.getters.loadedAllQuestion(this.formId, parseInt(questionTrigger.parent_question_id))
+        const parentQuestion = this.$store.getters.loadedAllQuestion(this.formTemplateId, parseInt(questionTrigger.parent_question_id))
         tempF = tempF && this.compareCondition(questionTrigger, order) && !this.isTrigger(parentQuestion, order)
         if ((questionTrigger.operator === 1 || questionTrigger.operator === true) && (questionTriggers.length - 1 !== index)) {
           if (tempF) {
@@ -184,7 +184,7 @@ export default {
       return !tempF
     },
     compareCondition (questionTrigger, order) {
-      let question = this.$store.getters.loadedAllQuestion(this.formId, parseInt(questionTrigger.parent_question_id))
+      let question = this.$store.getters.loadedAllQuestion(this.formTemplateId, parseInt(questionTrigger.parent_question_id))
       if (!question) {
         return true
       }
@@ -213,7 +213,7 @@ export default {
           if (filteredResponses.length > 0) {
             questionAnswer = answer.toString()
           }
-        } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid') {
+        } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid' || this.getQuestionType(questionTypeID) === 'Address' || this.getQuestionType(questionTypeID) === 'ABN Lookup') {
           let filteredResponses = parentResponses.filter(function (parentResponse) {
             return parentResponse.answer_id === answer && parentResponse.response === value
           })
@@ -312,7 +312,7 @@ export default {
             return listValue.filter(element => element.includes(value)).length > 0
           } else if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
             return questionAnswer === answer
-          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid') {
+          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid' || this.getQuestionType(questionTypeID) === 'Address' || this.getQuestionType(questionTypeID) === 'ABN Lookup') {
             return questionAnswer === answer && questionValue === value
           } else {
             if (!answerF) {
@@ -328,7 +328,7 @@ export default {
             return listValue.filter(element => element.includes(value)).length === 0
           } else if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
             return questionAnswer !== answer
-          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid') {
+          } else if (this.getQuestionType(questionTypeID) === 'Checkbox grid' || this.getQuestionType(questionTypeID) === 'Multiple choice grid' || this.getQuestionType(questionTypeID) === 'Address' || this.getQuestionType(questionTypeID) === 'ABN Lookup') {
             return questionAnswer !== answer || questionValue !== value
           } else {
             if (!answerF) {

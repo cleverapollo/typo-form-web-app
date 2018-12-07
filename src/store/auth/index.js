@@ -134,7 +134,7 @@ export default {
           commit('clearLoadedTriggers')
           commit('clearLoadedForms')
           commit('clearLoadedValidations')
-          commit('clearLoadedSubmissions')
+          commit('clearLoadedFormTemplates')
           commit('clearLoadedOrganisations')
           commit('clearOrganisationUsers')
         })

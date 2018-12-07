@@ -1,11 +1,12 @@
 const API_URL = process.env.API_URL
+const FORM_TEMPLATE_URL = `${API_URL}form-builder/`
 const APPLICATION_URL = `${API_URL}application/`
-const FORM_URL = `/form`
-const SETTING_URL = `auto`
+const FORM_URL = '/form'
 
 export default {
   state: {
-    loadedForms: {}
+    loadedForms: {},
+    loadedFormFilters: {}
   },
   mutations: {
     clearLoadedForms (state) {
@@ -13,46 +14,137 @@ export default {
     },
     setLoadedForms (state, payload) {
       let forms = Object.assign({}, state.loadedForms)
-      forms[payload.slug] = payload.forms
+      forms[payload.formTemplateId] = payload.forms
+      state.loadedForms = forms
+    },
+    formFilter (state, payload) {
+      state.loadedFormFilters = payload
+    },
+    setLoadedAllForms (state, payload) {
+      let forms = Object.assign({}, state.loadedForms)
+      for (let i = 0; i < payload.forms.length; i++) {
+        const form = payload.forms[i]
+        forms[form.form_template.id] = []
+      }
+      for (let i = 0; i < payload.forms.length; i++) {
+        const form = payload.forms[i]
+        forms[form.form_template.id].push(form)
+      }
       state.loadedForms = forms
     },
     createForm (state, payload) {
       let forms = Object.assign({}, state.loadedForms)
-      if (!forms[payload.slug]) {
-        forms[payload.slug] = []
+      if (!forms[payload.formTemplateId]) {
+        forms[payload.formTemplateId] = []
       }
-      forms[payload.slug].push(payload.form)
+      forms[payload.formTemplateId].push(payload.form)
       state.loadedForms = forms
     },
     updateForm (state, payload) {
       let forms = Object.assign({}, state.loadedForms)
-      const index = forms[payload.slug].findIndex(form => {
+      if (!forms[payload.formTemplateId]) {
+        forms[payload.formTemplateId] = []
+      }
+      const index = forms[payload.formTemplateId].findIndex(form => {
         return form.id === payload.form.id
       })
-      forms[payload.slug].splice(index, 1, payload.form)
+      if (index != null) {
+        forms[payload.formTemplateId].splice(index, 1, payload.form)
+      } else {
+        forms[payload.formTemplateId].push(payload.form)
+      }
       state.loadedForms = forms
     },
     deleteForm (state, payload) {
       let forms = Object.assign({}, state.loadedForms)
-      forms[payload.slug] = forms[payload.slug].filter(e => {
+      forms[payload.formTemplateId] = forms[payload.formTemplateId].filter(e => {
         return e.id !== payload.id
       })
       state.loadedForms = forms
     },
-    setAuto (state, payload) {
+    setLoadedResponses (state, payload) {
       let forms = Object.assign({}, state.loadedForms)
-      for (let i = 0; i < forms[payload.slug].length; i++) {
-        if (payload.formIds.includes(forms[payload.slug][i].id)) {
-          forms[payload.slug][i].auto = 1
-        } else {
-          forms[payload.slug][i].auto = 0
-        }
-      }
+      const form = forms[payload.formTemplateId].find((form) => {
+        return form.id === payload.formId
+      })
+      form.responses = payload.responses
+      state.loadedForms = forms
+    },
+    createResponse (state, payload) {
+      let forms = Object.assign({}, state.loadedForms)
+      const form = forms[payload.formTemplateId].find((form) => {
+        return form.id === payload.formId
+      })
+      form.responses.push(payload.response)
+      state.loadedForms = forms
+    },
+    updateResponse (state, payload) {
+      let forms = Object.assign({}, state.loadedForms)
+      const form = forms[payload.formTemplateId].find((form) => {
+        return form.id === payload.formId
+      })
+      const index = form.responses.findIndex(response => {
+        return response.id === payload.oldId
+      })
+      form.responses.splice(index, 1, payload.response)
+      state.loadedForms = forms
+    },
+    deleteResponse (state, payload) {
+      let forms = Object.assign({}, state.loadedForms)
+      const form = forms[payload.formTemplateId].find((form) => {
+        return form.id === payload.formId
+      })
+      form.responses = form.responses.filter(e => {
+        return e.id !== payload.id
+      })
       state.loadedForms = forms
     }
   },
   actions: {
-    loadForms ({commit}, slug) {
+    loadedForms ({commit}, formTemplateId) {
+      commit('setLoading', true)
+      window.axios.get(FORM_TEMPLATE_URL + formTemplateId + FORM_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const updateObj = {
+              formTemplateId: formTemplateId,
+              forms: response['data']['forms']
+            }
+            commit('setLoadedForms', updateObj)
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
+    loadAllForm ({commit}, payload) {
+      commit('setLoading', true)
+      return new Promise((resolve, reject) => {
+        window.axios.get(APPLICATION_URL + payload.slug + FORM_URL + '/' + payload.id)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const updateObj = {
+                formTemplateId: response['data']['form']['form_template']['id'],
+                form: response['data']['form']
+              }
+              commit('updateForm', updateObj)
+              resolve(response)
+            }
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              reject(error)
+            }
+          )
+      })
+    },
+    loadAllForms ({commit}, slug) {
       commit('setLoading', true)
       return new Promise((resolve, reject) => {
         window.axios.get(APPLICATION_URL + slug + FORM_URL)
@@ -60,75 +152,83 @@ export default {
             response => {
               commit('setLoading', false)
               const updateObj = {
-                slug: slug,
                 forms: response['data']['forms']
               }
-              commit('setLoadedForms', updateObj)
+              commit('setLoadedAllForms', updateObj)
               resolve(response)
             }
           )
           .catch(
             error => {
               commit('setLoading', false)
-              console.log(error)
               reject(error)
             }
           )
       })
     },
     createForm ({commit, getters}, payload) {
-      commit('setLoading', true)
-      const form = {
-        name: payload.name
+      const form = {}
+
+      if (payload.userId) {
+        form.user_id = payload.userId
       }
+
+      if (payload.organisationId) {
+        form.organisation_id = payload.organisationId
+      }
+
       return new Promise((resolve, reject) => {
-        window.axios.post(APPLICATION_URL + payload.slug + FORM_URL, form)
+        window.axios.post(FORM_TEMPLATE_URL + payload.formTemplateId + FORM_URL, form)
           .then(
             response => {
               commit('setLoading', false)
               const createObj = {
-                slug: payload.slug,
+                formTemplateId: payload.formTemplateId,
                 form: response['data']['form']
               }
-              commit('createForm', createObj)
               resolve(response)
+              commit('createForm', createObj)
             }
           )
           .catch(
             error => {
               commit('setLoading', false)
               console.log(error)
-              reject(error)
             }
           )
       })
     },
     updateForm ({commit}, payload) {
       commit('setLoading', true)
-      let formData = new FormData()
 
-      if (payload.name) {
-        formData.append('name', payload.name)
-      }
-      if (payload.showProgress !== null) {
-        formData.append('show_progress', payload.showProgress ? 1 : 0)
+      let form = {
+        organisation_id: payload.organisationId,
+        user_id: payload.userId
       }
 
-      if (payload.csv) {
-        formData.append('csv', payload.csv)
+      if (payload.statusId) {
+        form.status_id = payload.statusId
       }
 
-      const config = {
-        headers: {'content-type': 'multipart/form-data'}
+      if (payload.periodStart) {
+        form.period_start = payload.periodStart
+      }
+
+      if (payload.periodEnd) {
+        form.period_end = payload.periodEnd
+      }
+
+      if (payload.progress !== undefined) {
+        form.progress = parseInt(payload.progress)
       }
 
       return new Promise((resolve, reject) => {
-        window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + '/' + payload.id, formData, config)
+        window.axios.put(FORM_TEMPLATE_URL + payload.formTemplateId + FORM_URL + '/' + payload.id, form)
           .then(
             response => {
               commit('setLoading', false)
               const updateObj = {
-                slug: payload.slug,
+                formTemplateId: payload.formTemplateId,
                 form: response['data']['form']
               }
               commit('updateForm', updateObj)
@@ -142,61 +242,142 @@ export default {
           })
       })
     },
-    deleteForm ({commit}, payload) {
+    duplicateForm ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.slug + FORM_URL + '/' + payload.id)
-        .then(() => {
-          commit('setLoading', false)
-          commit('deleteForm', payload)
-        })
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
-    },
-    setAuto ({commit}, payload) {
-      commit('setLoading', true)
-      const updateObj = {
-        form_ids: payload.formIds
-      }
-      window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + '/' + SETTING_URL, updateObj)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              slug: payload.slug,
-              formIds: payload.formIds
+      return new Promise((resolve, reject) => {
+        window.axios.post(FORM_TEMPLATE_URL + payload.formTemplateId + FORM_URL + '/' + payload.id)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const createdObj = {
+                formTemplateId: payload.formTemplateId,
+                form: response['data']['form']
+              }
+              commit('createForm', createdObj)
+              resolve(response)
             }
-            commit('setAuto', updateObj)
-          }
-        )
-        .catch(
-          error => {
+          )
+          .catch(error => {
             console.log(error)
             commit('setLoading', false)
-          }
-        )
+            reject(error)
+          })
+      })
+    },
+    deleteForm ({commit}, payload) {
+      commit('setLoading', true)
+      return new Promise((resolve, reject) => {
+        window.axios.delete(FORM_TEMPLATE_URL + payload.formTemplateId + FORM_URL + '/' + payload.id)
+          .then((response) => {
+            commit('setLoading', false)
+            commit('deleteForm', payload)
+            resolve(response)
+          })
+          .catch(error => {
+            console.log(error)
+            commit('setLoading', false)
+            reject(error)
+          })
+      })
+    },
+    formFilter ({commit}, payload) {
+      commit('setLoading', true)
+      return new Promise((resolve, reject) => {
+        window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + '/filter', payload)
+          .then((response) => {
+            commit('setLoading', false)
+            commit('formFilter', response['data']['forms'])
+            resolve(response.data.forms)
+          })
+          .catch(error => {
+            console.log(error)
+            commit('setLoading', false)
+            reject(error)
+          })
+      })
     }
   },
   getters: {
     loadedForms (state) {
-      return (slug) => {
-        if (!state.loadedForms[slug]) {
+      return (formTemplateId) => {
+        if (!state.loadedForms[formTemplateId]) {
           return []
         }
-        return state.loadedForms[slug].sort((formA, formB) => {
-          return formA.id > formB.id
-        })
+
+        return state.loadedForms[formTemplateId]
+      }
+    },
+    loadedAllForms (state, getters, rootState) {
+      return (slug) => {
+        let forms = []
+        const formTemplates = rootState.formTemplate.loadedFormTemplates[slug]
+        if (!formTemplates) {
+          return []
+        }
+        for (var i = 0; i < formTemplates.length; i++) {
+          if (state.loadedForms[formTemplates[i].id]) {
+            forms = forms.concat(state.loadedForms[formTemplates[i].id])
+          }
+        }
+        return forms
+      }
+    },
+    loadedApplicationForm (state, getters, rootState) {
+      return (slug, formId) => {
+        const formTemplates = rootState.formTemplate.loadedFormTemplates[slug]
+        if (!formTemplates) {
+          return null
+        }
+        for (var i = 0; i < formTemplates.length; i++) {
+          if (state.loadedForms[formTemplates[i].id]) {
+            const form = state.loadedForms[formTemplates[i].id].find((form) => {
+              return form.id === formId
+            })
+            if (form) {
+              return form
+            }
+          }
+        }
+        return null
+      }
+    },
+    loadedFormFilters (state) {
+      return () => {
+        return state.loadedFormFilters
       }
     },
     loadedForm (state) {
-      return (slug, formId) => {
-        if (!state.loadedForms[slug]) {
+      return (formTemplateId, formId) => {
+        if (!state.loadedForms[formTemplateId]) {
           return null
         }
-        return state.loadedForms[slug].find((form) => {
+
+        return state.loadedForms[formTemplateId].find((form) => {
           return form.id === formId
         })
+      }
+    },
+    loadedFormOrganisations (state, getters, rootState) {
+      return (slug, formTemplateId) => {
+        if (!rootState.organisation.loadedOrganisations[slug]) {
+          return []
+        }
+
+        let organisations = rootState.organisation.loadedOrganisations[slug].slice(0)
+        organisations.push({id: 0, name: 'No Organisation'})
+        const forms = state.loadedForms[formTemplateId]
+        if (forms) {
+          for (var i = 0; i < forms.length; i++) {
+            organisations = organisations.filter((organisation) => {
+              if (!forms[i].organisation) {
+                return organisation.id !== 0
+              } else {
+                return forms[i].organisation.name !== organisation.name
+              }
+            })
+          }
+        }
+        return organisations
       }
     }
   }

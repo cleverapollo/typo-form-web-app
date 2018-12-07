@@ -211,8 +211,8 @@
             { title: 'Dashboard', path: 'dashboard', icon: 'dashboard', admin: false },
             { title: 'Users', path: 'users', icon: 'person', admin: true },
             { title: 'Organisations', path: 'organisations', icon: 'people', admin: false },
-            { title: 'Form Builder', path: 'forms', icon: 'content_paste', admin: true },
-            { title: 'Forms', path: 'submissions', icon: 'assignment', admin: false },
+            { title: 'Form Template', path: 'form-builder', icon: 'content_paste', admin: true },
+            { title: 'Forms', path: 'forms', icon: 'assignment', admin: false },
             { title: 'Settings', path: 'settings', icon: 'settings', admin: true }
         ]
       },
@@ -270,6 +270,7 @@
         this.$store.dispatch('loadPeriods')
         this.$store.dispatch('loadStatuses')
         this.$store.dispatch('loadRoles')
+        this.$store.dispatch('loadTypes')
         this.$store.dispatch('loadComparators')
         this.$store.dispatch('loadTriggerTypes')
         this.$store.dispatch('loadAnswerSorts')

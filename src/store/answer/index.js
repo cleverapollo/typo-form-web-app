@@ -13,7 +13,7 @@ export default {
           response => {
             commit('setLoading', false)
             const createObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               sectionId: payload.sectionId,
               questionId: payload.questionId,
               answers: response['data']['answers']
@@ -38,7 +38,7 @@ export default {
           response => {
             commit('setLoading', false)
             const createdObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               sectionId: payload.sectionId,
               questionId: payload.questionId,
               answer: response['data']['answer']
@@ -64,7 +64,7 @@ export default {
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               sectionId: payload.sectionId,
               questionId: payload.questionId,
               answer: response['data']['answer']
@@ -88,7 +88,7 @@ export default {
           response => {
             commit('setLoading', false)
             const updateObj = {
-              formId: payload.formId,
+              formTemplateId: payload.formTemplateId,
               sectionId: payload.sectionId,
               question: response['data']['data']
             }
@@ -139,11 +139,11 @@ export default {
   },
   getters: {
     loadedAnswers (state, getters, rootState) {
-      return (formId, sectionId, questionId) => {
-        if (!rootState.section.loadedSections[formId]) {
+      return (formTemplateId, sectionId, questionId) => {
+        if (!rootState.section.loadedSections[formTemplateId]) {
           return []
         }
-        const section = rootState.section.loadedSections[formId].find((section) => {
+        const section = rootState.section.loadedSections[formTemplateId].find((section) => {
           return section.id === sectionId
         })
         if (!section) {
@@ -159,11 +159,11 @@ export default {
       }
     },
     loadedAnswer (state, getters, rootState) {
-      return (formId, sectionId, questionId, answerId) => {
-        if (!rootState.section.loadedSections[formId]) {
+      return (formTemplateId, sectionId, questionId, answerId) => {
+        if (!rootState.section.loadedSections[formTemplateId]) {
           return null
         }
-        const section = rootState.section.loadedSections[formId].find((section) => {
+        const section = rootState.section.loadedSections[formTemplateId].find((section) => {
           return section.id === sectionId
         })
         if (!section) {

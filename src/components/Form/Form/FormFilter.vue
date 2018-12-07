@@ -101,14 +101,14 @@
             <!-- //Forms -->
             <v-data-table
               :headers="headers"
-              :items="submissions"
+              :items="forms"
               :search="search"
               hide-actions
-              v-if="loadedSubmissionFilters"
+              v-if="loadedFormFilters"
             >
               <template slot="items" slot-scope="props">
-                <tr @click="onSubmission(props.item.id)" v-if="loadedSubmissionFilters.indexOf(props.item.id) !== -1">
-                  <td>{{ props.item.form.name }}</td>
+                <tr @click="onForm(props.item.id)" v-if="loadedFormFilters.indexOf(props.item.id) !== -1">
+                  <td>{{ props.item.form_template.name }}</td>
                   <td>{{ props.item.owner }}</td>
                   <td>{{ props.item.created_at.date | moment }}</td>
                   <td>{{ props.item.updated_at.date | moment }}</td>
@@ -132,7 +132,7 @@
   import moment from 'moment'
 
   export default {
-    name: 'SubmissionFilter',
+    name: 'FormFilter',
     data () {
       return {
         search: '',
@@ -152,10 +152,10 @@
           if (filter.source.group === 'Form Detail') {
             if (filter.source.question === 'ID') {
               headers.push({ text: 'ID', value: 'id', sortable: true, align: 'left' })
-            } else if (filter.source.question === 'Form Builder ID') {
-              headers.push({ text: 'Form Builder ID', value: 'form.id', sortable: true, align: 'left' })
-            } else if (filter.source.question === 'Form Builder') {
-              headers.push({ text: 'Form Builder', value: 'form.name', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Form Template ID') {
+              headers.push({ text: 'Form Template ID', value: 'form_template.id', sortable: true, align: 'left' })
+            } else if (filter.source.question === 'Form Template') {
+              headers.push({ text: 'Form Template', value: 'form_template.name', sortable: true, align: 'left' })
             } else if (filter.source.question === 'User ID') {
               headers.push({ text: 'User ID', value: 'user.id', sortable: true, align: 'left' })
             } else if (filter.source.question === 'User') {
@@ -183,14 +183,14 @@
         })
         return headers
       },
-      submissions () {
-        let submissions = this.$store.getters.loadedAllSubmissions(this.slug)
-        submissions.forEach((submission) => {
-          submission.user.name = submission.user.first_name + ' ' + submission.user.last_name
-          submission.owner = submission.organisation ? submission.organisation.name : submission.user.first_name + ' ' + submission.user.last_name
-          submission.status = this.status(submission.status_id)
+      forms () {
+        let forms = this.$store.getters.loadedAllForms(this.slug)
+        forms.forEach((form) => {
+          form.user.name = form.user.first_name + ' ' + form.user.last_name
+          form.owner = form.organisation ? form.organisation.name : form.user.first_name + ' ' + form.user.last_name
+          form.status = this.status(form.status_id)
         })
-        return submissions
+        return forms
       },
       statuses () {
         return this.$store.getters.statuses
@@ -201,8 +201,8 @@
       sources () {
         let sources = [
           {'group': 'Form Detail', 'question': 'ID'},
-          {'group': 'Form Detail', 'question': 'Form Builder ID'},
-          {'group': 'Form Detail', 'question': 'Form Builder'},
+          {'group': 'Form Detail', 'question': 'Form Template ID'},
+          {'group': 'Form Detail', 'question': 'Form Template'},
           {'group': 'Form Detail', 'question': 'User ID'},
           {'group': 'Form Detail', 'question': 'User'},
           {'group': 'Form Detail', 'question': 'Organisation ID'},
@@ -216,12 +216,12 @@
         ]
         const questions = this.$store.getters.loadedApplicationQuestions(this.slug)
         _.forEach(questions, (question) => {
-          sources.push({'group': question.form_name + '-' + question.section_name, 'question': question.question, 'id': question.id})
+          sources.push({'group': question.form_template_name + '-' + question.section_name, 'question': question.question, 'id': question.id})
         }, this)
         return sources
       },
-      loadedSubmissionFilters () {
-        return this.$store.getters.loadedSubmissionFilters().submission_ids
+      loadedFormFilters () {
+        return this.$store.getters.loadedFormFilters().form_ids
       }
     },
     methods: {
@@ -234,11 +234,11 @@
           return null
         }
 
-        const formName = source.group.split('-')[0]
-        const form = this.$store.getters.loadedForms(this.slug).find((form) => {
-          return form.name === formName
+        const formTemplateName = source.group.split('-')[0]
+        const formTemplate = this.$store.getters.loadedFormTemplates(this.slug).find((formTemplate) => {
+          return formTemplate.name === formTemplateName
         })
-        const question = this.$store.getters.loadedAllQuestion(form.id, this.source.id)
+        const question = this.$store.getters.loadedAllQuestion(formTemplate.id, this.source.id)
         return question
       },
       questionType (source) {
@@ -273,7 +273,7 @@
       },
       filterComparators (source) {
         if (source.group === 'Form Detail') {
-          if (source.question === 'Form Builder' || source.question === 'User' || source.question === 'Organisation' || source.question === 'Status') {
+          if (source.question === 'Form Template' || source.question === 'User' || source.question === 'Organisation' || source.question === 'Status') {
             return this.comparators.filter((comparator) => {
               return comparator.comparator === 'equals' ||
                 comparator.comparator === 'not equal to' ||
@@ -299,8 +299,8 @@
           return this.triggerTypes.map(x => x.comparator_id).includes(comparator.id)
         })
       },
-      onSubmission (id) {
-        this.$router.push('/submissions/' + id)
+      onForm (id) {
+        this.$router.push('/forms/' + id)
       },
       status (id) {
         return this.statuses.find(e => { return e.id === id }).status
@@ -318,7 +318,7 @@
             continue
           }
           let newParameter = {}
-          if (this.filters[i].source.group === 'Form Detail') {
+          if (this.filters[i].source.group === 'Form Template') {
             newParameter = {
               source: this.filters[i].source.question,
               query: this.filters[i].query,
@@ -336,7 +336,7 @@
           }
           filterParameters.push(newParameter)
         }
-        this.$store.dispatch('submissionFilter', {filters: filterParameters, slug: this.slug})
+        this.$store.dispatch('formFilter', {filters: filterParameters, slug: this.slug})
       },
       removeFilter (index) {
         this.filters.splice(index, 1)
@@ -345,14 +345,14 @@
     created: function () {
       this.$store.dispatch('loadUsers', this.slug)
       this.$store.dispatch('loadOrganisations', this.slug)
-      this.$store.dispatch('loadForms', this.slug)
+      this.$store.dispatch('loadFormTemplates', this.slug)
         .then((response) => {
-          const forms = response.data.forms
-          _.forEach(forms, (form) => {
-            this.$store.dispatch('loadSections', form.id)
+          const formTemplates = response.data.formTemplates
+          _.forEach(formTemplates, (formTemplate) => {
+            this.$store.dispatch('loadSections', formTemplate.id)
           })
         })
-      this.$store.dispatch('loadAllSubmissions', this.slug)
+      this.$store.dispatch('loadAllForms', this.slug)
     },
     filters: {
       moment: function (date) {

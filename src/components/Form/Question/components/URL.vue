@@ -3,7 +3,7 @@
 </template>
 <script>
   export default {
-    name: 'PhoneNumber',
+    name: 'URL',
     props: ['answers'],
     mounted () {
       if (this.answers.length) {
