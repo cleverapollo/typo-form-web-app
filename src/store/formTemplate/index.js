@@ -8,6 +8,9 @@ export default {
     loadedFormTemplates: {}
   },
   mutations: {
+    clearLoadedFormTemplates (state) {
+      state.loadedFormTemplates = {}
+    },
     setLoadedFormTemplates (state, payload) {
       let formTemplates = Object.assign({}, state.loadedFormTemplates)
       formTemplates[payload.slug] = payload.formTemplates
