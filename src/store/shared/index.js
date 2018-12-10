@@ -3,6 +3,7 @@ const JOIN_URL = `${API_URL}join/`
 const QUESTION_TYPE_URL = `${API_URL}question-type`
 const ROLE_URL = `${API_URL}role`
 const TYPE_URL = `${API_URL}type`
+const COUNTRY_URL = `${API_URL}country`
 const PERIOD_URL = `${API_URL}period`
 const STATUS_URL = `${API_URL}status`
 const VALIDATION_TYPE_URL = `${API_URL}validation-type`
@@ -23,6 +24,7 @@ export default {
     statuses: [],
     comparators: [],
     triggerTypes: [],
+    countries: [],
     reportURL: null
   },
   mutations: {
@@ -46,6 +48,9 @@ export default {
     },
     setTypes (state, payload) {
       state.types = payload
+    },
+    setCountries (state, payload) {
+      state.countries = payload
     },
     setPeriods (state, payload) {
       state.periods = payload
@@ -144,6 +149,22 @@ export default {
           response => {
             commit('setLoading', false)
             commit('setTypes', response['data']['types'])
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
+    loadCountries ({commit}) {
+      commit('setLoading', true)
+      window.axios.get(COUNTRY_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            commit('setCountries', response['data']['countries'])
           }
         )
         .catch(
@@ -299,6 +320,9 @@ export default {
     },
     types (state) {
       return state.types
+    },
+    countries (state) {
+      return state.countries
     },
     statuses (state) {
       return state.statuses

@@ -170,6 +170,7 @@
           case 'Multiple choice':
           case 'Checkboxes':
           case 'Dropdown':
+          case 'Country':
             const result = responses.map((response) => {
               const answer = item.answers.find((answer) => {
                 return answer.id === response.answer_id

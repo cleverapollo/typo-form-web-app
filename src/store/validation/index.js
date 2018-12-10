@@ -1,5 +1,5 @@
 const API_URL = process.env.API_URL
-const FORM_TEMPLATE_URL = `${API_URL}form-builder/`
+const FORM_TEMPLATE_URL = `${API_URL}form-templates/`
 const VALIDATION_URL = '/validation'
 
 export default {

@@ -66,9 +66,6 @@ export default {
       const organisation = {
         name: payload.name
       }
-      if (payload.description) {
-        organisation.description = payload.description
-      }
       return new Promise((resolve, reject) => {
         window.axios.post(APPLICATION_URL + payload.slug + ORGANISATION_URL, organisation)
           .then(

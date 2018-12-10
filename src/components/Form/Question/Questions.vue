@@ -191,6 +191,7 @@
   import PhoneNumber from './components/PhoneNumber'
   import Address from './components/Address'
   import URL from './components/URL'
+  import Country from './components/Country'
   import * as _ from 'lodash'
 
   import triggers from '../Triggers'
@@ -230,7 +231,8 @@
           'Percent': Percent,
           'Phone number': PhoneNumber,
           'Address': Address,
-          'URL': URL
+          'URL': URL,
+          'Country': Country
         },
         ifRequireValidation: {
           'Short answer': true,
@@ -327,6 +329,10 @@
           {
             action: 'link',
             title: 'URL'
+          },
+          {
+            action: 'pin_drop',
+            title: 'Country'
           }
         ],
         validationTypes: this.$store.getters.validationTypes,

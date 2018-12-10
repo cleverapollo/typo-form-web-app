@@ -5,7 +5,7 @@
 
         <!-- //Title -->
         <v-flex d-flex xs12>
-          <h1 class="headline primary--text py-3">Form Template</h1>
+          <h1 class="headline primary--text py-3">Form Templates</h1>
         </v-flex>
         <v-flex d-flex xs12>
           <p>Select an existing form template below or <a href="#" @click.stop="createFormTemplate = true">create a new form template</a>.</p>
@@ -108,7 +108,7 @@
         return role ? role.name : 'undefined'
       },
       onLoadFormTemplate (id) {
-        return '/form-builder/' + id
+        return '/form-templates/' + id
       }
     },
     created: function () {

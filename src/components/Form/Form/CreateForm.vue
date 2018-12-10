@@ -26,7 +26,7 @@
               item-value="id"
               item-text="name"
               v-model="userId"
-              label="Owner"
+              label="User"
             ></v-autocomplete>
           </v-flex>
 

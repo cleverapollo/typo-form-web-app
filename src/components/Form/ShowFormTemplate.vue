@@ -130,7 +130,7 @@
           slug: this.slug,
           id: this.formTemplate.id
         })
-        this.$router.push('/form-builder')
+        this.$router.push('/form-templates')
       }
     },
     created: function () {

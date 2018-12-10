@@ -59,6 +59,7 @@
   import PhoneNumber from './components/PhoneNumber'
   import Address from './components/Address'
   import URL from './components/URL'
+  import Country from './components/Country'
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
@@ -90,7 +91,8 @@
           'Percent': Percent,
           'Phone number': PhoneNumber,
           'Address': Address,
-          'URL': URL
+          'URL': URL,
+          'Country': Country
         },
         snackbarVisible: false
       }

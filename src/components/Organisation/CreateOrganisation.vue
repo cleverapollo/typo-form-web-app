@@ -25,17 +25,6 @@
             </v-text-field>
           </v-flex>
         </v-layout>
-
-        <v-layout row>
-          <v-flex xs12>
-            <v-text-field
-              name="description"
-              label="Description"
-              id="description"
-              v-model="description"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
       </v-card-text>
 
       <!-- //Actions -->
@@ -59,7 +48,6 @@
     data () {
       return {
         name: '',
-        description: '',
         error: false,
         errorString: ''
       }
@@ -86,8 +74,7 @@
         }
         const organisationData = {
           slug: this.slug,
-          name: this.name,
-          description: this.description
+          name: this.name
         }
         this.$store.dispatch('createOrganisation', organisationData)
           .then(response => {
@@ -105,7 +92,6 @@
       },
       reset () {
         this.name = ''
-        this.description = ''
         this.show = false
         this.error = false
       }

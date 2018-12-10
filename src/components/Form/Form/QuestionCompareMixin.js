@@ -77,7 +77,7 @@ export default {
       const comparator = this.getComparator(comparatorID)
       const values = value ? value.split(',').map((value) => value.trim()) : []
       let listValue = parentResponses.map((value) => value.response)
-      if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown' || this.getQuestionType(questionTypeID) === 'Multiple choice') {
+      if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown' || this.getQuestionType(questionTypeID) === 'Multiple choice' || this.getQuestionType(questionTypeID) === 'Country') {
         listValue = parentResponses.map((value) => question.answers.find((answer) => { return answer.id === value.answer_id }).answer)
       }
       switch (comparator) {
@@ -251,6 +251,7 @@ export default {
         case 'Multiple choice':
         case 'Checkboxes':
         case 'Dropdown':
+        case 'Country':
           const result = responses.map((response) => {
             const answer = item.answers.find((answer) => {
               return answer.id === response.answer_id
