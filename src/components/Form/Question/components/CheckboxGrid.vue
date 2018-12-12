@@ -14,7 +14,7 @@
             ></v-text-field>
           </v-flex>
           <v-flex style='width: 30px'  v-show='rows.length > 1'>
-            <v-btn flat icon @click='deleteAnswer(index)' class='mt-3'>
+            <v-btn flat icon @click='deleteAnswer(rowAnswer.id)' class='mt-3'>
               <v-icon>close</v-icon>
             </v-btn>
           </v-flex>
@@ -44,7 +44,7 @@
             ></v-text-field>
           </v-flex>
           <v-flex style='width: 30px' v-show='columns.length > 1'>
-            <v-btn flat icon @click='deleteAnswer(index)' class='mt-3'>
+            <v-btn flat icon @click='deleteAnswer(columnAnswer.id)' class='mt-3'>
               <v-icon>close</v-icon>
             </v-btn>
           </v-flex>
@@ -86,7 +86,7 @@
         this.$emit('create-answer', [str, parameter])
       },
       deleteAnswer (index) {
-        this.$emit('delete-answer', this.answers[index].id)
+        this.$emit('delete-answer', index)
       },
       updateAnswer (index, value) {
         this.$emit('update-answer', [index, value])

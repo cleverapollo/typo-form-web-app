@@ -246,7 +246,8 @@
           'Email': true,
           'Percent': true,
           'Address': true,
-          'URL': true
+          'URL': true,
+          'Country': true
         },
         menuItems: [
           {
@@ -345,7 +346,7 @@
       validationString () {
         if (this.questionTypeString === 'Multiple choice') {
           return this.hasValidation ? 'Switch to Column Option' : 'Switch to Row Option'
-        } else if (this.questionTypeString === 'Dropdown') {
+        } else if (this.questionTypeString === 'Dropdown' || this.questionTypeString === 'Country') {
           return this.hasValidation ? 'Switch to One-Selection' : 'Switch to Multi-Selection'
         } else {
           return this.hasValidation ? 'Remove Validation' : 'Include Validation'

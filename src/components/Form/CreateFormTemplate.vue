@@ -64,6 +64,12 @@
         typeId: null
       }
     },
+    mounted () {
+      const type = this.types.find(type => type.name === 'organisation')
+      if (type) {
+        this.typeId = type.id
+      }
+    },
     computed: {
       show: {
         get () {
@@ -115,7 +121,10 @@
       },
       close () {
         this.name = ''
-        this.typeId = null
+        const type = this.types.find(type => type.name === 'organisation')
+        if (type) {
+          this.typeId = type.id
+        }
         this.show = false
       }
     }

@@ -206,7 +206,7 @@ export default {
       let questionAnswer = ''
       let questionValue = ''
       if (parentResponses.length > 0) {
-        if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown') {
+        if (this.getQuestionType(questionTypeID) === 'Checkboxes' || this.getQuestionType(questionTypeID) === 'Dropdown' || this.getQuestionType(questionTypeID) === 'Country') {
           let filteredResponses = parentResponses.filter(function (parentResponse) {
             return parentResponse.answer_id === answer
           })
@@ -308,7 +308,7 @@ export default {
           }
           break
         case 'contains':
-          if (this.getQuestionType(questionTypeID) === 'Dropdown') {
+          if (this.getQuestionType(questionTypeID) === 'Dropdown' || this.getQuestionType(questionTypeID) === 'Country') {
             return listValue.filter(element => element.includes(value)).length > 0
           } else if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
             return questionAnswer === answer
@@ -324,7 +324,7 @@ export default {
             }
           }
         case 'not contains':
-          if (this.getQuestionType(questionTypeID) === 'Dropdown') {
+          if (this.getQuestionType(questionTypeID) === 'Dropdown' || this.getQuestionType(questionTypeID) === 'Country') {
             return listValue.filter(element => element.includes(value)).length === 0
           } else if (this.getQuestionType(questionTypeID) === 'Checkboxes') {
             return questionAnswer !== answer

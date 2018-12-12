@@ -2,6 +2,24 @@
   <v-layout row wrap>
 
     <template v-if='formId !== -1 && status === "Closed"'>
+      <v-card-title class="text-xs-center">
+        <v-layout>
+          <v-flex>
+            <v-btn>
+              <download-excel
+                :data="data"
+                :name="fileName + '.csv'"
+                type="csv"
+              >
+                CSV
+              </download-excel>
+            </v-btn>
+            <v-btn @click="downloadPDF">
+              PDF
+            </v-btn>
+          </v-flex>
+        </v-layout>
+      </v-card-title>
       <template v-for="(element, index) in sortedSections">
         <v-flex xs12>
           <SectionReport
@@ -41,25 +59,71 @@
 
 <script>
   import * as _ from 'lodash'
+  import moment from 'moment'
   import sections from './Section/Sections'
   import SectionReport from './Section/SectionReport'
   import FormTree from './FormTree'
   import SectionOperation from './SectionOperation.js'
+  import SectionReportMixin from './SectionReportMixin.js'
+  import JSPDF from 'jspdf'
 
   export default {
     props: ['slug', 'formTemplateId', 'formId'],
-    mixins: [SectionOperation],
+    mixins: [SectionOperation, SectionReportMixin],
     components: {
       SectionReport,
       sections,
       FormTree
     },
     computed: {
-      sections () {
-        return this.$store.getters.loadedSections(this.formTemplateId)
+      fileName () {
+        return this.formTemplate.name + ' Form ' + moment().format('YYYY-MM-DD [at] LTS')
+      },
+      data () {
+        const data = []
+        _.forEach(this.sortedSections, section => {
+          if (!this.isSectionTrigger(section)) {
+            const list = _.sortBy(section.questions, element => {
+              return element.order
+            })
+            if (!section.repeatable) {
+              _.forEach(list, item => {
+                if (!this.isTrigger(item, 1)) {
+                  data.push({
+                    'Section': section.name,
+                    'Question': item.question,
+                    'Answer': this.answer(item, 1)
+                  })
+                }
+              })
+            } else {
+              for (let order = 1; order <= section.repeatable; order++) {
+                _.forEach(list, item => {
+                  if (!this.isTrigger(item, order)) {
+                    data.push({
+                      'Section': section.name,
+                      'Question': item.question,
+                      'Answer': this.answer(item, order)
+                    })
+                  }
+                })
+              }
+            }
+          }
+        })
+        return data
+      },
+      formTemplate () {
+        return this.$store.getters.loadedFormTemplate(this.slug, this.formTemplateId)
       },
       sortedSections () {
-        return _.sortBy(this.sections, ['order'])
+        return _.sortBy(this.sections, [section => {
+          if (!section.parent_section_id) {
+            return section.order * 100
+          }
+          const parentSection = this.sections.find(sec => sec.id === section.parent_section_id)
+          return parentSection.order * 100 + section.order
+        }])
       },
       list: {
         get () {
@@ -107,6 +171,51 @@
     methods: {
       sectionClicked: function (item) {
         this.$store.dispatch('selectSection', item)
+      },
+      downloadPDF () {
+        const doc = new JSPDF('p', 'pt', 'a4')
+        const headers = [
+          'Section',
+          'Question',
+          'Answer'
+        ]
+        let source = '<table><thead><tr>'
+        _.forEach(headers, header => {
+          source += '<th>' + header + '</th>'
+        })
+        source += '</tr></thead><tbody>'
+        _.forEach(this.data, data => {
+          source += '<tr>'
+          _.forEach(headers, header => {
+            source += '<td>' + data[header] + '</td>'
+          })
+          source += '</tr>'
+        })
+        source += '</tbody></table>'
+
+        const margins = {
+          top: 10,
+          bottom: 10,
+          left: 10,
+          width: 595
+        }
+
+        doc.fromHTML(
+          source, // HTML string or DOM elem ref.
+          margins.left,
+          margins.top, {
+            'width': margins.width,
+            'elementHandlers': {
+              '.no-export': () => {
+                return true
+              }
+            }
+          },
+          () => {
+            doc.save(this.fileName + '.pdf')
+          },
+          margins
+        )
       }
     }
   }

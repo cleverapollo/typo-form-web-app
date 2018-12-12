@@ -12,7 +12,6 @@
         item-value="keyword"
         label="Address"
         placeholder="Start typing to Search"
-        prepend-icon="mdi-database-search"
         return-object
         @change="onSave"
       ></v-autocomplete>

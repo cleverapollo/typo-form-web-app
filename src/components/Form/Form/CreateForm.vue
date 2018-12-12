@@ -20,7 +20,7 @@
           </v-flex>
 
           <!-- //Users -->
-          <v-flex xs12 v-if="userIsApplicationAdmin">
+          <v-flex xs12 v-if="userIsApplicationAdmin && audience === 'application'">
             <v-autocomplete
               :items="users"
               item-value="id"
@@ -31,7 +31,7 @@
           </v-flex>
 
           <!-- //Organisations -->
-          <v-flex xs12 v-if="organisations.length">
+          <v-flex xs12 v-if="organisations.length && audience === 'organisation'">
             <v-autocomplete
               :items="organisations"
               item-value="id"
@@ -97,6 +97,22 @@
         return _.sortBy(this.$store.getters.loadedFormTemplates(this.slug), element => {
           return element.name.toLowerCase()
         })
+      },
+      types () {
+        return this.$store.getters.types
+      },
+      audience () {
+        if (!this.formTemplateId) {
+          return null
+        }
+        const type = this.types.find(type => type.id === this.formTemplate.type_id)
+        if (!type) {
+          return 'organisation'
+        }
+        return type.name
+      },
+      formTemplate () {
+        return this.$store.getters.loadedFormTemplate(this.slug, this.formTemplateId)
       },
       roles () {
         return this.$store.getters.roles

@@ -106,8 +106,11 @@
   }
 </script>
 
-<style scoped>
+<style>
   .multiple-choice-grid .question-row:nth-child(even) {
     background: #f5f5f5;
+  }
+  .multiple-choice-grid .v-input--radio-group .v-input__control {
+    width: 100%;
   }
 </style>
