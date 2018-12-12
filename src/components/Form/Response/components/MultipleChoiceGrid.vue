@@ -71,6 +71,7 @@
         const index = this.responses.findIndex((response) => {
           return response.answer_id === answerId
         })
+
         if (index === -1) {
           return false
         } else {
