@@ -62,9 +62,6 @@
                       :disabled="loading"
                       :loading="loading">
                       Reset my password
-                       <span slot="loader" class="custom-loader">
-                        <v-icon light>cached</v-icon>
-                       </span>
                     </v-btn>
                   </v-flex>
                 </v-layout>

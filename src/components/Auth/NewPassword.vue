@@ -74,9 +74,6 @@
                       :disabled="loading"
                       :loading="loading">
                       Create New Password
-                       <span slot="loader" class="custom-loader">
-                        <v-icon light>cached</v-icon>
-                       </span>
                     </v-btn>
                   </v-flex>
                 </v-layout>

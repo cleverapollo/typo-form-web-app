@@ -51,9 +51,6 @@
           <v-flex xs12 class="text-xs-right">
             <v-btn flat @click="onCancel">Close</v-btn>
             <v-btn class="primary" @click="onSaveChanges" :disabled="loading" :loading="loading">Save
-              <span slot="loader" class="custom-loader">
-                <v-icon light>cached</v-icon>
-              </span>
             </v-btn>
           </v-flex>
         </v-layout>
