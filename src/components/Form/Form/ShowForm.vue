@@ -87,7 +87,7 @@
                 </v-flex>
 
                 <!-- //Progress -->
-                <v-flex xs12 sm6 text-sm-right>
+                <v-flex xs12 sm6 text-sm-right v-if="formTemplate.show_progress">
                   <v-progress-circular
                     color="success"
                     :value="parseInt(progressNumber.toFixed(0))"

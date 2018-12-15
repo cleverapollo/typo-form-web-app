@@ -62,8 +62,6 @@ export default {
           break
         case 'Multiple choice grid':
         case 'Checkbox grid':
-        case 'Address':
-        case 'ABN Lookup':
           const result1 = responses.map((response) => {
             const answer = item.answers.find((answer) => {
               return answer.id === response.answer_id
@@ -74,6 +72,16 @@ export default {
             return '(' + answer.answer + ', ' + res.answer + ')'
           })
           response = result1.join(', ')
+          break
+        case 'Address':
+        case 'ABN Lookup':
+          const result2 = responses.map((response) => {
+            const answer = item.answers.find((answer) => {
+              return answer.id === response.answer_id
+            })
+            return '(' + answer.answer + ', ' + response.response + ')'
+          })
+          response = result2.join(', ')
           break
         case 'Lookup':
           if (!item.answers.length) {
