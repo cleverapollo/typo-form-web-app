@@ -60,6 +60,7 @@
   import Address from './components/Address'
   import URL from './components/URL'
   import Country from './components/Country'
+  import Lookup from './components/Lookup'
   import TriggerMixin from '../TriggerMixin.js'
 
   export default {
@@ -92,7 +93,8 @@
           'Phone number': PhoneNumber,
           'Address': Address,
           'URL': URL,
-          'Country': Country
+          'Country': Country,
+          'Lookup': Lookup
         },
         snackbarVisible: false
       }

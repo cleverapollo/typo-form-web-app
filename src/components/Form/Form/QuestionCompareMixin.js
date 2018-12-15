@@ -224,7 +224,6 @@ export default {
       return false
     },
     questionToResponse (item, responses) {
-      // [{"id":55,"question_id":2,"response":"pfasdfasd","answer_id":null,"order":1}]
       const questionType = this.getQuestionType(item.question_type_id)
       let response = ''
       switch (questionType) {

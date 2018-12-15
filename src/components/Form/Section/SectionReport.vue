@@ -19,7 +19,7 @@
             <template slot="items" slot-scope="props" v-if="!isTrigger(props.item , 1) && showQuestion(props.item)">
               <td>{{ props.item.question }}</td>
               <td>
-                <div v-html="$sanitize(answer(props.item, 1))"></div>
+                <SectionReportComponent :formTemplateId="formTemplateId" :formId="formId" :question="props.item" :order="1" />
               </td>
             </template>
           </v-data-table>
@@ -42,7 +42,9 @@
           >
             <template slot="items" slot-scope="props" v-if="!isTrigger(props.item , order) && showQuestion(props.item)">
               <td>{{ props.item.question }}</td>
-              <td>{{ answer(props.item, order) }}</td>
+              <td>
+                <SectionReportComponent :formTemplateId="formTemplateId" :formId="formId" :question="props.item" :order="order" />
+              </td>
             </template>
           </v-data-table>
         </v-layout>
@@ -54,6 +56,7 @@
 <script>
   import * as _ from 'lodash'
   import SectionReportMixin from '../SectionReportMixin.js'
+  import SectionReportComponent from './SectionReportComponent'
 
   export default {
     name: 'SectionReport',
@@ -76,6 +79,9 @@
           }
         ]
       }
+    },
+    components: {
+      SectionReportComponent
     },
     computed: {
       form () {

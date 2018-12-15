@@ -192,6 +192,7 @@
   import Address from './components/Address'
   import URL from './components/URL'
   import Country from './components/Country'
+  import Lookup from './components/Lookup'
   import * as _ from 'lodash'
 
   import triggers from '../Triggers'
@@ -232,7 +233,8 @@
           'Phone number': PhoneNumber,
           'Address': Address,
           'URL': URL,
-          'Country': Country
+          'Country': Country,
+          'Lookup': Lookup
         },
         ifRequireValidation: {
           'Short answer': true,
@@ -247,7 +249,8 @@
           'Percent': true,
           'Address': true,
           'URL': true,
-          'Country': true
+          'Country': true,
+          'Lookup': true
         },
         menuItems: [
           {
@@ -334,6 +337,10 @@
           {
             action: 'pin_drop',
             title: 'Country'
+          },
+          {
+            action: 'youtube_searched_for',
+            title: 'Lookup'
           }
         ],
         validationTypes: this.$store.getters.validationTypes,
@@ -346,7 +353,7 @@
       validationString () {
         if (this.questionTypeString === 'Multiple choice') {
           return this.hasValidation ? 'Switch to Column Option' : 'Switch to Row Option'
-        } else if (this.questionTypeString === 'Dropdown' || this.questionTypeString === 'Country') {
+        } else if (this.questionTypeString === 'Dropdown' || this.questionTypeString === 'Country' || this.questionTypeString === 'Lookup') {
           return this.hasValidation ? 'Switch to One-Selection' : 'Switch to Multi-Selection'
         } else {
           return this.hasValidation ? 'Remove Validation' : 'Include Validation'
@@ -417,6 +424,9 @@
           }
         },
         set: function (str) {
+          if (!str) {
+            return
+          }
           this.setQuestionType(str)
         }
       },
@@ -521,6 +531,9 @@
         this.updateQuestion()
       },
       updateQuestionType (value) {
+        if (!value) {
+          return
+        }
         // 1, 2, 6, 7, 10, 11 - QuestionType Group 1
         // 3, 4, 5 - QuestionType Group 2
         // 8, 9 - QuestionType Group 3
