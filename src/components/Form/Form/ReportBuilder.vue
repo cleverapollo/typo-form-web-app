@@ -120,6 +120,11 @@
                   </template>
                 </tr>
               </template>
+              <template slot="footer">
+                <template v-for="(item, key) in headers">
+                  <td v-bind:key="'filter'+key" v-if="key != 'ID'">{{footer(item)}}</td>
+                </template>
+              </template>
               <v-alert slot="no-results" :value="true" color="error" icon="warning">
                 Your filters returned no results. Try changing your filters.
               </v-alert>
@@ -219,7 +224,7 @@ export default {
       // Replace existing headers with new headers
       this.headers.splice(0, this.headers.length)
       _.forEach(this.filters, (filter, index) => {
-        this.headers.push({ text: filter.source.question, value: filter.source.question })
+        this.headers.push({ text: filter.source.question, value: filter.source.question, option: filter.source })
       })
     },
     setData () {
@@ -228,6 +233,7 @@ export default {
       // Filter Forms
       let forms = this.$store.getters.loadedAllForms(this.slug)
       _.forEach(forms, (form, index) => {
+        let linkedResponses = []
         let row = {}
         row['ID'] = form.id
         _.forEach(this.filters, filter => {
@@ -283,9 +289,15 @@ export default {
             const question = this.questions.find((question) => {
               return question.id === filter.source.id
             })
-            const responses = form.responses.filter((response) => {
+            let responses = form.responses.filter((response) => {
               return response.question_id === filter.source.id
             })
+            if (!responses.length) {
+              responses = linkedResponses.filter((response) => {
+                return response.question_id === filter.source.id
+              })
+            }
+            const questionType = this.getQuestionType(question.question_type_id)
             let order = 1
             if (responses.length) {
               order = Math.max(responses.map(response => response.order))
@@ -302,6 +314,28 @@ export default {
                 }
               } else {
                 row[filter.source.question] = this.questionToResponse(question, orderResponses)
+                if (questionType === 'Lookup' && orderResponses.length) {
+                  if (question.answers.length) {
+                    const value = JSON.parse(question.answers[0].answer)
+                    const editFormTemplateId = value.formTemplateId
+                    if (editFormTemplateId) {
+                      const editQuestionId = value.questionId
+                      const editQuestion = this.$store.getters.loadedAllQuestion(editFormTemplateId, editQuestionId)
+                      const forms = this.$store.getters.loadedForms(editFormTemplateId)
+                      const questionResponses = []
+                      _.forEach(forms, (form, index) => {
+                        const formResponses = form.responses.filter(response => response.question_id === editQuestionId)
+                        _.forEach(formResponses, (formResponse, index) => {
+                          const response = this.questionToResponse(editQuestion, [formResponse])
+                          questionResponses.push({id: formResponse.id, response: response, form_id: form.id})
+                        })
+                      })
+                      const lookupResult = questionResponses.find(questionResponse => questionResponse.id === parseInt(orderResponses[0].response))
+                      const lookupForm = forms.find(form => lookupResult.form_id === form.id)
+                      linkedResponses = linkedResponses.concat(lookupForm.responses)
+                    }
+                  }
+                }
                 break
               }
             }
@@ -311,6 +345,22 @@ export default {
           this.data.push(row)
         }
       })
+    },
+    footer (item) {
+      if (!item.option.id) {
+        return ''
+      }
+
+      const question = this.questions.find((question) => {
+        return question.id === item.option.id
+      })
+      const questionType = this.getQuestionType(question.question_type_id)
+
+      if (questionType !== 'Number') {
+        return ''
+      }
+      const sum = _.sumBy(this.data, value => value[item.value])
+      return 'sum = ' + sum + ', avg = ' + Math.floor(sum / this.data.length)
     },
     downloadPDF () {
       const doc = new JSPDF('p', 'pt', 'a4')
