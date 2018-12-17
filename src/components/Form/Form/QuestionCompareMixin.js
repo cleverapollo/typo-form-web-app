@@ -274,6 +274,34 @@ export default {
           })
           response = result1.join(', ')
           break
+        case 'Lookup':
+          if (!item.answers.length) {
+            break
+          }
+          const value = JSON.parse(item.answers[0].answer)
+          const editFormTemplateId = value.formTemplateId
+          if (editFormTemplateId) {
+            const editQuestionId = value.questionId
+            const editQuestion = this.$store.getters.loadedAllQuestion(editFormTemplateId, editQuestionId)
+            const forms = this.$store.getters.loadedForms(editFormTemplateId)
+            const questionResponses = []
+            _.forEach(forms, (form, index) => {
+              const formResponses = form.responses.filter(response => response.question_id === editQuestionId)
+              _.forEach(formResponses, (formResponse, index) => {
+                const response = this.questionToResponse(editQuestion, [formResponse])
+                questionResponses.push({id: formResponse.id, response: response})
+              })
+            })
+            const lookupResult = responses.map(response => {
+              const re = questionResponses.find(questionResponse => questionResponse.id === parseInt(response.response))
+              if (!re) {
+                return ''
+              }
+              return re.response
+            })
+            response = lookupResult.join(', ')
+          }
+          break
         case 'Content Block':
           response = item.description
           break
