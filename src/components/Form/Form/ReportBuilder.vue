@@ -356,7 +356,7 @@ export default {
       })
       const questionType = this.getQuestionType(question.question_type_id)
 
-      if (questionType !== 'Number') {
+      if (questionType !== 'Number' && questionType !== 'Decimal') {
         return ''
       }
       const sum = _.sumBy(this.data, value => value[item.value])
