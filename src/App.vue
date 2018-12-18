@@ -90,7 +90,7 @@
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title class="ml-0 pl-3">
-        <router-link to="/" tag="span" style="cursor: pointer">
+        <router-link :to="applicationRoute(application)" tag="span" style="cursor: pointer">
           <div class="d-flex flex-row">
             <v-avatar tile v-if="applicationIcon(application)">
               <img :src="applicationIcon(application)"/>
@@ -241,6 +241,9 @@
       },
       applicationUrl (application = []) {
         return this.appProtocol + application.slug + '.' + this.app_domain
+      },
+      applicationRoute (application = []) {
+        return application.default_route ? application.default_route : '/forms'
       },
       applicationIcon (application = []) {
         try {
