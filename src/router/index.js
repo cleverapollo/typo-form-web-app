@@ -74,10 +74,6 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
-      path: '/',
-      redirect: '/forms'
-    },
-    {
       path: '/applications',
       name: 'Applications',
       component: Applications,
@@ -231,6 +227,13 @@ router.beforeEach((to, from, next) => {
     // Redirect Authenticated Users where no application found
     if (store.getters.user && !application.slug && to.meta.application) {
       window.location.href = '/applications?application=false'
+    }
+
+    const defaultRoute = (application.default_route ? application.default_route : '/forms')
+    if (to.fullPath === '/') {
+      router.push({
+        path: defaultRoute
+      })
     }
     next()
   })

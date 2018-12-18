@@ -128,6 +128,21 @@
             </v-flex>
           </v-layout>
 
+          <!-- //Default Route -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-autocomplete
+                :items="routes"
+                item-text="text"
+                item-value="value"
+                v-model="defaultRoute"
+                label="Default Route"
+                single-line
+              >
+              </v-autocomplete>
+            </v-flex>
+          </v-layout>
+
           <!-- //Join Flag -->
           <v-layout row wrap>
             <v-flex xs12>
@@ -175,7 +190,15 @@
         maxFiles: 1,
         maxFilesize: 5,
         deleteApplication: false,
-        slug: window.location.hostname.split('.')[0]
+        slug: window.location.hostname.split('.')[0],
+        defaultRoute: null,
+        routes: [
+          { text: 'Forms', value: '/forms' },
+          { text: 'Dashboard', value: '/dashboard' },
+          { text: 'Report', value: '/report' },
+          { text: 'Users', value: '/users' },
+          { text: 'Organisations', value: '/organisations' }
+        ]
       }
     },
     computed: {
@@ -263,7 +286,8 @@
           primary_color: this.primary_color,
           secondary_color: this.secondary_color,
           background_image: this.applicationImage,
-          icon: this.applicationIcon
+          icon: this.applicationIcon,
+          default_route: this.defaultRoute
         }
 
         if (this.name !== this.application.name) {
@@ -283,6 +307,7 @@
       this.secondary_color = this.application.secondary_color
       this.logo = this.application.logo !== null ? [JSON.parse(this.application.logo)] : []
       this.images = this.application.background_image !== null ? [JSON.parse(this.application.background_image)] : []
+      this.defaultRoute = this.application.default_route !== null ? this.application.default_route : '/forms'
     }
   }
 </script>

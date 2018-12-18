@@ -164,7 +164,8 @@ export default {
         logo: payload.logo,
         primary_color: payload.primary_color,
         secondary_color: payload.secondary_color,
-        background_image: payload.background_image
+        background_image: payload.background_image,
+        default_route: payload.default_route
       }
 
       return new Promise((resolve, reject) => {
