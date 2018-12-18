@@ -161,7 +161,7 @@ export default {
       slug: window.location.hostname.split('.')[0],
       joinUrlDialog: false,
       pagination: {
-        rowsPerPage: 25
+        rowsPerPage: -1
       }
     }
   },
@@ -359,7 +359,7 @@ export default {
       if (questionType !== 'Number' && questionType !== 'Decimal') {
         return ''
       }
-      const sum = _.sumBy(this.data, value => value[item.value])
+      const sum = _.sumBy(this.data, value => parseFloat(value[item.value]))
       return 'sum = ' + sum + ', avg = ' + Math.floor(sum / this.data.length)
     },
     downloadPDF () {
