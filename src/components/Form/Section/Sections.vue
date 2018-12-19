@@ -193,7 +193,7 @@
           <v-layout
             row
             wrap
-            v-for="order in hasRepeatableQuestions"
+            v-for="order in sectionRepeatableCount"
             :key="'repeat' + order"
           >
 
@@ -218,7 +218,7 @@
               ></ResponseContentBlock>
             </template>
 
-            <template v-if='hasRepeatableQuestions > section.min_rows'>
+            <template v-if='sectionRepeatableCount > section.min_rows'>
               <v-flex xs12 sm1 offset-sm11 text-xs-center>
                 <v-btn dark fab small color="error" @click="removeSection(order)" :disabled="status === 'Closed'">
                   <v-icon>close</v-icon>
@@ -228,7 +228,7 @@
 
           </v-layout>
 
-          <v-layout wrap v-if='formId !== -1 && hasRepeatableQuestions && (hasRepeatableQuestions < section.max_rows || !section.max_rows)'>
+          <v-layout wrap v-if='formId !== -1 && hasRepeatableQuestions && (sectionRepeatableCount < section.max_rows || !section.max_rows)'>
             <v-btn dark block color="primary" @click="addSection" :disabled="status === 'Closed'">
               <v-icon dark>add</v-icon>
               Add {{section.name}}
@@ -287,7 +287,13 @@
         max_rows: this.section.max_rows,
         deleteSection: false,
         moveSection: false,
-        snackbarVisible: false
+        snackbarVisible: false,
+        sectionRepeatableCount: 1
+      }
+    },
+    mounted () {
+      if (this.section.repeatable && this.responses.length) {
+        this.sectionRepeatableCount = this.responses[this.responses.length - 1].order
       }
     },
     watch: {
@@ -382,16 +388,14 @@
         return status ? status.status : 'undefined'
       },
       addSection () {
-        this.hasRepeatableQuestions += 1
-        this.updateSection()
+        this.sectionRepeatableCount += 1
       },
       removeSection (order) {
-        if (this.hasRepeatableQuestions === 1) {
+        if (this.sectionRepeatableCount === 1) {
           return
         }
-        this.hasRepeatableQuestions -= 1
+        this.sectionRepeatableCount -= 1
         this.deleteSectionResponse(order)
-        this.updateSection()
       },
       changeRepeatable (value) {
         this.updateSection()

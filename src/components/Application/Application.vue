@@ -43,6 +43,10 @@
       </v-layout>
     </v-flex>
 
+    <v-flex>
+      <CustomSlot type="dashboardHeader" />
+    </v-flex>
+
     <v-container fluid grid-list-lg>
 
       <!-- Welcome Widget -->
@@ -262,6 +266,10 @@
 
     </v-container>
 
+    <v-flex>
+      <CustomSlot type="dashboardFooter" />
+    </v-flex>
+
   </v-layout>
 
 </template>
@@ -270,6 +278,7 @@
   import countTo from 'vue-count-to'
   import moment from 'moment'
   import * as _ from 'lodash'
+  import CustomSlot from '../Layout/CustomSlot'
 
   export default {
     data () {
@@ -288,7 +297,8 @@
       }
     },
     components: {
-      countTo
+      countTo,
+      CustomSlot
     },
     computed: {
       roles () {

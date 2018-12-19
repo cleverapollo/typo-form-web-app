@@ -6,6 +6,10 @@
           <h1 class="headline primary--text py-3">{{ form.form_template.name }}</h1>
         </v-flex>
 
+        <v-flex>
+          <CustomSlot :type="'formHeader' + formId" />
+        </v-flex>
+
         <v-flex xs12 class="mb-3">
           <v-alert
             :value="status != 'Open'"
@@ -149,6 +153,10 @@
           </v-card>
         </v-flex>
 
+        <v-flex>
+          <CustomSlot :type="'formFooter' + formId" />
+        </v-flex>
+
       </v-layout>
     </v-flex>
 
@@ -180,6 +188,7 @@
   import HelpModal from './HelpModal'
   import DuplicateForm from './DuplicateForm'
   import TriggerMixin from '../TriggerMixin.js'
+  import CustomSlot from '../../Layout/CustomSlot'
 
   export default {
     name: 'ShowForm',
@@ -202,7 +211,8 @@
       CompletedForm,
       FormNavigation,
       HelpModal,
-      DuplicateForm
+      DuplicateForm,
+      CustomSlot
     },
     computed: {
       application () {

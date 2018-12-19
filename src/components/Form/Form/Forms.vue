@@ -5,8 +5,13 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Forms</h1>
         </v-flex>
+
         <v-flex d-flex xs12>
           <p>Select an existing form below or <a href="#" @click.stop="createForm = true">create a new form</a>.</p>
+        </v-flex>
+
+        <v-flex>
+          <CustomSlot type="formsHeader" />
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -56,6 +61,10 @@
 
           </v-card>
         </v-flex>
+
+        <v-flex>
+          <CustomSlot type="formsFooter" />
+        </v-flex>
       </v-layout>
     </v-flex>
 
@@ -82,12 +91,14 @@
   import CreateForm from './CreateForm'
   import DuplicateForm from './DuplicateForm'
   import moment from 'moment'
+  import CustomSlot from '../../Layout/CustomSlot'
 
   export default {
     name: 'Forms',
     components: {
       CreateForm,
-      DuplicateForm
+      DuplicateForm,
+      CustomSlot
     },
     data () {
       return {

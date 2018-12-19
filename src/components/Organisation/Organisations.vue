@@ -9,6 +9,10 @@
           <p>Select an existing organisation below or <a href="#" @click.stop="createOrganisation = true">create a new organisation</a>.</p>
         </v-flex>
 
+        <v-flex>
+          <CustomSlot type="organisationsHeader" />
+        </v-flex>
+
 
         <v-flex d-flex xs12 v-if="organisations.length">
           <v-card>
@@ -37,6 +41,10 @@
           </v-alert>
         </v-flex>
 
+        <v-flex>
+          <CustomSlot type="organisationsFooter" />
+        </v-flex>
+
       </v-layout>
     </v-flex>
 
@@ -57,6 +65,7 @@
 <script>
   import * as _ from 'lodash'
   import CreateOrganisation from './CreateOrganisation'
+  import CustomSlot from '../Layout/CustomSlot'
   export default {
     data () {
       return {
@@ -65,7 +74,8 @@
       }
     },
     components: {
-      CreateOrganisation
+      CreateOrganisation,
+      CustomSlot
     },
     computed: {
       organisations () {

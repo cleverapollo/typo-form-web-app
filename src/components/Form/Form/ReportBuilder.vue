@@ -43,6 +43,10 @@
         <v-flex d-flex xs12>
           <p>Add filters below to start building your custom report, each filter will be displayed as a column in the report and you can add as many filters as you need.</p>
         </v-flex>
+
+        <v-flex>
+          <CustomSlot type="reportHeader" />
+        </v-flex>
         <v-flex d-flex xs12>
           <v-card>
 
@@ -135,6 +139,10 @@
 
           </v-card>
         </v-flex>
+
+        <v-flex>
+          <CustomSlot type="reportFooter" />
+        </v-flex>
       </v-layout>
     </v-flex>
 
@@ -148,6 +156,7 @@ import ReportComponent from './ReportComponent'
 import QuestionCompareMixin from './QuestionCompareMixin.js'
 import UrlMixin from './UrlMixin.js'
 import JSPDF from 'jspdf'
+import CustomSlot from '../../Layout/CustomSlot'
 
 export default {
   name: 'ReportBuilder',
@@ -167,7 +176,8 @@ export default {
   },
   mixins: [QuestionCompareMixin, UrlMixin],
   components: {
-    ReportComponent
+    ReportComponent,
+    CustomSlot
   },
   computed: {
     application () {

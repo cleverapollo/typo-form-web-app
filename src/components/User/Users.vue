@@ -8,6 +8,10 @@
         <v-flex d-flex xs12>
           <p>Select an existing user below or <a href="#" @click.stop="inviteApplication = true">add new users</a>.</p>
         </v-flex>
+
+        <v-flex>
+          <CustomSlot type="usersHeader" />
+        </v-flex>
         <v-flex d-flex xs12>
           <v-card>
 
@@ -95,6 +99,10 @@
 
           </v-card>
         </v-flex>
+
+        <v-flex>
+          <CustomSlot type="usersFooter" />
+        </v-flex>
       </v-layout>
     </v-flex>
 
@@ -116,6 +124,7 @@
   import EditUser from './EditUser'
   import EditInvitedUser from './EditInvitedUser'
   import moment from 'moment'
+  import CustomSlot from '../Layout/CustomSlot'
   export default {
     data () {
       return {
@@ -128,7 +137,8 @@
     components: {
       InviteApplication,
       EditUser,
-      EditInvitedUser
+      EditInvitedUser,
+      CustomSlot
     },
     computed: {
       roles () {
