@@ -418,12 +418,7 @@ export default {
       this.getUrl()
       this.$store.dispatch('loadAllForms', this.slug)
       this.$store.dispatch('loadFormTemplates', this.slug)
-        .then((response) => {
-          const formTemplates = response.data.form_templates
-          _.forEach(formTemplates, (formTemplate) => {
-            this.$store.dispatch('loadSections', formTemplate.id)
-          })
-        })
+      this.$store.dispatch('loadAllSections', this.slug)
     }
   }
 }

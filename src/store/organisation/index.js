@@ -43,23 +43,28 @@ export default {
   actions: {
     loadOrganisations ({commit}, slug) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + slug + ORGANISATION_URL)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              slug: slug,
-              organisations: response['data']['organisations']
+      return new Promise((resolve, reject) => {
+        window.axios.get(APPLICATION_URL + slug + ORGANISATION_URL)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const updateObj = {
+                slug: slug,
+                organisations: response['data']['organisations']
+              }
+              commit('setLoadedOrganisations', updateObj)
+
+              resolve(response)
             }
-            commit('setLoadedOrganisations', updateObj)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     },
     createOrganisation ({commit, getters}, payload) {
       commit('setLoading', true)

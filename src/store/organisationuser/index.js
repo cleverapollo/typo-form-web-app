@@ -60,31 +60,36 @@ export default {
   actions: {
     loadAllOrganisationUsers ({commit}, slug) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + slug + ORGANISATION_URL + 'user')
-        .then(
-          response => {
-            commit('setLoading', false)
-            _.forEach(response['data']['users'], (users, index) => {
-              const updateLoadedObj = {
-                organisationId: users['organisation_id'],
-                users: users['current']
-              }
-              commit('setLoadedOrganisationUsers', updateLoadedObj)
+      return new Promise((resolve, reject) => {
+        window.axios.get(APPLICATION_URL + slug + ORGANISATION_URL + 'user')
+          .then(
+            response => {
+              commit('setLoading', false)
+              _.forEach(response['data']['users'], (users, index) => {
+                const updateLoadedObj = {
+                  organisationId: users['organisation_id'],
+                  users: users['current']
+                }
+                commit('setLoadedOrganisationUsers', updateLoadedObj)
 
-              const updateInvitedObj = {
-                organisationId: users['organisation_id'],
-                users: users['unaccepted']
-              }
-              commit('setInvitedOrganisationUsers', updateInvitedObj)
-            })
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+                const updateInvitedObj = {
+                  organisationId: users['organisation_id'],
+                  users: users['unaccepted']
+                }
+                commit('setInvitedOrganisationUsers', updateInvitedObj)
+
+                resolve(response)
+              })
+            }
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     },
     loadOrganisationUsers ({commit}, payload) {
       commit('setLoading', true)

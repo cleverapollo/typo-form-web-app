@@ -1,4 +1,7 @@
+import * as _ from 'lodash'
+
 const API_URL = process.env.API_URL
+const APPLICATION_URL = `${API_URL}application/`
 const FORM_TEMPLATE_URL = `${API_URL}form-templates/`
 const SECTION_URL = '/section'
 const MOVE_URL = '/move'
@@ -238,6 +241,29 @@ export default {
               sections: response['data']['sections']
             }
             commit('setLoadedSections', updateObj)
+          }
+        )
+        .catch(
+          error => {
+            commit('setLoading', false)
+            console.log(error)
+          }
+        )
+    },
+    loadAllSections ({commit}, slug) {
+      commit('setLoading', true)
+      window.axios.get(APPLICATION_URL + slug + SECTION_URL)
+        .then(
+          response => {
+            commit('setLoading', false)
+            const formTemplates = response['data']['form_templates']
+            _.forEach(formTemplates, formTemplate => {
+              const updateObj = {
+                formTemplateId: formTemplate.id,
+                sections: formTemplate.sections
+              }
+              commit('setLoadedSections', updateObj)
+            })
           }
         )
         .catch(

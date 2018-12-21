@@ -57,29 +57,34 @@ export default {
   actions: {
     loadUsers ({commit}, slug) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + slug + USER_URL)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateLoadedObj = {
-              slug: slug,
-              users: response['data']['users']['current']
-            }
-            commit('setLoadedUsers', updateLoadedObj)
+      return new Promise((resolve, reject) => {
+        window.axios.get(APPLICATION_URL + slug + USER_URL)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const updateLoadedObj = {
+                slug: slug,
+                users: response['data']['users']['current']
+              }
+              commit('setLoadedUsers', updateLoadedObj)
 
-            const updateInvitedObj = {
-              slug: slug,
-              users: response['data']['users']['unaccepted']
+              const updateInvitedObj = {
+                slug: slug,
+                users: response['data']['users']['unaccepted']
+              }
+              commit('setInvitedUsers', updateInvitedObj)
+
+              resolve(response)
             }
-            commit('setInvitedUsers', updateInvitedObj)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     },
     updateUser ({commit}, payload) {
       commit('setLoading', true)

@@ -346,12 +346,7 @@
       this.$store.dispatch('loadUsers', this.slug)
       this.$store.dispatch('loadOrganisations', this.slug)
       this.$store.dispatch('loadFormTemplates', this.slug)
-        .then((response) => {
-          const formTemplates = response.data.formTemplates
-          _.forEach(formTemplates, (formTemplate) => {
-            this.$store.dispatch('loadSections', formTemplate.id)
-          })
-        })
+      this.$store.dispatch('loadAllSections', this.slug)
       this.$store.dispatch('loadAllForms', this.slug)
     },
     filters: {
