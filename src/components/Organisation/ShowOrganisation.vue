@@ -41,7 +41,7 @@
             <v-tabs dark slider-color="white" color="info">
               <v-tab href="#active">Active Users</v-tab>
               <v-tab href="#invited">Invited Users</v-tab>
-              <v-tab-item id="active">
+              <v-tab-item value="active">
 
                 <!-- //User Search -->
                 <v-card-title>
@@ -81,7 +81,7 @@
                   </v-alert>
                 </v-data-table>
               </v-tab-item>
-              <v-tab-item id="invited">
+              <v-tab-item value="invited">
 
                 <!-- //Invited User Search -->
                 <v-card-title>

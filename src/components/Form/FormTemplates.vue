@@ -12,30 +12,39 @@
         </v-flex>
 
         <!-- //Form template List -->
-        <v-flex d-flex xs12 v-if="formTemplates.length">
+        <v-flex d-flex xs12>
           <v-card>
-            <v-list one-line>
-              <template v-for="(item, index) in formTemplates">
-                <v-list-tile :to="onLoadFormTemplate(item.id)" :key="item.id" avatar>
-                  <v-list-tile-avatar color="primary">
-                    <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    <v-list-tile-title class="black--text">{{ item.name }}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-                <v-divider v-if="index < formTemplates.length -1"></v-divider>
+
+            <v-card-title>
+              <v-text-field
+                v-model="search"
+                append-icon="search"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+            <v-data-table
+              :headers="headers"
+              :items="formTemplates"
+              :search="search"
+              hide-actions
+            >
+              <template slot="items" slot-scope="props">
+                <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.name }}</td>
+                <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.forms_length }}</td>
+                <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.created_at.date | moment }}</td>
+                <td>
+                  <v-btn icon class='mx-0' @click='showDeleteFormTemplate(props.item.id)'>
+                    <v-icon color='pink'>delete</v-icon>
+                  </v-btn>
+                </td>
               </template>
-
-            </v-list>
+              <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                Your search for "{{ search }}" found no results.
+              </v-alert>
+            </v-data-table>
           </v-card>
-        </v-flex>
-
-        <!-- //No Form Templates -->
-        <v-flex xs12 pa-2 v-else>
-          <v-alert value="true" type="info">
-            It looks like you don't have access to any form template yet.
-          </v-alert>
         </v-flex>
 
       </v-layout>
@@ -49,18 +58,32 @@
       <span>Create Form Template</span>
     </v-tooltip>
 
+    <!-- //Create Form Template -->
     <CreateFormTemplate :slug="slug" :visible="createFormTemplate" v-if="userIsApplicationAdmin" @close="createFormTemplate = false"></CreateFormTemplate>
+
+    <!-- //Delete Form Template -->
+    <DeleteConfirmDialog @delete-action="onDeleteFormTemplate" :visible="deleteFormTemplate" @close="deleteFormTemplate = false"></DeleteConfirmDialog>
   </v-layout>
 </template>
 
 <script>
   import * as _ from 'lodash'
+  import moment from 'moment'
   import CreateFormTemplate from './CreateFormTemplate'
   export default {
     data () {
       return {
         createFormTemplate: false,
-        slug: window.location.hostname.split('.')[0]
+        slug: window.location.hostname.split('.')[0],
+        search: '',
+        selectedId: 0,
+        headers: [
+          {text: 'Form Template', value: 'name'},
+          {text: 'Forms', value: 'forms_length'},
+          {text: 'Created', value: 'created_at.date'},
+          {text: 'Actions', value: 'Actions'}
+        ],
+        deleteFormTemplate: false
       }
     },
     components: {
@@ -98,9 +121,6 @@
       }
     },
     methods: {
-      getFirstLetter (word) {
-        return word.length > 0 ? word.trim().substring(0, 1).toUpperCase() : ''
-      },
       getRole (roleId) {
         const role = this.roles.find((role) => {
           return role.id === roleId
@@ -108,11 +128,26 @@
         return role ? role.name : 'undefined'
       },
       onLoadFormTemplate (id) {
-        return '/form-templates/' + id
+        this.$router.push('/form-templates/' + id)
+      },
+      showDeleteFormTemplate (id) {
+        this.selectedId = id
+        this.deleteFormTemplate = true
+      },
+      onDeleteFormTemplate () {
+        this.$store.dispatch('deleteFormTemplate', {
+          slug: this.slug,
+          id: this.selectedId
+        })
       }
     },
     created: function () {
       this.$store.dispatch('loadFormTemplates', this.slug)
+    },
+    filters: {
+      moment: function (date) {
+        return moment(date).format('YYYY-MM-DD h:MM A')
+      }
     }
   }
 </script>

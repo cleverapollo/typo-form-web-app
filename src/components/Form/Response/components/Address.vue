@@ -28,7 +28,8 @@
     data () {
       return {
         message: '',
-        url: `https://maps.googleapis.com/maps/api/geocode/json?address=address_string&key=${process.env.GOOGLE_API_KEY}`,
+        query_url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=address_string&key=${process.env.GOOGLE_API_KEY}&sessiontoken=1234567890`,
+        details_url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJVS8PwyuAkGsR5LUlBeZ4pXY&key=${process.env.GOOGLE_API_KEY}&sessiontoken=1234567890`,
         address: {},
         isLoading: false,
         search: null,
@@ -46,12 +47,7 @@
         _.forEach(this.responses, response => {
           this.$emit('delete-response', response.id)
         })
-        for (const property in value) {
-          const answer = this.answers.filter(answer => property === answer.answer)
-          if (answer.length) {
-            this.$emit('create-response', [answer[0].id, value[property]])
-          }
-        }
+        console.log(value)
       }
     },
     computed: {
@@ -68,35 +64,15 @@
         if (this.isLoading) return
 
         this.isLoading = true
-        let addressURL = this.url.replace('address_string', val)
+        let addressURL = this.query_url.replace('address_string', val)
         const instance = axios.create()
         instance.get(addressURL)
           .then(res => {
-            if (res.data.results.length) {
-              const addressComponents = res.data.results[0].address_components
-              this.address = {}
-              _.forEach(addressComponents, addressComponent => {
-                this.address[addressComponent.types[0]] = addressComponent.long_name
-              })
-              this.address['keyword'] = val
-              this.address['formatted_address'] = res.data.results[0].formatted_address
-            }
+            console.log(res.data)
           })
           .finally(() => (this.isLoading = false))
       }
     },
-    mounted () {
-      if (this.responses.length) {
-        this.model = {}
-        _.forEach(this.responses, response => {
-          const answer = this.answers.filter(answer => answer.id === response.answer_id)
-          if (answer.length) {
-            this.model[answer[0].answer] = response.response
-          }
-        })
-        this.model['keyword'] = this.model['formatted_address']
-        this.address = this.model
-      }
-    }
+    mounted () {}
   }
 </script>

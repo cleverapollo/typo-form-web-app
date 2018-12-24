@@ -14,31 +14,41 @@
         </v-flex>
 
 
-        <v-flex d-flex xs12 v-if="organisations.length">
+        <v-flex d-flex xs12>
           <v-card>
-            <v-list one-line>
 
-              <!-- //Organisation List -->
-              <template v-for="(item, index) in organisations">
-                <v-list-tile :to="onLoadOrganisation(item.id)" :key="item.id" avatar>
-                  <v-list-tile-avatar color="primary">
-                    <span class="white--text headline">{{ getFirstLetter(item.name) }}</span>
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    <v-list-tile-title class="black--text">{{ item.name }}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-                <v-divider v-if="index < organisations.length -1"></v-divider>
+            <v-card-title>
+              <v-text-field
+                v-model="search"
+                append-icon="search"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+            <v-data-table
+              :headers="headers"
+              :items="organisations"
+              :search="search"
+              hide-actions
+            >
+              <template slot="items" slot-scope="props">
+                <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.name }}</td>
+                <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.active_users_length }}</td>
+                <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.invited_users_length }}</td>
+                <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.forms_length }}</td>
+                <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.created_at.date | moment }}</td>
+                <td>
+                  <v-btn icon class='mx-0' @click='showDeleteOrganisation(props.item.id)'>
+                    <v-icon color='pink'>delete</v-icon>
+                  </v-btn>
+                </td>
               </template>
-            </v-list>
+              <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                Your search for "{{ search }}" found no results.
+              </v-alert>
+            </v-data-table>
           </v-card>
-        </v-flex>
-
-        <!-- //No Organisations -->
-        <v-flex xs12 pa-2 v-else>
-          <v-alert value="true" type="info">
-             It looks like you don't have access to any organisations yet.
-          </v-alert>
         </v-flex>
 
         <v-flex>
@@ -58,19 +68,34 @@
     <!-- //Create Organisation -->
     <CreateOrganisation :visible="createOrganisation" :slug="slug" @close="createOrganisation = false"></CreateOrganisation>
 
+    <!-- //Delete Organisation -->
+    <DeleteConfirmDialog @delete-action="onDeleteOrganisation" :visible="deleteOrganisation" @close="deleteOrganisation = false"></DeleteConfirmDialog>
+
   </v-layout>
 </template>
 
 
 <script>
   import * as _ from 'lodash'
+  import moment from 'moment'
   import CreateOrganisation from './CreateOrganisation'
   import CustomSlot from '../Layout/CustomSlot'
   export default {
     data () {
       return {
         createOrganisation: false,
-        slug: window.location.hostname.split('.')[0]
+        slug: window.location.hostname.split('.')[0],
+        search: '',
+        selectedId: 0,
+        headers: [
+          {text: 'Organisation', value: 'name'},
+          {text: 'Active Users', value: 'active_users_length'},
+          {text: 'Invited Users', value: 'invited_users_length'},
+          {text: 'Forms', value: 'forms_length'},
+          {text: 'Created', value: 'created_at.date'},
+          {text: 'Actions', value: 'Actions'}
+        ],
+        deleteOrganisation: false
       }
     },
     components: {
@@ -85,15 +110,27 @@
       }
     },
     methods: {
-      getFirstLetter (word) {
-        return word.length > 0 ? word.trim().substring(0, 1).toUpperCase() : ''
-      },
       onLoadOrganisation (id) {
-        return '/organisations/' + id
+        this.$router.push('/organisations/' + id)
+      },
+      showDeleteOrganisation (id) {
+        this.selectedId = id
+        this.deleteOrganisation = true
+      },
+      onDeleteOrganisation () {
+        this.$store.dispatch('deleteOrganisation', {
+          slug: this.slug,
+          id: this.selectedId
+        })
       }
     },
     created: function () {
       this.$store.dispatch('loadOrganisations', this.slug)
+    },
+    filters: {
+      moment: function (date) {
+        return moment(date).format('YYYY-MM-DD h:MM A')
+      }
     }
   }
 </script>
