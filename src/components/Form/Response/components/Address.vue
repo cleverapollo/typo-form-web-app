@@ -6,7 +6,6 @@
         :items="items"
         :loading="isLoading"
         :search-input.sync="search"
-        :filter="customFilter"
         color="white"
         item-text="formatted_address"
         item-value="keyword"
@@ -14,6 +13,7 @@
         placeholder="Start typing to Search"
         return-object
         @change="onSave"
+        v-on:placechanged="getAddressData"
       ></v-autocomplete>
     </v-flex>
   </v-layout>
@@ -29,17 +29,15 @@
       return {
         message: '',
         query_url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=address_string&key=${process.env.GOOGLE_API_KEY}&sessiontoken=1234567890`,
-        details_url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJVS8PwyuAkGsR5LUlBeZ4pXY&key=${process.env.GOOGLE_API_KEY}&sessiontoken=1234567890`,
+        details_url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=place_id&key=${process.env.GOOGLE_API_KEY}&sessiontoken=1234567890`,
         address: {},
         isLoading: false,
         search: null,
-        model: null
+        model: null,
+        items: []
       }
     },
     methods: {
-      customFilter (item, queryText, itemText) {
-        return item.keyword === queryText
-      },
       onSave (value) {
         if (!value) {
           return
@@ -48,14 +46,19 @@
           this.$emit('delete-response', response.id)
         })
         console.log(value)
-      }
-    },
-    computed: {
-      items () {
-        if (!this.address.formatted_address) return []
-        let items = []
-        items.push(this.address)
-        return items
+        const detailsURL = this.details_url.replace('address_string', value)
+        const instance = axios.create()
+        instance.get(detailsURL)
+          .then(res => {
+            console.log(res.data)
+          })
+          .finally(() => (this.isLoading = false))
+      },
+      getAddressData (value) {
+        if (!value) {
+          return
+        }
+        console.log(value)
       }
     },
     watch: {
@@ -64,11 +67,12 @@
         if (this.isLoading) return
 
         this.isLoading = true
-        let addressURL = this.query_url.replace('address_string', val)
+        const addressURL = this.query_url.replace('address_string', val)
         const instance = axios.create()
         instance.get(addressURL)
           .then(res => {
             console.log(res.data)
+            this.items = res.data.predictions
           })
           .finally(() => (this.isLoading = false))
       }

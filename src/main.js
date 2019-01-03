@@ -4,6 +4,7 @@ import Vue from 'vue'
 import VueAuthenticate from 'vue-authenticate'
 import VueAxios from 'vue-axios'
 import JsonExcel from 'vue-json-excel'
+import VDateRange from 'vuetify-daterange-picker'
 import axios from 'axios'
 import 'babel-polyfill'
 
@@ -21,6 +22,8 @@ import FileUpload from './components/Shared/FileUpload.vue'
 import ApplicationLoading from './components/Shared/ApplicationLoading.vue'
 
 import 'vuetify/dist/vuetify.min.css'
+import 'vuetify-daterange-picker/dist/vuetify-daterange-picker.css'
+
 window.axios = require('axios')
 const sanitizeHtml = require('sanitize-html')
 
@@ -78,6 +81,7 @@ Vue.use(VueAuthenticate, {
     }
   }
 })
+Vue.use(VDateRange)
 Vue.config.productionTip = false
 Vue.prototype.$sanitize = sanitizeHtml
 

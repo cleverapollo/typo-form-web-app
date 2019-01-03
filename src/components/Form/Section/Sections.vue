@@ -309,7 +309,7 @@
         return this.$store.getters.loadedSections(this.formTemplateId)
       },
       form () {
-        if (!this.formId) {
+        if (this.formId <= 0) {
           return null
         }
         return this.$store.getters.loadedForm(parseInt(this.formTemplateId), parseInt(this.formId))
@@ -337,7 +337,7 @@
         return !this.list.length
       },
       responses () {
-        if (!this.formId) {
+        if (this.formId <= 0) {
           return []
         }
         let responses = this.form.responses.filter((response) => {

@@ -108,7 +108,7 @@ import moment from 'moment'
 import ReportComponent from './ReportComponent'
 import QuestionCompareMixin from './QuestionCompareMixin.js'
 import UrlMixin from './UrlMixin.js'
-import Pie from './Chart/Pie.vue'
+import Pie from '../../Chart/Pie.vue'
 
 export default {
   name: 'ChartBuilder',

@@ -232,6 +232,21 @@
 
       </v-layout>
 
+      <v-layout row justify-space-between v-if="userIsApplicationAdmin">
+        <v-flex xs12>
+          <v-card>
+            <v-card-title>
+              <div class="title font-weight-regular">User and Form Status Chart</div>
+            </v-card-title>
+            <v-card-text>
+              <v-daterange :options="dateRangeOptions" @input="onDateRangeChange"></v-daterange>
+              <LineChart :chart-data="userChartData" :options="chartOptions" />
+              <LineChart :chart-data="formChartData" :options="chartOptions" />
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+
       <v-layout v-if="userIsApplicationAdmin" justify-space-between row>
        <!-- // Export Application Data -->
         <v-flex xs6>
@@ -278,7 +293,9 @@
   import countTo from 'vue-count-to'
   import moment from 'moment'
   import * as _ from 'lodash'
+  import { format, subDays } from 'date-fns'
   import CustomSlot from '../Layout/CustomSlot'
+  import LineChart from '../Chart/LineChart'
 
   export default {
     data () {
@@ -293,14 +310,171 @@
         countToDuration: 3000,
         joinUrlDialog: false,
         slug: window.location.hostname.split('.')[0],
-        loadingExport: false
+        loadingExport: false,
+        range: [
+          format(subDays(new Date(), 30), 'YYYY-MM-DD'),
+          format(subDays(new Date(), 1), 'YYYY-MM-DD')
+        ],
+        dateRangeOptions: {
+          startDate: format(subDays(new Date(), 30), 'YYYY-MM-DD'),
+          endDate: format(subDays(new Date(), 1), 'YYYY-MM-DD'),
+          format: 'MM/DD/YYYY',
+          presets: [
+            {
+              label: 'Last 7 Days',
+              range: [
+                format(subDays(new Date(), 7), 'YYYY-MM-DD'),
+                format(subDays(new Date(), 1), 'YYYY-MM-DD')
+              ]
+            },
+            {
+              label: 'Last 14 Days',
+              range: [
+                format(subDays(new Date(), 14), 'YYYY-MM-DD'),
+                format(subDays(new Date(), 1), 'YYYY-MM-DD')
+              ]
+            },
+            {
+              label: 'Last 30 Days',
+              range: [
+                format(subDays(new Date(), 30), 'YYYY-MM-DD'),
+                format(subDays(new Date(), 1), 'YYYY-MM-DD')
+              ]
+            }
+          ]
+        },
+        chartOptions: {
+          legend: {
+            display: false
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            xAxes: [{
+              type: 'time',
+              time: {
+                unit: 'day'
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                precision: 0
+              }
+            }]
+          }
+        }
       }
     },
     components: {
       countTo,
-      CustomSlot
+      CustomSlot,
+      LineChart
     },
     computed: {
+      userChartData () {
+        const labels = []
+        const userInvited = []
+        const userCreated = []
+        let date = moment(this.range[0])
+        while (date <= moment(this.range[1])) {
+          labels.push(date.format('YYYY-MM-DD'))
+          userInvited.push(0)
+          userCreated.push(0)
+          date = date.add(1, 'days')
+        }
+
+        const newUsers = this.$store.getters.loadedUsers(this.slug).filter((user) => {
+          return moment(user.created_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+        })
+        _.forEach(newUsers, user => {
+          const diff = moment(user.created_at.date).diff(moment(this.range[0]), 'days')
+          userCreated[diff] ++
+        })
+
+        const invitedUsers = this.$store.getters.invitedUsers(this.slug).filter((user) => {
+          return moment(user.created_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+        })
+        _.forEach(invitedUsers, user => {
+          const diff = moment(user.created_at.date).diff(moment(this.range[0]), 'days')
+          userInvited[diff] ++
+        })
+
+        return {
+          labels: labels,
+          datasets: [
+            {
+              borderColor: '#ff6384',
+              data: userInvited,
+              fill: false
+            },
+            {
+              borderColor: '#36a2eb',
+              data: userCreated,
+              fill: false
+            }
+          ]
+        }
+      },
+
+      formChartData () {
+        const labels = []
+        const formCreated = []
+        const formModified = []
+        const formSubmitted = []
+        let date = moment(this.range[0])
+        while (date <= moment(this.range[1])) {
+          labels.push(date.format('YYYY-MM-DD'))
+          formCreated.push(0)
+          formModified.push(0)
+          formSubmitted.push(0)
+          date = date.add(1, 'days')
+        }
+
+        let forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
+          return moment(form.created_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+        })
+        _.forEach(forms, form => {
+          const diff = moment(form.created_at.date).diff(moment(this.range[0]), 'days')
+          formCreated[diff] ++
+        })
+
+        forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
+          return moment(form.updated_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+        })
+        _.forEach(forms, form => {
+          const diff = moment(form.updated_at.date).diff(moment(this.range[0]), 'days')
+          formModified[diff] ++
+        })
+
+        forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
+          return form.submitted_date && moment(form.submitted_date).isSameOrAfter(moment(this.range[0]), 'days')
+        })
+        _.forEach(forms, form => {
+          const diff = moment(form.submitted_date).diff(moment(this.range[0]), 'days')
+          formSubmitted[diff] ++
+        })
+
+        return {
+          labels: labels,
+          datasets: [
+            {
+              borderColor: '#ff6384',
+              data: formCreated,
+              fill: false
+            },
+            {
+              borderColor: '#36a2eb',
+              data: formModified,
+              fill: false
+            },
+            {
+              borderColor: '#ffce56',
+              data: formSubmitted,
+              fill: false
+            }
+          ]
+        }
+      },
       roles () {
         return this.$store.getters.roles
       },
@@ -376,6 +550,9 @@
       }
     },
     methods: {
+      onDateRangeChange (range) {
+        this.range = range
+      },
       getApplicationDataExport () {
         this.loadingExport = true
         window.axios.get(process.env.API_URL + 'application/' + this.slug + '/export')
