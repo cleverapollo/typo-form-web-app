@@ -107,6 +107,33 @@ export default {
           )
       })
     },
+    duplicateFormTemplate ({commit, getters}, payload) {
+      commit('setLoading', true)
+      const formTemplate = {
+        name: payload.name
+      }
+      return new Promise((resolve, reject) => {
+        window.axios.post(APPLICATION_URL + payload.slug + FORM_TEMPLATE_URL + '/' + payload.id + '/duplicate', formTemplate)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const createObj = {
+                slug: payload.slug,
+                formTemplate: response['data']['form_template']
+              }
+              commit('createFormTemplate', createObj)
+              resolve(response)
+            }
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
+    },
     updateFormTemplate ({commit}, payload) {
       commit('setLoading', true)
       let formData = new FormData()

@@ -35,6 +35,9 @@
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.forms_length }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.created_at.date | moment }}</td>
                 <td>
+                  <v-btn icon class='mx-0' @click='showDuplicateFormTemplate(props.item)'>
+                    <v-icon color='teal'>content_copy</v-icon>
+                  </v-btn>
                   <v-btn icon class='mx-0' @click='showDeleteFormTemplate(props.item.id)'>
                     <v-icon color='pink'>delete</v-icon>
                   </v-btn>
@@ -63,6 +66,9 @@
 
     <!-- //Delete Form Template -->
     <DeleteConfirmDialog @delete-action="onDeleteFormTemplate" :visible="deleteFormTemplate" @close="deleteFormTemplate = false"></DeleteConfirmDialog>
+
+    <!-- //Delete Form Template -->
+    <DuplicateConfirmDialog @action="onDuplicateFormTemplate" :visible="duplicateFormTemplate" @close="duplicateFormTemplate = false" :defaultName="defaultName"></DuplicateConfirmDialog>
   </v-layout>
 </template>
 
@@ -73,7 +79,6 @@
   export default {
     data () {
       return {
-        createFormTemplate: false,
         slug: window.location.hostname.split('.')[0],
         search: '',
         selectedId: 0,
@@ -83,7 +88,10 @@
           {text: 'Created', value: 'created_at.date'},
           {text: 'Actions', value: 'Actions'}
         ],
-        deleteFormTemplate: false
+        defaultName: '',
+        createFormTemplate: false,
+        deleteFormTemplate: false,
+        duplicateFormTemplate: false
       }
     },
     components: {
@@ -130,6 +138,12 @@
       onLoadFormTemplate (id) {
         this.$router.push('/form-templates/' + id)
       },
+      showDuplicateFormTemplate (item) {
+        this.selectedId = item.id
+        this.defaultName = item.name
+        this.duplicateFormTemplate = true
+        console.log(item.name)
+      },
       showDeleteFormTemplate (id) {
         this.selectedId = id
         this.deleteFormTemplate = true
@@ -139,6 +153,19 @@
           slug: this.slug,
           id: this.selectedId
         })
+      },
+      onDuplicateFormTemplate (name) {
+        this.$store.dispatch('duplicateFormTemplate', {
+          slug: this.slug,
+          id: this.selectedId,
+          name: name
+        })
+          .then(response => {
+            // Redirect to the formTemplate Templates
+            if (response.data.form_template.id) {
+              this.$router.push('/form-templates/' + response.data.form_template.id)
+            }
+          })
       }
     },
     created: function () {

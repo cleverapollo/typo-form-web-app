@@ -16,6 +16,7 @@ import { store } from './store'
 import AlertCmp from './components/Shared/Alert'
 import Snackbar from './components/Shared/Snackbar'
 import Terms from './components/Shared/Terms'
+import DuplicateConfirmDialog from './components/Shared/DuplicateConfirmDialog'
 import DeleteConfirmDialog from './components/Shared/DeleteConfirmDialog'
 import ParentSectionDialog from './components/Shared/ParentSectionDialog'
 import FileUpload from './components/Shared/FileUpload.vue'
@@ -89,6 +90,7 @@ Vue.component('app-alert', AlertCmp)
 Vue.component('Snackbar', Snackbar)
 Vue.component('Terms', Terms)
 Vue.component('DeleteConfirmDialog', DeleteConfirmDialog)
+Vue.component('DuplicateConfirmDialog', DuplicateConfirmDialog)
 Vue.component('ParentSectionDialog', ParentSectionDialog)
 Vue.component('FileUpload', FileUpload)
 Vue.component('ApplicationLoading', ApplicationLoading)
