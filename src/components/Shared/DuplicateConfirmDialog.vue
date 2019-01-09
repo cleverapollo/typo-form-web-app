@@ -43,8 +43,8 @@
       }
     },
     watch: {
-      defaultName (value) {
-        this.name = value
+      visible (value) {
+        this.name = this.defaultName
       }
     },
     computed: {

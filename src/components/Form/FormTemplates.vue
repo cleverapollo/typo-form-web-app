@@ -142,7 +142,6 @@
         this.selectedId = item.id
         this.defaultName = item.name
         this.duplicateFormTemplate = true
-        console.log(item.name)
       },
       showDeleteFormTemplate (id) {
         this.selectedId = id
