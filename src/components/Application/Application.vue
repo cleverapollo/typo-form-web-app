@@ -239,9 +239,9 @@
               <div class="title font-weight-regular">User and Form Status Chart</div>
             </v-card-title>
             <v-card-text>
-              <v-daterange :options="dateRangeOptions" @input="onDateRangeChange"></v-daterange>
-              <LineChart :chart-data="userChartData" :options="chartOptions" />
-              <LineChart :chart-data="formChartData" :options="chartOptions" />
+              <VDateRange :options="dateRangeOptions" @input="onDateRangeChange"></VDateRange>
+              <LineChart :chart-data="userChartData" :options="chartOptions('User Status Chart')" />
+              <LineChart :chart-data="formChartData" :options="chartOptions('Form Status Chart')" />
             </v-card-text>
           </v-card>
         </v-flex>
@@ -318,7 +318,7 @@
         dateRangeOptions: {
           startDate: format(subDays(new Date(), 30), 'YYYY-MM-DD'),
           endDate: format(subDays(new Date(), 1), 'YYYY-MM-DD'),
-          format: 'MM/DD/YYYY',
+          format: 'YYYY-MM-DD',
           presets: [
             {
               label: 'Last 7 Days',
@@ -342,26 +342,6 @@
               ]
             }
           ]
-        },
-        chartOptions: {
-          legend: {
-            display: false
-          },
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            xAxes: [{
-              type: 'time',
-              time: {
-                unit: 'day'
-              }
-            }],
-            yAxes: [{
-              ticks: {
-                precision: 0
-              }
-            }]
-          }
         }
       }
     },
@@ -403,14 +383,16 @@
           labels: labels,
           datasets: [
             {
+              label: 'Invited Users',
+              backgroundColor: 'rgba(255, 99, 132, 0.5)',
               borderColor: '#ff6384',
-              data: userInvited,
-              fill: false
+              data: userInvited
             },
             {
+              label: 'Created Users',
+              backgroundColor: 'rgba(54, 162, 235, 0.5)',
               borderColor: '#36a2eb',
-              data: userCreated,
-              fill: false
+              data: userCreated
             }
           ]
         }
@@ -458,19 +440,22 @@
           labels: labels,
           datasets: [
             {
+              label: 'Created Forms',
+              backgroundColor: 'rgba(255, 99, 132, 0.5)',
               borderColor: '#ff6384',
-              data: formCreated,
-              fill: false
+              data: formCreated
             },
             {
+              label: 'Modified Forms',
+              backgroundColor: 'rgba(54, 162, 235, 0.5)',
               borderColor: '#36a2eb',
-              data: formModified,
-              fill: false
+              data: formModified
             },
             {
+              label: 'Submitted Forms',
+              backgroundColor: 'rgba(255, 206, 86, 0.5)',
               borderColor: '#ffce56',
-              data: formSubmitted,
-              fill: false
+              data: formSubmitted
             }
           ]
         }
@@ -550,6 +535,38 @@
       }
     },
     methods: {
+      chartOptions (title) {
+        return {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            xAxes: [{
+              type: 'time',
+              time: {
+                unit: 'day'
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Date'
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                precision: 0
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Value'
+              }
+            }]
+          },
+          title: {
+            display: true,
+            text: title,
+            fontSize: 16
+          }
+        }
+      },
       onDateRangeChange (range) {
         this.range = range
       },
