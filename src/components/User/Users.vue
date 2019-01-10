@@ -4,13 +4,19 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Users</h1>
+          <v-spacer></v-spacer>
+          <div class="text-xs-right" v-if="userIsApplicationAdmin">
+            <v-btn icon @click="showCustomSlot = !showCustomSlot">
+              <v-icon>edit</v-icon>
+            </v-btn>
+          </div>
         </v-flex>
         <v-flex d-flex xs12>
           <p>Select an existing user below or <a href="#" @click.stop="inviteApplication = true">add new users</a>.</p>
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="usersHeader" />
+          <CustomSlot type="usersHeader" :mode="showCustomSlot" />
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -101,7 +107,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="usersFooter" />
+          <CustomSlot type="usersFooter" :mode="showCustomSlot" />
         </v-flex>
       </v-layout>
     </v-flex>
@@ -125,13 +131,15 @@
   import EditInvitedUser from './EditInvitedUser'
   import moment from 'moment'
   import CustomSlot from '../Layout/CustomSlot'
+  import UserMixin from '../Layout/UserMixin'
   export default {
     data () {
       return {
         inviteApplication: false,
         userSearch: '',
         invitedUserSearch: '',
-        slug: window.location.hostname.split('.')[0]
+        slug: window.location.hostname.split('.')[0],
+        showCustomSlot: false
       }
     },
     components: {
@@ -140,30 +148,10 @@
       EditInvitedUser,
       CustomSlot
     },
+    mixins: [UserMixin],
     computed: {
-      roles () {
-        return this.$store.getters.roles
-      },
       application () {
         return this.$store.getters.loadedApplication(this.slug)
-      },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsApplicationAdmin () {
-        return this.userIsAdmin || this.isSuperUser
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.application_role_id) === 'Admin'
-      },
-      isSuperUser () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       users () {
         let users = this.$store.getters.loadedUsers(this.slug)
@@ -209,12 +197,6 @@
       }
     },
     methods: {
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
-      },
       onDeleteUser (userIndex) {
         this.$store.dispatch('deleteUser', {
           slug: this.slug,

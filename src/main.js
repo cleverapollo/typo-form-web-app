@@ -5,6 +5,7 @@ import VueAuthenticate from 'vue-authenticate'
 import VueAxios from 'vue-axios'
 import JsonExcel from 'vue-json-excel'
 import VDateRange from 'vuetify-daterange-picker'
+import VueQuillEditor from 'vue-quill-editor'
 import axios from 'axios'
 import 'babel-polyfill'
 
@@ -23,6 +24,10 @@ import ApplicationLoading from './components/Shared/ApplicationLoading.vue'
 
 import 'vuetify/dist/vuetify.min.css'
 import 'vuetify-daterange-picker/dist/vuetify-daterange-picker.css'
+
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 window.axios = require('axios')
 const sanitizeHtml = require('sanitize-html')
@@ -82,6 +87,7 @@ Vue.use(VueAuthenticate, {
   }
 })
 Vue.use(VDateRange)
+Vue.use(VueQuillEditor)
 Vue.config.productionTip = false
 Vue.prototype.$sanitize = sanitizeHtml
 

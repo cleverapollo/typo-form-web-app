@@ -4,13 +4,19 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Organisations</h1>
+          <v-spacer></v-spacer>
+          <div class="text-xs-right" v-if="userIsApplicationAdmin">
+            <v-btn icon @click="showCustomSlot = !showCustomSlot">
+              <v-icon>edit</v-icon>
+            </v-btn>
+          </div>
         </v-flex>
         <v-flex d-flex xs12>
           <p>Select an existing organisation below or <a href="#" @click.stop="createOrganisation = true">create a new organisation</a>.</p>
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="organisationsHeader" />
+          <CustomSlot type="organisationsHeader" :mode="showCustomSlot" />
         </v-flex>
 
 
@@ -52,7 +58,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="organisationsFooter" />
+          <CustomSlot type="organisationsFooter" :mode="showCustomSlot" />
         </v-flex>
 
       </v-layout>
@@ -80,6 +86,7 @@
   import moment from 'moment'
   import CreateOrganisation from './CreateOrganisation'
   import CustomSlot from '../Layout/CustomSlot'
+  import UserMixin from '../Layout/UserMixin'
   export default {
     data () {
       return {
@@ -95,9 +102,11 @@
           {text: 'Created', value: 'created_at.date'},
           {text: 'Actions', value: 'Actions'}
         ],
-        deleteOrganisation: false
+        deleteOrganisation: false,
+        showCustomSlot: false
       }
     },
+    mixins: [UserMixin],
     components: {
       CreateOrganisation,
       CustomSlot
