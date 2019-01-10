@@ -4,10 +4,16 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">{{ form.form_template.name }}</h1>
+          <v-spacer></v-spacer>
+          <div class="text-xs-right" v-if="userIsApplicationAdmin">
+            <v-btn icon @click="showCustomSlot = !showCustomSlot">
+              <v-icon>edit</v-icon>
+            </v-btn>
+          </div>
         </v-flex>
 
         <v-flex>
-          <CustomSlot :type="'formHeader' + formId" />
+          <CustomSlot :type="'formHeader' + formId" :mode="showCustomSlot" />
         </v-flex>
 
         <v-flex xs12 class="mb-3">
@@ -154,7 +160,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot :type="'formFooter' + formId" />
+          <CustomSlot :type="'formFooter' + formId" :mode="showCustomSlot" />
         </v-flex>
 
       </v-layout>
@@ -189,11 +195,12 @@
   import DuplicateForm from './DuplicateForm'
   import TriggerMixin from '../TriggerMixin.js'
   import CustomSlot from '../../Layout/CustomSlot'
+  import UserMixin from '../../Layout/UserMixin'
 
   export default {
     name: 'ShowForm',
     props: ['id'],
-    mixins: [TriggerMixin],
+    mixins: [TriggerMixin, UserMixin],
     data () {
       return {
         deleteForm: false,
@@ -202,7 +209,8 @@
         submitted: false,
         helpModal: false,
         duplicated: false,
-        duplicatedContent: ''
+        duplicatedContent: '',
+        showCustomSlot: false
       }
     },
     components: {
@@ -217,24 +225,6 @@
     computed: {
       application () {
         return this.$store.getters.loadedApplication(this.slug)
-      },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsApplicationAdmin () {
-        return this.userIsAdmin || this.isSuperUser
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.application_role_id) === 'Admin'
-      },
-      isSuperUser () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       sections () {
         return this.$store.getters.loadedSections(this.formTemplateId)
@@ -256,9 +246,6 @@
       },
       statuses () {
         return this.$store.getters.statuses
-      },
-      roles () {
-        return this.$store.getters.roles
       },
       periodStart () {
         return this.form.period_start ? this.form.period_start.substring(0, 10) : ''
@@ -320,12 +307,6 @@
       }
     },
     methods: {
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
-      },
       duplicateForm: function () {
         this.$store.dispatch('duplicateForm', {
           formTemplateId: this.formTemplateId,

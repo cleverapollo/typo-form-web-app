@@ -7,12 +7,17 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Dashboard</h1>
           <v-spacer></v-spacer>
+          <div class="text-xs-right" v-if="userIsApplicationAdmin">
+            <v-btn icon @click="showCustomSlot = !showCustomSlot">
+              <v-icon>edit</v-icon>
+            </v-btn>
+          </div>
         </v-flex>
       </v-layout>
     </v-flex>
 
     <v-flex>
-      <CustomSlot type="dashboardHeader" />
+      <CustomSlot type="dashboardHeader" :mode="showCustomSlot" />
     </v-flex>
 
     <v-container fluid grid-list-lg>
@@ -280,7 +285,7 @@
     </v-container>
 
     <v-flex>
-      <CustomSlot type="dashboardFooter" />
+      <CustomSlot type="dashboardFooter" :mode="showCustomSlot" />
     </v-flex>
 
   </v-layout>
@@ -294,6 +299,7 @@
   import { format, subDays } from 'date-fns'
   import CustomSlot from '../Layout/CustomSlot'
   import LineChart from '../Chart/LineChart'
+  import UserMixin from '../Layout/UserMixin'
 
   export default {
     data () {
@@ -342,9 +348,31 @@
               ]
             }
           ]
-        }
+        },
+        chartOptions: {
+          legend: {
+            display: false
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            xAxes: [{
+              type: 'time',
+              time: {
+                unit: 'day'
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                precision: 0
+              }
+            }]
+          }
+        },
+        showCustomSlot: false
       }
     },
+    mixins: [UserMixin],
     components: {
       countTo,
       CustomSlot,
@@ -470,29 +498,8 @@
           ]
         }
       },
-      roles () {
-        return this.$store.getters.roles
-      },
       application () {
         return this.$store.getters.loadedApplication(this.slug)
-      },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsApplicationAdmin () {
-        return this.userIsAdmin || this.isSuperUser
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.application_role_id) === 'Admin'
-      },
-      isSuperUser () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       loading () {
         return this.$store.getters.loading
@@ -611,12 +618,6 @@
       },
       getUserApplicationRole () {
         return this.isSuperUser ? 'Super Admin' : this.getRole(this.application.application_role_id)
-      },
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
       },
       onList (type) {
         this.$router.push('/' + type)

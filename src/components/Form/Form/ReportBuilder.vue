@@ -4,8 +4,11 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Report Builder</h1>
-
+          <v-spacer></v-spacer>
           <div class="text-xs-right">
+            <v-btn icon @click="showCustomSlot = !showCustomSlot" v-if="userIsApplicationAdmin">
+              <v-icon>edit</v-icon>
+            </v-btn>
             <v-btn
               icon
               @click="openDialog"
@@ -45,7 +48,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="reportHeader" />
+          <CustomSlot type="reportHeader" :mode="showCustomSlot" />
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -141,7 +144,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="reportFooter" />
+          <CustomSlot type="reportFooter" :mode="showCustomSlot" />
         </v-flex>
       </v-layout>
     </v-flex>
@@ -157,6 +160,7 @@ import QuestionCompareMixin from './QuestionCompareMixin.js'
 import UrlMixin from './UrlMixin.js'
 import JSPDF from 'jspdf'
 import CustomSlot from '../../Layout/CustomSlot'
+import UserMixin from '../../Layout/UserMixin'
 
 export default {
   name: 'ReportBuilder',
@@ -171,10 +175,11 @@ export default {
       joinUrlDialog: false,
       pagination: {
         rowsPerPage: -1
-      }
+      },
+      showCustomSlot: false
     }
   },
-  mixins: [QuestionCompareMixin, UrlMixin],
+  mixins: [QuestionCompareMixin, UrlMixin, UserMixin],
   components: {
     ReportComponent,
     CustomSlot
