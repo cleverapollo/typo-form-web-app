@@ -4,7 +4,6 @@ import Vue from 'vue'
 import VueAuthenticate from 'vue-authenticate'
 import VueAxios from 'vue-axios'
 import JsonExcel from 'vue-json-excel'
-import VDateRange from 'vuetify-daterange-picker'
 import axios from 'axios'
 import 'babel-polyfill'
 
@@ -21,9 +20,9 @@ import DeleteConfirmDialog from './components/Shared/DeleteConfirmDialog'
 import ParentSectionDialog from './components/Shared/ParentSectionDialog'
 import FileUpload from './components/Shared/FileUpload.vue'
 import ApplicationLoading from './components/Shared/ApplicationLoading.vue'
+import DateRange from './components/Shared/DateRange.vue'
 
 import 'vuetify/dist/vuetify.min.css'
-import 'vuetify-daterange-picker/dist/vuetify-daterange-picker.css'
 
 window.axios = require('axios')
 const sanitizeHtml = require('sanitize-html')
@@ -82,7 +81,6 @@ Vue.use(VueAuthenticate, {
     }
   }
 })
-Vue.use(VDateRange)
 Vue.config.productionTip = false
 Vue.prototype.$sanitize = sanitizeHtml
 
@@ -95,6 +93,7 @@ Vue.component('ParentSectionDialog', ParentSectionDialog)
 Vue.component('FileUpload', FileUpload)
 Vue.component('ApplicationLoading', ApplicationLoading)
 Vue.component('downloadExcel', JsonExcel)
+Vue.component('VDateRange', DateRange)
 
 /* eslint-disable no-new */
 function createApp () {

@@ -43,7 +43,7 @@
                 :key="item.title"
               >
                 <v-list-tile-action>
-                  <v-icon>{{ item.icon }}</v-icon>
+                  <v-icon :color="item.color" size="30">{{ item.icon }}</v-icon>
                 </v-list-tile-action>
                 <v-list-tile-content>
                   <v-list-tile-title>
@@ -65,7 +65,7 @@
               v-if="item.application || !item.application && !application"
             >
               <v-list-tile-action>
-                <v-icon>{{ item.icon }}</v-icon>
+                <v-icon size="30">{{ item.icon }}</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -208,11 +208,11 @@
       },
       applicationItems () {
         return [
-            { title: 'Dashboard', path: 'dashboard', icon: 'dashboard', admin: false },
-            { title: 'Users', path: 'users', icon: 'person', admin: true },
-            { title: 'Organisations', path: 'organisations', icon: 'people', admin: false },
-            { title: 'Form Templates', path: 'form-templates', icon: 'content_paste', admin: true },
-            { title: 'Forms', path: 'forms', icon: 'assignment', admin: false },
+            { title: 'Dashboard', path: 'dashboard', icon: 'dashboard', admin: false, color: 'primary' },
+            { title: 'Forms', path: 'forms', icon: 'assignment', admin: false, color: 'blue' },
+            { title: 'Form Templates', path: 'form-templates', icon: 'content_paste', admin: true, color: 'red' },
+            { title: 'Users', path: 'users', icon: 'person', admin: true, color: 'green' },
+            { title: 'Organisations', path: 'organisations', icon: 'people', admin: false, color: 'orange' },
             { title: 'Settings', path: 'settings', icon: 'settings', admin: true }
         ]
       },

@@ -7,38 +7,6 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Dashboard</h1>
           <v-spacer></v-spacer>
-
-          <!--
-          <div class="text-xs-right">
-            <v-dialog v-model="joinUrlDialog" persistent max-width="600">
-              <v-btn slot="activator" icon v-if="userIsApplicationAdmin">
-                <v-icon>share</v-icon>
-              </v-btn>
-              <v-card>
-                <v-card-title>
-                  <div class="title mb-2 mt-2">Share Application</div>
-                </v-card-title>
-
-                <v-card-text>
-                  <v-layout row wrap>
-                    <v-flex xs12 pb-3>Invite other users to this application by sharing the following link.</v-flex>
-                    <v-flex xs12 class="wrap-text">{{ joinURL }}</v-flex>
-                  </v-layout>
-                </v-card-text>
-
-                <v-divider></v-divider>
-                <v-card-actions>
-                  <v-layout row py-2>
-                    <v-flex xs12 class="text-xs-right">
-                      <v-btn color="primary" @click="joinUrlDialog = false" >Close</v-btn>
-                    </v-flex>
-                  </v-layout>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </div>
-          -->
-
         </v-flex>
       </v-layout>
     </v-flex>
@@ -53,21 +21,21 @@
       <v-layout row justify-space-around>
         <v-flex xs12>
           <v-card>
-            <v-card-text>
-              <div class="title font-weight-regular">{{ getGreeting(this.user.first_name )}}</div>
+            <v-card-text class="primary">
+              <div class="title font-weight-regular white--text">{{ getGreeting(this.user.first_name )}}</div>
             </v-card-text>
             <v-divider></v-divider>
             <v-card-text>
               <v-layout row wrap>
-                <v-flex xs4>
+                <v-flex xs12 md4>
                   <span class="body-2">Role: </span>
                   <span>{{ getUserApplicationRole() }}</span>
                 </v-flex>
-                <v-flex xs4 text-xs-center>
+                <v-flex xs12 md4 text-md-center>
                   <span class="body-2">Email: </span>
                   <span>{{ this.user.email }}</span>
                 </v-flex>
-                <v-flex xs4 text-xs-right>
+                <v-flex xs12 md4 text-md-right>
                   <span class="body-2">Joined: </span>
                   <span>{{ getUserApplicationJoined(this.user.id) }}</span>
                 </v-flex>
@@ -78,22 +46,22 @@
       </v-layout>
 
       <!-- Summary Widgets -->
-      <v-layout row justify-space-between>
+      <v-layout row wrap justify-space-between>
         <v-flex
           pointer
           @click="onList(item.type)"
           v-for="item in items"
           v-if="!item.admin || userIsApplicationAdmin"
           :key="item.title"
-          xs12>
-          <v-card>
+          xs12 md6 lg3>
+          <v-card :color="item.color">
             <v-container fluid grid-list-lg>
               <v-layout row>
-                <v-flex xs3>
-                  <v-icon size="65" :color="item.color">{{ item.icon }}</v-icon>
+                <v-flex>
+                  <v-icon size="65" >{{ item.icon }}</v-icon>
                 </v-flex>
-                <v-flex xs9 text-xs-right>
-                  <div class="display-2">
+                <v-flex text-xs-right class="white--text">
+                  <div class="display-2" color="white">
                     <countTo :startVal="countToStart" :endVal="getPropertyCount(item.type)" :duration="countToDuration"></countTo>
                   </div>
                   <div class="body-1">{{ item.title }}</div>
@@ -105,17 +73,17 @@
       </v-layout>
 
       <!-- // New Users Widget -->
-      <v-layout row justify-space-between v-if="userIsApplicationAdmin">
+      <v-layout row wrap justify-space-between v-if="userIsApplicationAdmin">
 
         <!-- // New Users -->
-        <v-flex xs4>
+        <v-flex xs12 lg4>
           <v-card
             to="/users"
             height="100%"
             class="widget-scroll"
             >
-            <v-card-title>
-              <div class="title font-weight-regular">New Users</div>
+            <v-card-title class="green">
+              <div class="title font-weight-regular white--text">New Users</div>
             </v-card-title>
             <v-list two-line v-if="getNewUsers.length">
               <template v-for="(item, index) in getNewUsers">
@@ -149,14 +117,14 @@
         </v-flex>
 
         <!-- // Invited Users -->
-        <v-flex xs4>
+        <v-flex xs12 lg4>
           <v-card
             to="/users"
             height="100%"
             class="widget-scroll"
             >
-            <v-card-title>
-              <div class="title font-weight-regular">Invited Users</div>
+            <v-card-title class="green">
+              <div class="title font-weight-regular white--text">Invited Users</div>
             </v-card-title>
             <v-list two-line v-if="getInvitedUsers.length">
               <template v-for="(item, index) in getInvitedUsers">
@@ -190,14 +158,14 @@
         </v-flex>
 
         <!-- // User Activity -->
-        <v-flex xs4>
+        <v-flex xs12 lg4>
           <v-card
             to="/users"
             height="100%"
             class="widget-scroll"
             >
-            <v-card-title>
-              <div class="title font-weight-regular">User Activity</div>
+            <v-card-title class="green">
+              <div class="title font-weight-regular white--text">User Activity</div>
             </v-card-title>
             <v-list two-line v-if="getActiveUsers.length">
               <template v-for="(item, index) in getActiveUsers">
@@ -232,24 +200,54 @@
 
       </v-layout>
 
-      <v-layout row justify-space-between v-if="userIsApplicationAdmin">
-        <v-flex xs12>
+      <!-- // Charts -->
+      <v-layout row wrap justify-space-between v-if="userIsApplicationAdmin">
+
+        <!-- // Forms -->
+        <v-flex xs12 lg6>
           <v-card>
-            <v-card-title>
-              <div class="title font-weight-regular">User and Form Status Chart</div>
+            <v-card-title class="red">
+              <div class="title font-weight-regular white--text">Forms Trendline</div>
             </v-card-title>
             <v-card-text>
-              <v-daterange :options="dateRangeOptions" @input="onDateRangeChange"></v-daterange>
-              <LineChart :chart-data="userChartData" :options="chartOptions" />
-              <LineChart :chart-data="formChartData" :options="chartOptions" />
+              <v-layout row>
+                <v-flex xs12>
+                  <LineChart :chart-data="formChartData" :options="chartOptions('Forms')" />
+                </v-flex>
+              </v-layout>
             </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <VDateRange :options="dateRangeOptions" :range="formRange" @input="onFormDateRangeChange"></VDateRange>
+            </v-card-actions>
           </v-card>
         </v-flex>
+
+        <!-- // Users -->
+        <v-flex xs12 lg6>
+          <v-card>
+            <v-card-title class="green">
+              <div class="title font-weight-regular white--text">Users Trendline</div>
+            </v-card-title>
+            <v-card-text>
+              <v-layout row>
+                <v-flex xs12>
+                  <LineChart :chart-data="userChartData" :options="chartOptions('Users')" />
+                </v-flex>
+              </v-layout>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <VDateRange :options="dateRangeOptions" :range="userRange" @input="onUserDateRangeChange"></VDateRange>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
+
       </v-layout>
 
-      <v-layout v-if="userIsApplicationAdmin" justify-space-between row>
+      <v-layout v-if="userIsApplicationAdmin" justify-space-between row wrap>
        <!-- // Export Application Data -->
-        <v-flex xs6>
+        <v-flex xs12 md6>
           <v-btn
             color="primary"
             outline
@@ -264,7 +262,7 @@
         </v-flex>
 
         <!-- // Report Builder -->
-        <v-flex xs6>
+        <v-flex xs12 md6>
           <v-btn
             color="primary"
             outline
@@ -302,23 +300,25 @@
       return {
         items: [
           { title: 'Forms', type: 'forms', icon: 'assignment', color: 'blue', admin: false },
-          { title: 'Form Templates', type: 'form-templates', icon: 'content_paste', color: 'orange', admin: true },
-          { title: 'Users', type: 'users', icon: 'person', color: 'red', admin: true },
-          { title: 'Organisations', type: 'organisations', icon: 'people', color: 'green', admin: false }
+          { title: 'Form Templates', type: 'form-templates', icon: 'content_paste', color: 'red', admin: true },
+          { title: 'Users', type: 'users', icon: 'person', color: 'green', admin: true },
+          { title: 'Organisations', type: 'organisations', icon: 'people', color: 'orange', admin: false }
         ],
         countToStart: 0,
         countToDuration: 3000,
         joinUrlDialog: false,
         slug: window.location.hostname.split('.')[0],
         loadingExport: false,
-        range: [
+        userRange: [
+          format(subDays(new Date(), 30), 'YYYY-MM-DD'),
+          format(subDays(new Date(), 1), 'YYYY-MM-DD')
+        ],
+        formRange: [
           format(subDays(new Date(), 30), 'YYYY-MM-DD'),
           format(subDays(new Date(), 1), 'YYYY-MM-DD')
         ],
         dateRangeOptions: {
-          startDate: format(subDays(new Date(), 30), 'YYYY-MM-DD'),
-          endDate: format(subDays(new Date(), 1), 'YYYY-MM-DD'),
-          format: 'MM/DD/YYYY',
+          format: 'YYYY-MM-DD',
           presets: [
             {
               label: 'Last 7 Days',
@@ -342,26 +342,6 @@
               ]
             }
           ]
-        },
-        chartOptions: {
-          legend: {
-            display: false
-          },
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            xAxes: [{
-              type: 'time',
-              time: {
-                unit: 'day'
-              }
-            }],
-            yAxes: [{
-              ticks: {
-                precision: 0
-              }
-            }]
-          }
         }
       }
     },
@@ -375,8 +355,8 @@
         const labels = []
         const userInvited = []
         const userCreated = []
-        let date = moment(this.range[0])
-        while (date <= moment(this.range[1])) {
+        let date = moment(this.userRange[0])
+        while (date <= moment(this.userRange[1])) {
           labels.push(date.format('YYYY-MM-DD'))
           userInvited.push(0)
           userCreated.push(0)
@@ -384,18 +364,18 @@
         }
 
         const newUsers = this.$store.getters.loadedUsers(this.slug).filter((user) => {
-          return moment(user.created_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+          return moment(user.created_at.date).isSameOrAfter(moment(this.userRange[0]), 'days')
         })
         _.forEach(newUsers, user => {
-          const diff = moment(user.created_at.date).diff(moment(this.range[0]), 'days')
+          const diff = moment(user.created_at.date).diff(moment(this.userRange[0]), 'days')
           userCreated[diff] ++
         })
 
         const invitedUsers = this.$store.getters.invitedUsers(this.slug).filter((user) => {
-          return moment(user.created_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+          return moment(user.created_at.date).isSameOrAfter(moment(this.userRange[0]), 'days')
         })
         _.forEach(invitedUsers, user => {
-          const diff = moment(user.created_at.date).diff(moment(this.range[0]), 'days')
+          const diff = moment(user.created_at.date).diff(moment(this.userRange[0]), 'days')
           userInvited[diff] ++
         })
 
@@ -403,14 +383,20 @@
           labels: labels,
           datasets: [
             {
+              label: 'Invited',
+              backgroundColor: 'rgba(255, 99, 132, 0.5)',
               borderColor: '#ff6384',
               data: userInvited,
-              fill: false
+              fill: false,
+              pointRadius: 0
             },
             {
+              label: 'Created',
+              backgroundColor: 'rgba(54, 162, 235, 0.5)',
               borderColor: '#36a2eb',
               data: userCreated,
-              fill: false
+              fill: false,
+              pointRadius: 0
             }
           ]
         }
@@ -421,8 +407,8 @@
         const formCreated = []
         const formModified = []
         const formSubmitted = []
-        let date = moment(this.range[0])
-        while (date <= moment(this.range[1])) {
+        let date = moment(this.formRange[0])
+        while (date <= moment(this.formRange[1])) {
           labels.push(date.format('YYYY-MM-DD'))
           formCreated.push(0)
           formModified.push(0)
@@ -431,26 +417,26 @@
         }
 
         let forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
-          return moment(form.created_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+          return moment(form.created_at.date).isSameOrAfter(moment(this.formRange[0]), 'days')
         })
         _.forEach(forms, form => {
-          const diff = moment(form.created_at.date).diff(moment(this.range[0]), 'days')
+          const diff = moment(form.created_at.date).diff(moment(this.formRange[0]), 'days')
           formCreated[diff] ++
         })
 
         forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
-          return moment(form.updated_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+          return moment(form.updated_at.date).isSameOrAfter(moment(this.formRange[0]), 'days')
         })
         _.forEach(forms, form => {
-          const diff = moment(form.updated_at.date).diff(moment(this.range[0]), 'days')
+          const diff = moment(form.updated_at.date).diff(moment(this.formRange[0]), 'days')
           formModified[diff] ++
         })
 
         forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
-          return form.submitted_date && moment(form.submitted_date).isSameOrAfter(moment(this.range[0]), 'days')
+          return form.submitted_date && moment(form.submitted_date).isSameOrAfter(moment(this.formRange[0]), 'days')
         })
         _.forEach(forms, form => {
-          const diff = moment(form.submitted_date).diff(moment(this.range[0]), 'days')
+          const diff = moment(form.submitted_date).diff(moment(this.formRange[0]), 'days')
           formSubmitted[diff] ++
         })
 
@@ -458,19 +444,28 @@
           labels: labels,
           datasets: [
             {
+              label: 'Created',
+              backgroundColor: 'rgba(255, 99, 132, 0.5)',
               borderColor: '#ff6384',
               data: formCreated,
-              fill: false
+              fill: false,
+              pointRadius: 0
             },
             {
+              label: 'Modified',
+              backgroundColor: 'rgba(54, 162, 235, 0.5)',
               borderColor: '#36a2eb',
               data: formModified,
-              fill: false
+              fill: false,
+              pointRadius: 0
             },
             {
+              label: 'Submitted',
+              backgroundColor: 'rgba(255, 206, 86, 0.5)',
               borderColor: '#ffce56',
               data: formSubmitted,
-              fill: false
+              fill: false,
+              pointRadius: 0
             }
           ]
         }
@@ -550,8 +545,43 @@
       }
     },
     methods: {
-      onDateRangeChange (range) {
-        this.range = range
+      chartOptions (title) {
+        return {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            xAxes: [{
+              type: 'time',
+              time: {
+                unit: 'day'
+              },
+              scaleLabel: {
+                display: false,
+                labelString: 'Date'
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                precision: 0
+              },
+              scaleLabel: {
+                display: false,
+                labelString: 'Value'
+              }
+            }]
+          },
+          title: {
+            display: false,
+            text: title,
+            fontSize: 16
+          }
+        }
+      },
+      onUserDateRangeChange (range) {
+        this.userRange = range
+      },
+      onFormDateRangeChange (range) {
+        this.formRange = range
       },
       getApplicationDataExport () {
         this.loadingExport = true
