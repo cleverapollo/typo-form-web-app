@@ -10,7 +10,7 @@
       </quill-editor>
     </template>
     <template v-else>
-      <div v-html="$sanitize(text)"></div>
+      <div v-html="$sanitize(text)" v-if="text"></div>
     </template>
   </v-layout>
 </template>
