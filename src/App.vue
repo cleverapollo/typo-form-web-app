@@ -209,10 +209,10 @@
       applicationItems () {
         return [
             { title: 'Dashboard', path: 'dashboard', icon: 'dashboard', admin: false, color: 'primary' },
-            { title: 'Forms', path: 'forms', icon: 'assignment', admin: false, color: 'blue'},
-            { title: 'Form Templates', path: 'form-templates', icon: 'content_paste', admin: true, color: 'red'},
+            { title: 'Forms', path: 'forms', icon: 'assignment', admin: false, color: 'blue' },
+            { title: 'Form Templates', path: 'form-templates', icon: 'content_paste', admin: true, color: 'red' },
             { title: 'Users', path: 'users', icon: 'person', admin: true, color: 'green' },
-            { title: 'Organisations', path: 'organisations', icon: 'people', admin: false, color: 'orange'},
+            { title: 'Organisations', path: 'organisations', icon: 'people', admin: false, color: 'orange' },
             { title: 'Settings', path: 'settings', icon: 'settings', admin: true }
         ]
       },

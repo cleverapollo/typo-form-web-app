@@ -1,16 +1,17 @@
 <template>
     <div class="date-range">
-        <div class="date-range__pickers">
-            <div class="date-range__picker date-range__pickers--start">
-                <v-text-field
-                    v-model="formattedStartDate"
-                    :label="`${labels.start}  (${format})`"
+        <div class="ml-3">
+            <v-text-field
+                    v-model="formattedDate"
                     name="startDate"
                     class="date-range__pickers-input"
                     :prepend-icon="prependIcon"
                     readonly
                     @click="dateVisible = true"
-                />
+            />
+        </div>
+        <div class="date-range__pickers">
+            <div class="date-range__picker">
                 <v-date-picker
                     :next-icon="nextIcon"
                     :prev-icon="prevIcon"
@@ -25,16 +26,6 @@
                     no-title
                     @change="onDateRangeChange"
                     v-if="dateVisible"
-                />
-            </div>
-            <div class="date-range__picker date-range__picker--end">
-                <v-text-field
-                    :label="`${labels.end}  (${format})`"
-                    v-model="formattedEndDate"
-                    name="endDate"
-                    class="date-range__pickers-input"
-                    readonly
-                    @click="dateVisible = true"
                 />
                 <v-date-picker
                     :next-icon="nextIcon"
@@ -52,36 +43,38 @@
                     v-if="dateVisible"
                 />
             </div>
-        </div>
-        <div
-                v-if="!noPresets"
-                class="date-range__presets"
-        >
-            <v-list :dark="dark">
-                <v-subheader v-if="dateVisible">{{ labels.preset }}</v-subheader>
-                <v-list-tile
-                        v-for="(preset, index) in presets"
-                        v-model="isPresetActive[index]"
-                        :key="index"
-                        @click="onPresetSelect(index)"
-                        v-if="dateVisible"
-                >
-                    <v-list-tile-content>
-                        {{ preset.label }}
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile>
-                    <v-list-tile-content>
-                        <v-btn block color="success" @click.stop="apply">Apply</v-btn>
-                    </v-list-tile-content>
-                </v-list-tile>
-            </v-list>
+            <div
+                    v-if="!noPresets"
+                    class="date-range__presets"
+            >
+                <v-list :dark="dark" v-if="dateVisible">
+                    <v-subheader>{{ labels.preset }}</v-subheader>
+                    <v-list-tile
+                            v-for="(preset, index) in presets"
+                            v-model="isPresetActive[index]"
+                            :key="index"
+                            @click="onPresetSelect(index)"
+                    >
+                        <v-list-tile-content>
+                            {{ preset.label }}
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile>
+                        <v-list-tile-content>
+                            <div>
+                                <v-btn class="mr-1" color="success" @click.stop="apply">Apply</v-btn>
+                                <v-btn @click="onCancel">Cancel</v-btn>
+                            </div>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-  import { format, parse } from 'date-fns'
+  import { format, parse, subDays } from 'date-fns'
 
   export default {
     name: 'v-daterange',
@@ -89,6 +82,13 @@
       options: {
         type: Object,
         required: true
+      },
+      range: {
+        type: Array,
+        default: [
+          format(subDays(new Date(), 30), 'YYYY-MM-DD'),
+          format(subDays(new Date(), 1), 'YYYY-MM-DD')
+        ]
       },
       noPresets: {
         type: Boolean,
@@ -147,26 +147,19 @@
     },
     data () {
       return {
-        startDate: this.options.startDate,
-        endDate: this.options.endDate,
+        startDate: this.range[0],
+        endDate: this.range[1],
         format: this.options.format,
         presets: this.options.presets,
         dateRange: {
           dates: [],
           colors: {}
         },
-        dateVisible: false
+        dateVisible: false,
+        formattedDate: format(parse(this.range[0]), this.options.format) + ' ~ ' + format(parse(this.range[1]), this.options.format)
       }
     },
     computed: {
-      formattedStartDate () {
-        return this.startDate
-          ? format(parse(this.startDate), this.format)
-          : ''
-      },
-      formattedEndDate () {
-        return this.endDate ? format(parse(this.endDate), this.format) : ''
-      },
       highlightColorClasses () {
         if (this.highlightColors) {
           return this.highlightColors
@@ -194,12 +187,21 @@
         this.$emit('input', [this.startDate, this.endDate])
         this.dateVisible = false
       },
+      onCancel () {
+        this.startDate = this.range[0]
+        this.endDate = this.range[1]
+        this.formattedDate = format(parse(this.range[0]), this.format) + ' ~ ' + format(parse(this.range[1]), this.format)
+        if (this.highlightRange) this.setInRangeData()
+        this.dateVisible = false
+      },
       onPresetSelect (presetIndex) {
+        this.formattedDate = this.presets[presetIndex].label
         this.startDate = this.presets[presetIndex].range[0]
         this.endDate = this.presets[presetIndex].range[1]
         if (this.highlightRange) this.setInRangeData()
       },
       onDateRangeChange () {
+        this.formattedDate = format(parse(this.startDate), this.format) + ' ~ ' + format(parse(this.endDate), this.format)
         if (this.highlightRange) this.setInRangeData()
       },
       setInRangeData () {
@@ -239,16 +241,12 @@
 </script>
 
 <style scoped>
-    .date-range {
-        display: flex;
-    }
-
     .date-range__presets {
-        margin-right: 1rem;
+        margin-left: 1rem;
     }
 
     .date-range__pickers-input {
-        width: 290px;
+        width: 225px;
     }
 
     .date-range__pickers {

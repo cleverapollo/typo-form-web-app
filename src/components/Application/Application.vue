@@ -57,10 +57,10 @@
           <v-card :color="item.color">
             <v-container fluid grid-list-lg>
               <v-layout row>
-                <v-flex xs12>
+                <v-flex>
                   <v-icon size="65" >{{ item.icon }}</v-icon>
                 </v-flex>
-                <v-flex xs9 text-xs-right class="white--text">
+                <v-flex text-xs-right class="white--text">
                   <div class="display-2" color="white">
                     <countTo :startVal="countToStart" :endVal="getPropertyCount(item.type)" :duration="countToDuration"></countTo>
                   </div>
@@ -218,7 +218,7 @@
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
-              <VDateRange :options="dateRangeOptions" @input="onDateRangeChange"></VDateRange>
+              <VDateRange :options="dateRangeOptions" :range="formRange" @input="onFormDateRangeChange"></VDateRange>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -238,7 +238,7 @@
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
-              <VDateRange :options="dateRangeOptions" @input="onDateRangeChange"></VDateRange>
+              <VDateRange :options="dateRangeOptions" :range="userRange" @input="onUserDateRangeChange"></VDateRange>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -309,13 +309,15 @@
         joinUrlDialog: false,
         slug: window.location.hostname.split('.')[0],
         loadingExport: false,
-        range: [
+        userRange: [
+          format(subDays(new Date(), 30), 'YYYY-MM-DD'),
+          format(subDays(new Date(), 1), 'YYYY-MM-DD')
+        ],
+        formRange: [
           format(subDays(new Date(), 30), 'YYYY-MM-DD'),
           format(subDays(new Date(), 1), 'YYYY-MM-DD')
         ],
         dateRangeOptions: {
-          startDate: format(subDays(new Date(), 30), 'YYYY-MM-DD'),
-          endDate: format(subDays(new Date(), 1), 'YYYY-MM-DD'),
           format: 'YYYY-MM-DD',
           presets: [
             {
@@ -353,8 +355,8 @@
         const labels = []
         const userInvited = []
         const userCreated = []
-        let date = moment(this.range[0])
-        while (date <= moment(this.range[1])) {
+        let date = moment(this.userRange[0])
+        while (date <= moment(this.userRange[1])) {
           labels.push(date.format('YYYY-MM-DD'))
           userInvited.push(0)
           userCreated.push(0)
@@ -362,18 +364,18 @@
         }
 
         const newUsers = this.$store.getters.loadedUsers(this.slug).filter((user) => {
-          return moment(user.created_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+          return moment(user.created_at.date).isSameOrAfter(moment(this.userRange[0]), 'days')
         })
         _.forEach(newUsers, user => {
-          const diff = moment(user.created_at.date).diff(moment(this.range[0]), 'days')
+          const diff = moment(user.created_at.date).diff(moment(this.userRange[0]), 'days')
           userCreated[diff] ++
         })
 
         const invitedUsers = this.$store.getters.invitedUsers(this.slug).filter((user) => {
-          return moment(user.created_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+          return moment(user.created_at.date).isSameOrAfter(moment(this.userRange[0]), 'days')
         })
         _.forEach(invitedUsers, user => {
-          const diff = moment(user.created_at.date).diff(moment(this.range[0]), 'days')
+          const diff = moment(user.created_at.date).diff(moment(this.userRange[0]), 'days')
           userInvited[diff] ++
         })
 
@@ -405,8 +407,8 @@
         const formCreated = []
         const formModified = []
         const formSubmitted = []
-        let date = moment(this.range[0])
-        while (date <= moment(this.range[1])) {
+        let date = moment(this.formRange[0])
+        while (date <= moment(this.formRange[1])) {
           labels.push(date.format('YYYY-MM-DD'))
           formCreated.push(0)
           formModified.push(0)
@@ -415,26 +417,26 @@
         }
 
         let forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
-          return moment(form.created_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+          return moment(form.created_at.date).isSameOrAfter(moment(this.formRange[0]), 'days')
         })
         _.forEach(forms, form => {
-          const diff = moment(form.created_at.date).diff(moment(this.range[0]), 'days')
+          const diff = moment(form.created_at.date).diff(moment(this.formRange[0]), 'days')
           formCreated[diff] ++
         })
 
         forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
-          return moment(form.updated_at.date).isSameOrAfter(moment(this.range[0]), 'days')
+          return moment(form.updated_at.date).isSameOrAfter(moment(this.formRange[0]), 'days')
         })
         _.forEach(forms, form => {
-          const diff = moment(form.updated_at.date).diff(moment(this.range[0]), 'days')
+          const diff = moment(form.updated_at.date).diff(moment(this.formRange[0]), 'days')
           formModified[diff] ++
         })
 
         forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
-          return form.submitted_date && moment(form.submitted_date).isSameOrAfter(moment(this.range[0]), 'days')
+          return form.submitted_date && moment(form.submitted_date).isSameOrAfter(moment(this.formRange[0]), 'days')
         })
         _.forEach(forms, form => {
-          const diff = moment(form.submitted_date).diff(moment(this.range[0]), 'days')
+          const diff = moment(form.submitted_date).diff(moment(this.formRange[0]), 'days')
           formSubmitted[diff] ++
         })
 
@@ -575,8 +577,11 @@
           }
         }
       },
-      onDateRangeChange (range) {
-        this.range = range
+      onUserDateRangeChange (range) {
+        this.userRange = range
+      },
+      onFormDateRangeChange (range) {
+        this.formRange = range
       },
       getApplicationDataExport () {
         this.loadingExport = true
