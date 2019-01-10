@@ -349,26 +349,6 @@
             }
           ]
         },
-        chartOptions: {
-          legend: {
-            display: false
-          },
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            xAxes: [{
-              type: 'time',
-              time: {
-                unit: 'day'
-              }
-            }],
-            yAxes: [{
-              ticks: {
-                precision: 0
-              }
-            }]
-          }
-        },
         showCustomSlot: false
       }
     },
