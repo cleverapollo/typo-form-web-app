@@ -128,13 +128,13 @@ export default {
       })
       state.loadedSections[payload.formTemplateId].splice(index, 1, payload.section)
 
-      const parentSectionId = payload.section.id
-      const childSections = state.loadedSections[payload.formTemplateId].filter((section) => {
-        return section.parent_section_id === parentSectionId && section.order >= payload.order
-      })
-      childSections.map(function (section) {
-        section.order = section.order + 1
-      })
+      // const parentSectionId = payload.section.id
+      // const childSections = state.loadedSections[payload.formTemplateId].filter((section) => {
+      //   return section.parent_section_id === parentSectionId && section.order >= payload.order
+      // })
+      // childSections.map(function (section) {
+      //   section.order = section.order + 1
+      // })
     },
     deleteQuestion (state, payload) {
       let sections = Object.assign({}, state.loadedSections)
