@@ -7,38 +7,6 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Dashboard</h1>
           <v-spacer></v-spacer>
-
-          <!--
-          <div class="text-xs-right">
-            <v-dialog v-model="joinUrlDialog" persistent max-width="600">
-              <v-btn slot="activator" icon v-if="userIsApplicationAdmin">
-                <v-icon>share</v-icon>
-              </v-btn>
-              <v-card>
-                <v-card-title>
-                  <div class="title mb-2 mt-2">Share Application</div>
-                </v-card-title>
-
-                <v-card-text>
-                  <v-layout row wrap>
-                    <v-flex xs12 pb-3>Invite other users to this application by sharing the following link.</v-flex>
-                    <v-flex xs12 class="wrap-text">{{ joinURL }}</v-flex>
-                  </v-layout>
-                </v-card-text>
-
-                <v-divider></v-divider>
-                <v-card-actions>
-                  <v-layout row py-2>
-                    <v-flex xs12 class="text-xs-right">
-                      <v-btn color="primary" @click="joinUrlDialog = false" >Close</v-btn>
-                    </v-flex>
-                  </v-layout>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </div>
-          -->
-
         </v-flex>
       </v-layout>
     </v-flex>
@@ -53,21 +21,21 @@
       <v-layout row justify-space-around>
         <v-flex xs12>
           <v-card>
-            <v-card-text>
-              <div class="title font-weight-regular">{{ getGreeting(this.user.first_name )}}</div>
+            <v-card-text class="primary">
+              <div class="title font-weight-regular white--text">{{ getGreeting(this.user.first_name )}}</div>
             </v-card-text>
             <v-divider></v-divider>
             <v-card-text>
               <v-layout row wrap>
-                <v-flex xs4>
+                <v-flex xs12 md4>
                   <span class="body-2">Role: </span>
                   <span>{{ getUserApplicationRole() }}</span>
                 </v-flex>
-                <v-flex xs4 text-xs-center>
+                <v-flex xs12 md4 text-md-center>
                   <span class="body-2">Email: </span>
                   <span>{{ this.user.email }}</span>
                 </v-flex>
-                <v-flex xs4 text-xs-right>
+                <v-flex xs12 md4 text-md-right>
                   <span class="body-2">Joined: </span>
                   <span>{{ getUserApplicationJoined(this.user.id) }}</span>
                 </v-flex>
@@ -78,22 +46,22 @@
       </v-layout>
 
       <!-- Summary Widgets -->
-      <v-layout row justify-space-between>
+      <v-layout row wrap justify-space-between>
         <v-flex
           pointer
           @click="onList(item.type)"
           v-for="item in items"
           v-if="!item.admin || userIsApplicationAdmin"
           :key="item.title"
-          xs12>
-          <v-card>
+          xs12 md6 lg3>
+          <v-card :color="item.color">
             <v-container fluid grid-list-lg>
               <v-layout row>
-                <v-flex xs3>
-                  <v-icon size="65" :color="item.color">{{ item.icon }}</v-icon>
+                <v-flex xs12>
+                  <v-icon size="65" >{{ item.icon }}</v-icon>
                 </v-flex>
-                <v-flex xs9 text-xs-right>
-                  <div class="display-2">
+                <v-flex xs9 text-xs-right class="white--text">
+                  <div class="display-2" color="white">
                     <countTo :startVal="countToStart" :endVal="getPropertyCount(item.type)" :duration="countToDuration"></countTo>
                   </div>
                   <div class="body-1">{{ item.title }}</div>
@@ -105,17 +73,17 @@
       </v-layout>
 
       <!-- // New Users Widget -->
-      <v-layout row justify-space-between v-if="userIsApplicationAdmin">
+      <v-layout row wrap justify-space-between v-if="userIsApplicationAdmin">
 
         <!-- // New Users -->
-        <v-flex xs4>
+        <v-flex xs12 lg4>
           <v-card
             to="/users"
             height="100%"
             class="widget-scroll"
             >
-            <v-card-title>
-              <div class="title font-weight-regular">New Users</div>
+            <v-card-title class="green">
+              <div class="title font-weight-regular white--text">New Users</div>
             </v-card-title>
             <v-list two-line v-if="getNewUsers.length">
               <template v-for="(item, index) in getNewUsers">
@@ -149,14 +117,14 @@
         </v-flex>
 
         <!-- // Invited Users -->
-        <v-flex xs4>
+        <v-flex xs12 lg4>
           <v-card
             to="/users"
             height="100%"
             class="widget-scroll"
             >
-            <v-card-title>
-              <div class="title font-weight-regular">Invited Users</div>
+            <v-card-title class="green">
+              <div class="title font-weight-regular white--text">Invited Users</div>
             </v-card-title>
             <v-list two-line v-if="getInvitedUsers.length">
               <template v-for="(item, index) in getInvitedUsers">
@@ -190,14 +158,14 @@
         </v-flex>
 
         <!-- // User Activity -->
-        <v-flex xs4>
+        <v-flex xs12 lg4>
           <v-card
             to="/users"
             height="100%"
             class="widget-scroll"
             >
-            <v-card-title>
-              <div class="title font-weight-regular">User Activity</div>
+            <v-card-title class="green">
+              <div class="title font-weight-regular white--text">User Activity</div>
             </v-card-title>
             <v-list two-line v-if="getActiveUsers.length">
               <template v-for="(item, index) in getActiveUsers">
@@ -232,24 +200,54 @@
 
       </v-layout>
 
-      <v-layout row justify-space-between v-if="userIsApplicationAdmin">
-        <v-flex xs12>
+      <!-- // Charts -->
+      <v-layout row wrap justify-space-between v-if="userIsApplicationAdmin">
+
+        <!-- // Forms -->
+        <v-flex xs12 lg6>
           <v-card>
-            <v-card-title>
-              <div class="title font-weight-regular">User and Form Status Chart</div>
+            <v-card-title class="red">
+              <div class="title font-weight-regular white--text">Forms Trendline</div>
             </v-card-title>
             <v-card-text>
-              <VDateRange :options="dateRangeOptions" @input="onDateRangeChange"></VDateRange>
-              <LineChart :chart-data="userChartData" :options="chartOptions('User Status Chart')" />
-              <LineChart :chart-data="formChartData" :options="chartOptions('Form Status Chart')" />
+              <v-layout row>
+                <v-flex xs12>
+                  <LineChart :chart-data="formChartData" :options="chartOptions('Forms')" />
+                </v-flex>
+              </v-layout>
             </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <VDateRange :options="dateRangeOptions" @input="onDateRangeChange"></VDateRange>
+            </v-card-actions>
           </v-card>
         </v-flex>
+
+        <!-- // Users -->
+        <v-flex xs12 lg6>
+          <v-card>
+            <v-card-title class="green">
+              <div class="title font-weight-regular white--text">Users Trendline</div>
+            </v-card-title>
+            <v-card-text>
+              <v-layout row>
+                <v-flex xs12>
+                  <LineChart :chart-data="userChartData" :options="chartOptions('Users')" />
+                </v-flex>
+              </v-layout>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <VDateRange :options="dateRangeOptions" @input="onDateRangeChange"></VDateRange>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
+
       </v-layout>
 
-      <v-layout v-if="userIsApplicationAdmin" justify-space-between row>
+      <v-layout v-if="userIsApplicationAdmin" justify-space-between row wrap>
        <!-- // Export Application Data -->
-        <v-flex xs6>
+        <v-flex xs12 md6>
           <v-btn
             color="primary"
             outline
@@ -264,7 +262,7 @@
         </v-flex>
 
         <!-- // Report Builder -->
-        <v-flex xs6>
+        <v-flex xs12 md6>
           <v-btn
             color="primary"
             outline
@@ -302,9 +300,9 @@
       return {
         items: [
           { title: 'Forms', type: 'forms', icon: 'assignment', color: 'blue', admin: false },
-          { title: 'Form Templates', type: 'form-templates', icon: 'content_paste', color: 'orange', admin: true },
-          { title: 'Users', type: 'users', icon: 'person', color: 'red', admin: true },
-          { title: 'Organisations', type: 'organisations', icon: 'people', color: 'green', admin: false }
+          { title: 'Form Templates', type: 'form-templates', icon: 'content_paste', color: 'red', admin: true },
+          { title: 'Users', type: 'users', icon: 'person', color: 'green', admin: true },
+          { title: 'Organisations', type: 'organisations', icon: 'people', color: 'orange', admin: false }
         ],
         countToStart: 0,
         countToDuration: 3000,
@@ -383,16 +381,20 @@
           labels: labels,
           datasets: [
             {
-              label: 'Invited Users',
+              label: 'Invited',
               backgroundColor: 'rgba(255, 99, 132, 0.5)',
               borderColor: '#ff6384',
-              data: userInvited
+              data: userInvited,
+              fill: false,
+              pointRadius: 0
             },
             {
-              label: 'Created Users',
+              label: 'Created',
               backgroundColor: 'rgba(54, 162, 235, 0.5)',
               borderColor: '#36a2eb',
-              data: userCreated
+              data: userCreated,
+              fill: false,
+              pointRadius: 0
             }
           ]
         }
@@ -440,22 +442,28 @@
           labels: labels,
           datasets: [
             {
-              label: 'Created Forms',
+              label: 'Created',
               backgroundColor: 'rgba(255, 99, 132, 0.5)',
               borderColor: '#ff6384',
-              data: formCreated
+              data: formCreated,
+              fill: false,
+              pointRadius: 0
             },
             {
-              label: 'Modified Forms',
+              label: 'Modified',
               backgroundColor: 'rgba(54, 162, 235, 0.5)',
               borderColor: '#36a2eb',
-              data: formModified
+              data: formModified,
+              fill: false,
+              pointRadius: 0
             },
             {
-              label: 'Submitted Forms',
+              label: 'Submitted',
               backgroundColor: 'rgba(255, 206, 86, 0.5)',
               borderColor: '#ffce56',
-              data: formSubmitted
+              data: formSubmitted,
+              fill: false,
+              pointRadius: 0
             }
           ]
         }
@@ -546,7 +554,7 @@
                 unit: 'day'
               },
               scaleLabel: {
-                display: true,
+                display: false,
                 labelString: 'Date'
               }
             }],
@@ -555,13 +563,13 @@
                 precision: 0
               },
               scaleLabel: {
-                display: true,
+                display: false,
                 labelString: 'Value'
               }
             }]
           },
           title: {
-            display: true,
+            display: false,
             text: title,
             fontSize: 16
           }
