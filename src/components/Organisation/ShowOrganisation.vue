@@ -61,7 +61,8 @@
                   :headers="userHeaders"
                   :items="users"
                   :search="userSearch"
-                  hide-actions
+                  :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.first_name }}</td>
@@ -101,7 +102,7 @@
                   :headers="invitedHeaders"
                   :items="invitedUsers"
                   :search="invitedUserSearch"
-                  hide-actions
+                  :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.invitee }}</td>

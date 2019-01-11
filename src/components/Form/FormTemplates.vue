@@ -16,6 +16,7 @@
           <v-card>
 
             <v-card-title>
+              <v-spacer></v-spacer>
               <v-text-field
                 v-model="search"
                 append-icon="search"
@@ -28,7 +29,8 @@
               :headers="headers"
               :items="formTemplates"
               :search="search"
-              hide-actions
+              :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+
             >
               <template slot="items" slot-scope="props">
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.name }}</td>

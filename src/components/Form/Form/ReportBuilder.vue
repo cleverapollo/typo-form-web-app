@@ -118,7 +118,8 @@
               :headers="headers"
               :items="data"
               :search="search"
-              :pagination.sync="pagination"
+              :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+
             >
               <template slot="items" slot-scope="props">
                 <tr @click="onForm(props.item.ID)">
@@ -173,9 +174,6 @@ export default {
       filterTemplate: { source: '', query: '', value: '', answer: '' },
       slug: window.location.hostname.split('.')[0],
       joinUrlDialog: false,
-      pagination: {
-        rowsPerPage: -1
-      },
       showCustomSlot: false
     }
   },

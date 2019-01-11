@@ -94,7 +94,8 @@
               :headers='headers'
               :items='data'
               :search='search'
-              hide-actions
+              :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+
             >
               <template slot='items' slot-scope='props'>
                 <tr>
