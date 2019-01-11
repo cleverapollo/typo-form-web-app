@@ -45,6 +45,24 @@
                           </v-list-tile-content>
                         </v-list-tile>
 
+                        <v-list-tile @click="onPublishFormTemplate('Closed')" v-if="status === 'Open'">
+                          <v-list-tile-avatar>
+                            <v-icon>send</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
+                            Publish Form Template
+                          </v-list-tile-content>
+                        </v-list-tile>
+
+                        <v-list-tile @click="onPublishFormTemplate('Open')" v-if="status === 'Closed'">
+                          <v-list-tile-avatar>
+                            <v-icon>send</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
+                            Draft Form Template
+                          </v-list-tile-content>
+                        </v-list-tile>
+
                         <v-list-tile @click.stop="deleteFormTemplate = true">
                           <v-list-tile-avatar>
                             <v-icon>delete</v-icon>
@@ -120,6 +138,18 @@
       }
     },
     computed: {
+      status () {
+        if (!this.formTemplate) {
+          return 'undefined'
+        }
+        const status = this.statuses.find((status) => {
+          return status.id === this.formTemplate.status_id
+        })
+        return status ? status.status : 'undefined'
+      },
+      statuses () {
+        return this.$store.getters.statuses
+      },
       formTemplate () {
         return this.$store.getters.loadedFormTemplate(this.slug, parseInt(this.id))
       }
@@ -131,6 +161,16 @@
           id: this.formTemplate.id
         })
         this.$router.push('/form-templates')
+      },
+      onPublishFormTemplate (value) {
+        const status = this.statuses.find((status) => {
+          return status.status === value
+        })
+        this.$store.dispatch('updateFormTemplate', {
+          slug: this.slug,
+          id: this.id,
+          statusId: status.id
+        })
       }
     },
     created: function () {

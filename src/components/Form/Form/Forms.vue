@@ -203,6 +203,14 @@
       },
       forms () {
         let forms = this.$store.getters.loadedAllForms(this.slug)
+        if (!this.userIsApplicationAdmin) {
+          forms = forms.filter(form => {
+            const status = this.statuses.find((status) => {
+              return status.id === form.form_template.status_id
+            })
+            return status === 2
+          })
+        }
         forms.forEach((form) => {
           form.owner = form.organisation ? form.organisation.name : form.user.first_name + ' ' + form.user.last_name
           form.status = this.status(form.status_id)

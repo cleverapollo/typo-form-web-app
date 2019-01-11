@@ -76,6 +76,8 @@
   import * as _ from 'lodash'
   import moment from 'moment'
   import CreateFormTemplate from './CreateFormTemplate'
+  import UserMixin from '../Layout/UserMixin'
+
   export default {
     data () {
       return {
@@ -94,33 +96,13 @@
         duplicateFormTemplate: false
       }
     },
+    mixins: [UserMixin],
     components: {
       CreateFormTemplate
     },
     computed: {
-      roles () {
-        return this.$store.getters.roles
-      },
       application () {
         return this.$store.getters.loadedApplication(this.slug)
-      },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsApplicationAdmin () {
-        return this.userIsAdmin || this.isSuperUser
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.application_role_id) === 'Admin'
-      },
-      isSuperUser () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
       },
       formTemplates () {
         return _.sortBy(this.$store.getters.loadedFormTemplates(this.slug), element => {
@@ -129,12 +111,6 @@
       }
     },
     methods: {
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
-      },
       onLoadFormTemplate (id) {
         this.$router.push('/form-templates/' + id)
       },

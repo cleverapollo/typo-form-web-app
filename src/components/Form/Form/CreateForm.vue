@@ -77,6 +77,9 @@
       }
     },
     computed: {
+      statuses () {
+        return this.$store.getters.statuses
+      },
       show: {
         get () {
           return this.visible
@@ -91,7 +94,16 @@
         return this.$store.getters.loadedOrganisations(this.slug)
       },
       formTemplates () {
-        return _.sortBy(this.$store.getters.loadedFormTemplates(this.slug), element => {
+        let formTemplates = this.$store.getters.loadedFormTemplates(this.slug)
+        if (!this.userIsApplicationAdmin) {
+          formTemplates = formTemplates.filter(formTemplate => {
+            const status = this.statuses.find((status) => {
+              return status.id === formTemplate.status_id
+            })
+            return status.status === 'Closed'
+          })
+        }
+        return _.sortBy(formTemplates, element => {
           return element.name.toLowerCase()
         })
       },
