@@ -6,7 +6,7 @@
           <h1 class='headline primary--text py-3'>Forms</h1>
           <v-spacer></v-spacer>
           <div class="text-xs-right" v-if="userIsApplicationAdmin">
-            <v-btn icon @click="showCustomSlot = !showCustomSlot">
+            <v-btn icon @click="editMode = !editMode">
               <v-icon>edit</v-icon>
             </v-btn>
           </div>
@@ -17,11 +17,11 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type='formsHeader' :mode="showCustomSlot" />
+          <CustomSlot type='formsHeader' :mode="editMode" />
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
-            <v-card-title v-if="userIsApplicationAdmin">
+            <v-card-title v-if="userIsApplicationAdmin && editMode">
               <v-container>
 
                 <template v-for='(filter, index) in filters'>
@@ -63,7 +63,7 @@
                       </v-btn>
                     </v-flex>
                   </v-layout>
-                  <v-divider class='my-3'></v-divider>
+                  <v-divider class='my-1'></v-divider>
                 </template>
 
                 <!-- // Action Buttons -->
@@ -120,7 +120,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type='formsFooter' :mode="showCustomSlot" />
+          <CustomSlot type='formsFooter' :mode="editMode" />
         </v-flex>
       </v-layout>
     </v-flex>
@@ -172,7 +172,7 @@
         deleteForm: false,
         duplicated: false,
         duplicatedContent: false,
-        showCustomSlot: false
+        editMode: false
       }
     },
     mixins: [QuestionCompareMixin, LayoutMixin, UserMixin],

@@ -20,7 +20,7 @@
       <CustomSlot type="dashboardHeader" :mode="showCustomSlot" />
     </v-flex>
 
-    <v-container fluid grid-list-lg>
+    <v-container fluid grid-list-lg class="dashboard-container">
 
       <!-- Welcome Widget -->
       <v-layout row justify-space-around>
@@ -58,7 +58,7 @@
           v-for="item in items"
           v-if="!item.admin || userIsApplicationAdmin"
           :key="item.title"
-          xs12 md6 lg3>
+          xs12 sm12 md6>
           <v-card :color="item.color">
             <v-container fluid grid-list-lg>
               <v-layout row>
@@ -647,6 +647,9 @@
 </script>
 
 <style scoped>
+  .dashboard-container {
+    padding: 0px;
+  }
   .pointer {
     cursor: pointer;
   }

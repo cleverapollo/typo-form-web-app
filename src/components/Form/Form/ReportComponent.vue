@@ -84,7 +84,7 @@
         </v-btn>
       </v-flex>
     </v-layout>
-    <v-divider class="my-3"></v-divider>
+    <v-divider class="my-1"></v-divider>
   </div>
 </template>
 
