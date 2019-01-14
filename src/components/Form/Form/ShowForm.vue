@@ -5,15 +5,18 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">{{ form.form_template.name }}</h1>
           <v-spacer></v-spacer>
-          <div class="text-xs-right" v-if="userIsApplicationAdmin">
-            <v-btn icon @click="showCustomSlot = !showCustomSlot">
-              <v-icon>edit</v-icon>
-            </v-btn>
+          <div class="text-xs-right py-2" v-if="userIsApplicationAdmin">
+            <v-tooltip bottom>
+              <v-btn icon @click="editMode = !editMode" slot="activator">
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <span>Edit Page</span>
+            </v-tooltip>
           </div>
         </v-flex>
 
         <v-flex>
-          <CustomSlot :type="'formHeader' + formId" :mode="showCustomSlot" />
+          <CustomSlot :type="'formHeader' + formId" :mode="editMode" />
         </v-flex>
 
         <v-flex xs12 class="mb-3">
@@ -160,7 +163,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot :type="'formFooter' + formId" :mode="showCustomSlot" />
+          <CustomSlot :type="'formFooter' + formId" :mode="editMode" />
         </v-flex>
 
       </v-layout>
@@ -210,7 +213,7 @@
         helpModal: false,
         duplicated: false,
         duplicatedContent: '',
-        showCustomSlot: false
+        editMode: false
       }
     },
     components: {

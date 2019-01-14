@@ -71,10 +71,16 @@
                     <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='isOrganisationAdmin' class="justify-center layout px-0">
-                      <EditOrganisationUser :user="props.item" :slug="slug" :organisationId="id"></EditOrganisationUser>
-                      <v-btn icon class="mx-0" @click="onDeleteOrganisationUser(props.item.id)">
-                        <v-icon color="pink">delete</v-icon>
-                      </v-btn>
+                      <v-tooltip bottom>
+                        <EditOrganisationUser :user="props.item" :slug="slug" :organisationId="id" slot="activator"></EditOrganisationUser>
+                        <span>Edit</span>
+                      </v-tooltip>
+                      <v-tooltip bottom>
+                        <v-btn icon class="mx-0" @click="onDeleteOrganisationUser(props.item.id)" slot="activator">
+                          <v-icon color="pink">delete</v-icon>
+                        </v-btn>
+                        <span>Delete</span>
+                      </v-tooltip>
                     </td>
                   </template>
                   <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -109,10 +115,16 @@
                     <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='isOrganisationAdmin' class="justify-center layout px-0">
-                      <EditInvitedOrganisationUser :user="props.item" :slug="slug" :organisationId="id"></EditInvitedOrganisationUser>
-                      <v-btn icon class="mx-0" @click="onDeleteInvitedOrganisationUser(props.item.id)">
-                        <v-icon color="pink">delete</v-icon>
-                      </v-btn>
+                      <v-tooltip bottom>
+                        <EditInvitedOrganisationUser :user="props.item" :slug="slug" :organisationId="id" slot="activator"></EditInvitedOrganisationUser>
+                        <span>Edit</span>
+                      </v-tooltip>
+                      <v-tooltip bottom>
+                        <v-btn icon class="mx-0" @click="onDeleteInvitedOrganisationUser(props.item.id)" slot="activator">
+                          <v-icon color="pink">delete</v-icon>
+                        </v-btn>
+                        <span>Delete</span>
+                      </v-tooltip>
                     </td>
                   </template>
                   <v-alert slot="no-results" :value="true" color="error" icon="warning">
