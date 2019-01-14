@@ -4,16 +4,10 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">{{ form.form_template.name }}</h1>
-          <v-spacer></v-spacer>
-          <div class="text-xs-right" v-if="userIsApplicationAdmin">
-            <v-btn icon @click="showCustomSlot = !showCustomSlot">
-              <v-icon>edit</v-icon>
-            </v-btn>
-          </div>
         </v-flex>
 
         <v-flex>
-          <CustomSlot :type="'formHeader' + formId" :mode="showCustomSlot" />
+          <CustomSlot :type="'formTemplateHeader' + formTemplateId" :mode="false" />
         </v-flex>
 
         <v-flex xs12 class="mb-3">
@@ -160,7 +154,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot :type="'formFooter' + formId" :mode="showCustomSlot" />
+          <CustomSlot :type="'formTemplateFooter' + formTemplateId" :mode="false" />
         </v-flex>
 
       </v-layout>
@@ -195,12 +189,11 @@
   import DuplicateForm from './DuplicateForm'
   import TriggerMixin from '../TriggerMixin.js'
   import CustomSlot from '../../Layout/CustomSlot'
-  import UserMixin from '../../Layout/UserMixin'
 
   export default {
     name: 'ShowForm',
     props: ['id'],
-    mixins: [TriggerMixin, UserMixin],
+    mixins: [TriggerMixin],
     data () {
       return {
         deleteForm: false,
@@ -209,8 +202,7 @@
         submitted: false,
         helpModal: false,
         duplicated: false,
-        duplicatedContent: '',
-        showCustomSlot: false
+        duplicatedContent: ''
       }
     },
     components: {

@@ -4,6 +4,16 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Edit Form Template</h1>
+          <v-spacer></v-spacer>
+          <div class="text-xs-right" v-if="userIsApplicationAdmin">
+            <v-btn icon @click="showCustomSlot = !showCustomSlot">
+              <v-icon>edit</v-icon>
+            </v-btn>
+          </div>
+        </v-flex>
+
+        <v-flex>
+          <CustomSlot :type="'formTemplateHeader' + id" :mode="showCustomSlot" />
         </v-flex>
 
         <!-- //Form Template Layout -->
@@ -91,6 +101,10 @@
           </v-card>
         </v-flex>
 
+        <v-flex>
+          <CustomSlot :type="'formTemplateFooter' + id" :mode="showCustomSlot" />
+        </v-flex>
+
       </v-layout>
     </v-flex>
 
@@ -104,19 +118,24 @@
   import EditFormTemplate from './EditFormTemplate'
   import CreateSection from './Section/CreateSection'
   import FormNavigation from './FormNavigation'
+  import CustomSlot from '../Layout/CustomSlot'
+  import UserMixin from '../Layout/UserMixin'
 
   export default {
     props: ['id'],
+    mixins: [UserMixin],
     components: {
       FormView,
       EditFormTemplate,
       CreateSection,
-      FormNavigation
+      FormNavigation,
+      CustomSlot
     },
     data () {
       return {
         deleteFormTemplate: false,
-        slug: window.location.hostname.split('.')[0]
+        slug: window.location.hostname.split('.')[0],
+        showCustomSlot: false
       }
     },
     computed: {
