@@ -33,6 +33,7 @@
               <template slot="items" slot-scope="props">
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.name }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.forms_length }}</td>
+                <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.status }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.created_at.date | moment }}</td>
                 <td>
                   <v-btn icon class='mx-0' @click='showDuplicateFormTemplate(props.item)'>
@@ -87,6 +88,7 @@
         headers: [
           {text: 'Form Template', value: 'name'},
           {text: 'Forms', value: 'forms_length'},
+          {text: 'Status', value: 'status'},
           {text: 'Created', value: 'created_at.date'},
           {text: 'Actions', value: 'Actions'}
         ],
@@ -101,13 +103,23 @@
       CreateFormTemplate
     },
     computed: {
+      statuses () {
+        return this.$store.getters.statuses
+      },
       application () {
         return this.$store.getters.loadedApplication(this.slug)
       },
       formTemplates () {
-        return _.sortBy(this.$store.getters.loadedFormTemplates(this.slug), element => {
+        let formTemplates = _.sortBy(this.$store.getters.loadedFormTemplates(this.slug), element => {
           return element.name.toLowerCase()
         })
+        formTemplates.forEach((formTemplate) => {
+          const status = this.statuses.find((status) => {
+            return status.id === formTemplate.status_id
+          })
+          formTemplate.status = ((status.status === 'Open') ? 'Draft' : 'Published')
+        })
+        return formTemplates
       }
     },
     methods: {

@@ -4,6 +4,17 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Edit Form Template</h1>
+          <v-spacer></v-spacer>
+          <div class="text-xs-right">
+            <v-switch
+              :label="switchStatus.toString()"
+              :input-value="switchStatus"
+              true-value="Published"
+              false-value="Draft"
+              class="d-inline-block switchButton"
+              @change="updateStatus"
+            ></v-switch>
+          </div>
         </v-flex>
 
         <!-- //Form Template Layout -->
@@ -138,6 +149,12 @@
       }
     },
     computed: {
+      switchStatus () {
+        if (!this.formTemplate) {
+          return ''
+        }
+        return this.status === 'Open' ? 'Draft' : 'Published'
+      },
       status () {
         if (!this.formTemplate) {
           return 'undefined'
@@ -171,6 +188,17 @@
           id: this.id,
           statusId: status.id
         })
+      },
+      updateStatus () {
+        const newStatus = (this.status === 'Open') ? 'Closed' : 'Open'
+        const status = this.statuses.find((status) => {
+          return status.status === newStatus
+        })
+        this.$store.dispatch('updateFormTemplate', {
+          slug: this.slug,
+          id: this.id,
+          statusId: status.id
+        })
       }
     },
     created: function () {
@@ -182,3 +210,9 @@
     }
   }
 </script>
+
+<style>
+  .switchButton label {
+    width: 70px;
+  }
+</style>
