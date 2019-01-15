@@ -5,10 +5,13 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Users</h1>
           <v-spacer></v-spacer>
-          <div class="text-xs-right" v-if="userIsApplicationAdmin">
-            <v-btn icon @click="showCustomSlot = !showCustomSlot">
-              <v-icon>edit</v-icon>
-            </v-btn>
+          <div class="text-xs-right py-2" v-if="userIsApplicationAdmin">
+            <v-tooltip bottom>
+              <v-btn icon @click="editMode = !editMode" slot="activator">
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <span>Edit Page</span>
+            </v-tooltip>
           </div>
         </v-flex>
         <v-flex d-flex xs12>
@@ -16,7 +19,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="usersHeader" :mode="showCustomSlot" />
+          <CustomSlot type="usersHeader" :mode="editMode" />
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -44,6 +47,7 @@
                   :headers="userHeaders"
                   :items="users"
                   :search="userSearch"
+                  :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.first_name }}</td>
@@ -53,10 +57,16 @@
                     <td>{{ props.item.created_at.date | moment }}</td>
                     <td>{{ props.item.updated_at.date | moment }}</td>
                     <td v-if='userIsApplicationAdmin' class="justify-center layout px-0">
-                      <EditUser :user="props.item" :slug="slug"></EditUser>
-                      <v-btn icon class="mx-0" @click="onDeleteUser(props.item.id)">
-                        <v-icon color="pink">delete</v-icon>
-                      </v-btn>
+                      <v-tooltip bottom>
+                        <EditUser :user="props.item" :slug="slug" slot="activator"></EditUser>
+                        <span>Edit</span>
+                      </v-tooltip>
+                      <v-tooltip bottom>
+                        <v-btn icon class="mx-0" @click="onDeleteUser(props.item.id)" slot="activator">
+                          <v-icon color="pink">delete</v-icon>
+                        </v-btn>
+                        <span>Delete</span>
+                      </v-tooltip>
                     </td>
                   </template>
                   <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -84,16 +94,24 @@
                   :headers="invitedHeaders"
                   :items="invitedUsers"
                   :search="invitedUserSearch"
+                  :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.invitee }}</td>
                     <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='userIsApplicationAdmin' class="justify-center layout px-0">
-                      <EditInvitedUser :user="props.item" :slug="slug"></EditInvitedUser>
-                      <v-btn icon class="mx-0" @click="onDeleteInvitedUser(props.item.id)">
-                        <v-icon color="pink">delete</v-icon>
-                      </v-btn>
+                      <v-tooltip bottom>
+                        <EditInvitedUser :user="props.item" :slug="slug" slot="activator"></EditInvitedUser>
+                        <span>Edit</span>
+                      </v-tooltip>
+                      <v-tooltip bottom>
+                        <v-btn icon class="mx-0" @click="onDeleteInvitedUser(props.item.id)" slot="activator">
+                          <v-icon color="pink">delete</v-icon>
+                        </v-btn>
+                        <span>Delete</span>
+                      </v-tooltip>
                     </td>
                   </template>
                   <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -107,7 +125,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="usersFooter" :mode="showCustomSlot" />
+          <CustomSlot type="usersFooter" :mode="editMode" />
         </v-flex>
       </v-layout>
     </v-flex>
@@ -139,7 +157,7 @@
         userSearch: '',
         invitedUserSearch: '',
         slug: window.location.hostname.split('.')[0],
-        showCustomSlot: false
+        editMode: false
       }
     },
     components: {

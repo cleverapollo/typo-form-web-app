@@ -5,10 +5,13 @@
         <v-flex d-flex xs12>
           <h1 class='headline primary--text py-3'>Forms</h1>
           <v-spacer></v-spacer>
-          <div class="text-xs-right" v-if="userIsApplicationAdmin">
-            <v-btn icon @click="editMode = !editMode">
-              <v-icon>edit</v-icon>
-            </v-btn>
+          <div class="text-xs-right py-2" v-if="userIsApplicationAdmin">
+            <v-tooltip bottom>
+              <v-btn icon @click="editMode = !editMode" slot="activator">
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <span>Edit Page</span>
+            </v-tooltip>
           </div>
         </v-flex>
 
@@ -94,7 +97,8 @@
               :headers='headers'
               :items='data'
               :search='search'
-              hide-actions
+              :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+
             >
               <template slot='items' slot-scope='props'>
                 <tr>
@@ -102,12 +106,18 @@
                     <td @click='onForm(props.item.id)' v-bind:key="'filter'+key" v-if="key !== 'Actions' && key !== 'id'">{{item}}</td>
                   </template>
                   <td class='justify-center layout px-0'>
-                    <v-btn icon class='mx-0' @click='duplicateForm(props.item.id)'>
-                      <v-icon color='teal'>content_copy</v-icon>
-                    </v-btn>
-                    <v-btn icon class='mx-0' @click='showDeleteForm(props.item.id)'>
-                      <v-icon color='pink'>delete</v-icon>
-                    </v-btn>
+                    <v-tooltip bottom>
+                      <v-btn icon class='mx-0' @click='duplicateForm(props.item.id)' slot="activator">
+                        <v-icon color='teal'>content_copy</v-icon>
+                      </v-btn>
+                      <span>Duplicate</span>
+                    </v-tooltip>
+                    <v-tooltip bottom>
+                      <v-btn icon class='mx-0' @click='showDeleteForm(props.item.id)' slot="activator">
+                        <v-icon color='pink'>delete</v-icon>
+                      </v-btn>
+                      <span>Delete</span>
+                    </v-tooltip>
                   </td>
                 </tr>
               </template>

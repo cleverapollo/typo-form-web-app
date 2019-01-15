@@ -7,17 +7,20 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Dashboard</h1>
           <v-spacer></v-spacer>
-          <div class="text-xs-right" v-if="userIsApplicationAdmin">
-            <v-btn icon @click="showCustomSlot = !showCustomSlot">
-              <v-icon>edit</v-icon>
-            </v-btn>
+          <div class="text-xs-right py-2" v-if="userIsApplicationAdmin">
+            <v-tooltip bottom>
+              <v-btn icon @click="editMode = !editMode" slot="activator">
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <span>Edit Page</span>
+            </v-tooltip>
           </div>
         </v-flex>
       </v-layout>
     </v-flex>
 
     <v-flex>
-      <CustomSlot type="dashboardHeader" :mode="showCustomSlot" />
+      <CustomSlot type="dashboardHeader" :mode="editMode" />
     </v-flex>
 
     <v-container fluid grid-list-lg class="dashboard-container">
@@ -285,7 +288,7 @@
     </v-container>
 
     <v-flex>
-      <CustomSlot type="dashboardFooter" :mode="showCustomSlot" />
+      <CustomSlot type="dashboardFooter" :mode="editMode" />
     </v-flex>
 
   </v-layout>
@@ -349,7 +352,7 @@
             }
           ]
         },
-        showCustomSlot: false
+        editMode: false
       }
     },
     mixins: [UserMixin],

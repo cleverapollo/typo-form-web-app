@@ -16,6 +16,7 @@
           <v-card>
 
             <v-card-title>
+              <v-spacer></v-spacer>
               <v-text-field
                 v-model="search"
                 append-icon="search"
@@ -28,19 +29,26 @@
               :headers="headers"
               :items="formTemplates"
               :search="search"
-              hide-actions
+              :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+
             >
               <template slot="items" slot-scope="props">
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.name }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.forms_length }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.created_at.date | moment }}</td>
                 <td>
-                  <v-btn icon class='mx-0' @click='showDuplicateFormTemplate(props.item)'>
-                    <v-icon color='teal'>content_copy</v-icon>
-                  </v-btn>
-                  <v-btn icon class='mx-0' @click='showDeleteFormTemplate(props.item.id)'>
-                    <v-icon color='pink'>delete</v-icon>
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <v-btn icon class='mx-0' @click='showDuplicateFormTemplate(props.item)' slot="activator">
+                      <v-icon color='teal'>content_copy</v-icon>
+                    </v-btn>
+                    <span>Duplicate</span>
+                  </v-tooltip>
+                  <v-tooltip bottom>
+                    <v-btn icon class='mx-0' @click='showDeleteFormTemplate(props.item.id)' slot="activator">
+                      <v-icon color='pink'>delete</v-icon>
+                    </v-btn>
+                    <span>Delete</span>
+                  </v-tooltip>
                 </td>
               </template>
               <v-alert slot="no-results" :value="true" color="error" icon="warning">

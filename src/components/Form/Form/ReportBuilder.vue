@@ -5,16 +5,23 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Report Builder</h1>
           <v-spacer></v-spacer>
-          <div class="text-xs-right">
-            <v-btn icon @click="showCustomSlot = !showCustomSlot" v-if="userIsApplicationAdmin">
-              <v-icon>edit</v-icon>
-            </v-btn>
-            <v-btn
-              icon
-              @click="openDialog"
-            >
-              <v-icon>share</v-icon>
-            </v-btn>
+          <div class="text-xs-right py-2">
+            <v-tooltip bottom>
+              <v-btn icon @click="editMode = !editMode" v-if="userIsApplicationAdmin" slot="activator">
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <span>Edit Page</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <v-btn
+                icon
+                @click="openDialog"
+                slot="activator"
+              >
+                <v-icon>share</v-icon>
+              </v-btn>
+              <span>Share Report</span>
+            </v-tooltip>
 
             <!-- //Share Link -->
             <v-dialog v-model="joinUrlDialog" persistent max-width="600">
@@ -48,7 +55,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="reportHeader" :mode="showCustomSlot" />
+          <CustomSlot type="reportHeader" :mode="editMode" />
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
@@ -144,7 +151,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="reportFooter" :mode="showCustomSlot" />
+          <CustomSlot type="reportFooter" :mode="editMode" />
         </v-flex>
       </v-layout>
     </v-flex>
@@ -176,7 +183,7 @@ export default {
       pagination: {
         rowsPerPage: -1
       },
-      showCustomSlot: false
+      editMode: false
     }
   },
   mixins: [QuestionCompareMixin, UrlMixin, UserMixin],

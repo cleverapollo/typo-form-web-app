@@ -5,10 +5,13 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Organisations</h1>
           <v-spacer></v-spacer>
-          <div class="text-xs-right" v-if="userIsApplicationAdmin">
-            <v-btn icon @click="showCustomSlot = !showCustomSlot">
-              <v-icon>edit</v-icon>
-            </v-btn>
+          <div class="text-xs-right py-2" v-if="userIsApplicationAdmin">
+            <v-tooltip bottom>
+              <v-btn icon @click="editMode = !editMode" slot="activator">
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <span>Edit Page</span>
+            </v-tooltip>
           </div>
         </v-flex>
         <v-flex d-flex xs12>
@@ -16,7 +19,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="organisationsHeader" :mode="showCustomSlot" />
+          <CustomSlot type="organisationsHeader" :mode="editMode" />
         </v-flex>
 
 
@@ -24,6 +27,7 @@
           <v-card>
 
             <v-card-title>
+              <v-spacer></v-spacer>
               <v-text-field
                 v-model="search"
                 append-icon="search"
@@ -36,7 +40,8 @@
               :headers="headers"
               :items="organisations"
               :search="search"
-              hide-actions
+              :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+
             >
               <template slot="items" slot-scope="props">
                 <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.name }}</td>
@@ -45,9 +50,12 @@
                 <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.forms_length }}</td>
                 <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.created_at.date | moment }}</td>
                 <td>
-                  <v-btn icon class='mx-0' @click='showDeleteOrganisation(props.item.id)'>
-                    <v-icon color='pink'>delete</v-icon>
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <v-btn icon class='mx-0' @click='showDeleteOrganisation(props.item.id)' slot="activator">
+                      <v-icon color='pink'>delete</v-icon>
+                    </v-btn>
+                    <span>Delete</span>
+                  </v-tooltip>
                 </td>
               </template>
               <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -58,7 +66,7 @@
         </v-flex>
 
         <v-flex>
-          <CustomSlot type="organisationsFooter" :mode="showCustomSlot" />
+          <CustomSlot type="organisationsFooter" :mode="editMode" />
         </v-flex>
 
       </v-layout>
@@ -103,7 +111,7 @@
           {text: 'Actions', value: 'Actions'}
         ],
         deleteOrganisation: false,
-        showCustomSlot: false
+        editMode: false
       }
     },
     mixins: [UserMixin],
