@@ -12,15 +12,17 @@
       </v-flex>
     </v-layout>
 
-      <v-layout row>
-        <v-flex xs12>
-          <v-textarea
-            label="Content Block"
-            v-model="editedDescription"
-            @blur="updateQuestion"
-          ></v-textarea>
-        </v-flex>
-      </v-layout>
+    <v-layout row>
+      <v-flex xs12>
+        <quill-editor
+          v-model="editedDescription"
+          :options="editorOption"
+          @blur="updateQuestion"
+          class="mb-3"
+        >
+        </quill-editor>
+      </v-flex>
+    </v-layout>
 
     <triggers :formTemplateId="formTemplateId" type="Question" :question="question" :questionOptions="questionOptions" v-if="questionOptions.length > 0"></triggers>
 
@@ -58,7 +60,8 @@
         editedQuestion: this.question.question || 'Content Block',
         editedDescription: this.question.description,
         deleteQuestion: false,
-        moveQuestion: false
+        moveQuestion: false,
+        editorOption: {}
       }
     },
     computed: {
