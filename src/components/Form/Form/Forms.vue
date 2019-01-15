@@ -208,7 +208,7 @@
             const status = this.statuses.find((status) => {
               return status.id === form.form_template.status_id
             })
-            return status === 2
+            return status.status === 'Closed'
           })
         }
         forms.forEach((form) => {
@@ -404,7 +404,9 @@
     },
     created: function () {
       if (this.user) {
-        this.$store.dispatch('loadUsers', this.slug)
+        if (this.userIsApplicationAdmin) {
+          this.$store.dispatch('loadUsers', this.slug)
+        }
         this.$store.dispatch('loadOrganisations', this.slug)
         this.$store.dispatch('loadFormTemplates', this.slug)
         this.$store.dispatch('loadAllSections', this.slug)

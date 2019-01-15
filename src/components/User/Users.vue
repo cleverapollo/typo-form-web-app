@@ -219,7 +219,9 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadUsers', this.slug)
+      if (this.userIsApplicationAdmin) {
+        this.$store.dispatch('loadUsers', this.slug)
+      }
     },
     filters: {
       moment: function (date) {

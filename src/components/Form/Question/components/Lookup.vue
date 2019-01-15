@@ -50,7 +50,7 @@
             const status = this.statuses.find((status) => {
               return status.id === formTemplate.status_id
             })
-            return status === 2
+            return status.status === 'Closed'
           })
         }
         return formTemplates

@@ -192,7 +192,7 @@
             const status = this.statuses.find((status) => {
               return status.id === form.form_template.status_id
             })
-            return status === 2
+            return status.status === 'Closed'
           })
         }
         forms.forEach((form) => {
