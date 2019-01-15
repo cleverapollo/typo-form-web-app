@@ -213,6 +213,14 @@
       },
       forms () {
         let forms = this.$store.getters.loadedAllForms(this.slug)
+        if (!this.userIsApplicationAdmin) {
+          forms = forms.filter(form => {
+            const status = this.statuses.find((status) => {
+              return status.id === form.form_template.status_id
+            })
+            return status.status === 'Closed'
+          })
+        }
         forms.forEach((form) => {
           form.owner = form.organisation ? form.organisation.name : form.user.first_name + ' ' + form.user.last_name
           form.status = this.status(form.status_id)
@@ -406,7 +414,9 @@
     },
     created: function () {
       if (this.user) {
-        this.$store.dispatch('loadUsers', this.slug)
+        if (this.userIsApplicationAdmin) {
+          this.$store.dispatch('loadUsers', this.slug)
+        }
         this.$store.dispatch('loadOrganisations', this.slug)
         this.$store.dispatch('loadFormTemplates', this.slug)
         this.$store.dispatch('loadAllSections', this.slug)

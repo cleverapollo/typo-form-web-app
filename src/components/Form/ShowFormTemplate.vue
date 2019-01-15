@@ -5,8 +5,16 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Edit Form Template</h1>
           <v-spacer></v-spacer>
-          <div class="text-xs-right" v-if="userIsApplicationAdmin">
-            <v-btn icon @click="showCustomSlot = !showCustomSlot">
+          <div class="text-xs-right">
+            <v-switch
+                    :label="switchStatus.toString()"
+                    :input-value="switchStatus"
+                    true-value="Published"
+                    false-value="Draft"
+                    class="d-inline-block switchButton"
+                    @change="updateStatus"
+            ></v-switch>
+            <v-btn icon @click="showCustomSlot = !showCustomSlot" v-if="userIsApplicationAdmin">
               <v-icon>edit</v-icon>
             </v-btn>
           </div>
@@ -52,6 +60,24 @@
                           </v-list-tile-avatar>
                           <v-list-tile-content>
                             <EditFormTemplate :formTemplate="formTemplate" :slug="slug"></EditFormTemplate>
+                          </v-list-tile-content>
+                        </v-list-tile>
+
+                        <v-list-tile @click="onPublishFormTemplate('Closed')" v-if="status === 'Open'">
+                          <v-list-tile-avatar>
+                            <v-icon>send</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
+                            Publish Form Template
+                          </v-list-tile-content>
+                        </v-list-tile>
+
+                        <v-list-tile @click="onPublishFormTemplate('Open')" v-if="status === 'Closed'">
+                          <v-list-tile-avatar>
+                            <v-icon>send</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
+                            Draft Form Template
                           </v-list-tile-content>
                         </v-list-tile>
 
@@ -139,6 +165,24 @@
       }
     },
     computed: {
+      switchStatus () {
+        if (!this.formTemplate) {
+          return ''
+        }
+        return this.status === 'Open' ? 'Draft' : 'Published'
+      },
+      status () {
+        if (!this.formTemplate) {
+          return 'undefined'
+        }
+        const status = this.statuses.find((status) => {
+          return status.id === this.formTemplate.status_id
+        })
+        return status ? status.status : 'undefined'
+      },
+      statuses () {
+        return this.$store.getters.statuses
+      },
       formTemplate () {
         return this.$store.getters.loadedFormTemplate(this.slug, parseInt(this.id))
       }
@@ -150,6 +194,27 @@
           id: this.formTemplate.id
         })
         this.$router.push('/form-templates')
+      },
+      onPublishFormTemplate (value) {
+        const status = this.statuses.find((status) => {
+          return status.status === value
+        })
+        this.$store.dispatch('updateFormTemplate', {
+          slug: this.slug,
+          id: this.id,
+          statusId: status.id
+        })
+      },
+      updateStatus () {
+        const newStatus = (this.status === 'Open') ? 'Closed' : 'Open'
+        const status = this.statuses.find((status) => {
+          return status.status === newStatus
+        })
+        this.$store.dispatch('updateFormTemplate', {
+          slug: this.slug,
+          id: this.id,
+          statusId: status.id
+        })
       }
     },
     created: function () {
@@ -161,3 +226,9 @@
     }
   }
 </script>
+
+<style>
+  .switchButton label {
+    width: 70px;
+  }
+</style>

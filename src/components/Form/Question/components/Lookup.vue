@@ -40,8 +40,20 @@
       }
     },
     computed: {
+      statuses () {
+        return this.$store.getters.statuses
+      },
       formTemplates () {
-        return this.$store.getters.loadedFormTemplates(this.slug).filter(formTemplate => formTemplate.id !== parseInt(this.formTemplateId))
+        let formTemplates = this.$store.getters.loadedFormTemplates(this.slug).filter(formTemplate => formTemplate.id !== parseInt(this.formTemplateId))
+        if (!this.userIsApplicationAdmin) {
+          formTemplates = formTemplates.filter(formTemplate => {
+            const status = this.statuses.find((status) => {
+              return status.id === formTemplate.status_id
+            })
+            return status.status === 'Closed'
+          })
+        }
+        return formTemplates
       },
       questions () {
         if (!this.editFormTemplateId) {

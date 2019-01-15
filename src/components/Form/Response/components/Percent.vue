@@ -9,6 +9,7 @@
         :step="decimal"
         :min="min"
         :max="max"
+        append-icon="opacity"
       ></v-slider>
     </v-flex>
   </v-layout>

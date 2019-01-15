@@ -35,6 +35,7 @@
               <template slot="items" slot-scope="props">
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.name }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.forms_length }}</td>
+                <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.status }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.created_at.date | moment }}</td>
                 <td>
                   <v-tooltip bottom>
@@ -84,6 +85,8 @@
   import * as _ from 'lodash'
   import moment from 'moment'
   import CreateFormTemplate from './CreateFormTemplate'
+  import UserMixin from '../Layout/UserMixin'
+
   export default {
     data () {
       return {
@@ -93,6 +96,7 @@
         headers: [
           {text: 'Form Template', value: 'name'},
           {text: 'Forms', value: 'forms_length'},
+          {text: 'Status', value: 'status'},
           {text: 'Created', value: 'created_at.date'},
           {text: 'Actions', value: 'Actions'}
         ],
@@ -102,47 +106,31 @@
         duplicateFormTemplate: false
       }
     },
+    mixins: [UserMixin],
     components: {
       CreateFormTemplate
     },
     computed: {
-      roles () {
-        return this.$store.getters.roles
+      statuses () {
+        return this.$store.getters.statuses
       },
       application () {
         return this.$store.getters.loadedApplication(this.slug)
       },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsApplicationAdmin () {
-        return this.userIsAdmin || this.isSuperUser
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.application) {
-          return false
-        }
-        return this.getRole(this.application.application_role_id) === 'Admin'
-      },
-      isSuperUser () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
-      },
       formTemplates () {
-        return _.sortBy(this.$store.getters.loadedFormTemplates(this.slug), element => {
+        let formTemplates = _.sortBy(this.$store.getters.loadedFormTemplates(this.slug), element => {
           return element.name.toLowerCase()
         })
+        formTemplates.forEach((formTemplate) => {
+          const status = this.statuses.find((status) => {
+            return status.id === formTemplate.status_id
+          })
+          formTemplate.status = ((status.status === 'Open') ? 'Draft' : 'Published')
+        })
+        return formTemplates
       }
     },
     methods: {
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
-      },
       onLoadFormTemplate (id) {
         this.$router.push('/form-templates/' + id)
       },

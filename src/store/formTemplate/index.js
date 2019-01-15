@@ -144,6 +144,9 @@ export default {
       if (payload.typeId) {
         formData.append('type_id', payload.typeId)
       }
+      if (payload.statusId) {
+        formData.append('status_id', payload.statusId)
+      }
       if (payload.showProgress !== null) {
         formData.append('show_progress', payload.showProgress ? 1 : 0)
       }

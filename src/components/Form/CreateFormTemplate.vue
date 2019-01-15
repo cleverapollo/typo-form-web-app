@@ -64,6 +64,14 @@
         typeId: null
       }
     },
+    watch: {
+      types (value) {
+        const type = value.find(type => type.name === 'organisation')
+        if (type) {
+          this.typeId = type.id
+        }
+      }
+    },
     mounted () {
       const type = this.types.find(type => type.name === 'organisation')
       if (type) {

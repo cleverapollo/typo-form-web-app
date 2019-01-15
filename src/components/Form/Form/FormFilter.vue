@@ -130,6 +130,7 @@
 <script>
   import * as _ from 'lodash'
   import moment from 'moment'
+  import UserMixin from '../../Layout/UserMixin'
 
   export default {
     name: 'FormFilter',
@@ -140,6 +141,7 @@
         slug: window.location.hostname.split('.')[0]
       }
     },
+    mixins: [UserMixin],
     computed: {
       triggerTypes () {
         return this.$store.getters.triggerTypes.filter(e => {
@@ -185,6 +187,14 @@
       },
       forms () {
         let forms = this.$store.getters.loadedAllForms(this.slug)
+        if (!this.userIsApplicationAdmin) {
+          forms = forms.filter(form => {
+            const status = this.statuses.find((status) => {
+              return status.id === form.form_template.status_id
+            })
+            return status.status === 'Closed'
+          })
+        }
         forms.forEach((form) => {
           form.user.name = form.user.first_name + ' ' + form.user.last_name
           form.owner = form.organisation ? form.organisation.name : form.user.first_name + ' ' + form.user.last_name
