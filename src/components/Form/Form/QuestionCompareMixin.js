@@ -267,10 +267,7 @@ export default {
             const answer = item.answers.find((answer) => {
               return answer.id === response.answer_id
             })
-            const res = item.answers.find((answer) => {
-              return answer.id === parseInt(response.response)
-            })
-            return '(' + answer.answer + ', ' + res.answer + ')'
+            return '(' + answer.answer + ', ' + response.response + ')'
           })
           response = result1.join(', ')
           break

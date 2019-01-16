@@ -322,7 +322,7 @@ export default {
             const questionType = this.getQuestionType(question.question_type_id)
             let order = 1
             if (responses.length) {
-              order = Math.max(responses.map(response => response.order))
+              order = Math.max(...responses.map(response => response.order))
             }
             for (let i = 1; i <= order; i++) {
               const orderResponses = responses.filter((response) => {

@@ -235,6 +235,14 @@
         const headers = []
         // Replace existing headers with new headers
         _.forEach(this.filters, (filter, index) => {
+          if (filter.source.group !== 'Form Detail') {
+            const question = this.questions.find((question) => {
+              return question.id === filter.source.id
+            })
+            if (!question) {
+              return
+            }
+          }
           headers.push({ text: filter.source.question, value: filter.source.question })
         })
         headers.push({ text: 'Actions', value: 'Actions' })
@@ -291,6 +299,9 @@
               const question = this.questions.find((question) => {
                 return question.id === filter.source.id
               })
+              if (!question) {
+                return
+              }
               let responses = form.responses.filter((response) => {
                 return response.question_id === filter.source.id
               })
@@ -302,7 +313,7 @@
               const questionType = this.getQuestionType(question.question_type_id)
               let order = 1
               if (responses.length) {
-                order = Math.max(responses.map(response => response.order))
+                order = Math.max(...responses.map(response => response.order))
               }
               for (let i = 1; i <= order; i++) {
                 const orderResponses = responses.filter((response) => {
