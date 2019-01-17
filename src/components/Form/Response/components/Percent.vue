@@ -9,7 +9,9 @@
         :step="decimal"
         :min="min"
         :max="max"
-        append-icon="opacity"
+        always-dirty
+        label="%"
+        inverse-label
       ></v-slider>
     </v-flex>
   </v-layout>
