@@ -59,7 +59,7 @@
                           <v-list-tile-content>Duplicate Form</v-list-tile-content>
                         </v-list-tile>
 
-                        <v-list-tile @click.stop="onOpenForm" v-if="status==='Closed' && userIsApplicationAdmin">
+                        <v-list-tile @click.stop="onOpenForm" v-if="status==='Closed' && isAdmin">
                           <v-list-tile-avatar>
                             <v-icon>assignment</v-icon>
                           </v-list-tile-avatar>
@@ -296,9 +296,27 @@
           return this.meta.help
         }
         return null
+      },
+      user () {
+        return this.$store.getters.user
+      },
+      roles () {
+        return this.$store.getters.roles
+      },
+      isSuperUser () {
+        return this.user && this.getRole(this.user.role_id) === 'Super Admin'
+      },
+      isAdmin () {
+        return this.isSuperUser || (this.user && this.application && this.getRole(this.application.application_role_id) === 'Admin')
       }
     },
     methods: {
+      getRole (roleId) {
+        const role = this.roles.find((role) => {
+          return role.id === roleId
+        })
+        return role ? role.name : 'undefined'
+      },
       duplicateForm: function () {
         this.$store.dispatch('duplicateForm', {
           formTemplateId: this.formTemplateId,
