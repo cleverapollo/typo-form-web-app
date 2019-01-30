@@ -125,7 +125,7 @@
           const status = this.statuses.find((status) => {
             return status.id === formTemplate.status_id
           })
-          formTemplate.status = ((status.status === 'Open') ? 'Draft' : 'Published')
+          formTemplate.status = ((status && status.status === 'Open') ? 'Draft' : 'Published')
         })
         return formTemplates
       }
