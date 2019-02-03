@@ -90,6 +90,18 @@
                           </v-list-tile-content>
                         </v-list-tile>
 
+                        <v-divider></v-divider>
+                        <v-list-tile>
+                          <v-list-tile-avatar>
+                            <v-icon>cloud_upload</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
+                            <UploadFormData :formTemplate="formTemplate" :slug="slug"></UploadFormData>
+                          </v-list-tile-content>
+                        </v-list-tile>
+
+
+
                       </v-list>
                     </v-menu>
                   </div>
@@ -142,6 +154,7 @@
 <script>
   import FormView from './FormView'
   import EditFormTemplate from './EditFormTemplate'
+  import UploadFormData from './UploadFormData'
   import CreateSection from './Section/CreateSection'
   import FormNavigation from './FormNavigation'
   import CustomSlot from '../Layout/CustomSlot'
@@ -153,6 +166,7 @@
     components: {
       FormView,
       EditFormTemplate,
+      UploadFormData,
       CreateSection,
       FormNavigation,
       CustomSlot
