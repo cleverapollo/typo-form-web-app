@@ -275,7 +275,7 @@ export default {
                 response = form.user.email
                 break
               case 'Organisation':
-                response = form.organisation.name
+                response = form.organisation ? form.organisation.name : ''
                 break
               case 'Progress':
                 response = form.progress

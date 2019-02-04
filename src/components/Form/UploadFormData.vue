@@ -5,44 +5,72 @@
     </div>
 
     <v-card>
-      <v-container>
-        <v-layout row wrap>
-          <v-flex>
-            <h2>Upload Form Data</h2>
-          </v-flex>
-        </v-layout>
+      <!-- //Title -->
+      <v-card-title>
+        <div class="title mb-2 mt-2">Upload Form Data</div>
+      </v-card-title>
 
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-layout>
-            <v-flex>
-              <label for="upload"><span>{{ csvFileName }}</span></label>
-              <input id="upload" type="file" accept=".csv, .xls, .xlsx" @change="onFileChange"
-                     data-multiple-caption="{count} files selected" multiple/>
-            </v-flex>
-          </v-layout>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-layout row wrap>
+      <!-- // Content -->
+      <v-card-text>
+        <v-layout row v-if="!completed">
           <v-flex xs12>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn flat class="secondary" @click="onCancel">Close</v-btn>
-              <v-btn
-                flat
-                class="primary"
-                @click="onSaveChanges"
-                :disabled="loading"
-                :loading="loading"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
+            <input 
+              id="upload" 
+              type="file" 
+              accept=".csv, .xls, .xlsx"
+              data-multiple-caption="{count} files selected"
+              @change="onFileChange"
+              :disabled="loading"
+              />
           </v-flex>
         </v-layout>
-      </v-container>
+
+        <v-layout row v-if="file && !completed">
+          <v-flex text-xs-center xs12 py-2>
+            <v-btn 
+              class="primary"
+              @click="onSaveChanges" 
+              :disabled="loading">
+                Start Upload
+              </v-btn>
+          </v-flex>
+        </v-layout>
+
+        <v-layout row v-if="loading">
+          <v-flex text-xs-center xs12>
+            <v-progress-linear
+              indeterminate
+            >
+            </v-progress-linear>
+          </v-flex>
+        </v-layout>
+
+        <v-layout row v-if="completed">
+          <v-flex xs12>
+            <v-alert
+              :value="true"
+              type="success"
+            >
+              {{ this.response}}
+            </v-alert>
+          </v-flex>
+        </v-layout>
+
+      </v-card-text>
+
+      <!-- //Actions -->
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-layout row py-2>
+          <v-flex xs12 class="text-xs-right">      
+            <v-btn
+              flat
+              @click="onCancel"
+              :disabled="loading">Close</v-btn>
+          </v-flex>
+        </v-layout>
+      </v-card-actions>
+
     </v-card>
   </v-dialog>
 </template>
@@ -52,27 +80,38 @@
     props: ['formTemplate', 'slug'],
     data () {
       return {
-        id: this.formTemplate.id
+        uploadFormData: false,
+        id: this.formTemplate.id,
+        file: null,
+        completed: false,
+        response: null
       }
     },
     methods: {
       onSaveChanges () {
-        if (this.editedName.trim() === '') {
+        if (!this.file) {
           return
         }
 
-        this.uploadFormTemplate = false
-
-        this.$store.dispatch('updateFormTemplate', {
+        this.$store.dispatch('uploadFormData', {
           slug: this.slug,
           id: this.id,
-          csv: this.csv
+          file: this.file
+        })
+        .then(response => {
+          this.response = response.data.upload
+          this.completed = true
         })
       },
+      onFileChange (e) {
+        const files = e.target.files || e.dataTransfer.files
+        this.file = files.length ? files[0] : false
+      },
       onCancel () {
-        this.editedName = this.formTemplate.name
-        this.editFormTemplate = false
-        this.typeId = this.formTemplate.type_id
+        this.uploadFormData = false
+        this.file = null
+        this.completed = false
+        this.response = null
       }
     },
     computed: {
