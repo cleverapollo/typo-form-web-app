@@ -179,6 +179,28 @@ export default {
           })
       })
     },
+    uploadFormTemplate ({commit}, payload) {
+      commit('setLoading', true)
+      let formData = new FormData()
+      formData.append('csv', payload.file)
+
+      const config = {
+        headers: {'content-type': 'multipart/form-data'}
+      }
+      return new Promise((resolve, reject) => {
+        window.axios.post(APPLICATION_URL + payload.slug + FORM_TEMPLATE_URL + '/' + payload.id + '/upload', formData, config)
+          .then(
+            response => {
+              commit('setLoading', false)
+              resolve(response)
+            }
+          )
+          .catch(error => {
+            commit('setLoading', false)
+            reject(error)
+          })
+      })
+    },
     uploadFormData ({commit}, payload) {
       commit('setLoading', true)
       let formData = new FormData()
@@ -188,7 +210,7 @@ export default {
         headers: {'content-type': 'multipart/form-data'}
       }
       return new Promise((resolve, reject) => {
-        window.axios.post(APPLICATION_URL + payload.slug + FORM_TEMPLATE_URL + '/' + payload.id + '/upload', formData, config)
+        window.axios.post(APPLICATION_URL + payload.slug + FORM_TEMPLATE_URL + '/' + payload.id + '/form/upload', formData, config)
           .then(
             response => {
               commit('setLoading', false)

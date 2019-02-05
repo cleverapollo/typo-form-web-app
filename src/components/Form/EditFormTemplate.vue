@@ -79,6 +79,7 @@
             </v-flex>
           </v-layout>
 
+          <!-- 
           <v-layout>
             <v-flex>
               <label for="upload"><span>{{ csvFileName }}</span></label>
@@ -86,6 +87,8 @@
                      data-multiple-caption="{count} files selected" multiple/>
             </v-flex>
           </v-layout>
+          -->
+        
         </v-card-text>
 
         <v-divider></v-divider>
