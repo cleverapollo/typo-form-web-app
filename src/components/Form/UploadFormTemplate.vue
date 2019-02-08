@@ -101,6 +101,8 @@
         .then(response => {
           this.response = response.data.upload
           this.completed = true
+          this.$store.dispatch('loadSections', this.id)
+          this.$store.dispatch('selectSection', null)
         })
       },
       onFileChange (e) {
