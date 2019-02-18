@@ -4,30 +4,34 @@
       <v-layout row class="pa-2">
         <v-flex xs8 offset-xs2>
           <v-layout row>
-            <v-flex v-for="n in end.id" :key="n" v-if="n+1!=start.id">
+            <v-flex 
+              v-for="n in end.id" 
+              :key="n" 
+              v-if="n+1!=start.id" 
+              :style="'width: ' + ((1/end.id)*100) + '%; text-align:center;'">
               <span class="optionLabel">{{ n }}</span>
             </v-flex>
           </v-layout>
         </v-flex>
       </v-layout>
-      <v-layout row class='pa-2'>
-        <v-flex xs2 class="text-center">{{ start.title }}</v-flex>
+      <v-layout row class="pa-2">
+        <v-flex xs2 class="text-xs-left scale-title">{{ start.title }}</v-flex>
         <v-flex xs8>
           <v-layout row>
-            <v-radio-group v-model="optionModel" row>
+            <v-radio-group v-model="optionModel" row class="scale-radio-group">
               <v-radio
                 color="info"
                 :disabled="disabled"
                 v-for="n in end.id" 
                 :key="n" v-if="n+1!=start.id" 
                 :value="n"
-                :style="'width: ' + 75/end.id + '%'"
+                :style="'width: ' + ((1/end.id)*100) + '%; margin:0px;'"
                 @change="onSave(n)
               "></v-radio>
             </v-radio-group>
           </v-layout>
         </v-flex>
-        <v-flex xs2 class="text-center">{{ end.title }}</v-flex>
+        <v-flex xs2 class="text-xs-right scale-title">{{ end.title }}</v-flex>
       </v-layout>
     </v-flex>
   </v-layout>
@@ -83,3 +87,15 @@
     }
   }
 </script>
+<style>
+.scale-radio-group .v-input__control {
+  width:100%;
+}
+.scale-radio-group .v-input--selection-controls__input {
+  margin:0 auto;
+}
+.scale-title {
+  margin-top: 16px;
+  padding-top: 4px;
+}
+</style>
