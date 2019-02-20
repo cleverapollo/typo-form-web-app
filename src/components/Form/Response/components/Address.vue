@@ -26,7 +26,8 @@
       return {
         loading: false,
         search: null,
-        items: []
+        items: [],
+        sessionToken: null
       }
     },
     computed: {
@@ -67,7 +68,7 @@
       }
     },
     mounted () {
-      this.items = [this.item]
+      this.items = this.item ? [this.item] : []
       this.sessionToken = new google.maps.places.AutocompleteSessionToken()
     }
   }
