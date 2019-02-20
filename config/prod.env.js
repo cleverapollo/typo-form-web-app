@@ -28,5 +28,5 @@ module.exports = {
 
   ABR_GUID: JSON.stringify(process.env.ABR_GUID),
 
-  GOOGLE_API_KEY: JSON.stringify(process.env.GOOGLE_API_KEY)
+  GOOGLE_MAPS_API_KEY: JSON.stringify(process.env.GOOGLE_MAPS_API_KEY)
 }

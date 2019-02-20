@@ -2,81 +2,73 @@
   <v-layout row>
     <v-flex xs12>
       <v-autocomplete
-        v-model="model"
+        v-model="item"
+        :loading="loading"
         :items="items"
-        :loading="isLoading"
         :search-input.sync="search"
-        color="white"
-        item-text="formatted_address"
-        item-value="keyword"
-        label="Address"
-        placeholder="Start typing to Search"
-        return-object
-        @change="onSave"
-        v-on:placechanged="getAddressData"
-      ></v-autocomplete>
+        item-text="description"
+        hide-no-data
+        hide-details
+        prepend-icon="place"
+        placeholder="Search for an address..."
+        no-filter
+      >
+      </v-autocomplete>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-  import axios from 'axios'
-  import _ from 'lodash'
   export default {
     name: 'Address',
     props: ['question', 'answers', 'responses', 'disabled', 'formTemplateId', 'sectionId', 'questionId'],
     data () {
       return {
-        message: '',
-        query_url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=address_string&key=${process.env.GOOGLE_API_KEY}&sessiontoken=1234567890`,
-        details_url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=place_id&key=${process.env.GOOGLE_API_KEY}&sessiontoken=1234567890`,
-        address: {},
-        isLoading: false,
+        loading: false,
         search: null,
-        model: null,
         items: []
       }
     },
+    computed: {
+      item: {
+        get () {
+          return this.responses.length ? this.responses[0].response : null
+        },
+        set (val) {
+          this.responses.length ? this.$emit('update-response', [null, val, this.responses[0].id]) : this.$emit('create-response', [null, val])
+        }
+      }
+    },
     methods: {
-      onSave (value) {
-        if (!value) {
-          return
-        }
-        _.forEach(this.responses, response => {
-          this.$emit('delete-response', response.id)
-        })
-        console.log(value)
-        const detailsURL = this.details_url.replace('address_string', value)
-        const instance = axios.create()
-        instance.get(detailsURL)
-          .then(res => {
-            console.log(res.data)
-          })
-          .finally(() => (this.isLoading = false))
-      },
-      getAddressData (value) {
-        if (!value) {
-          return
-        }
-        console.log(value)
+      getPredictions (val) {
+        this.loading = true
+        setTimeout(() => {
+          this.items = []
+
+          if (val && val.length) {
+            let query = {
+              input: val,
+              sessionToken: this.sessionToken
+            }
+            let service = new google.maps.places.AutocompleteService()
+            service.getQueryPredictions(query, (predictions, status) => {
+              this.items = predictions ? predictions.map(prediction => prediction.description) : []
+            })
+          }
+          this.loading = false
+        }, 500)
       }
     },
     watch: {
       search (val) {
-        if (!val) return
-        if (this.isLoading) return
-
-        this.isLoading = true
-        const addressURL = this.query_url.replace('address_string', val)
-        const instance = axios.create()
-        instance.get(addressURL)
-          .then(res => {
-            console.log(res.data)
-            this.items = res.data.predictions
-          })
-          .finally(() => (this.isLoading = false))
+        if(val != this.item) {
+          this.getPredictions(val)
+        }
       }
     },
-    mounted () {}
+    mounted () {
+      this.items = [this.item]
+      this.sessionToken = new google.maps.places.AutocompleteSessionToken()
+    }
   }
 </script>
