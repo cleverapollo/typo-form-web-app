@@ -62,7 +62,7 @@
     },
     watch: {
       search (val) {
-        if(val != this.item) {
+        if (val !== this.item) {
           this.getPredictions(val)
         }
       }
