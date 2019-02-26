@@ -30,7 +30,7 @@
               :items="formTemplates"
               :search="search"
               :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
-
+              :loading="loadingFormTemplates"
             >
               <template slot="items" slot-scope="props">
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.name }}</td>
@@ -103,7 +103,8 @@
         defaultName: '',
         createFormTemplate: false,
         deleteFormTemplate: false,
-        duplicateFormTemplate: false
+        duplicateFormTemplate: false,
+        loadingFormTemplates: false
       }
     },
     mixins: [UserMixin],
@@ -164,7 +165,11 @@
       }
     },
     created: function () {
-      this.$store.dispatch('loadFormTemplates', this.slug)
+      this.loadingFormTemplates = true
+      Promise.all([this.$store.dispatch('loadFormTemplates', this.slug)])
+      .then(() => {
+        this.loadingFormTemplates = false
+      })
     },
     filters: {
       moment: function (date) {

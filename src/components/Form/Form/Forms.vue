@@ -98,7 +98,7 @@
               :items='data'
               :search='search'
               :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
-
+              :loading="loadingForms"
             >
               <template slot='items' slot-scope='props'>
                 <tr>
@@ -182,7 +182,8 @@
         deleteForm: false,
         duplicated: false,
         duplicatedContent: false,
-        editMode: false
+        editMode: false,
+        loadingForms: false
       }
     },
     mixins: [QuestionCompareMixin, LayoutMixin, UserMixin],
@@ -428,11 +429,16 @@
         if (this.userIsApplicationAdmin) {
           this.$store.dispatch('loadUsers', this.slug)
         }
-        this.$store.dispatch('loadOrganisations', this.slug)
-        this.$store.dispatch('loadFormTemplates', this.slug)
-        this.$store.dispatch('loadAllSections', this.slug)
-        this.$store.dispatch('loadAllForms', this.slug)
-        this.$store.dispatch('loadAllOrganisationUsers', this.slug)
+        this.loadingForms = true
+        Promise.all([
+          this.$store.dispatch('loadOrganisations', this.slug),
+          this.$store.dispatch('loadFormTemplates', this.slug),
+          this.$store.dispatch('loadAllSections', this.slug),
+          this.$store.dispatch('loadAllForms', this.slug),
+          this.$store.dispatch('loadAllOrganisationUsers', this.slug)]
+        ).then(() => {
+          this.loadingForms = false
+        })
 
         this.filters = this.metaValue(this.type)
         if (!this.filters) {
