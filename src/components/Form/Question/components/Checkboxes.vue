@@ -1,5 +1,10 @@
 <template>
   <draggable v-model='list' class='dragArea' :options='{draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
+    <v-layout row>
+      <v-flex class="xs1 offset-xs10 text-xs-right">
+        Other Field
+      </v-flex>
+    </v-layout>
     <v-layout row v-for='(answer, index) in list' :key='"Option " + index' class='answer' :class='"answer" + answer.id'>
       <v-flex style='min-width: 120px' class="xs8">
         <v-text-field
@@ -13,7 +18,7 @@
           <v-icon>close</v-icon>
         </v-btn>
       </v-flex>
-      <v-flex class="xs2 offset-xs1">
+      <v-flex class="xs1 offset-xs1 text-xs-right">
         <v-switch v-model="answer.parameter" label="" @change='updateParameter(answer.id, $event, answer.answer)'></v-switch>
       </v-flex>
     </v-layout>
@@ -122,7 +127,7 @@
     methods: {
       createAnswer () {
         let str = `Option ${this.answers.length + 1}`
-        this.$emit('create-answer', [str, false])
+        this.$emit('create-answer', [str, true])
       },
       deleteAnswer (index) {
         this.$emit('delete-answer', this.answers[index].id)
@@ -152,7 +157,7 @@
             if (index === 0) {
               return
             }
-            _this.$emit('create-answer', [value, false])
+            _this.$emit('create-answer', [value, true])
           })
         } else {
           this.$emit('update-answer', [this.multiAnswerId, this.multiAnswer])
@@ -212,7 +217,7 @@
     },
     mounted () {
       if (this.answers.length === 0) {
-        this.$emit('create-answer', ['Option 1', false])
+        this.$emit('create-answer', ['Option 1', true])
       } else if (this.answers.length === 2 && this.answers[0].answer.substr(0, 11) === 'LinearScale' && this.answers[1].answer.substr(0, 11) === 'LinearScale') {
         this.$emit('delete-answers')
       }

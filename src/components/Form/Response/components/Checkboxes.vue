@@ -10,7 +10,7 @@
           :value="answer.id"
           @change="onSave(answer.id)"
           hide-details
-          v-if="answer.parameter"
+          v-if="!answer.parameter"
          >
         </v-checkbox>
         <template v-else>
@@ -47,7 +47,7 @@
   export default {
     name: 'checkboxes',
     mixins: [validationMixin],
-    props: ['question', 'answers', 'responses', 'formId', 'disabled'],
+    props: ['question', 'answers', 'responses', 'formId', 'disabled', 'formTemplateId'],
     data () {
       return {
         checkAnswers: []

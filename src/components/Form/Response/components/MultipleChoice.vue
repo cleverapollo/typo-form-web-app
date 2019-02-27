@@ -10,7 +10,7 @@
             :label="answer.answer"
             :value="answer.id"
             @change="onSave(answer.id)"
-            v-if="answer.parameter"
+            v-if="!answer.parameter"
           >
           </v-radio>
           <v-layout row wrap class="radio-other" v-else>
@@ -40,7 +40,7 @@
   import * as _ from 'lodash'
   export default {
     name: 'multiple-choice',
-    props: ['question', 'answers', 'responses', 'disabled', 'hasValidation', 'questionId'],
+    props: ['question', 'answers', 'responses', 'disabled', 'hasValidation', 'questionId', 'formTemplateId'],
     data () {
       return {
         optionModel: this.responses.length ? this.responses[0].answer_id : ''
