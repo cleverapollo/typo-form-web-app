@@ -491,14 +491,27 @@
       updateAnswer: function (args) {
         const id = args[0]
         const answer = args[1]
-        this.$store.dispatch('updateAnswer',
-          {
-            formTemplateId: this.formTemplateId,
-            sectionId: this.sectionId,
-            questionId: this.question.id,
-            id: id,
-            answer: answer
-          })
+        const parameter = args[2]
+        if (parameter !== null) {
+          this.$store.dispatch('updateAnswer',
+            {
+              formTemplateId: this.formTemplateId,
+              sectionId: this.sectionId,
+              questionId: this.question.id,
+              id: id,
+              answer: answer,
+              parameter: parameter
+            })
+        } else {
+          this.$store.dispatch('updateAnswer',
+            {
+              formTemplateId: this.formTemplateId,
+              sectionId: this.sectionId,
+              questionId: this.question.id,
+              id: id,
+              answer: answer
+            })
+        }
       },
       deleteAnswer: function (id) {
         this.$store.dispatch('deleteAnswer', {

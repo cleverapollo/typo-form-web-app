@@ -59,6 +59,9 @@ export default {
       if (payload.answer) {
         updateObj.answer = payload.answer
       }
+      if (payload.parameter !== null) {
+        updateObj.parameter = payload.parameter
+      }
       window.axios.put(QUESTION_URL + payload.questionId + ANSWER_URL + '/' + payload.id, updateObj)
         .then(
           response => {

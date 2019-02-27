@@ -1,32 +1,29 @@
 <template>
   <draggable v-model='list' class='dragArea' :options='{draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
     <v-layout row v-for='(answer, index) in list' :key='"Option " + index' class='answer' :class='"answer" + answer.id'>
-      <v-flex style='min-width: 120px' :class="answer.parameter ? 'xs10' : 'xs2'">
+      <v-flex style='min-width: 120px' class="xs8">
         <v-text-field
           prepend-icon='check_box_outline_blank'
           v-model='answer.answer'
           @change='showModal(answer.id, $event)'
         ></v-text-field>
       </v-flex>
-      <v-flex style='width: 30px' v-show='computedLength > 1'>
+      <v-flex class="xs1 text-xs-center" v-show='computedLength > 1'>
         <v-btn flat icon @click='deleteAnswer(index)' class='mt-3'>
           <v-icon>close</v-icon>
         </v-btn>
       </v-flex>
+      <v-flex class="xs2 offset-xs1">
+        <v-switch v-model="answer.parameter" label="" @change='updateParameter(answer.id, $event, answer.answer)'></v-switch>
+      </v-flex>
     </v-layout>
-    <v-layout row d-inline-flex>
-      <v-flex style='width: 125px'>
+    <v-layout row>
+      <v-flex class="xs2">
         <v-text-field
           prepend-icon='check_box_outline_blank'
           value='Add option'
           @click='createAnswer'
         ></v-text-field>
-      </v-flex>
-      <v-flex v-show='!computedHasOther' class='ml-3 mt-4'>
-        <div>or</div>
-      </v-flex>
-      <v-flex v-show='!computedHasOther' class='mt-2'>
-        <v-btn flat color="primary" @click='setHasOther' class='mx-0'>add "other"</v-btn>
       </v-flex>
     </v-layout>
     <v-layout v-if='hasValidation' row>
@@ -125,16 +122,10 @@
     methods: {
       createAnswer () {
         let str = `Option ${this.answers.length + 1}`
-        if (this.computedHasOther) {
-          str = `Option ${this.answers.length}`
-        }
-        this.$emit('create-answer', [str, true])
+        this.$emit('create-answer', [str, false])
       },
       deleteAnswer (index) {
         this.$emit('delete-answer', this.answers[index].id)
-      },
-      setHasOther () {
-        this.$emit('create-answer', ['Other...', false])
       },
       showModal (index, value) {
         this.multiAnswer = value
@@ -144,6 +135,11 @@
         } else {
           this.updateAnswer(false)
         }
+      },
+      updateParameter (index, value, answer) {
+        this.multiAnswer = value
+        this.multiAnswerId = index
+        this.$emit('update-answer', [index, answer, value])
       },
       updateAnswer (flag) {
         if (flag) {
@@ -156,7 +152,7 @@
             if (index === 0) {
               return
             }
-            _this.$emit('create-answer', [value, true])
+            _this.$emit('create-answer', [value, false])
           })
         } else {
           this.$emit('update-answer', [this.multiAnswerId, this.multiAnswer])
@@ -216,37 +212,48 @@
     },
     mounted () {
       if (this.answers.length === 0) {
-        this.$emit('create-answer', ['Option 1', true])
+        this.$emit('create-answer', ['Option 1', false])
       } else if (this.answers.length === 2 && this.answers[0].answer.substr(0, 11) === 'LinearScale' && this.answers[1].answer.substr(0, 11) === 'LinearScale') {
         this.$emit('delete-answers')
-      } else if (this.answers.length > 1) {
-        const lastAnswer = this.answers[this.answers.length - 2]
-        if (!lastAnswer.parameter) {
-          this.$emit('change-answer')
-        }
       }
       this.$root.$on('validation-create', this.eventsAdapter['validation-create'])
       this.$root.$on('validation-remove', this.eventsAdapter['validation-remove'])
     },
     computed: {
+      question () {
+        return this.$store.getters.loadedAllQuestion(this.formTemplateId, this.questionId)
+      },
+      answerSort () {
+        const answerSort = _.find(this.answerSorts, sort => {
+          return sort.id === this.question.sort_id
+        })
+        return answerSort ? answerSort.sort : 'Undefined'
+      },
+      answerSorts () {
+        return this.$store.getters.answerSorts
+      },
       list: {
         get () {
-          return this.answers
+          const answers = this.answers
+          if (this.answerSort === 'Alphanumeric Ascending (A-Z)') {
+            return _.orderBy(answers, ['answer'], ['asc'])
+          }
+          if (this.answerSort === 'Alphanumeric Descending (Z-A)') {
+            return _.orderBy(answers, ['answer'], ['desc'])
+          }
+          if (this.answerSort === 'Number Ascending (1-9)') {
+            return _.orderBy(answers, [answer => parseInt(answer.answer)], ['asc'])
+          }
+          if (this.answerSort === 'Number Descending (9-1)') {
+            return _.orderBy(answers, [answer => parseInt(answer.answer)], ['desc'])
+          }
+          return _.orderBy(answers, ['order'], ['asc'])
         },
         set (value) {
           // TODO: Drggable components
         }
       },
-      computedHasOther () {
-        if (!this.answers.length) {
-          return false
-        }
-        return !this.answers[this.answers.length - 1].parameter
-      },
       computedLength () {
-        if (this.answers.length && !this.answers[this.answers.length - 1].parameter) {
-          return this.answers.length - 1
-        }
         return this.answers.length
       }
     },
