@@ -127,7 +127,7 @@
     methods: {
       createAnswer () {
         let str = `Option ${this.answers.length + 1}`
-        this.$emit('create-answer', [str, true])
+        this.$emit('create-answer', [str, false])
       },
       deleteAnswer (index) {
         this.$emit('delete-answer', this.answers[index].id)
@@ -157,7 +157,7 @@
             if (index === 0) {
               return
             }
-            _this.$emit('create-answer', [value, true])
+            _this.$emit('create-answer', [value, false])
           })
         } else {
           this.$emit('update-answer', [this.multiAnswerId, this.multiAnswer])
@@ -217,7 +217,7 @@
     },
     mounted () {
       if (this.answers.length === 0) {
-        this.$emit('create-answer', ['Option 1', true])
+        this.$emit('create-answer', ['Option 1', false])
       } else if (this.answers.length === 2 && this.answers[0].answer.substr(0, 11) === 'LinearScale' && this.answers[1].answer.substr(0, 11) === 'LinearScale') {
         this.$emit('delete-answers')
       }
