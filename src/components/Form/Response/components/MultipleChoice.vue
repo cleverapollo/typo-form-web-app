@@ -2,7 +2,7 @@
   <v-layout row wrap>
     <v-flex xs12>
       <v-radio-group v-model="optionModel" :row="hasValidation">
-        <template v-for='(answer, index) in answers'>
+        <template v-for='(answer, index) in list'>
           <v-radio
             color="info"
             :disabled="disabled"
@@ -10,7 +10,7 @@
             :label="answer.answer"
             :value="answer.id"
             @change="onSave(answer.id)"
-            v-if="answer.parameter"
+            v-if="!answer.parameter"
           >
           </v-radio>
           <v-layout row wrap class="radio-other" v-else>
@@ -24,9 +24,9 @@
             </v-radio>
             <v-text-field
               :label="answer.answer"
-              :disabled="!enabled"
-              v-model="responseValue"
-              @change="onUpdate(answer.id)"
+              :disabled="responses.length && responses[0].answer_id !== answer.id"
+              :value="responseValue(answer.id)"
+              @change="onUpdate(answer.id, $event)"
             >
             </v-text-field>
           </v-layout>
@@ -37,45 +37,66 @@
 </template>
 
 <script>
+  import * as _ from 'lodash'
   export default {
     name: 'multiple-choice',
-    props: ['question', 'answers', 'responses', 'disabled', 'hasValidation'],
+    props: ['question', 'answers', 'responses', 'disabled', 'hasValidation', 'questionId', 'formTemplateId'],
     data () {
       return {
-        optionModel: this.responses.length ? this.responses[0].answer_id : '',
-        responseValue: null
-      }
-    },
-    mounted () {
-      if (this.responses.length) {
-        this.responseValue = this.responses[0].response
+        optionModel: this.responses.length ? this.responses[0].answer_id : ''
       }
     },
     computed: {
-      other () {
-        return this.answers.find((answer) => !answer.parameter)
+      answerSort () {
+        const question = this.$store.getters.loadedAllQuestion(this.formTemplateId, this.questionId)
+        const answerSort = _.find(this.answerSorts, sort => {
+          return sort.id === question.sort_id
+        })
+        return answerSort ? answerSort.sort : 'Undefined'
       },
-      enabled () {
-        return this.responses.length && this.responses[0].answer_id === this.other.id
+      answerSorts () {
+        return this.$store.getters.answerSorts
+      },
+      list: {
+        get () {
+          const answers = this.answers
+          if (this.answerSort === 'Alphanumeric Ascending (A-Z)') {
+            return _.orderBy(answers, ['answer'], ['asc'])
+          }
+          if (this.answerSort === 'Alphanumeric Descending (Z-A)') {
+            return _.orderBy(answers, ['answer'], ['desc'])
+          }
+          if (this.answerSort === 'Number Ascending (1-9)') {
+            return _.orderBy(answers, [answer => parseInt(answer.answer)], ['asc'])
+          }
+          if (this.answerSort === 'Number Descending (9-1)') {
+            return _.orderBy(answers, [answer => parseInt(answer.answer)], ['desc'])
+          }
+          return _.orderBy(answers, ['order'], ['asc'])
+        },
+        set (value) {
+          // TODO: Drggable components
+        }
       }
     },
     methods: {
+      responseValue (answerId) {
+        const response = this.responses.find(response => response.answer_id === answerId)
+        if (response) {
+          return response.response
+        }
+        return null
+      },
       onSave (answerId) {
         if (this.responses.length) {
-          let updateResponse = null
-          if (this.other && this.other.id === answerId) {
-            updateResponse = this.responseValue
-          } else {
-            this.responseValue = null
-          }
-          this.$emit('update-response', [answerId, updateResponse, this.responses[0].id])
+          this.$emit('update-response', [answerId, null, this.responses[0].id])
         } else {
           this.$emit('create-response', [answerId, null])
         }
       },
-      onUpdate (answerId) {
+      onUpdate (answerId, value) {
         if (this.responses.length) {
-          this.$emit('update-response', [answerId, this.responseValue, this.responses[0].id])
+          this.$emit('update-response', [answerId, value, this.responses[0].id])
         }
       }
     }
@@ -91,9 +112,5 @@
   }
   .question-group .v-input--radio-group .v-input__control .v-text-field__slot .v-label.v-label--active {
     top:12px;
-  }
-  .question-group .radio-other {
-    position:relative;
-    top:-20px;
   }
 </style>

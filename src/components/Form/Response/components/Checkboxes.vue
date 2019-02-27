@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex xs12>
-      <v-layout row v-for='(answer, index) in answers' :key='"Option " + index' :class='"item" + index + " checkbox"'>
+      <v-layout row v-for='(answer, index) in list' :key='"Option " + index' :class='"item" + index + " checkbox"'>
         <v-checkbox 
           color="info"
           :disabled="disabled"
@@ -10,23 +10,25 @@
           :value="answer.id"
           @change="onSave(answer.id)"
           hide-details
-          v-if="answer.parameter"
+          v-if="!answer.parameter"
          >
         </v-checkbox>
         <template v-else>
           <v-checkbox
             color="info"
             :disabled="disabled"
-            v-model="enabled"
+            v-model='checkAnswers'
+            :value="answer.id"
+            @change="onSave(answer.id)"
             hide-details
             class="shrink mr-1"
           >
           </v-checkbox>
           <v-text-field
+            :disabled="!checkAble(answer.id)"
             :label="answer.answer"
-            :disabled="!enabled"
-            v-model="responseValue"
-            @change="onUpdate(answer.id)"
+            :value="responseValue(answer.id)"
+            @change="onUpdate(answer.id, $event)"
           >
           </v-text-field>
         </template>
@@ -40,25 +42,21 @@
 
 <script>
   import validationMixin from '../ResponseValidationMixin'
+  import * as _ from 'lodash'
 
   export default {
     name: 'checkboxes',
     mixins: [validationMixin],
-    props: ['question', 'answers', 'responses', 'formId', 'disabled'],
+    props: ['question', 'answers', 'responses', 'formId', 'disabled', 'formTemplateId'],
     data () {
       return {
-        checkAnswers: [],
-        responseValue: null
+        checkAnswers: []
       }
     },
     mounted () {
       this.checkAnswers = this.responses.map((response) => {
         return response.answer_id
       })
-
-      if (this.enabled && this.enabled.response) {
-        this.responseValue = this.enabled.response
-      }
     },
     watch: {
       formId (value) {
@@ -68,19 +66,46 @@
       }
     },
     computed: {
-      other () {
-        return this.answers.find((answer) => !answer.parameter)
+      answerSort () {
+        const question = this.$store.getters.loadedAllQuestion(this.formTemplateId, this.questionId)
+        const answerSort = _.find(this.answerSorts, sort => {
+          return sort.id === question.sort_id
+        })
+        return answerSort ? answerSort.sort : 'Undefined'
       },
-      enabled: {
+      answerSorts () {
+        return this.$store.getters.answerSorts
+      },
+      list: {
         get () {
-          return this.other ? this.responses.find((response) => response.answer_id === this.other.id) : false
+          const answers = this.answers
+          if (this.answerSort === 'Alphanumeric Ascending (A-Z)') {
+            return _.orderBy(answers, ['answer'], ['asc'])
+          }
+          if (this.answerSort === 'Alphanumeric Descending (Z-A)') {
+            return _.orderBy(answers, ['answer'], ['desc'])
+          }
+          if (this.answerSort === 'Number Ascending (1-9)') {
+            return _.orderBy(answers, [answer => parseInt(answer.answer)], ['asc'])
+          }
+          if (this.answerSort === 'Number Descending (9-1)') {
+            return _.orderBy(answers, [answer => parseInt(answer.answer)], ['desc'])
+          }
+          return _.orderBy(answers, ['order'], ['asc'])
         },
         set (value) {
-          this.onSave(this.other.id)
+          // TODO: Drggable components
         }
       }
     },
     methods: {
+      responseValue (answerId) {
+        const response = this.responses.find(response => response.answer_id === answerId)
+        if (response) {
+          return response.response
+        }
+        return null
+      },
       checkAble (answerId) {
         const index = this.responses.findIndex((response) => {
           return response.answer_id === answerId
@@ -98,15 +123,12 @@
           this.$emit('create-response', [answerId, null])
         } else {
           this.$emit('delete-response', this.responseIdFromAnswer(answerId))
-          if (this.other && answerId === this.other.id) {
-            this.responseValue = null
-          }
         }
       },
-      onUpdate (answerId) {
+      onUpdate (answerId, value) {
         if (this.checkAble(answerId)) {
           const response = this.responses.find((response) => response.answer_id === answerId)
-          this.$emit('update-response', [answerId, this.responseValue, response.id])
+          this.$emit('update-response', [answerId, value, response.id])
         }
       }
     }
