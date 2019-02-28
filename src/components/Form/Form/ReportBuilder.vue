@@ -126,7 +126,6 @@
               :items="data"
               :search="search"
               :pagination.sync="pagination"
-              v-scroll="onScroll"
             >
               <template slot="items" slot-scope="props">
                 <tr @click="onForm(props.item.ID)">
@@ -184,11 +183,7 @@ export default {
       pagination: {
         rowsPerPage: -1
       },
-      editMode: false,
-      scrollSync: {
-        top: 0,
-        left: 0
-      }
+      editMode: false
     }
   },
   mixins: [QuestionCompareMixin, UrlMixin, UserMixin],
@@ -218,10 +213,6 @@ export default {
     }
   },
   methods: {
-    onScroll (e) {
-      this.scrollSync.top = e.target.scrollTop
-      this.scrollSync.left = e.target.scrollLeft
-    },
     onForm (id) {
       this.$router.push('/forms/' + id)
     },
