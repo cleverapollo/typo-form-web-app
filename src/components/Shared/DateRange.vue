@@ -243,6 +243,7 @@
 <style scoped>
     .date-range__presets {
         margin-left: 1rem;
+        min-width: 230px;
     }
 
     .date-range__pickers-input {

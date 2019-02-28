@@ -58,7 +58,7 @@
           <CustomSlot type="reportHeader" :mode="editMode" />
         </v-flex>
         <v-flex d-flex xs12>
-          <v-card>
+          <v-card style="width: 100%">
 
             <v-card-title>
               <div class="title">Filters</div>
@@ -126,6 +126,7 @@
               :items="data"
               :search="search"
               :pagination.sync="pagination"
+              v-scroll="onScroll"
             >
               <template slot="items" slot-scope="props">
                 <tr @click="onForm(props.item.ID)">
@@ -183,7 +184,11 @@ export default {
       pagination: {
         rowsPerPage: -1
       },
-      editMode: false
+      editMode: false,
+      scrollSync: {
+        top: 0,
+        left: 0
+      }
     }
   },
   mixins: [QuestionCompareMixin, UrlMixin, UserMixin],
@@ -213,6 +218,10 @@ export default {
     }
   },
   methods: {
+    onScroll (e) {
+      this.scrollSync.top = e.target.scrollTop
+      this.scrollSync.left = e.target.scrollLeft
+    },
     onForm (id) {
       this.$router.push('/forms/' + id)
     },
