@@ -93,7 +93,7 @@
         }
       },
       isOtherFieldEnabled (answer) {
-        return (answer.parameter === 0 && this.responses.length && this.responses[0].answer_id === answer.id)
+        return (!answer.parameter && this.responses.length && this.responses[0].answer_id === answer.id)
       }
     }
   }

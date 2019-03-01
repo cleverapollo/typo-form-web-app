@@ -124,7 +124,7 @@
       },
       isOtherFieldEnabled (answer) {
         const responseId = this.responseIdFromAnswer(answer.id)
-        return (answer.parameter === 0 && responseId)
+        return (!answer.parameter && responseId)
       }
     }
   }
