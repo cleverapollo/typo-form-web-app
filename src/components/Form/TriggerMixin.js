@@ -115,15 +115,15 @@ export default {
       }
       let hideSectionTrigger = true
       const $this = this
-      if (!item.questions.length) {
+      if (this.isTrigger(item, 1)) {
+        return true
+      } else if (!item.questions.length) {
         let childrenSection = this.$store.getters.loadedChildrenSection(this.formTemplateId, item.id)
         _.forEach(childrenSection, function (section) {
           if (!$this.isSectionTrigger(section)) {
             hideSectionTrigger = false
           }
         })
-      } else if (this.isTrigger(item, 1)) {
-        return true
       } else {
         let questions = item.questions
         _.forEach(questions, function (question) {
