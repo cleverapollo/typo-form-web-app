@@ -127,7 +127,7 @@
     methods: {
       createAnswer () {
         let str = `Option ${this.answers.length + 1}`
-        this.$emit('create-answer', [str, false])
+        this.$emit('create-answer', [str, true])
       },
       deleteAnswer (index) {
         this.$emit('delete-answer', this.answers[index].id)
