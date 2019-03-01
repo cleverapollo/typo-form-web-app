@@ -3,30 +3,24 @@
     <v-flex xs12>
       <v-radio-group v-model="optionModel" :row="hasValidation">
         <template v-for='(answer, index) in list'>
-          <v-radio
-            color="info"
-            :disabled="disabled"
-            :key='"Option " + index'
-            :label="answer.answer"
-            :value="answer.id"
-            @change="onSave(answer.id)"
-            v-if="!answer.parameter"
-          >
-          </v-radio>
-          <v-layout row wrap class="radio-other" v-else>
+          <v-layout :key='"Option " + index' class="multiple-choice">
             <v-radio
               color="info"
               :disabled="disabled"
+              :label="answer.answer"
               :value="answer.id"
               @change="onSave(answer.id)"
-              class="shrink mr-1"
+              class="xs12"
             >
             </v-radio>
             <v-text-field
-              :label="answer.answer"
-              :disabled="responses.length && responses[0].answer_id !== answer.id"
+              v-if="isOtherFieldEnabled(answer)"
+              :disabled="disabled"
               :value="responseValue(answer.id)"
               @change="onUpdate(answer.id, $event)"
+              class="other-text-field"
+              hide-details
+              placeholder="more information required..."
             >
             </v-text-field>
           </v-layout>
@@ -75,7 +69,6 @@
           return _.orderBy(answers, ['order'], ['asc'])
         },
         set (value) {
-          // TODO: Drggable components
         }
       }
     },
@@ -98,6 +91,9 @@
         if (this.responses.length) {
           this.$emit('update-response', [answerId, value, this.responses[0].id])
         }
+      },
+      isOtherFieldEnabled (answer) {
+        return (answer.parameter === 0 && this.responses.length && this.responses[0].answer_id === answer.id)
       }
     }
   }
@@ -107,10 +103,16 @@
   .question-group .v-input--radio-group .v-input__control {
     width:100%;
   }
-  .question-group .v-input--radio-group .v-input__control .v-text-field__slot .v-label {
-    top:6px;
+  .question-group .v-input--radio-group .v-input__control .v-radio {
+    margin-bottom: 8px;
   }
-  .question-group .v-input--radio-group .v-input__control .v-text-field__slot .v-label.v-label--active {
-    top:12px;
+  .multiple-choice .other-text-field,
+  .multiple-choice .other-text-field .v-input__slot {
+    padding: 0px;
+    margin: 0px;
+  }
+  .multiple-choice .other-text-field .v-input__slot .v-text-field__slot input {
+    padding-top: 0px;
+    padding-bottom: 5px;
   }
 </style>

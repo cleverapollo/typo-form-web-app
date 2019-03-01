@@ -1,38 +1,30 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12>
-      <v-layout row v-for='(answer, index) in list' :key='"Option " + index' :class='"item" + index + " checkbox"'>
-        <v-checkbox 
-          color="info"
-          :disabled="disabled"
-          :label="answer.answer"
-          v-model='checkAnswers'
-          :value="answer.id"
-          @change="onSave(answer.id)"
-          hide-details
-          v-if="!answer.parameter"
-         >
-        </v-checkbox>
-        <template v-else>
-          <v-checkbox
+    <v-flex xs12 class="checkbox-group">
+      <template v-for='(answer, index) in list'>
+        <v-layout :key='"Option " + index' class="checkboxes">
+          <v-checkbox 
             color="info"
             :disabled="disabled"
+            :label="answer.answer"
             v-model='checkAnswers'
             :value="answer.id"
             @change="onSave(answer.id)"
             hide-details
-            class="shrink mr-1"
           >
           </v-checkbox>
           <v-text-field
-            :disabled="!checkAble(answer.id)"
-            :label="answer.answer"
+            v-if="isOtherFieldEnabled(answer)"
+            :disabled="disabled"
             :value="responseValue(answer.id)"
             @change="onUpdate(answer.id, $event)"
+            hide-details
+            class="other-text-field"
+            placeholder="more information required..."
           >
           </v-text-field>
-        </template>
-      </v-layout>
+        </v-layout>
+      </template>
     </v-flex>
     <v-flex xs12 class='error' v-show='validate() !== true'>
       {{ validate() }}
@@ -94,7 +86,6 @@
           return _.orderBy(answers, ['order'], ['asc'])
         },
         set (value) {
-          // TODO: Drggable components
         }
       }
     },
@@ -116,7 +107,7 @@
         const response = this.responses.find((response) => {
           return response.answer_id === answerId
         })
-        return response.id
+        return response ? response.id : null
       },
       onSave (answerId) {
         if (!this.checkAble(answerId)) {
@@ -130,19 +121,31 @@
           const response = this.responses.find((response) => response.answer_id === answerId)
           this.$emit('update-response', [answerId, value, response.id])
         }
+      },
+      isOtherFieldEnabled (answer) {
+        const responseId = this.responseIdFromAnswer(answer.id)
+        return (answer.parameter === 0 && responseId)
       }
     }
   }
 </script>
 
 <style>
-.question-group .checkbox:nth-child(n+2) .v-input--selection-controls {
-  margin-top:0px;
-}
-.question-group .checkbox .v-input--selection-controls .v-input__slot {
-  margin-bottom:8px;
-}
-.question-group .checkbox .v-input.v-text-field {
-  padding-top:0px;
-}
+  .checkboxes .v-input--checkbox {
+    padding-top:0px;
+    margin-top:8px;
+    margin-right:16px;
+    flex:none;
+  }
+  .checkboxes .other-text-field {
+    padding-top:0px;
+    margin-top:0px;
+  }
+  .checkboxes .other-text-field input {
+    padding-top:10px;
+    padding-bottom:5px;
+  }
+  .checkbox-group {
+    margin-bottom:20px;
+  }
 </style>

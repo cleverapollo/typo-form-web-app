@@ -1,8 +1,8 @@
 <template>
   <draggable v-model='list' class='dragArea' :options='{draggable:".answer"}' style='min-height: 100px' @end='checkEnd'>
     <v-layout row>
-      <v-flex class="xs1 offset-xs10 text-xs-left">
-        Other Field
+      <v-flex class="xs2 offset-xs10 text-xs-left">
+        Disable Other Field
       </v-flex>
     </v-layout>
     <v-layout row v-for='(answer, index) in list' :key='"Option " + index' class='answer' :class='"answer" + answer.id'>
