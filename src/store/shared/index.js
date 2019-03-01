@@ -25,6 +25,7 @@ export default {
     comparators: [],
     triggerTypes: [],
     countries: [],
+    answerSorts: [],
     reportURL: null
   },
   mutations: {
