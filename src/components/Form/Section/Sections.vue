@@ -689,6 +689,9 @@
 </script>
 
 <style scoped>
+  .title {
+    word-break: break-word;
+  }
   .v-card__title {
     flex-wrap: unset !important;
   }

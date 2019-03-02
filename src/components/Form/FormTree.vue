@@ -7,7 +7,10 @@
       :key="item.id"
       v-if="!isSectionTrigger(item) || formId === -1"
     >
-      <v-list-tile slot="activator" @click="clickSection(item)" class="v-list__group__header_tile">
+      <v-list-tile
+        slot="activator"
+        @click="clickSection(item)"
+        :class="'v-list__group__header_tile ' + (selectedSection.id === item.id ? 'primary--text' : '')">
         <v-list-tile-avatar>
           <v-icon v-if='sectionProgress(formTemplateId, item.id, formId) === 100'>check_circle</v-icon>
         </v-list-tile-avatar>
@@ -17,7 +20,11 @@
           </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-for="subItem in children(item)" :key="subItem.name" @click="clickSection(subItem)" v-if="!isSectionTrigger(subItem) || formId === -1">
+      <v-list-tile
+        v-for="subItem in children(item)"
+        :key="subItem.name" @click="clickSection(subItem)"
+        v-if="!isSectionTrigger(subItem) || formId === -1"
+        :class="(selectedSection.id === subItem.id ? 'primary--text' : '')">
         <v-list-tile-avatar>
           <v-icon v-if='sectionProgress(formTemplateId, subItem.id, formId) === 100'>check_circle</v-icon>
         </v-list-tile-avatar>
@@ -43,6 +50,9 @@
       }
     },
     computed: {
+      selectedSection () {
+        return this.$store.getters.loadSelectedSection()
+      },
       sectionList () {
         return _.forEach(this.list, item => {
           item.active = item.id && item.id === this.section.parent_section_id
