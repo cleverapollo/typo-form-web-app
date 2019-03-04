@@ -10,14 +10,6 @@
           <CustomSlot :type="'formTemplateHeader' + formTemplateId" :mode="false" />
         </v-flex>
 
-        <v-flex xs12 class="mb-3">
-          <v-alert
-            :value="status != 'Open'"
-            type="success">
-            This form is {{ status.toLowerCase() }}.
-          </v-alert>
-        </v-flex>
-
         <!-- //Form Layout -->
         <v-flex xs12>
           <v-card>

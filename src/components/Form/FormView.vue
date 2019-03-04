@@ -2,34 +2,10 @@
   <v-layout row wrap>
 
     <template v-if='formId !== -1 && status === "Closed"'>
-      <v-card-title class="text-xs-center">
-        <v-layout>
-          <v-flex>
-            <v-btn>
-              <download-excel
-                :data="data"
-                :name="fileName + '.csv'"
-                type="csv"
-              >
-                CSV
-              </download-excel>
-            </v-btn>
-            <v-btn @click="downloadPDF">
-              PDF
-            </v-btn>
-          </v-flex>
-        </v-layout>
-      </v-card-title>
-      <template v-for="(element, index) in sortedSections">
-        <v-flex xs12>
-          <SectionReport
-            :section="element"
-            :formTemplateId="formTemplateId"
-            :formId="formId"
-            v-if="element.questions.length"
-          ></SectionReport>
-        </v-flex>
-      </template>
+      <FormReport
+        :formTemplateId="formTemplateId"
+        :formId="formId"
+      ></FormReport>
     </template>
     <template v-else>
       <!-- //Setions -->
@@ -61,7 +37,8 @@
   import * as _ from 'lodash'
   import moment from 'moment'
   import sections from './Section/Sections'
-  import SectionReport from './Section/SectionReport'
+  // import SectionReport from './Section/SectionReport'
+  import FormReport from './FormReport'
   import FormTree from './FormTree'
   import SectionOperation from './SectionOperation.js'
   import SectionReportMixin from './SectionReportMixin.js'
@@ -71,7 +48,8 @@
     props: ['slug', 'formTemplateId', 'formId'],
     mixins: [SectionOperation, SectionReportMixin],
     components: {
-      SectionReport,
+      // SectionReport,
+      FormReport,
       sections,
       FormTree
     },
