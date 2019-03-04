@@ -1,6 +1,6 @@
 <template>
 
-  <v-list>
+  <v-list class="form-tree">
     <v-list-group
       v-for="(item, index) in sectionList"
       v-model="item.active"
@@ -98,5 +98,18 @@
 
   .v-list__group__items {
     padding-left: 15px;
+  }
+  .v-list.form-tree .v-list__tile__title {
+    height:auto;
+    white-space: normal;
+    line-height: 140%;
+    overflow:visible;
+  }
+  .v-list.form-tree .v-list__group__header_tile {
+    overflow:visible;
+  }
+  .v-list.form-tree >>> .v-list__tile--link {
+    min-height:48px;
+    height:auto;
   }
 </style>
