@@ -9,7 +9,10 @@
     </template>
     <template v-else>
       <!-- //Setions -->
-      <v-flex xs12 class="sm3" v-if='sections.length > 1'>
+      <v-flex 
+        xs12 
+        :class="getFormTreeWidth(sections.length)" 
+        v-if='sections.length > 1'>
         <form-tree
           :formTemplateId="formTemplateId"
           :section="section"
@@ -20,7 +23,9 @@
       </v-flex>
 
       <!-- //Questions -->
-      <v-flex xs12 :class='"sm" + (sections.length > 1 ? 9 : 12)'>
+      <v-flex 
+        xs12 
+        :class="getSectionWidth(sections.length)">
         <sections
           :section="section"
           :formTemplateId="formTemplateId"
@@ -37,7 +42,6 @@
   import * as _ from 'lodash'
   import moment from 'moment'
   import sections from './Section/Sections'
-  // import SectionReport from './Section/SectionReport'
   import FormReport from './FormReport'
   import FormTree from './FormTree'
   import SectionOperation from './SectionOperation.js'
@@ -48,7 +52,6 @@
     props: ['slug', 'formTemplateId', 'formId'],
     mixins: [SectionOperation, SectionReportMixin],
     components: {
-      // SectionReport,
       FormReport,
       sections,
       FormTree
@@ -147,6 +150,12 @@
       }
     },
     methods: {
+      getFormTreeWidth (numberOfSections) {
+        return 'xs12 sm5 md4 xl3'
+      },
+      getSectionWidth (numberOfSections) {
+        return numberOfSections > 1 ? 'xs12 sm7 md8 xl9' : 'xs12'
+      },
       sectionClicked: function (item) {
         this.$store.dispatch('selectSection', item)
       },

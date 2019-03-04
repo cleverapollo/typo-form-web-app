@@ -48,10 +48,10 @@
         opened: true,
         search: '',
         headers: [
-          {text: 'ID', value: 'id' },
-          {text: 'Section', value: 'section'},
-          {text: 'Question', value: 'question'},
-          {text: 'Answer', value: 'answer'}
+          { text: 'ID', value: 'id' },
+          { text: 'Section', value: 'section' },
+          { text: 'Question', value: 'question' },
+          { text: 'Answer', value: 'answer' }
         ]
       }
     },
@@ -100,9 +100,8 @@
         let value = ''
         switch (questionType.type) {
           case 'File upload':
-              let file = response && response.response ? JSON.parse(response.response)[0] : {}
-              return file.url ? file.url : ''
-              //return file.url ? '<a href="' + file.url + '" target="_blank">' + (file.name ? file.name : 'Download File') + (file.size ? ' (' + this.getFileSize(file.size) + ')' : '') + '</a>' : ''
+            let file = response && response.response ? JSON.parse(response.response)[0] : {}
+            value = file.url ? file.url : ''
             break
           default:
             value += answer && answer.answer ? answer.answer : ''
