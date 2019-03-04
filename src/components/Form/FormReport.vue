@@ -18,7 +18,7 @@
           :headers="headers"
           :items="responses"
           :search="search"
-          :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+          :rows-per-page-items="[{ text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
         >
           <template v-slot:items="props">
             <tr>
@@ -101,11 +101,11 @@
         switch (questionType.type) {
           case 'File upload':
             let file = response && response.response ? JSON.parse(response.response)[0] : {}
-            value = file.url ? '<a href="' + file.url + '" target="_blank" download>' + file.url + '</a>' : ''
+            value = file.url ? '<a href="' + file.url + '" target="_blank" download>' + (file.name ? file.name : file.url) + (file.size ? ' (' + this.getFileSize(file.size) + ')' : '') + '</a>' : ''
             break
           default:
             value += answer && answer.answer ? answer.answer : ''
-            value += response && response.response ? (value.length ? ': ' + response.response : response.response) : ''
+            value += response && response.response ? (value.length ? ': <br /><br />' + response.response : response.response) : ''
             break
         }
         return value
