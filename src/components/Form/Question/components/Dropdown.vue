@@ -6,7 +6,6 @@
       </v-flex>
       <v-flex xs10 style='min-width: 60px'>
         <v-text-field
-          :disabled='!answer.parameter'
           v-model='answer.answer'
           @change='showModal(answer.id, $event)'
         ></v-text-field>
@@ -165,20 +164,40 @@
       } else {
         if (this.answers.length === 2 && this.answers[0].answer.substr(0, 11) === 'LinearScale' && this.answers[1].answer.substr(0, 11) === 'LinearScale') {
           this.$emit('delete-answers')
-        } else {
-          const lastAnswer = this.answers[this.answers.length - 1]
-          if (!lastAnswer.parameter) {
-            this.$emit('change-answer')
-          }
         }
       }
       this.$root.$on('validation-create', this.eventsAdapter['validation-create'])
       this.$root.$on('validation-remove', this.eventsAdapter['validation-remove'])
     },
     computed: {
+      question () {
+        return this.$store.getters.loadedAllQuestion(this.formTemplateId, this.questionId)
+      },
+      answerSort () {
+        const answerSort = _.find(this.answerSorts, sort => {
+          return sort.id === this.question.sort_id
+        })
+        return answerSort ? answerSort.sort : 'Undefined'
+      },
+      answerSorts () {
+        return this.$store.getters.answerSorts
+      },
       list: {
         get () {
-          return this.answers
+          const answers = this.answers
+          if (this.answerSort === 'Alphanumeric Ascending (A-Z)') {
+            return _.orderBy(answers, ['answer'], ['asc'])
+          }
+          if (this.answerSort === 'Alphanumeric Descending (Z-A)') {
+            return _.orderBy(answers, ['answer'], ['desc'])
+          }
+          if (this.answerSort === 'Number Ascending (1-9)') {
+            return _.orderBy(answers, [answer => parseInt(answer.answer)], ['asc'])
+          }
+          if (this.answerSort === 'Number Descending (9-1)') {
+            return _.orderBy(answers, [answer => parseInt(answer.answer)], ['desc'])
+          }
+          return _.orderBy(answers, ['order'], ['asc'])
         },
         set (value) {
           // TODO: Drggable components

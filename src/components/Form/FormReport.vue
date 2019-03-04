@@ -25,7 +25,7 @@
               <td>{{ props.item.id }}</td>
               <td>{{ props.item.section }}</td>
               <td>{{ props.item.question }}</td>
-              <td>{{ props.item.answer }}</td>
+              <td v-html="props.item.answer"></td>
             </tr>
           </template>
           <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -101,7 +101,7 @@
         switch (questionType.type) {
           case 'File upload':
             let file = response && response.response ? JSON.parse(response.response)[0] : {}
-            value = file.url ? file.url : ''
+            value = file.url ? '<a href="' + file.url + '" target="_blank" download>' + file.url + '</a>' : ''
             break
           default:
             value += answer && answer.answer ? answer.answer : ''
