@@ -31,7 +31,7 @@
             v-model="questionTypeString"
             label="Question Type"
             persistent-hint
-            hint=" "
+            hint=""
             @change="updateQuestionType"
             required
           >
@@ -40,7 +40,7 @@
                 <v-icon v-text="data.item.action"></v-icon>
               </v-list-tile-avatar>
 
-              <v-list-tile-content style="color: black">
+              <v-list-tile-content style="color: black; flex: initial;">
                 <v-list-tile-title>{{ data.item.title }}</v-list-tile-title>
               </v-list-tile-content>
             </template>

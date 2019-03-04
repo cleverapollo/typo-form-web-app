@@ -1,13 +1,16 @@
 <template>
 
-  <v-list>
+  <v-list class="form-tree">
     <v-list-group
       v-for="(item, index) in sectionList"
       v-model="item.active"
       :key="item.id"
       v-if="!isSectionTrigger(item) || formId === -1"
     >
-      <v-list-tile slot="activator" @click="clickSection(item)" class="v-list__group__header_tile">
+      <v-list-tile
+        slot="activator"
+        @click="clickSection(item)"
+        :class="'v-list__group__header_tile ' + (selectedSection.id === item.id ? 'primary--text' : '')">
         <v-list-tile-avatar>
           <v-icon v-if='sectionProgress(formTemplateId, item.id, formId) === 100'>check_circle</v-icon>
         </v-list-tile-avatar>
@@ -17,7 +20,11 @@
           </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-for="subItem in children(item)" :key="subItem.name" @click="clickSection(subItem)" v-if="!isSectionTrigger(subItem) || formId === -1">
+      <v-list-tile
+        v-for="subItem in children(item)"
+        :key="subItem.name" @click="clickSection(subItem)"
+        v-if="!isSectionTrigger(subItem) || formId === -1"
+        :class="(selectedSection.id === subItem.id ? 'primary--text' : '')">
         <v-list-tile-avatar>
           <v-icon v-if='sectionProgress(formTemplateId, subItem.id, formId) === 100'>check_circle</v-icon>
         </v-list-tile-avatar>
@@ -43,6 +50,9 @@
       }
     },
     computed: {
+      selectedSection () {
+        return this.$store.getters.loadSelectedSection()
+      },
       sectionList () {
         return _.forEach(this.list, item => {
           item.active = item.id && item.id === this.section.parent_section_id
@@ -88,5 +98,18 @@
 
   .v-list__group__items {
     padding-left: 15px;
+  }
+  .v-list.form-tree .v-list__tile__title {
+    height:auto;
+    white-space: normal;
+    line-height: 140%;
+    overflow:visible;
+  }
+  .v-list.form-tree .v-list__group__header_tile {
+    overflow:visible;
+  }
+  .v-list.form-tree >>> .v-list__tile--link {
+    min-height:48px;
+    height:auto;
   }
 </style>
