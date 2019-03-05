@@ -28,7 +28,6 @@ import ShowFormTemplate from '@/components/Form/ShowFormTemplate'
 // Forms
 import Forms from '@/components/Form/Form/Forms'
 import ShowForm from '@/components/Form/Form/ShowForm'
-import FormFilter from '@/components/Form/Form/FormFilter'
 import ReportBuilder from '@/components/Form/Form/ReportBuilder'
 import ChartBuilder from '@/components/Form/Form/ChartBuilder'
 
@@ -176,15 +175,6 @@ const router = new Router({
       path: '/chart',
       name: 'ChartBuilder',
       component: ChartBuilder,
-      meta: {
-        application: true,
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/formTemplate-filter',
-      name: 'FormFilter',
-      component: FormFilter,
       meta: {
         application: true,
         requiresAuth: true

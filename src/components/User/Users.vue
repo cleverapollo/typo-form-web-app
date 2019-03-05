@@ -31,15 +31,32 @@
 
                 <!-- //User Search -->
                 <v-card-title>
-                  <v-spacer></v-spacer>
-                  <v-text-field
-                    v-model="userSearch"
-                    append-icon="search"
-                    label="Search"
-                    single-line
-                    hide-details
-                  >
-                  </v-text-field>
+                  <v-layout row wrap>
+                    <v-flex xs12 md6>
+                      <v-btn
+                        outline
+                      >
+                        <download-excel
+                          :data="users"
+                          :name="userFileName + '.csv'"
+                          type="csv"
+                          :fields="userFields"
+                        >
+                          Export
+                        </download-excel>
+
+                      </v-btn>
+                    </v-flex>
+                    <v-flex xs12 md6>
+                      <v-text-field
+                        v-model="userSearch"
+                        append-icon="search"
+                        label="Search"
+                        single-line
+                        hide-details
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
                 </v-card-title>
 
                 <!-- //Users -->
@@ -77,16 +94,34 @@
               <v-tab-item value="invited">
 
                 <!-- //Invited User Search -->
+
                 <v-card-title>
-                  <v-spacer></v-spacer>
-                  <v-text-field
-                    v-model="invitedUserSearch"
-                    append-icon="search"
-                    label="Search"
-                    single-line
-                    hide-details
-                  >
-                  </v-text-field>
+                  <v-layout row wrap>
+                    <v-flex xs12 md6>
+                      <v-btn
+                        outline
+                      >
+                        <download-excel
+                          :data="invitedUsers"
+                          :name="invitedFileName + '.csv'"
+                          type="csv"
+                          :fields="invitedFields"
+                        >
+                          Export
+                        </download-excel>
+
+                      </v-btn>
+                    </v-flex>
+                    <v-flex xs12 md6>
+                      <v-text-field
+                        v-model="invitedUserSearch"
+                        append-icon="search"
+                        label="Search"
+                        single-line
+                        hide-details
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
                 </v-card-title>
 
                 <!-- //Invited Users -->
@@ -153,6 +188,34 @@
   export default {
     data () {
       return {
+        userFields: {
+          'First Name': 'first_name',
+          'Last Name': 'last_name',
+          'Email': 'email',
+          'Role': 'role',
+          'Joined': {
+            field: 'created_at.date',
+            callback: (value) => {
+              return moment(value).format('YYYY-MM-DD h:MM A')
+            }
+          },
+          'Last Active': {
+            field: 'updated_at.date',
+            callback: (value) => {
+              return moment(value).format('YYYY-MM-DD h:MM A')
+            }
+          }
+        },
+        invitedFields: {
+          'Email': 'invitee',
+          'Role': 'role',
+          'Invited': {
+            field: 'created_at.date',
+            callback: (value) => {
+              return moment(value).format('YYYY-MM-DD h:MM A')
+            }
+          }
+        },
         inviteApplication: false,
         userSearch: '',
         invitedUserSearch: '',
@@ -212,6 +275,12 @@
       },
       user () {
         return this.$store.getters.user
+      },
+      userFileName () {
+        return 'Users ' + moment().format('YYYY-MM-DD [at] LTS')
+      },
+      invitedFileName () {
+        return 'Invited Users ' + moment().format('YYYY-MM-DD [at] LTS')
       }
     },
     methods: {

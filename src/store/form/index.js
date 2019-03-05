@@ -5,8 +5,7 @@ const FORM_URL = '/form'
 
 export default {
   state: {
-    loadedForms: {},
-    loadedFormFilters: {}
+    loadedForms: {}
   },
   mutations: {
     clearLoadedForms (state) {
@@ -16,9 +15,6 @@ export default {
       let forms = Object.assign({}, state.loadedForms)
       forms[payload.formTemplateId] = payload.forms
       state.loadedForms = forms
-    },
-    formFilter (state, payload) {
-      state.loadedFormFilters = payload
     },
     setLoadedAllForms (state, payload) {
       let forms = Object.assign({}, state.loadedForms)
@@ -279,22 +275,6 @@ export default {
             reject(error)
           })
       })
-    },
-    formFilter ({commit}, payload) {
-      commit('setLoading', true)
-      return new Promise((resolve, reject) => {
-        window.axios.post(APPLICATION_URL + payload.slug + FORM_URL + '/filter', payload)
-          .then((response) => {
-            commit('setLoading', false)
-            commit('formFilter', response['data']['forms'])
-            resolve(response.data.forms)
-          })
-          .catch(error => {
-            console.log(error)
-            commit('setLoading', false)
-            reject(error)
-          })
-      })
     }
   },
   getters: {
@@ -339,11 +319,6 @@ export default {
           }
         }
         return null
-      }
-    },
-    loadedFormFilters (state) {
-      return () => {
-        return state.loadedFormFilters
       }
     },
     loadedForm (state) {

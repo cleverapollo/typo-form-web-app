@@ -82,14 +82,31 @@
 
             <!-- //Search -->
             <v-card-title>
-              <v-spacer></v-spacer>
-              <v-text-field
-                v-model='search'
-                append-icon='search'
-                label='Search'
-                single-line
-                hide-details
-              ></v-text-field>
+              <v-layout row wrap>
+                <v-flex xs12 md6>
+                  <v-btn
+                    outline
+                  >
+                    <download-excel
+                      :data="data"
+                      :name="fileName + '.csv'"
+                      type="csv"
+                    >
+                      Export
+                    </download-excel>
+
+                  </v-btn>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <v-text-field
+                    v-model="search"
+                    append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
             </v-card-title>
 
             <!-- //Forms -->
@@ -349,6 +366,9 @@
           data.push(row)
         })
         return data
+      },
+      fileName () {
+        return 'Forms ' + moment().format('YYYY-MM-DD [at] LTS')
       }
     },
     watch: {

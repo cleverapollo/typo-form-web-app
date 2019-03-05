@@ -25,17 +25,35 @@
 
         <v-flex d-flex xs12>
           <v-card>
-
             <v-card-title>
-              <v-spacer></v-spacer>
-              <v-text-field
-                v-model="search"
-                append-icon="search"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
+              <v-layout row wrap>
+                <v-flex xs12 md6>
+                  <v-btn
+                    outline
+                  >
+                    <download-excel
+                      :data="organisations"
+                      :name="fileName + '.csv'"
+                      type="csv"
+                      :fields="json_fields"
+                    >
+                      Export
+                    </download-excel>
+
+                  </v-btn>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <v-text-field
+                    v-model="search"
+                    append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
             </v-card-title>
+
             <v-data-table
               :headers="headers"
               :items="organisations"
@@ -98,6 +116,18 @@
   export default {
     data () {
       return {
+        json_fields: {
+          'Organisation': 'name',
+          'Active Users': 'active_users_length',
+          'Invited Users': 'invited_users_length',
+          'Forms': 'forms_length',
+          'Created': {
+            field: 'created_at.date',
+            callback: (value) => {
+              return moment(value).format('YYYY-MM-DD h:MM A')
+            }
+          }
+        },
         createOrganisation: false,
         slug: window.location.hostname.split('.')[0],
         search: '',
@@ -124,6 +154,9 @@
         return _.sortBy(this.$store.getters.loadedOrganisations(this.slug), element => {
           return element.name.toLowerCase()
         })
+      },
+      fileName () {
+        return 'Organisations ' + moment().format('YYYY-MM-DD [at] LTS')
       }
     },
     methods: {

@@ -16,15 +16,33 @@
           <v-card>
 
             <v-card-title>
-              <v-spacer></v-spacer>
-              <v-text-field
-                v-model="search"
-                append-icon="search"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
+              <v-layout row wrap>
+                <v-flex xs12 md6>
+                  <v-btn
+                    outline
+                  >
+                    <download-excel
+                      :data="formTemplates"
+                      :name="fileName + '.csv'"
+                      type="csv"
+                    >
+                      Export
+                    </download-excel>
+
+                  </v-btn>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <v-text-field
+                    v-model="search"
+                    append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
             </v-card-title>
+
             <v-data-table
               :headers="headers"
               :items="formTemplates"
@@ -36,7 +54,7 @@
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.name }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.forms_length }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.status }}</td>
-                <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.created_at.date | moment }}</td>
+                <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.created_at }}</td>
                 <td>
                   <v-tooltip bottom>
                     <v-btn icon class='mx-0' @click='showDuplicateFormTemplate(props.item)' slot="activator">
@@ -127,8 +145,12 @@
             return status.id === formTemplate.status_id
           })
           formTemplate.status = ((status && status.status === 'Open') ? 'Draft' : 'Published')
+          formTemplate.created_at = moment(formTemplate.created_at.date).format('YYYY-MM-DD h:MM A')
         })
         return formTemplates
+      },
+      fileName () {
+        return 'Form Template ' + moment().format('YYYY-MM-DD [at] LTS')
       }
     },
     methods: {
@@ -170,11 +192,6 @@
       .then(() => {
         this.loadingFormTemplates = false
       })
-    },
-    filters: {
-      moment: function (date) {
-        return moment(date).format('YYYY-MM-DD h:MM A')
-      }
     }
   }
 </script>
