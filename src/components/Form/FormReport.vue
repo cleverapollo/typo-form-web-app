@@ -4,14 +4,31 @@
       <v-card>
 
         <v-card-title>
-          <v-spacer></v-spacer>
-          <v-text-field
-            v-model="search"
-            append-icon="search"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
+          <v-layout row wrap>
+            <v-flex xs12 md6>
+              <v-btn
+                outline
+              >
+                <download-excel
+                  :data="responses"
+                  :name="fileName + '.csv'"
+                  type="csv"
+                >
+                  Export
+                </download-excel>
+              
+              </v-btn>
+            </v-flex>
+            <v-flex xs12 md6>
+              <v-text-field
+                v-model="search"
+                append-icon="search"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
         </v-card-title>
 
         <v-data-table
@@ -40,6 +57,7 @@
 
 <script>
   import * as _ from 'lodash'
+  import moment from 'moment'
   export default {
     name: 'form-report',
     props: ['formTemplateId', 'formId'],
@@ -82,6 +100,9 @@
           })
         })
         return responseList
+      },
+      fileName () {
+        return 'Form Report ' + moment().format('YYYY-MM-DD [at] LTS')
       }
     },
     methods: {
@@ -100,7 +121,7 @@
         let value = ''
         switch (questionType.type) {
           case 'File upload':
-            let file = response && response.response ? JSON.parse(response.response)[0] : {}
+            let file = response && response.response ? this.getFile(response.response) : {}
             value = file.url ? '<a href="' + file.url + '" target="_blank" download>' + (file.name ? file.name : file.url) + (file.size ? ' (' + this.getFileSize(file.size) + ')' : '') + '</a>' : ''
             break
           default:
@@ -122,6 +143,21 @@
         let parentSection = this.findSection(section.parent_section_id)
         name = parentSection && parentSection.name ? (parentSection.name + ' > ' + section.name) : section.name
         return name
+      },
+      getFile (response) {
+        let file = {}
+        try {
+          file = JSON.parse(response)[0]
+        } catch (error) {
+          if (response.length) {
+            let filename = response.split('/')
+            file.url = response
+            file.path = file.url
+            file.stored_name = filename[filename.length - 1]
+            file.name = file.stored_name
+          }
+        }
+        return file
       }
     }
   }

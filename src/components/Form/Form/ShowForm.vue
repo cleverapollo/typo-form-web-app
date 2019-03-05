@@ -34,6 +34,19 @@
                       <span>{{ showView }}</span>
                     </v-tooltip>
 
+                    <v-tooltip bottom v-if="help">
+                      <v-btn
+                        flat
+                        icon
+                        color="info"
+                        slot="activator"
+                        @click="helpModal = true"
+                      >
+                        <v-icon class="white--text">help</v-icon>
+                      </v-btn>
+                      <span>Help</span>
+                    </v-tooltip>
+
                     <v-menu offset-y bottom left>
                       <v-btn icon slot="activator">
                         <v-icon class="white--text">more_vert</v-icon>
@@ -71,15 +84,6 @@
                         </v-list-tile>
                       </v-list>
                     </v-menu>
-                    <v-btn
-                      flat
-                      icon
-                      color="info"
-                      v-if="help"
-                      @click="helpModal = true"
-                    >
-                      <v-icon class="white--text">help</v-icon>
-                    </v-btn>
                   </div>
                 </v-flex>
 

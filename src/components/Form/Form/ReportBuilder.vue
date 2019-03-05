@@ -88,36 +88,31 @@
             </v-card-title>
             <v-divider></v-divider>
 
-            <v-card-title class="text-xs-center">
-              <v-layout>
-                <v-flex>
-                  <v-btn>
+            <v-card-title>
+              <v-layout row wrap>
+                <v-flex xs12 md6>
+                  <v-btn
+                    outline
+                  >
                     <download-excel
                       :data="data"
                       :name="fileName + '.csv'"
                       type="csv"
                     >
-                      CSV
+                      Export
                     </download-excel>
                   </v-btn>
-                  <v-btn @click="downloadPDF">
-                    PDF
-                  </v-btn>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <v-text-field
+                    v-model="search"
+                    append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
+                  ></v-text-field>
                 </v-flex>
               </v-layout>
-            </v-card-title>
-            <v-divider></v-divider>
-
-            <v-card-title>
-              <div class="title">Results</div>
-              <v-spacer></v-spacer>
-              <v-text-field
-                v-model="search"
-                append-icon="search"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
             </v-card-title>
 
             <!-- // Data -->
