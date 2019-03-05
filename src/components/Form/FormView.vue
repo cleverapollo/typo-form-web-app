@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
 
-    <template v-if='formId !== -1 && status === "Closed"'>
+    <template v-if='showTable'>
       <FormReport
         :formTemplateId="formTemplateId"
         :formId="formId"
@@ -49,7 +49,7 @@
   import JSPDF from 'jspdf'
 
   export default {
-    props: ['slug', 'formTemplateId', 'formId'],
+    props: ['slug', 'formTemplateId', 'formId', 'showTable'],
     mixins: [SectionOperation, SectionReportMixin],
     components: {
       FormReport,

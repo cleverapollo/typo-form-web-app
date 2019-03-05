@@ -22,6 +22,18 @@
 
                   <!-- //Menu -->
                   <div class="text-xs-right">
+                    <v-tooltip bottom v-if="status !== 'Closed'">
+                      <v-btn
+                        slot="activator"
+                        icon
+                        @click="tableMode = !tableMode"
+                        class="white--text"
+                        >
+                        <v-icon>view_list</v-icon>
+                      </v-btn>
+                      <span>{{ showView }}</span>
+                    </v-tooltip>
+
                     <v-menu offset-y bottom left>
                       <v-btn icon slot="activator">
                         <v-icon class="white--text">more_vert</v-icon>
@@ -109,6 +121,7 @@
                     :slug="slug"
                     :formTemplateId="formTemplateId"
                     :formId="formId"
+                    :showTable="showTable"
                   ></form-view>
                 </v-flex>
 
@@ -117,7 +130,7 @@
 
             <!-- //Footer -->
             <v-divider></v-divider>
-            <v-card-actions v-if="status!=='Closed'">
+            <v-card-actions v-if="!showTable">
 
               <v-layout row wrap>
                 <v-flex xs12 v-if="sections.length > 1">
@@ -194,7 +207,8 @@
         submitted: false,
         helpModal: false,
         duplicated: false,
-        duplicatedContent: ''
+        duplicatedContent: '',
+        tableMode: false
       }
     },
     components: {
@@ -207,6 +221,9 @@
       CustomSlot
     },
     computed: {
+      showTable () {
+        return this.status === 'Closed' || this.tableMode
+      },
       application () {
         return this.$store.getters.loadedApplication(this.slug)
       },
@@ -297,6 +314,9 @@
       },
       isSuperUser () {
         return this.user && this.getRole(this.user.role_id) === 'Super Admin'
+      },
+      showView () {
+        return this.showTable ? 'Display as Form' : 'Display as Table'
       },
       isAdmin () {
         return this.isSuperUser || (this.user && this.application && this.getRole(this.application.application_role_id) === 'Admin')
