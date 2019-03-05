@@ -23,6 +23,16 @@
       </v-layout>
 
       <v-layout row>
+        <v-flex xs12>
+          <v-text-field
+                  label="Key"
+                  v-model="editedKey"
+                  @blur="checkUpdateKey"
+          ></v-text-field>
+        </v-flex>
+      </v-layout>
+
+      <v-layout row>
         <v-flex xs12 sm7>
           <v-autocomplete
             :items="menuItems"
@@ -208,6 +218,7 @@
         moveQuestion: false,
         editedName: this.question.question,
         editedDescription: this.question.description,
+        editedKey: this.question.key,
         questionTypeId: this.question.question_type_id,
         questionWidth: this.question.width,
         sortId: this.question.sort_id,
@@ -476,6 +487,11 @@
           this.updateQuestion()
         }
       },
+      checkUpdateKey: function () {
+        if (this.editedKey !== this.question.key) {
+          this.updateQuestion()
+        }
+      },
       createAnswer: function (args) {
         const answer = args[0]
         const parameter = args[1]
@@ -571,6 +587,7 @@
             id: this.question.id,
             question: this.editedName,
             description: this.editedDescription,
+            key: this.editedKey,
             questionTypeId: this.questionTypeId,
             sortId: this.sortId,
             mandatory: this.mandatory,

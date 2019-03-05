@@ -53,7 +53,8 @@ export default {
         description: payload.description,
         mandatory: payload.mandatory,
         question_type_id: payload.questionTypeId,
-        width: 12
+        width: 12,
+        key: payload.key,
       }
       window.axios.post(SECTION_URL + payload.sectionId + QUESTION_URL, question)
         .then(
@@ -94,6 +95,9 @@ export default {
       }
       if (payload.width) {
         updateObj.width = payload.width
+      }
+      if (payload.key) {
+        updateObj.key = payload.key
       }
       window.axios.put(SECTION_URL + payload.sectionId + QUESTION_URL + '/' + payload.id, updateObj)
         .then(

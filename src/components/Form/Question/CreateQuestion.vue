@@ -28,6 +28,12 @@
               id="description"
               v-model="editedDescription"
             ></v-text-field>
+            <v-text-field
+              name="key"
+              label="Key"
+              id="key"
+              v-model="editedKey"
+            ></v-text-field>
             <v-autocomplete
               :items="questionTypes"
               item-text="type"
@@ -69,6 +75,7 @@
         createQuestion: false,
         editedName: '',
         editedDescription: '',
+        editedKey: '',
         questionType: 1,
         mandatory: false
       }
@@ -86,16 +93,19 @@
             question: this.editedName,
             description: this.editedDescription,
             questionTypeId: this.questionType,
-            mandatory: this.mandatory
+            mandatory: this.mandatory,
+            key: this.editedKey
           })
         this.editedName = ''
         this.editedDescription = ''
+        this.editedKey = ''
         this.mandatory = false
         this.questionType = 1
       },
       onCancel () {
         this.editedName = ''
         this.editedDescription = ''
+        this.editedKey = ''
         this.mandatory = false
         this.questionType = 1
         this.createQuestion = false
