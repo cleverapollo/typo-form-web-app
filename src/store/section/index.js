@@ -252,26 +252,31 @@ export default {
     },
     loadAllSections ({commit}, slug) {
       commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + slug + SECTION_URL)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const formTemplates = response['data']['form_templates']
-            _.forEach(formTemplates, formTemplate => {
-              const updateObj = {
-                formTemplateId: formTemplate.id,
-                sections: formTemplate.sections
-              }
-              commit('setLoadedSections', updateObj)
-            })
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+      return new Promise((resolve, reject) => {
+        window.axios.get(APPLICATION_URL + slug + SECTION_URL)
+          .then(
+            response => {
+              commit('setLoading', false)
+              const formTemplates = response['data']['form_templates']
+              _.forEach(formTemplates, formTemplate => {
+                const updateObj = {
+                  formTemplateId: formTemplate.id,
+                  sections: formTemplate.sections
+                }
+                commit('setLoadedSections', updateObj)
+              })
+
+              resolve(response)
+            }
+          )
+          .catch(
+            error => {
+              commit('setLoading', false)
+              console.log(error)
+              reject(error)
+            }
+          )
+      })
     },
     createSection ({commit, getters}, payload) {
       let section = {

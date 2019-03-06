@@ -77,9 +77,9 @@ export default {
                   users: users['unaccepted']
                 }
                 commit('setInvitedOrganisationUsers', updateInvitedObj)
-
-                resolve(response)
               })
+
+              resolve(response)
             }
           )
           .catch(

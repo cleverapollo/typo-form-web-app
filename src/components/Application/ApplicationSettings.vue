@@ -80,30 +80,6 @@
             </v-flex>
           </v-layout>
 
-          <!-- //Primary Color -->
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-text-field
-                name="primary"
-                label="Primary Color"
-                v-model="primary_color"
-              >
-              </v-text-field>
-            </v-flex>
-          </v-layout>
-
-          <!-- //Secondary Color -->
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-text-field
-                name="secondary"
-                label="Secondary Color"
-                v-model="secondary_color"
-              >
-              </v-text-field>
-            </v-flex>
-          </v-layout>
-
           <!-- //Custom CSS -->
           <v-layout row wrap>
             <v-flex xs12>
@@ -181,8 +157,6 @@
         css: null,
         support_text: null,
         join_flag: null,
-        primary_color: null,
-        secondary_color: null,
         logo: [],
         icon: [],
         images: [],
@@ -283,8 +257,6 @@
           supportText: this.support_text,
           joinFlag: this.join_flag,
           logo: this.applicationLogo,
-          primary_color: this.primary_color,
-          secondary_color: this.secondary_color,
           background_image: this.applicationImage,
           icon: this.applicationIcon,
           default_route: this.defaultRoute
@@ -303,8 +275,6 @@
       this.support_text = this.application.support_text
       this.join_flag = this.application.join_flag
       this.icon = this.application.icon !== null ? [JSON.parse(this.application.icon)] : []
-      this.primary_color = this.application.primary_color
-      this.secondary_color = this.application.secondary_color
       this.logo = this.application.logo !== null ? [JSON.parse(this.application.logo)] : []
       this.images = this.application.background_image !== null ? [JSON.parse(this.application.background_image)] : []
       this.defaultRoute = this.application.default_route !== null ? this.application.default_route : '/forms'
