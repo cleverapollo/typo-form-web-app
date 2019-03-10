@@ -75,6 +75,18 @@
                       ></v-text-field>
                   </v-flex>
                 </v-layout>
+                 <v-layout row style="display:none !important;">
+                  <v-flex xs12>
+                    <v-text-field
+                      name="otherNameInformed365"
+                      id="otherNameInformed365"
+                      v-model="otherName"
+                      type="text"
+                      autocomplete="false"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+
                 <PasswordComplexity />
 
                 <v-layout row>
@@ -140,7 +152,7 @@
         email: '',
         password: '',
         terms: false,
-        honeypot: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+        otherName: '', // Honey Pot
         created_at: null
       }
     },
@@ -156,7 +168,7 @@
       },
       error () {
         const now = Date.now()
-        if (this.submitted && (this.honeypot !== '' || now - this.created_at < 1000)) {
+        if (this.submitted && (this.otherName !== '' || now - this.created_at < 1000)) {
           return {
             message: 'There has been an error in registering your account.'
           }
@@ -212,7 +224,7 @@
       },
       onSignup () {
         const now = Date.now()
-        if (this.honeypot !== '' || now - this.created_at < 1000) {
+        if (this.otherName !== '' || now - this.created_at < 1000) {
           this.submitted = true
           return
         }
@@ -235,7 +247,7 @@
     created: function () {
       this.onDismissed()
       this.onValidate(this.user)
-      this.honeypot = ''
+      this.otherName = ''
       this.created_at = Date.now()
     }
   }
