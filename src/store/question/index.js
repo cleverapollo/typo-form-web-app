@@ -54,7 +54,7 @@ export default {
         mandatory: payload.mandatory,
         question_type_id: payload.questionTypeId,
         width: 12,
-        key: payload.key,
+        key: payload.key
       }
       window.axios.post(SECTION_URL + payload.sectionId + QUESTION_URL, question)
         .then(

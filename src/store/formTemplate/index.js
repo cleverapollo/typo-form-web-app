@@ -205,6 +205,8 @@ export default {
       commit('setLoading', true)
       let formData = new FormData()
       formData.append('file', payload.file)
+      formData.append('where', payload.where)
+      formData.append('method', payload.method)
 
       const config = {
         headers: {'content-type': 'multipart/form-data'}

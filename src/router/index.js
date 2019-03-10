@@ -11,7 +11,7 @@ import AcceptJoin from '@/components/Shared/AcceptJoin'
 
 // Applications
 import Applications from '@/components/Application/Applications'
-import Application from '@/components/Application/Application'
+import Dashboard from '@/components/Dashboard/Dashboard'
 import ApplicationSettings from '@/components/Application/ApplicationSettings'
 
 // Users
@@ -80,8 +80,8 @@ const router = new Router({
     },
     {
       path: '/dashboard',
-      name: 'Application',
-      component: Application,
+      name: 'Dashboard',
+      component: Dashboard,
       meta: {
         application: true,
         requiresAuth: true
