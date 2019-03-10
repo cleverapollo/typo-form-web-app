@@ -75,18 +75,20 @@
                       ></v-text-field>
                   </v-flex>
                 </v-layout>
-                <PasswordComplexity />
-                
-                <v-layout row>
-                  <v-flex xs12 class="my-2">
-                    <vue-recaptcha
-                      ref="recaptcha"
-                      @verify="onCaptchaVerified"
-                      @expired="onCaptchaExpired"
-                      :sitekey="data_sitekey">
-                    </vue-recaptcha>
+                 <v-layout row style="display:none !important;">
+                  <v-flex xs12>
+                    <v-text-field
+                      name="otherNameInformed365"
+                      id="otherNameInformed365"
+                      v-model="otherName"
+                      type="text"
+                      autocomplete="false"
+                    ></v-text-field>
                   </v-flex>
                 </v-layout>
+
+                <PasswordComplexity />
+
                 <v-layout row>
                   <v-flex xs12>
                     <v-btn
@@ -140,7 +142,6 @@
 <script>
   import PasswordComplexity from './PasswordComplexity'
   import PasswordMixin from './PasswordMixin.js'
-  import VueRecaptcha from 'vue-recaptcha'
   export default {
     mixins: [PasswordMixin],
     data () {
@@ -150,14 +151,13 @@
         lastname: '',
         email: '',
         password: '',
-        recaptchaToken: '',
-        data_sitekey: process.env.GOOGLE_DATA_SITEKEY,
-        terms: false
+        terms: false,
+        otherName: '', // Honey Pot
+        created_at: null
       }
     },
     components: {
-      PasswordComplexity,
-      VueRecaptcha
+      PasswordComplexity
     },
     computed: {
       slug () {
@@ -167,8 +167,11 @@
         return this.$store.getters.user
       },
       error () {
-        if (this.submitted && this.recaptchaToken === '') {
-          return
+        const now = Date.now()
+        if (this.submitted && (this.otherName !== '' || now - this.created_at < 1000)) {
+          return {
+            message: 'There has been an error in registering your account.'
+          }
         }
         return this.$store.getters.error
       },
@@ -220,7 +223,8 @@
         }
       },
       onSignup () {
-        if (this.recaptchaToken === '') {
+        const now = Date.now()
+        if (this.otherName !== '' || now - this.created_at < 1000) {
           this.submitted = true
           return
         }
@@ -228,30 +232,23 @@
           first_name: this.firstname,
           last_name: this.lastname,
           email: this.email,
-          password: this.password,
-          recaptchaToken: this.recaptchaToken
+          password: this.password
         })
           .then(response => {
           })
           .catch(() => {
-            this.$refs.recaptcha.reset()
             this.submitted = false
-            this.recaptchaToken = ''
           })
       },
       onDismissed () {
         this.$store.dispatch('clearError')
-      },
-      onCaptchaVerified (recaptchaToken) {
-        this.recaptchaToken = recaptchaToken
-      },
-      onCaptchaExpired () {
-        this.recaptchaToken = ''
       }
     },
     created: function () {
       this.onDismissed()
       this.onValidate(this.user)
+      this.otherName = ''
+      this.created_at = Date.now()
     }
   }
 </script>
