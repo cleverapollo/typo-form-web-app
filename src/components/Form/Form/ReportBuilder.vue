@@ -347,9 +347,10 @@ export default {
                           questionResponses.push({id: formResponse.id, response: response, form_id: form.id})
                         })
                       })
-                      const lookupResult = questionResponses.find(questionResponse => questionResponse.id === parseInt(orderResponses[0].response))
-                      const lookupForm = forms.find(form => lookupResult.form_id === form.id)
-                      linkedResponses = linkedResponses.concat(lookupForm.responses)
+                      const lookupResult = questionResponses.find(questionResponse => questionResponse.form_id === parseInt(orderResponses[0].response))
+                      const lookupForm = lookupResult ? forms.find(form => lookupResult.form_id === form.id) : null
+                      linkedResponses = lookupForm ? linkedResponses.concat(lookupForm.responses) : null
+                      row[filter.source.question] = lookupResult ? lookupResult.response : ''
                     }
                   }
                 }

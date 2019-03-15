@@ -1,297 +1,242 @@
 <template>
-  <v-layout row wrap>
-    <v-flex d-flex xs12>
-      <v-layout row wrap>
+  <v-container fluid grid-list-lg class="dashboard-container">
 
-        <!-- //Title -->
-        <v-flex d-flex xs12>
-          <h1 class="headline primary--text py-3">Dashboard</h1>
-          <v-spacer></v-spacer>
-          <div class="text-xs-right py-2" v-if="userIsApplicationAdmin">
-            <v-tooltip bottom>
-              <v-btn icon @click="editMode = !editMode" slot="activator">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <span>Edit Page</span>
-            </v-tooltip>
-          </div>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+    <!-- Welcome Widget -->
+    <Welcome></Welcome>
 
-    <v-flex>
-      <CustomSlot type="dashboardHeader" :mode="editMode" />
-    </v-flex>
+    <!-- Summary Widgets -->
+    <v-layout row wrap justify-space-between>
+      <v-flex
+        pointer
+        @click="onList(item.type)"
+        v-for="item in items"
+        v-if="!item.admin || userIsApplicationAdmin"
+        :key="item.title"
+        xs12 sm12 md6>
+        <v-card :color="item.color">
+          <v-container fluid grid-list-lg>
+            <v-layout row>
+              <v-flex>
+                <v-icon size="65" >{{ item.icon }}</v-icon>
+              </v-flex>
+              <v-flex text-xs-right class="white--text">
+                <div class="display-2" color="white">
+                  <countTo :startVal="countToStart" :endVal="getPropertyCount(item.type)" :duration="countToDuration"></countTo>
+                </div>
+                <div class="body-1">{{ item.title }}</div>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card>
+      </v-flex>
+    </v-layout>
 
-    <v-container fluid grid-list-lg class="dashboard-container">
+    <!-- // New Users Widget -->
+    <v-layout row wrap justify-space-between v-if="userIsApplicationAdmin">
 
-      <!-- Welcome Widget -->
-      <v-layout row justify-space-around>
-        <v-flex xs12>
-          <v-card>
-            <v-card-text class="primary">
-              <div class="title font-weight-regular white--text">{{ getGreeting(this.user.first_name )}}</div>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-text>
-              <v-layout row wrap>
-                <v-flex xs12 md4>
-                  <span class="body-2">Role: </span>
-                  <span>{{ getUserApplicationRole() }}</span>
-                </v-flex>
-                <v-flex xs12 md4 text-md-center>
-                  <span class="body-2">Email: </span>
-                  <span>{{ this.user.email }}</span>
-                </v-flex>
-                <v-flex xs12 md4 text-md-right>
-                  <span class="body-2">Joined: </span>
-                  <span>{{ getUserApplicationJoined(this.user.id) }}</span>
-                </v-flex>
-              </v-layout>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-
-      <!-- Summary Widgets -->
-      <v-layout row wrap justify-space-between>
-        <v-flex
-          pointer
-          @click="onList(item.type)"
-          v-for="item in items"
-          v-if="!item.admin || userIsApplicationAdmin"
-          :key="item.title"
-          xs12 sm12 md6>
-          <v-card :color="item.color">
-            <v-container fluid grid-list-lg>
-              <v-layout row>
-                <v-flex>
-                  <v-icon size="65" >{{ item.icon }}</v-icon>
-                </v-flex>
-                <v-flex text-xs-right class="white--text">
-                  <div class="display-2" color="white">
-                    <countTo :startVal="countToStart" :endVal="getPropertyCount(item.type)" :duration="countToDuration"></countTo>
-                  </div>
-                  <div class="body-1">{{ item.title }}</div>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-card>
-        </v-flex>
-      </v-layout>
-
-      <!-- // New Users Widget -->
-      <v-layout row wrap justify-space-between v-if="userIsApplicationAdmin">
-
-        <!-- // New Users -->
-        <v-flex xs12 lg4>
-          <v-card
-            to="/users"
-            height="100%"
-            class="widget-scroll"
-            >
-            <v-card-title class="green">
-              <div class="title font-weight-regular white--text">New Users</div>
-            </v-card-title>
-            <v-list two-line v-if="getNewUsers.length">
-              <template v-for="(item, index) in getNewUsers">
-                <v-list-tile 
-                  :key="index"
-                  avatar>
-                  <v-list-tile-avatar>
-                    <v-icon size="48" color="primary">account_circle</v-icon>
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ item.first_name + ' ' + item.last_name }}</v-list-tile-title>
-                    <v-list-tile-sub-title>{{ item.email }}</v-list-tile-sub-title>
-                  </v-list-tile-content>
-                  <v-list-tile-action>
-                    <div class="body-1 pt-3">Joined</div>
-                    <v-list-tile-action-text>{{ getTimeSince(item.created_at.date) }}</v-list-tile-action-text>
-                  </v-list-tile-action>
-                </v-list-tile>
-                <v-divider 
-                  v-if="index + 1 < getNewUsers.length"
-                ></v-divider>
-              </template>
-            </v-list>
-            <v-card-text v-else>
-              <div class="text-xs-center">
-                <v-icon size="60" class="pa-1">person_add</v-icon>
-                <p class="body-1">No results, why don't you <router-link to="/users" tag="a">invite a user</router-link>?</p>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-
-        <!-- // Invited Users -->
-        <v-flex xs12 lg4>
-          <v-card
-            to="/users"
-            height="100%"
-            class="widget-scroll"
-            >
-            <v-card-title class="green">
-              <div class="title font-weight-regular white--text">Invited Users</div>
-            </v-card-title>
-            <v-list two-line v-if="getInvitedUsers.length">
-              <template v-for="(item, index) in getInvitedUsers">
-                <v-list-tile 
-                  :key="index"
-                  avatar>
-                  <v-list-tile-avatar>
-                    <v-icon size="48" color="primary">account_circle</v-icon>
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ item.invitee }}</v-list-tile-title>
-                    <v-list-tile-sub-title>Invited by {{ getUserName(item.inviter_id) }} as a {{ getRole(item.application_role_id) }}</v-list-tile-sub-title>
-                  </v-list-tile-content>
-                  <v-list-tile-action>
-                    <div class="body-1 pt-3">Invited</div>
-                    <v-list-tile-action-text>{{ getTimeSince(item.created_at.date) }}</v-list-tile-action-text>
-                  </v-list-tile-action>
-                </v-list-tile>
-                <v-divider 
-                  v-if="index + 1 < getInvitedUsers.length"
-                ></v-divider>
-              </template>
-            </v-list>
-            <v-card-text v-else>
-              <div class="text-xs-center">
-                <v-icon size="60" class="pa-1">person_add</v-icon>
-                <p class="body-1">No results, why don't you <router-link to="/users" tag="a">invite a user</router-link>?</p>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-
-        <!-- // User Activity -->
-        <v-flex xs12 lg4>
-          <v-card
-            to="/users"
-            height="100%"
-            class="widget-scroll"
-            >
-            <v-card-title class="green">
-              <div class="title font-weight-regular white--text">User Activity</div>
-            </v-card-title>
-            <v-list two-line v-if="getActiveUsers.length">
-              <template v-for="(item, index) in getActiveUsers">
-                <v-list-tile 
-                  :key="index"
-                  avatar>
-                  <v-list-tile-avatar>
-                    <v-icon size="48" color="primary">account_circle</v-icon>
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ item.first_name + ' ' + item.last_name }}</v-list-tile-title>
-                    <v-list-tile-sub-title>{{ item.email }}</v-list-tile-sub-title>
-                  </v-list-tile-content>
-                  <v-list-tile-action>
-                    <div class="body-1 pt-3">Last Active</div>
-                    <v-list-tile-action-text>{{ getTimeSince(item.updated_at.date) }}</v-list-tile-action-text>
-                  </v-list-tile-action>
-                </v-list-tile>
-                <v-divider 
-                  v-if="index + 1 < getActiveUsers.length"
-                ></v-divider>
-              </template>
-            </v-list>
-            <v-card-text v-else>
-              <div class="text-xs-center">
-                <v-icon size="60" class="pa-1">inbox</v-icon>
-                <p class="body-1">No results</p>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-
-      </v-layout>
-
-      <!-- // Charts -->
-      <v-layout row wrap justify-space-between v-if="userIsApplicationAdmin">
-
-        <!-- // Forms -->
-        <v-flex xs12 lg6>
-          <v-card>
-            <v-card-title class="red">
-              <div class="title font-weight-regular white--text">Forms Trendline</div>
-            </v-card-title>
-            <v-card-text>
-              <v-layout row>
-                <v-flex xs12>
-                  <LineChart :chart-data="formChartData" :options="chartOptions('Forms')" />
-                </v-flex>
-              </v-layout>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <VDateRange :options="dateRangeOptions" :range="formRange" @input="onFormDateRangeChange"></VDateRange>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-
-        <!-- // Users -->
-        <v-flex xs12 lg6>
-          <v-card>
-            <v-card-title class="green">
-              <div class="title font-weight-regular white--text">Users Trendline</div>
-            </v-card-title>
-            <v-card-text>
-              <v-layout row>
-                <v-flex xs12>
-                  <LineChart :chart-data="userChartData" :options="chartOptions('Users')" />
-                </v-flex>
-              </v-layout>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <VDateRange :options="dateRangeOptions" :range="userRange" @input="onUserDateRangeChange"></VDateRange>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-
-      </v-layout>
-
-      <v-layout v-if="userIsApplicationAdmin" justify-space-between row wrap>
-       <!-- // Export Application Data -->
-        <v-flex xs12 md6>
-          <v-btn
-            color="primary"
-            outline
-            block
-            large
-            @click.native="getApplicationDataExport()"
-            :disabled="loadingExport"
-            :loading="loadingExport">
-            Export Application Data
-            <v-icon right dark>save_alt</v-icon>
-          </v-btn>
-        </v-flex>
-
-        <!-- // Report Builder -->
-        <v-flex xs12 md6>
-          <v-btn
-            color="primary"
-            outline
-            block
-            large
-            to="/report"
+      <!-- // New Users -->
+      <v-flex xs12 lg4>
+        <v-card
+          to="/users"
+          height="100%"
+          class="widget-scroll"
           >
-            Report Builder
-            <v-icon right dark>description</v-icon>
-          </v-btn>
-        </v-flex>
+          <v-card-title class="green">
+            <div class="title font-weight-regular white--text">New Users</div>
+          </v-card-title>
+          <v-list two-line v-if="getNewUsers.length">
+            <template v-for="(item, index) in getNewUsers">
+              <v-list-tile 
+                :key="index"
+                avatar>
+                <v-list-tile-avatar>
+                  <v-icon size="48" color="primary">account_circle</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ item.first_name + ' ' + item.last_name }}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{ item.email }}</v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <div class="body-1 pt-3">Joined</div>
+                  <v-list-tile-action-text>{{ getTimeSince(item.created_at.date) }}</v-list-tile-action-text>
+                </v-list-tile-action>
+              </v-list-tile>
+              <v-divider 
+                v-if="index + 1 < getNewUsers.length"
+              ></v-divider>
+            </template>
+          </v-list>
+          <v-card-text v-else>
+            <div class="text-xs-center">
+              <v-icon size="60" class="pa-1">person_add</v-icon>
+              <p class="body-1">No results, why don't you <router-link to="/users" tag="a">invite a user</router-link>?</p>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-flex>
 
-      </v-layout>
+      <!-- // Invited Users -->
+      <v-flex xs12 lg4>
+        <v-card
+          to="/users"
+          height="100%"
+          class="widget-scroll"
+          >
+          <v-card-title class="green">
+            <div class="title font-weight-regular white--text">Invited Users</div>
+          </v-card-title>
+          <v-list two-line v-if="getInvitedUsers.length">
+            <template v-for="(item, index) in getInvitedUsers">
+              <v-list-tile 
+                :key="index"
+                avatar>
+                <v-list-tile-avatar>
+                  <v-icon size="48" color="primary">account_circle</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ item.invitee }}</v-list-tile-title>
+                  <v-list-tile-sub-title>Invited by {{ getUserName(item.inviter_id) }} as a {{ getRole(item.application_role_id) }}</v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <div class="body-1 pt-3">Invited</div>
+                  <v-list-tile-action-text>{{ getTimeSince(item.created_at.date) }}</v-list-tile-action-text>
+                </v-list-tile-action>
+              </v-list-tile>
+              <v-divider 
+                v-if="index + 1 < getInvitedUsers.length"
+              ></v-divider>
+            </template>
+          </v-list>
+          <v-card-text v-else>
+            <div class="text-xs-center">
+              <v-icon size="60" class="pa-1">person_add</v-icon>
+              <p class="body-1">No results, why don't you <router-link to="/users" tag="a">invite a user</router-link>?</p>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-flex>
 
-    </v-container>
+      <!-- // User Activity -->
+      <v-flex xs12 lg4>
+        <v-card
+          to="/users"
+          height="100%"
+          class="widget-scroll"
+          >
+          <v-card-title class="green">
+            <div class="title font-weight-regular white--text">User Activity</div>
+          </v-card-title>
+          <v-list two-line v-if="getActiveUsers.length">
+            <template v-for="(item, index) in getActiveUsers">
+              <v-list-tile 
+                :key="index"
+                avatar>
+                <v-list-tile-avatar>
+                  <v-icon size="48" color="primary">account_circle</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ item.first_name + ' ' + item.last_name }}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{ item.email }}</v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <div class="body-1 pt-3">Last Active</div>
+                  <v-list-tile-action-text>{{ getTimeSince(item.updated_at.date) }}</v-list-tile-action-text>
+                </v-list-tile-action>
+              </v-list-tile>
+              <v-divider 
+                v-if="index + 1 < getActiveUsers.length"
+              ></v-divider>
+            </template>
+          </v-list>
+          <v-card-text v-else>
+            <div class="text-xs-center">
+              <v-icon size="60" class="pa-1">inbox</v-icon>
+              <p class="body-1">No results</p>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-flex>
 
-    <v-flex>
-      <CustomSlot type="dashboardFooter" :mode="editMode" />
-    </v-flex>
+    </v-layout>
 
-  </v-layout>
+    <!-- // Charts -->
+    <v-layout row wrap justify-space-between v-if="userIsApplicationAdmin">
+
+      <!-- // Forms -->
+      <v-flex xs12 lg6>
+        <v-card>
+          <v-card-title class="red">
+            <div class="title font-weight-regular white--text">Forms Trendline</div>
+          </v-card-title>
+          <v-card-text>
+            <v-layout row>
+              <v-flex xs12>
+                <LineChart :chart-data="formChartData" :options="chartOptions('Forms')" />
+              </v-flex>
+            </v-layout>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <VDateRange :options="dateRangeOptions" :range="formRange" @input="onFormDateRangeChange"></VDateRange>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+
+      <!-- // Users -->
+      <v-flex xs12 lg6>
+        <v-card>
+          <v-card-title class="green">
+            <div class="title font-weight-regular white--text">Users Trendline</div>
+          </v-card-title>
+          <v-card-text>
+            <v-layout row>
+              <v-flex xs12>
+                <LineChart :chart-data="userChartData" :options="chartOptions('Users')" />
+              </v-flex>
+            </v-layout>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <VDateRange :options="dateRangeOptions" :range="userRange" @input="onUserDateRangeChange"></VDateRange>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+
+    </v-layout>
+
+    <v-layout v-if="userIsApplicationAdmin" justify-space-between row wrap>
+      <!-- // Export Application Data -->
+      <v-flex xs12 md6>
+        <v-btn
+          color="primary"
+          outline
+          block
+          large
+          @click.native="getApplicationDataExport()"
+          :disabled="loadingExport"
+          :loading="loadingExport">
+          Export Application Data
+          <v-icon right dark>save_alt</v-icon>
+        </v-btn>
+      </v-flex>
+
+      <!-- // Report Builder -->
+      <v-flex xs12 md6>
+        <v-btn
+          color="primary"
+          outline
+          block
+          large
+          to="/report"
+        >
+          Report Builder
+          <v-icon right dark>description</v-icon>
+        </v-btn>
+      </v-flex>
+
+    </v-layout>
+
+  </v-container>
 
 </template>
 
@@ -303,6 +248,7 @@
   import CustomSlot from '../Layout/CustomSlot'
   import LineChart from '../Chart/LineChart'
   import UserMixin from '../Layout/UserMixin'
+  import Welcome from './Components/Welcome'
 
   export default {
     data () {
@@ -359,7 +305,8 @@
     components: {
       countTo,
       CustomSlot,
-      LineChart
+      LineChart,
+      Welcome
     },
     computed: {
       userChartData () {
@@ -618,26 +565,10 @@
         return moment(time).fromNow()
       },
       getUserName (userId) {
-        // Find user by id
         let user = _.find(this.users, user => {
           return user.id === userId
         })
         return user ? user.first_name + ' ' + user.last_name : 'System Administrator'
-      },
-      getGreeting (name) {
-        let today = new Date()
-        let curHr = today.getHours()
-        let greeting = null
-
-        if (curHr < 12) {
-          greeting = 'Good morning'
-        } else if (curHr < 18) {
-          greeting = 'Good afternoon'
-        } else {
-          greeting = 'Good evening'
-        }
-
-        return greeting + ', ' + name
       }
     },
     created () {
