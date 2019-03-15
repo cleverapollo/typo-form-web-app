@@ -79,9 +79,12 @@
           const formResponses = form.responses.filter(response => response.question_id === this.editQuestionId)
           _.forEach(formResponses, (formResponse, index) => {
             const response = this.questionToResponse(this.editQuestion, [formResponse])
-            responses.push({id: formResponse.id, response: response})
+            if (response) {
+              responses.push({id: form.id, response: response})
+            }
           })
         })
+        responses = _.orderBy(responses, 'response')
         return responses
       }
     },

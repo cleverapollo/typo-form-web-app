@@ -255,7 +255,7 @@ export default {
             const answer = item.answers.find((answer) => {
               return answer.id === response.answer_id
             })
-            return answer.answer
+            return answer ? answer.answer : null
           })
           response = result.join(', ')
           break
