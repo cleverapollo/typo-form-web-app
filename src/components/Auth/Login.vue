@@ -56,6 +56,9 @@
                     </v-text-field>
                   </v-flex>
                 </v-layout>
+
+                <PasswordComplexity />
+
                 <v-layout row>
                   <v-flex xs12>
                     <v-btn
@@ -100,6 +103,7 @@
 </template>
 
 <script>
+  import PasswordComplexity from './PasswordComplexity'
   export default {
     data () {
       return {
@@ -107,6 +111,9 @@
         email: '',
         password: ''
       }
+    },
+    components: {
+      PasswordComplexity
     },
     computed: {
       slug () {
