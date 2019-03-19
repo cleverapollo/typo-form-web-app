@@ -29,6 +29,7 @@ import ShowFormTemplate from '@/components/Form/ShowFormTemplate'
 import Forms from '@/components/Form/Form/Forms'
 import ShowForm from '@/components/Form/Form/ShowForm'
 import ReportBuilder from '@/components/Form/Form/ReportBuilder'
+import CompareForms from '@/components/Form/Form/CompareForms'
 import ChartBuilder from '@/components/Form/Form/ChartBuilder'
 
 import {store} from '@/store'
@@ -166,6 +167,15 @@ const router = new Router({
       path: '/report',
       name: 'ReportBuilder',
       component: ReportBuilder,
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/compare',
+      name: 'CompareForms',
+      component: CompareForms,
       meta: {
         application: true,
         requiresAuth: true

@@ -43,7 +43,7 @@
                 :key="item.title"
               >
                 <v-list-tile-action>
-                  <v-icon :color="item.color" size="30">{{ item.icon }}</v-icon>
+                  <v-icon size="30">{{ item.icon }}</v-icon>
                 </v-list-tile-action>
                 <v-list-tile-content>
                   <v-list-tile-title>
@@ -213,6 +213,8 @@
             { title: 'Form Templates', path: 'form-templates', icon: 'content_paste', admin: true, color: 'red' },
             { title: 'Users', path: 'users', icon: 'person', admin: true, color: 'green' },
             { title: 'Organisations', path: 'organisations', icon: 'people', admin: false, color: 'orange' },
+            { title: 'Report Builder', path: 'report', icon: 'table_chart', admin: true, color: 'orange' },
+            { title: 'Compare Forms', path: 'compare', icon: 'compare', admin: true, color: 'orange' },
             { title: 'Settings', path: 'settings', icon: 'settings', admin: true }
         ]
       },
