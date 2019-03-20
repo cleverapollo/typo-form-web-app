@@ -14,11 +14,14 @@
 
       <v-layout row>
         <v-flex xs12>
-          <v-text-field
-            label="Description"
-            v-model="editedDescription"
-            @blur="checkUpdateDescription"
-          ></v-text-field>
+        <label>Description</label>
+        <quill-editor
+          v-model="editedDescription"
+          :options="editorOption"
+          @blur="checkUpdateDescription"
+          class="mb-3"
+        >
+        </quill-editor>
         </v-flex>
       </v-layout>
 
@@ -215,6 +218,7 @@
     data () {
       return {
         deleteQuestion: false,
+        editorOption: {},
         moveQuestion: false,
         editedName: this.question.question,
         editedDescription: this.question.description,
