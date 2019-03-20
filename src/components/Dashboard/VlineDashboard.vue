@@ -7,20 +7,20 @@
     <!-- // Stats -->
     <v-layout row wrap justify-space-between>
       <v-flex
-        v-for="stat in stats"
-        :key="stat.name"
-        sm12 md4>
-        <v-card :color="stat.color">
+        v-for="item in items"
+        :key="item.name"
+        sm12 md3>
+        <v-card :color="item.color">
           <v-container fluid grid-list-lg>
             <v-layout row>
               <v-flex>
-                <v-icon size="65" >{{ stat.icon }}</v-icon>
+                <v-icon size="65" >{{ item.icon }}</v-icon>
               </v-flex>
               <v-flex text-xs-right class="white--text">
                 <div class="display-2" color="white">
-                  <countTo :startVal="countToStart" :endVal="stat.count" :duration="countToDuration"></countTo>
+                  <countTo :startVal="countToStart" :endVal="getFormCount(item.form)" :duration="countToDuration"></countTo>
                 </div>
-                <div class="body-1">{{ stat.name }}</div>
+                <div class="body-1">{{ item.label }}</div>
               </v-flex>
             </v-layout>
           </v-container>
@@ -39,14 +39,22 @@
             color="primary"
             >
 
-            <v-tab href="#sites">Sites</v-tab>
-            <v-tab href="#services">Services</v-tab>
-            <v-tab href="#useages">Useages</v-tab>
-
-            <!-- // Sites -->
-            <v-tab-item
-              value="sites"
+            <!-- // Tab Links -->
+            <v-tab 
+              v-for="item in items"
+              :key="item.form"
+              :href="getTabLink(item.label)"
             >
+            {{ item.label }}
+            </v-tab>
+
+            <!-- // Tab Items -->
+            <v-tab-item
+              v-for="item in items"
+              :key="item.form"
+              :value="item.label.toLowerCase()"
+            >
+
               <v-card-title>
                 <v-layout row wrap>
                   <v-flex xs12 md6>
@@ -78,8 +86,8 @@
               </v-card-title>
 
               <v-data-table
-                :headers="sitesHeaders"
-                :items="sites"
+                :headers="getFormTableHeader(item.form)"
+                :items="getFormTableData(item.form)"
                 :search="sitesSearch"
                 :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
               >
@@ -94,20 +102,6 @@
                   Your search for "{{ sitesSearch }}" found no results.
                 </v-alert>
               </v-data-table>
-
-            </v-tab-item>
-
-            <!-- // Services -->
-            <v-tab-item
-              value="services"
-            >
-
-            </v-tab-item>
-
-            <!-- // Useages -->
-            <v-tab-item
-              value="useages"
-            >
 
             </v-tab-item>
 
@@ -176,7 +170,7 @@
               <v-flex text-xs-center xs12 py-2>
                 <v-btn 
                   class="primary"
-                  @click="uploadFiles" 
+                  @click="uploadFile" 
                   :disabled="loading">
                     Start Upload
                 </v-btn>
@@ -222,42 +216,6 @@
         uploadingFormData: false,
         timer: '',
         sitesSearch: '',
-        formTemplates: [
-          {
-            id: 32,
-            name: 'Site',
-            where: {
-              questions: [
-                {
-                  key: 'key',
-                  value: 'site_name',
-                  column: 'site_name',
-                  join: 'AND'
-                }
-              ]
-            }
-          },
-          {
-            id: 50,
-            name: 'Service',
-            where: {
-              questions: [
-                {
-                  key: 'key',
-                  value: 'service_accountnumber',
-                  column: 'service_accountnumber',
-                  join: 'OR'
-                },
-                {
-                  key: 'key',
-                  value: 'service_nmi',
-                  column: 'service_nmi',
-                  join: 'OR'
-                }
-              ]
-            }
-          }
-        ],
         loading: false,
         file: null
       }
@@ -270,79 +228,51 @@
       slug () {
         return window.location.hostname.split('.')[0]
       },
-      numberOfSites () {
-        return this.$store.getters.loadedForms(this.getFormTemplateId('Site')).length
+      formTemplates () {
+        return this.$store.getters.loadedFormTemplates(this.slug)
       },
-      numberOfServices () {
-        return this.$store.getters.loadedForms(this.getFormTemplateId('Service')).length
+      forms () {
+        return this.$store.getters.loadedAllForms(this.slug)
       },
-      numberOfUsers () {
-        return this.$store.getters.loadedUsers(this.slug).length
-      },
-      stats () {
+      items () {
         return [
-          { name: 'Sites', count: this.numberOfSites, icon: 'place', color: 'blue' },
-          { name: 'Services', count: this.numberOfServices, icon: 'ev_station', color: 'orange' },
-          { name: 'Useages', count: this.numberOfUsers, icon: 'trending_up', color: 'green' }
+          { form: 'Site', label: 'Sites', icon: 'place', color: 'blue' },
+          { form: 'Service', label: 'Services', icon: 'ev_station', color: 'orange' },
+          { form: 'Vehicle', label: 'Vehicles', icon: 'directions_car', color: 'green' },
+          { form: 'Useage', label: 'Useages', icon: 'trending_up', color: 'red' }
         ]
-      },
-      sites () {
-        const sites = []
-        const form_template_id = 32
-        const forms = this.$store.getters.loadedForms(form_template_id)
-        _.forEach(forms, form => {
-          const row = []
-          _.forEach(this.sitesHeaders, header => {
-            const response = form.responses.find(response => response.question_id === header.value)
-            row.push(response ? response.response : '')
-          })
-          sites.push(row)
-        })
-        const filteredSites = _.filter(sites, site => { return site[0] !== null })
-        return filteredSites
-      },
-      sitesHeaders () {
-        const siteFields = []
-        const form_template_name = 'Site'
-        const questions = _.orderBy(this.$store.getters.loadedApplicationQuestions(this.slug), 'order')
-        _.forEach(questions, question => {
-          if(question.form_template_name === form_template_name) {
-            siteFields.push({ text: question.question, value: question.id })
-          }
-        })
-        return siteFields
       }
     },
     methods: {
-      getFormTemplateId (name) {
-        const formTemplate = _.find(this.formTemplates, { name: name })
-        return formTemplate ? formTemplate.id : null
+      getFormTableHeader (formTemplateName) {
+        const headers = []
+        const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.name === formTemplateName })
+        const sections = formTemplate ? _.orderBy(this.$store.getters.loadedSections(formTemplate.id), 'order') : null
+        _.forEach(sections, section => {
+          _.forEach(section.questions, question => {
+            headers.push({ text: question.question, value: question.id })
+          })
+        })
+        return headers
       },
-      uploadFiles () {
-        if (!this.file) return
-
-        this.uploadingFormData = true
-        this.uploadFile(0)
+      getFormTableData (formTemplateName) {
+        return []
       },
-      uploadFile (index) {
-        let formTemplate = this.formTemplates[index]
+      getTabLink (name) {
+        return '#' + name.toLowerCase()
+      },
+      getFormCount (name) {
+        const forms = _.filter(this.forms, form => { return form.form_template.name === name })
+        return forms ? forms.length : 0
+      },
+      uploadFile () {
         this.$store.dispatch('uploadFormData', {
           slug: this.slug,
-          id: formTemplate.id,
-          file: this.file,
-          where: JSON.stringify(formTemplate.where),
-          method: 'key'
-        })
-        .then(response => {
-          this.formTemplates[index + 1] ? this.uploadFile(index + 1) : this.postFormDataUpload()
+          file: this.file
         })
         .catch(error => {
           console.log(error)
         })
-      },
-      postFormDataUpload () {
-        this.uploadingFormData = false
-        this.$store.dispatch('loadAllForms', this.slug)
       },
       changeFile (e) {
         const files = e.target.files || e.dataTransfer.files
@@ -370,7 +300,7 @@
     },
     created () {
       this.getDashboardData()
-      this.timer = setInterval(this.getDashboardData, 10000)
+      this.timer = setInterval(this.getDashboardData, 30000)
       this.$store.dispatch('loadUsers', this.slug)
       this.$store.dispatch('loadFormTemplates', this.slug)
       this.$store.dispatch('loadAllSections', this.slug)

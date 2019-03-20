@@ -188,8 +188,8 @@ export default {
       this.$router.push('/forms/' + id)
     },
     getFileName () {
-      const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.id === this.formTemplateId})
-      const fileName = (formTemplate ? formTemplate.name : '') + ' Compare ' + moment().format('YYYY-MM-DD [at] LTS') 
+      const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.id === this.formTemplateId })
+      const fileName = (formTemplate ? formTemplate.name : '') + ' Compare ' + moment().format('YYYY-MM-DD [at] LTS')
       return fileName
     }
   },
