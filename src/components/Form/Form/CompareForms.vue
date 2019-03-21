@@ -138,20 +138,22 @@ export default {
     responses () {
       const data = []
       const forms = this.getFormTemplateForms(this.formTemplateId)
-      const questions = this.getFormTemplateQuestions(this.formTemplateId)
+      const sections = _.orderBy(this.$store.getters.loadedSections(this.formTemplateId), 'order')
       _.forEach(forms, form => {
         const user = form.user.first_name + ' ' + form.user.last_name
         const row = { 'ID': form.id, 'Organisation': form.organisation, 'User': user }
-        _.forEach(questions, question => {
-          const values = []
-          const responses = _.filter(form.responses, response => { return response.question_id === question.id })
-          _.forEach(responses, response => {
-            const answer = _.find(this.answers, answer => { return response.answer_id === answer.id })
-            const value = answer ? answer.answer : response.response
-            values.push(value)
+        _.forEach(sections, section => {
+          _.forEach(section.questions, question => {
+            const values = []
+            const responses = _.filter(form.responses, response => { return response.question_id === question.id })
+            _.forEach(responses, response => {
+              const answer = _.find(question.answers, answer => { return response.answer_id === answer.id })
+              const value = answer ? answer.answer : response.response
+              values.push(value)
+            })
+            const cell = values.join()
+            row[question.question] = cell
           })
-          const cell = values.join()
-          row[question.question] = cell
         })
         data.push(row)
       })

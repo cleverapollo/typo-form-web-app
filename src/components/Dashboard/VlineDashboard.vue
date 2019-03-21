@@ -58,24 +58,21 @@
               <v-card-title>
                 <v-layout row wrap>
                   <v-flex xs12 md6>
-                    <!--
                     <v-btn
                       outline
                     >
                       <download-excel
-                        :data="sites"
-                        :name="'vline-sites.csv'"
+                        :data="getFormTableData(item.form)"
+                        :name="getFormExportFileName(item.form)"
                         type="csv"
-                        :fields="sitesHeaders"
                       >
                         Export
                       </download-excel>
                     </v-btn>
-                    -->
                   </v-flex>
                   <v-flex xs12 md6>
                     <v-text-field
-                      v-model="sitesSearch"
+                      v-model="item.search"
                       append-icon="search"
                       label="Search"
                       single-line
@@ -88,18 +85,18 @@
               <v-data-table
                 :headers="getFormTableHeader(item.form)"
                 :items="getFormTableData(item.form)"
-                :search="sitesSearch"
+                :search="item.search"
                 :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
               >
                 <template slot="items" slot-scope="props">
                   <tr>
-                    <template v-for="(item, key) in props.item">
-                      <td v-bind:key="'filter'+key">{{item}}</td>
+                    <template v-for="(val, key) in props.item">
+                      <td v-bind:key="'filter'+key">{{val}}</td>
                     </template>
                   </tr>
                 </template>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">
-                  Your search for "{{ sitesSearch }}" found no results.
+                  Your search for "{{ item.search }}" found no results.
                 </v-alert>
               </v-data-table>
 
@@ -159,7 +156,7 @@
                 <input 
                   id="upload" 
                   type="file" 
-                  accept=".csv"
+                  accept=".xlsx"
                   @change="changeFile"
                   :disabled="loading"
                   />
@@ -206,6 +203,7 @@
   import * as _ from 'lodash'
   import Welcome from './Components/Welcome'
   import countTo from 'vue-count-to'
+  import moment from 'moment'
   export default {
     data () {
       return {
@@ -215,9 +213,14 @@
         uploadFormDataDialog: false,
         uploadingFormData: false,
         timer: '',
-        sitesSearch: '',
         loading: false,
-        file: null
+        file: null,
+        items: [
+          { form: 'Site', label: 'Sites', icon: 'place', color: 'blue', search: '' },
+          { form: 'Service', label: 'Services', icon: 'ev_station', color: 'orange', search: '' },
+          { form: 'Vehicle', label: 'Vehicles', icon: 'directions_car', color: 'green', search: '' },
+          { form: 'Useage', label: 'Useages', icon: 'trending_up', color: 'red', search: '' }
+        ]
       }
     },
     components: {
@@ -233,20 +236,12 @@
       },
       forms () {
         return this.$store.getters.loadedAllForms(this.slug)
-      },
-      items () {
-        return [
-          { form: 'Site', label: 'Sites', icon: 'place', color: 'blue' },
-          { form: 'Service', label: 'Services', icon: 'ev_station', color: 'orange' },
-          { form: 'Vehicle', label: 'Vehicles', icon: 'directions_car', color: 'green' },
-          { form: 'Useage', label: 'Useages', icon: 'trending_up', color: 'red' }
-        ]
       }
     },
     methods: {
-      getFormTableHeader (formTemplateName) {
+      getFormTableHeader (name) {
         const headers = []
-        const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.name === formTemplateName })
+        const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.name === name })
         const sections = formTemplate ? _.orderBy(this.$store.getters.loadedSections(formTemplate.id), 'order') : null
         _.forEach(sections, section => {
           _.forEach(section.questions, question => {
@@ -255,8 +250,28 @@
         })
         return headers
       },
-      getFormTableData (formTemplateName) {
-        return []
+      getFormTableData (name) {
+        const data = []
+        const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.name === name })
+        const sections = formTemplate ? _.orderBy(this.$store.getters.loadedSections(formTemplate.id), 'order') : null
+        const forms = formTemplate ? _.filter(this.forms, form => { return form.form_template.name === name }) : null
+        _.forEach(forms, form => {
+          const row = {}
+          _.forEach(sections, section => {
+            _.forEach(section.questions, question => {
+              const responses = _.filter(form.responses, response => { return response.question_id === question.id })
+              const values = []
+              _.forEach(responses, response => {
+                const answer = _.find(question.answers, answer => { return response.answer_id === answer.id })
+                const value = answer ? answer.answer : response.response
+                values.push(value)
+              })
+              row[question.question] = values.join()
+            })
+          })
+          data.push(row)
+        })
+        return data
       },
       getTabLink (name) {
         return '#' + name.toLowerCase()
@@ -265,8 +280,11 @@
         const forms = _.filter(this.forms, form => { return form.form_template.name === name })
         return forms ? forms.length : 0
       },
+      getFormExportFileName (name) {
+        return name.toLowerCase() + '-' + moment().format('YYYY-MM-DD [at] LTS') + '.csv'
+      },
       uploadFile () {
-        this.$store.dispatch('uploadFormData', {
+        this.$store.dispatch('uploadApplicationFormData', {
           slug: this.slug,
           file: this.file
         })

@@ -22,5 +22,8 @@ module.exports = {
     'no-useless-escape': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+  },
+  globals: {
+    google: true
   }
 }
