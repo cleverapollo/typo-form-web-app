@@ -211,7 +211,7 @@
           { form: 'Site', label: 'Sites', icon: 'place', color: 'blue', search: '' },
           { form: 'Service', label: 'Services', icon: 'ev_station', color: 'orange', search: '' },
           { form: 'Vehicle', label: 'Vehicles', icon: 'directions_car', color: 'green', search: '' },
-          { form: 'Useage', label: 'Useages', icon: 'trending_up', color: 'red', search: '' }
+          { form: 'Useage', label: 'Useage', icon: 'trending_up', color: 'red', search: '' }
         ]
       }
     },
@@ -239,6 +239,7 @@
     methods: {
       cancelFormUpload () {
         this.uploadFormDataDialog = false
+        this.uploadingFormData = false
         this.file = null
         const input = this.$refs.fileupload
         input.type = 'text'
@@ -312,9 +313,7 @@
           console.log(error)
         })
         .then(() => {
-          this.file = null
-          this.uploadFormDataDialog = false
-          this.uploadingFormData = false
+          this.cancelFormUpload()
         })
       },
       changeFile (e) {
