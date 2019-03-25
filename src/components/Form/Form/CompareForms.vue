@@ -41,6 +41,7 @@
                     <download-excel
                       :data="data"
                       :name="getFileName() + '.csv'"
+                      :fields="tableFields"
                       type="csv"
                     >
                       Export
@@ -71,7 +72,7 @@
               <template slot='items' slot-scope='props'>
                 <tr>
                   <template v-for='(item, key) in props.item'>
-                    <td @click="openForm(props.item.id)" v-bind:key="'filter'+key">{{item}}</td>
+                    <td @click="openForm(props.item.form_id)" v-bind:key="'filter'+key">{{item}}</td>
                   </template>
                 </tr>
               </template>
@@ -115,15 +116,22 @@ export default {
     data () {
       return this.responses
     },
+    tableFields () {
+      const fields = {}
+      _.forEach(this.questions, question => {
+        fields[question.text] = question.value
+      })
+      return fields
+    },
     questions () {
       const data = [
-        { text: 'Form', value: 'id' },
+        { text: 'Form', value: 'form_id' },
         { text: 'Organisation', value: 'organisation' },
         { text: 'Contact', value: 'contact' }
       ]
       const questions = this.getFormTemplateQuestions(this.formTemplateId)
       _.forEach(questions, question => {
-        data.push({ text: question.question, value: question.id })
+        data.push({ text: question.question, value: 'key-' + question.id })
       })
       return data
     },
@@ -141,9 +149,10 @@ export default {
       const sections = _.orderBy(this.$store.getters.loadedSections(this.formTemplateId), 'order')
       _.forEach(forms, form => {
         const user = form.user.first_name + ' ' + form.user.last_name
-        const row = { 'ID': form.id, 'Organisation': form.organisation, 'User': user }
+        const row = { 'form_id': form.id, 'organisation': form.organisation, 'contact': user }
         _.forEach(sections, section => {
-          _.forEach(section.questions, question => {
+          const questions = _.orderBy(section.questions, 'order')
+          _.forEach(questions, question => {
             const values = []
             const responses = _.filter(form.responses, response => { return response.question_id === question.id })
             _.forEach(responses, response => {
@@ -152,7 +161,7 @@ export default {
               values.push(value)
             })
             const cell = values.join()
-            row[question.question] = cell
+            row['key-' + question.id] = cell
           })
         })
         data.push(row)
@@ -175,13 +184,14 @@ export default {
   },
   methods: {
     getFormTemplateQuestions (formTemplateId) {
-      const questions = []
+      const data = []
       _.forEach(this.sections, section => {
-        _.forEach(section.questions, question => {
-          questions.push(question)
+        const questions = _.orderBy(section.questions, 'order')
+        _.forEach(questions, question => {
+          data.push(question)
         })
       })
-      return questions
+      return data
     },
     getFormTemplateForms (formTemplateId) {
       return _.filter(this.forms, form => { return form.form_template.id === formTemplateId })

@@ -64,6 +64,7 @@
                       <download-excel
                         :data="getFormTableData(item.form)"
                         :name="getFormExportFileName(item.form)"
+                        :fields="getFormTableFields(item.form)"
                         type="csv"
                       >
                         Export
@@ -155,22 +156,12 @@
               <v-flex xs12>
                 <input 
                   id="upload" 
-                  type="file" 
+                  type="file"
+                  ref="fileupload"
                   accept=".xlsx"
                   @change="changeFile"
                   :disabled="loading"
                   />
-              </v-flex>
-            </v-layout>
-
-            <v-layout row v-if="file && !uploadingFormData">
-              <v-flex text-xs-center xs12 py-2>
-                <v-btn 
-                  class="primary"
-                  @click="uploadFile" 
-                  :disabled="loading">
-                    Start Upload
-                </v-btn>
               </v-flex>
             </v-layout>
 
@@ -188,7 +179,8 @@
           <v-card-actions>
             <v-layout row py-2>
               <v-flex xs12 class="text-xs-right">
-                <v-btn color="primary" @click="uploadFormDataDialog = false" >Close</v-btn>
+                <v-btn flat color="secondary" :disabled="!cancelFormUploadEnabled" @click="cancelFormUpload()" >Cancel</v-btn>
+                <v-btn color="primary" :disabled="!uploadFormDataEnabled" @click="uploadFile" >Upload</v-btn>
               </v-flex>
             </v-layout>
           </v-card-actions>
@@ -236,16 +228,42 @@
       },
       forms () {
         return this.$store.getters.loadedAllForms(this.slug)
+      },
+      uploadFormDataEnabled () {
+        return this.file && !this.uploadingFormData
+      },
+      cancelFormUploadEnabled () {
+        return !this.uploadingFormData
       }
     },
     methods: {
+      cancelFormUpload () {
+        this.uploadFormDataDialog = false
+        this.file = null
+        const input = this.$refs.fileupload
+        input.type = 'text'
+        input.type = 'file'
+      },
+      getFormTableFields (name) {
+        const fields = {}
+        const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.name === name })
+        const sections = formTemplate ? _.orderBy(this.$store.getters.loadedSections(formTemplate.id), 'order') : null
+        _.forEach(sections, section => {
+          const questions = _.orderBy(section.questions, 'order')
+          _.forEach(questions, question => {
+            fields[question.question] = 'key-' + question.id
+          })
+        })
+        return fields
+      },
       getFormTableHeader (name) {
         const headers = []
         const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.name === name })
         const sections = formTemplate ? _.orderBy(this.$store.getters.loadedSections(formTemplate.id), 'order') : null
         _.forEach(sections, section => {
-          _.forEach(section.questions, question => {
-            headers.push({ text: question.question, value: question.id })
+          const questions = _.orderBy(section.questions, 'order')
+          _.forEach(questions, question => {
+            headers.push({ text: question.question, value: 'key-' + question.id })
           })
         })
         return headers
@@ -258,15 +276,16 @@
         _.forEach(forms, form => {
           const row = {}
           _.forEach(sections, section => {
-            _.forEach(section.questions, question => {
+            const questions = _.orderBy(section.questions, 'order')
+            _.forEach(questions, question => {
               const responses = _.filter(form.responses, response => { return response.question_id === question.id })
               const values = []
               _.forEach(responses, response => {
                 const answer = _.find(question.answers, answer => { return response.answer_id === answer.id })
-                const value = answer ? answer.answer : response.response
+                let value = answer ? answer.answer : response.response
                 values.push(value)
               })
-              row[question.question] = values.join()
+              row['key-' + question.id] = values.join()
             })
           })
           data.push(row)
@@ -284,12 +303,18 @@
         return name.toLowerCase() + '-' + moment().format('YYYY-MM-DD [at] LTS') + '.csv'
       },
       uploadFile () {
+        this.uploadingFormData = true
         this.$store.dispatch('uploadApplicationFormData', {
           slug: this.slug,
           file: this.file
         })
         .catch(error => {
           console.log(error)
+        })
+        .then(() => {
+          this.file = null
+          this.uploadFormDataDialog = false
+          this.uploadingFormData = false
         })
       },
       changeFile (e) {
