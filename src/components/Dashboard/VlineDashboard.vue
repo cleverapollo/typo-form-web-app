@@ -92,7 +92,7 @@
                 <template slot="items" slot-scope="props">
                   <tr>
                     <template v-for="(val, key) in props.item">
-                      <td v-bind:key="'filter'+key">{{val}}</td>
+                      <td @click='loadForm(props.item.id)' v-bind:key="'filter'+key">{{val}}</td>
                     </template>
                   </tr>
                 </template>
@@ -246,7 +246,7 @@
         input.type = 'file'
       },
       getFormTableFields (name) {
-        const fields = {}
+        const fields = { 'Form': 'id' }
         const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.name === name })
         const sections = formTemplate ? _.orderBy(this.$store.getters.loadedSections(formTemplate.id), 'order') : null
         _.forEach(sections, section => {
@@ -258,7 +258,7 @@
         return fields
       },
       getFormTableHeader (name) {
-        const headers = []
+        const headers = [{ text: 'Form', value: 'id' }]
         const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.name === name })
         const sections = formTemplate ? _.orderBy(this.$store.getters.loadedSections(formTemplate.id), 'order') : null
         _.forEach(sections, section => {
@@ -275,7 +275,7 @@
         const sections = formTemplate ? _.orderBy(this.$store.getters.loadedSections(formTemplate.id), 'order') : null
         const forms = formTemplate ? _.filter(this.forms, form => { return form.form_template.name === name }) : null
         _.forEach(forms, form => {
-          const row = {}
+          const row = { 'id': form.id }
           _.forEach(sections, section => {
             const questions = _.orderBy(section.questions, 'order')
             _.forEach(questions, question => {
@@ -338,6 +338,9 @@
       },
       getDashboardData () {
         this.$store.dispatch('loadAllForms', this.slug)
+      },
+      loadForm (id) {
+        this.$router.push('/forms/' + id)
       }
     },
     created () {
