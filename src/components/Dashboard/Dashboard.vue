@@ -7,7 +7,7 @@
         <v-flex d-flex xs12>
           <h1 class="headline primary--text py-3">Dashboard</h1>
           <v-spacer></v-spacer>
-          <div class="text-xs-right py-2" v-if="userIsApplicationAdmin">
+          <div class="text-xs-right py-2" v-if="this.$_isApplicationAdminUser()">
             <v-tooltip bottom>
               <v-btn icon @click="editMode = !editMode" slot="activator">
                 <v-icon>edit</v-icon>
@@ -37,9 +37,11 @@
 import DefaultDashboard from './DefaultDashboard'
 import VlineDashboard from './VlineDashboard'
 import CustomSlot from '../Layout/CustomSlot'
+import ApplicationMixin from '../../mixins/ApplicationMixin.js'
 
 export default {
   name: 'Dashboard',
+  mixins: [ApplicationMixin],
   components: {
     DefaultDashboard,
     VlineDashboard,
@@ -50,36 +52,13 @@ export default {
       editMode: false
     }
   },
-  computed: {
-    slug () {
-      return window.location.hostname.split('.')[0]
-    }
-  },
   methods: {
     getDashboard () {
-      switch (this.slug) {
+      switch (this.$_slug) {
         case 'vline': return 'vline'
-        case 'contoso': return 'vline'
+        // case 'contoso': return 'vline'
         default: return null
       }
-    },
-    userIsAuthenticated () {
-      return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-    },
-    userIsApplicationAdmin () {
-      return this.userIsAdmin || this.isSuperUser
-    },
-    userIsAdmin () {
-      if (!this.userIsAuthenticated || !this.application) {
-        return false
-      }
-      return this.getRole(this.application.application_role_id) === 'Admin'
-    },
-    isSuperUser () {
-      if (!this.userIsAuthenticated) {
-        return false
-      }
-      return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
     }
   }
 }

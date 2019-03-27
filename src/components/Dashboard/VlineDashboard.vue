@@ -2,7 +2,7 @@
   <v-container fluid grid-list-lg class="dashboard-container">
 
     <!-- // Welcome -->
-    <Welcome></Welcome>
+    <WelcomeCard></WelcomeCard>
 
     <!-- // Stats -->
     <v-layout row wrap justify-space-between>
@@ -110,7 +110,7 @@
     </v-layout>
 
     <!-- // Action Buttons -->
-    <v-layout justify-space-between row wrap>
+    <v-layout justify-space-between row wrap v-if="this.$_isApplicationAdminUser()">
       <!-- // Export Application Data -->
       <v-flex xs12 md6>
         <v-btn
@@ -128,64 +128,9 @@
 
       <!-- // Import Form Data -->
       <v-flex xs12 md6>
-        <v-btn
-          color="primary"
-          outline
-          block
-          large
-          @click.native="uploadFormDataDialog = true"
-        >
-          Upload Data
-          <v-icon right dark>cloud_upload</v-icon>
-        </v-btn>
+        <FormUploadButton :slug="slug" />
       </v-flex>
 
-    </v-layout>
-
-    <!-- // Upload Dialog -->
-    <v-layout>
-      <v-dialog v-model="uploadFormDataDialog" persistent max-width="600">
-        <v-card>
-          <!-- //Title -->
-          <v-card-title>
-            <div class="title mb-2 mt-2">Upload Form Data</div>
-          </v-card-title>
-
-          <v-card-text>
-           <v-layout row>
-              <v-flex xs12>
-                <input 
-                  id="upload" 
-                  type="file"
-                  ref="fileupload"
-                  accept=".xlsx"
-                  @change="changeFile"
-                  :disabled="loading"
-                  />
-              </v-flex>
-            </v-layout>
-
-            <v-layout row v-if="uploadingFormData">
-              <v-flex text-xs-center xs12>
-                <v-progress-linear
-                  indeterminate
-                >
-                </v-progress-linear>
-              </v-flex>
-            </v-layout>
-          </v-card-text>
-
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-layout row py-2>
-              <v-flex xs12 class="text-xs-right">
-                <v-btn flat color="secondary" :disabled="!cancelFormUploadEnabled" @click="cancelFormUpload()" >Cancel</v-btn>
-                <v-btn color="primary" :disabled="!uploadFormDataEnabled" @click="uploadFile" >Upload</v-btn>
-              </v-flex>
-            </v-layout>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-layout>
     
   </v-container>
@@ -193,20 +138,25 @@
 
 <script>
   import * as _ from 'lodash'
-  import Welcome from './Components/Welcome'
+  import WelcomeCard from './Components/WelcomeCard'
+  import FormUploadButton from './Components/FormUploadButton'
   import countTo from 'vue-count-to'
   import moment from 'moment'
+  import ApplicationMixin from '../../mixins/ApplicationMixin.js'
+
   export default {
+    mixins: [ApplicationMixin],
+    components: {
+      WelcomeCard,
+      FormUploadButton,
+      countTo
+    },
     data () {
       return {
         countToStart: 0,
         countToDuration: 3000,
         loadingExport: false,
-        uploadFormDataDialog: false,
-        uploadingFormData: false,
         timer: '',
-        loading: false,
-        file: null,
         items: [
           { form: 'Site', label: 'Sites', icon: 'place', color: 'blue', search: '' },
           { form: 'Service', label: 'Services', icon: 'ev_station', color: 'orange', search: '' },
@@ -214,10 +164,6 @@
           { form: 'Useage', label: 'Useage', icon: 'trending_up', color: 'red', search: '' }
         ]
       }
-    },
-    components: {
-      Welcome,
-      countTo
     },
     computed: {
       slug () {
@@ -228,23 +174,9 @@
       },
       forms () {
         return this.$store.getters.loadedAllForms(this.slug)
-      },
-      uploadFormDataEnabled () {
-        return this.file && !this.uploadingFormData
-      },
-      cancelFormUploadEnabled () {
-        return !this.uploadingFormData
       }
     },
     methods: {
-      cancelFormUpload () {
-        this.uploadFormDataDialog = false
-        this.uploadingFormData = false
-        this.file = null
-        const input = this.$refs.fileupload
-        input.type = 'text'
-        input.type = 'file'
-      },
       getFormTableFields (name) {
         const fields = { 'Form': 'id' }
         const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.name === name })
@@ -303,23 +235,6 @@
       getFormExportFileName (name) {
         return name.toLowerCase() + '-' + moment().format('YYYY-MM-DD [at] LTS') + '.csv'
       },
-      uploadFile () {
-        this.uploadingFormData = true
-        this.$store.dispatch('uploadApplicationFormData', {
-          slug: this.slug,
-          file: this.file
-        })
-        .catch(error => {
-          console.log(error)
-        })
-        .then(() => {
-          this.cancelFormUpload()
-        })
-      },
-      changeFile (e) {
-        const files = e.target.files || e.dataTransfer.files
-        this.file = files.length ? files[0] : false
-      },
       getApplicationDataExport () {
         this.loadingExport = true
         window.axios.get(process.env.API_URL + 'application/' + this.slug + '/export')
@@ -330,8 +245,6 @@
             a.href = response.data.file.url
             a.click()
           }
-        }).catch(error => {
-          console.log(error)
         }).then(() => {
           this.loadingExport = false
         })
@@ -346,7 +259,6 @@
     created () {
       this.getDashboardData()
       this.timer = setInterval(this.getDashboardData, 30000)
-      this.$store.dispatch('loadUsers', this.slug)
       this.$store.dispatch('loadFormTemplates', this.slug)
       this.$store.dispatch('loadAllSections', this.slug)
     },

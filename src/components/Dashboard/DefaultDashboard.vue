@@ -2,7 +2,7 @@
   <v-container fluid grid-list-lg class="dashboard-container">
 
     <!-- Welcome Widget -->
-    <Welcome></Welcome>
+    <WelcomeCard></WelcomeCard>
 
     <!-- Summary Widgets -->
     <v-layout row wrap justify-space-between>
@@ -220,18 +220,9 @@
         </v-btn>
       </v-flex>
 
-      <!-- // Report Builder -->
+      <!-- // Form Upload -->
       <v-flex xs12 md6>
-        <v-btn
-          color="primary"
-          outline
-          block
-          large
-          to="/report"
-        >
-          Report Builder
-          <v-icon right dark>description</v-icon>
-        </v-btn>
+        <FormUploadButton :slug="slug" />
       </v-flex>
 
     </v-layout>
@@ -248,9 +239,18 @@
   import CustomSlot from '../Layout/CustomSlot'
   import LineChart from '../Chart/LineChart'
   import UserMixin from '../Layout/UserMixin'
-  import Welcome from './Components/Welcome'
+  import WelcomeCard from './Components/WelcomeCard'
+  import FormUploadButton from './Components/FormUploadButton'
 
   export default {
+    mixins: [UserMixin],
+    components: {
+      countTo,
+      CustomSlot,
+      LineChart,
+      WelcomeCard,
+      FormUploadButton
+    },
     data () {
       return {
         items: [
@@ -300,13 +300,6 @@
         },
         editMode: false
       }
-    },
-    mixins: [UserMixin],
-    components: {
-      countTo,
-      CustomSlot,
-      LineChart,
-      Welcome
     },
     computed: {
       userChartData () {
