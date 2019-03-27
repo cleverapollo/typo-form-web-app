@@ -126,7 +126,8 @@
   .multiple-choice-grid .column {
     width:100%;
   }
-  .multiple-choice-grid .column .v-input__control {
+  .multiple-choice-grid .column .v-input__control,
+  .multiple-choice-grid .column .v-input--selection-controls__input {
     margin:0 auto;
   }
 </style>
