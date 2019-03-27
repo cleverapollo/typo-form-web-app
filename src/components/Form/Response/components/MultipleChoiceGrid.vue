@@ -1,38 +1,50 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs12>
-      <v-layout column>
-        <v-flex xs9 offset-xs3 class="pb-3">
-          <v-layout row>
-            <v-flex v-for='(column, index) in computedColumns' :key='"OptionString " + index'>
-              {{ column.answer }}
-            </v-flex>
+  <div class="multiple-choice-grid">
+    <!-- // Answer Options -->
+    <v-layout row wrap>
+      <v-flex xs12>
+        <v-layout row>
+          <v-flex xs8 offset-xs4>
+            <v-layout justify-space-between row fill-height>
+              <div v-for='(column, index) in computedColumns' :key='"OptionString " + index' class="column text-xs-center py-3">
+                {{ column.answer }}
+              </div>
+            </v-layout>
+          </v-flex>
           </v-layout>
-        </v-flex>
-        <v-flex multiple-choice-grid>
-          <v-layout pa-2 question-row row v-for='(row, index) in computedRows' :key='"row " + index'>
-            <v-flex xs3>
-              <div class="body-2">{{row.answer}}</div>
-            </v-flex>
-            <v-flex>
-              <v-radio-group v-model="checkAnswers[index]" row class="py-0">
-                <v-radio
-                  color="info"
-                  v-for='(column, index2) in computedColumns'
-                  :key='"column " + index2'
-                  :value="column.id"
-                  @change="onSave(row.id, column.id)"
-                  :style="'width: ' + 100/computedColumns.length + '%'"
-                  class="mx-0"
-                  :disabled="disabled"
-                ></v-radio>
-              </v-radio-group>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-  </v-layout>
+      </v-flex>
+    </v-layout>
+
+    <!-- // Questions -->
+    <v-layout row wrap question-row v-for='(row, index) in computedRows' :key='"row " + index'>
+      <v-flex xs12>
+        <v-layout row>
+          <v-flex xs4 pa-3>
+            <div class="body-2">{{row.answer}}</div>
+          </v-flex>
+          <v-flex xs8>
+            <v-layout justify-space-between row fill-height>
+              <div
+                v-for='(column, index2) in computedColumns'
+                :key='"column " + index2'
+                class="column text-xs-center">
+                <v-radio-group v-model="checkAnswers[index]" class="py-0">
+                  <v-radio
+                    color="info"
+                    :value="column.id"
+                    @change="onSave(row.id, column.id)"
+                    class="mx-0"
+                    :disabled="disabled"
+                  ></v-radio>
+                </v-radio-group>
+              </div>
+            </v-layout>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+    </v-layout>
+
+  </div>
 </template>
 
 <script>
@@ -111,7 +123,10 @@
   .multiple-choice-grid .question-row:nth-child(even) {
     background: #f5f5f5;
   }
-  .multiple-choice-grid .v-input--radio-group .v-input__control {
-    width: 100%;
+  .multiple-choice-grid .column {
+    width:100%;
+  }
+  .multiple-choice-grid .column .v-input__control {
+    margin:0 auto;
   }
 </style>
