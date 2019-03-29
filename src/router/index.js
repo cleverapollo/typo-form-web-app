@@ -32,6 +32,9 @@ import ReportBuilder from '@/components/Form/Form/ReportBuilder'
 import CompareForms from '@/components/Form/Form/CompareForms'
 import ChartBuilder from '@/components/Form/Form/ChartBuilder'
 
+// Notes
+import Notes from '@/components/Note/Notes'
+
 import {store} from '@/store'
 
 Vue.use(Router)
@@ -139,6 +142,15 @@ const router = new Router({
       path: '/forms',
       name: 'Forms',
       component: Forms,
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/notes',
+      name: 'Notes',
+      component: Notes,
       meta: {
         application: true,
         requiresAuth: true

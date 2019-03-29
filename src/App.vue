@@ -215,6 +215,7 @@
             { title: 'Organisations', path: 'organisations', icon: 'people', admin: false, color: 'orange' },
             { title: 'Report Builder', path: 'report', icon: 'table_chart', admin: true, color: 'orange' },
             { title: 'Compare Forms', path: 'compare', icon: 'compare', admin: true, color: 'orange' },
+            { title: 'Notes', path: 'notes', icon: 'note', admin: true, color: 'primary' },
             { title: 'Settings', path: 'settings', icon: 'settings', admin: true }
         ]
       },

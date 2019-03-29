@@ -177,9 +177,7 @@ export default {
         if (!state.loadedOrganisations[slug]) {
           return []
         }
-        return state.loadedOrganisations[slug].sort((organisationA, organisationB) => {
-          return organisationA.id > organisationB.id
-        })
+        return state.loadedOrganisations[slug]
       }
     },
     loadedOrganisation (state) {
