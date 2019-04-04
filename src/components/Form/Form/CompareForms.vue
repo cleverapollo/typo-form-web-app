@@ -114,7 +114,7 @@ export default {
     },
     fields () {
       const fields = {}
-      _.forEach(this.headers, header => { fields[header.text] = header.value })
+      _.forEach(this.headers, header => { fields[header.text.split(',').join('')] = header.value })
       return fields
     },
     questions () {
