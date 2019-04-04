@@ -132,7 +132,7 @@
             if (index === 0) {
               return
             }
-            _this.$emit('create-answer', [value, false])
+            _this.$emit('create-answer', [value, true])
           })
         } else {
           this.$emit('update-answer', [this.multiAnswerId, this.multiAnswer])
