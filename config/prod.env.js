@@ -8,25 +8,4 @@ module.exports = {
 
   API_URL: JSON.stringify(process.env.API_URL + 'api/'),
   API_ORIGIN_URL: JSON.stringify(process.env.API_URL),
-
-  GITHUB_CLIENT_ID: JSON.stringify(process.env.GITHUB_CLIENT_ID),
-  GITHUB_CLIENT_SECRET: JSON.stringify(process.env.GITHUB_CLIENT_SECRET),
-
-  FACEBOOK_CLIENT_ID: JSON.stringify(process.env.FACEBOOK_CLIENT_ID),
-  FACEBOOK_CLIENT_SECRET: JSON.stringify(process.env.FACEBOOK_CLIENT_SECRET),
-
-  GOOGLE_CLIENT_ID: JSON.stringify(process.env.GOOGLE_CLIENT_ID),
-  GOOGLE_CLIENT_SECRET: JSON.stringify(process.env.GOOGLE_CLIENT_SECRET),
-
-  GOOGLE_DATA_SITEKEY: JSON.stringify(process.env.GOOGLE_DATA_SITEKEY),
-  GOOGLE_DATA_SECRETKEY: JSON.stringify(process.env.GOOGLE_DATA_SECRETKEY),
-
-  LIVE_CLIENT_ID: JSON.stringify(process.env.LIVE_CLIENT_ID),
-  LIVE_CLIENT_SECRET: JSON.stringify(process.env.LIVE_CLIENT_SECRET),
-
-  REDIRECT_URL: JSON.stringify(process.env.REDIRECT_URL),
-
-  ABR_GUID: JSON.stringify(process.env.ABR_GUID),
-
-  GOOGLE_MAPS_API_KEY: JSON.stringify(process.env.GOOGLE_MAPS_API_KEY)
 }

@@ -242,7 +242,7 @@
           if (response.data.file.url) {
             let a = document.createElement('a')
             a.download = response.data.file.name
-            a.href = response.data.file.url
+            a.href = process.env.API_ORIGIN_URL + response.data.file.url
             a.click()
           }
         }).then(() => {

@@ -1,6 +1,6 @@
 <template>
   <v-dialog width="600px" persistent v-model="editPassword" full-width>
-    <v-btn large block slot="activator" :disabled="disabled">Change Password</v-btn>
+    <v-btn large block slot="activator">Change Password</v-btn>
     <v-card>
       <v-container>
         <v-layout row v-if="error">
@@ -77,7 +77,6 @@
     components: {
       PasswordComplexity
     },
-    props: ['disabled'],
     data () {
       return {
         oldPassword: '',

@@ -19,17 +19,17 @@
                     </v-avatar>
                   </v-flex>
                 </v-layout>
-                <v-layout row v-if="!isSocialUser">
+                <v-layout row>
                   <v-flex text-xs-center class="overflow-flex">
                     <template v-if="userIsAuthenticated">
-                      <EditEmail :disabled="isSocialUser"></EditEmail>
+                      <EditEmail></EditEmail>
                     </template>
                   </v-flex>
                 </v-layout>
-                <v-layout row v-if="!isSocialUser">
+                <v-layout row>
                   <v-flex text-xs-center class="overflow-flex">
                     <template v-if="userIsAuthenticated">
-                      <EditPassword :disabled="isSocialUser"></EditPassword>
+                      <EditPassword></EditPassword>
                     </template>
                   </v-flex>
                 </v-layout>
