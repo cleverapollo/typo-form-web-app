@@ -69,7 +69,8 @@ export default {
     createOrganisation ({commit, getters}, payload) {
       commit('setLoading', true)
       const organisation = {
-        name: payload.name
+        name: payload.name,
+        role: payload.role
       }
       return new Promise((resolve, reject) => {
         window.axios.post(APPLICATION_URL + payload.slug + ORGANISATION_URL, organisation)

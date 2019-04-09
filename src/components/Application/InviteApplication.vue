@@ -68,6 +68,14 @@
         <v-layout row>
           <v-flex xs12 class="text-xs-center">
             <v-btn flat @click.stop="addUser">Add User</v-btn>
+            <v-btn flat @click.stop="bulkUpload">Bulk Upload</v-btn>
+            <input
+                type="file"
+                style="display: none"
+                ref="image"
+                @change="onFilePicked"
+            >
+
           </v-flex>
         </v-layout>
 
@@ -99,7 +107,7 @@
               :items="formTemplates"
               item-text="name"
               item-value="id"
-              v-model="formTemplates"
+              v-model="form_templates"
               label="Form Templates"
               required
               multiple
@@ -179,6 +187,7 @@
 </template>
 
 <script>
+  import * as _ from 'lodash'
   export default {
     props: ['visible', 'slug'],
     data () {
@@ -204,7 +213,10 @@
         return this.$store.getters.roles
       },
       formTemplates () {
-        return this.$store.getters.loadedFormTemplates(this.slug)
+        let formTemplates = _.sortBy(this.$store.getters.loadedFormTemplates(this.slug), element => {
+          return element.name.toLowerCase()
+        })
+        return formTemplates
       },
       applicationRoles () {
         return this.roles.filter((role) => { return role.name !== 'Super Admin' })
@@ -226,23 +238,63 @@
         this.setForm()
       },
       addUser () {
-        this.invitations.push(this.invitationTemplate)
+        const newTemplate = Object.assign({}, this.invitationTemplate)
+        this.invitations.push(newTemplate)
+      },
+      bulkUpload () {
+        this.$refs.image.click()
+      },
+      onFilePicked (e) {
+        const files = e.target.files
+        if (files[0] !== undefined) {
+          const file = files[0]
+          const reader = new FileReader()
+          reader.readAsText(file)
+          reader.onload = (event) => {
+            const data = event.target.result
+            const lines = data.split('\n')
+            if (data && lines.length) {
+              const keys = {}
+              const headerKeys = lines[0].split(',')
+              headerKeys.forEach((key, index) => {
+                keys[index] = key
+              })
+              lines.splice(0, 1)
+              lines.forEach((line) => {
+                if (!line.length) {
+                  return
+                }
+                const result = Object.assign({}, this.invitationTemplate)
+                const values = line.split(',')
+                values.forEach((value, index) => {
+                  if (value) {
+                    result[keys[index]] = value
+                  }
+                })
+                this.invitations.push(result)
+              })
+            }
+          }
+        }
       },
       removeUser (index) {
         this.invitations.splice(index, 1)
         if (!this.invitations.length) {
-          this.invitations.push(this.invitationTemplate)
+          const newTemplate = Object.assign({}, this.invitationTemplate)
+          this.invitations.push(newTemplate)
         }
       },
       invite () {
         this.show = false
-        this.$store.dispatch('inviteApplication', { invitations: this.invitations, slug: this.slug })
+        this.$store.dispatch('inviteApplication', { invitations: this.invitations, slug: this.slug, role: this.role })
         this.setForm()
       },
       setForm () {
-        this.invitations = [this.invitationTemplate]
+        const newTemplate = Object.assign({}, this.invitationTemplate)
+        this.invitations = []
+        this.invitations.push(newTemplate)
         this.role = null
-        this.formTempaltes = []
+        this.form_templates = []
         this.subject = ''
         this.body = ''
         this.cc = ''
