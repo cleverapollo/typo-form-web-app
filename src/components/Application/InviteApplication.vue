@@ -1,36 +1,62 @@
 <template>
-  <v-dialog v-model="show" persistent max-width="600px">
+  <v-dialog v-model="show" fullscreen hide-overlay lazy>
     <v-card>
 
-      <!-- //Title -->
-      <v-card-title>
-        <div class="title mb-2 mt-2">Invite Users</div>
-      </v-card-title>
-      <v-card-text>
+      <v-toolbar dark color="primary">
+        <v-btn icon dark @click.stop="show = false">
+          <v-icon>close</v-icon>
+        </v-btn>
+        <v-toolbar-title>Invite Users</v-toolbar-title>
+      </v-toolbar>
 
-        <!-- //Invitation -->
+      <!-- // Users -->
+      <v-container fluid>
+        <div class="subheading my-2">Users</div>
         <template v-for="(item, index) in invitations">
-          <v-layout wrap>
-            <v-flex xs12 sm6 d-flex>
-              <v-text-field
-                @change="multiEmail(index, $event)"
-                label="Email"
-                v-model="item.email"
-                required
-              ></v-text-field>
+          <v-layout row wrap v-bind:key="index">
+
+            <v-flex xs12 md11>
+              <v-layout>
+
+                <!-- // Firstname -->
+                <v-flex xs12 md4 pr-4>
+                  <v-text-field
+                    label="First Name"
+                    v-model="item.firstname"
+                    required
+                  ></v-text-field>
+                </v-flex>
+
+                <!-- // Lastname -->
+                <v-flex xs12 md4 pr-4>
+                  <v-text-field
+                    label="Last Name"
+                    v-model="item.lastname"
+                    required
+                  ></v-text-field>
+                </v-flex>
+
+                <!-- // Email -->
+                <v-flex xs12 md4 pr-4>
+                  <v-text-field
+                    label="Email"
+                    v-model="item.email"
+                    required
+                  ></v-text-field>
+                </v-flex>
+
+                <!-- // Organisation -->
+                <v-flex xs12 md4>
+                  <v-text-field
+                    label="Organisation"
+                    v-model="item.organisation"
+                    required
+                  ></v-text-field>
+                </v-flex>
+
+              </v-layout>
             </v-flex>
-            <v-flex xs12 sm4 offset-sm1 d-flex>
-              <v-select
-                :items="invitationRoles"
-                item-text="name"
-                item-value="id"
-                v-model="item.application_role_id"
-                label="Role"
-                single-line
-                required
-              ></v-select>
-            </v-flex>
-            <v-flex xs12 sm1 text-xs-center text-sm-right>
+            <v-flex xs12 md1 text-xs-center text-sm-right>
               <v-btn flat icon @click="removeUser" class="mt-3">
                 <v-icon>close</v-icon>
               </v-btn>
@@ -38,46 +64,150 @@
           </v-layout>
         </template>
 
-        <!-- //Add Row -->
+        <!-- // Add User -->
         <v-layout row>
-          <v-flex xs12 class="text-xs-left">
-            <v-btn flat @click.stop="addUser">Add another user</v-btn>
+          <v-flex xs12 class="text-xs-center">
+            <v-btn flat @click.stop="addUser">Add User</v-btn>
           </v-flex>
         </v-layout>
-      </v-card-text>
+
+      </v-container>
+
+      <v-divider class="py-2"></v-divider>
+
+      <v-container fluid>
+
+        <!-- // Permissions -->
+        <div class="subheading my-2">User Permissions</div>
+        <v-layout row wrap class="mb-4">
+
+          <!-- // Application Role -->
+          <v-flex sm12 md6 pr-4>
+            <v-autocomplete
+              :items="applicationRoles"
+              item-text="name"
+              item-value="id"
+              v-model="role"
+              label="Application Role"
+              required
+            ></v-autocomplete>
+          </v-flex>
+
+          <!-- // Form Templates -->
+          <v-flex sm12 md6>
+            <v-autocomplete
+              :items="formTemplates"
+              item-text="name"
+              item-value="id"
+              v-model="formTemplates"
+              label="Form Templates"
+              required
+              multiple
+            ></v-autocomplete>
+          </v-flex>
+
+        </v-layout>
+
+      </v-container>
+
+      <v-divider class="py-2"></v-divider>
+
+      <v-container fluid>
+
+        <!-- // Invitation -->
+        <div class="subheading my-2">Invitation Email</div>
+        <v-layout row wrap class="mb-4">
+
+          <v-flex xs12>
+
+            <!-- // Subject -->
+            <v-flex xs12>
+              <v-text-field
+                label="Subject"
+                v-model="subject"
+                required
+              ></v-text-field>
+            </v-flex>
+
+            <!-- // CC -->
+            <v-flex xs12>
+              <v-text-field
+                label="CC"
+                v-model="cc"
+                required
+              ></v-text-field>
+            </v-flex>
+
+            <!-- // BCC -->
+            <v-flex xs12>
+              <v-text-field
+                label="BCC"
+                v-model="bcc"
+                required
+              ></v-text-field>
+            </v-flex>
+
+            <!-- // Message -->
+            <v-flex xs12>
+              <v-textarea
+                label="Message"
+                v-model="message"
+                required
+              ></v-textarea>
+            </v-flex>
+
+          </v-flex>
+
+        </v-layout>
+
+      </v-container>
+
 
       <!-- //Actions -->
       <v-divider></v-divider>
-      <v-card-actions>
+      <v-container fluid>
         <v-layout row py-2>
           <v-flex xs12 class="text-xs-right">
             <v-btn flat @click.stop="close">Cancel</v-btn>
-            <v-btn color="primary" @click.stop="invite">Invite</v-btn>
+            <v-btn color="primary" @click.stop="invite">Invite Users</v-btn>
           </v-flex>
         </v-layout>
-      </v-card-actions>
+      </v-container>
 
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-  import * as _ from 'lodash'
   export default {
     props: ['visible', 'slug'],
     data () {
       return {
-        invitations: [{ email: '', application_role_id: '' }]
+        role: null,
+        form_templates: [],
+        subject: '',
+        message: '',
+        cc: '',
+        bcc: '',
+        invitations: [],
+        invitationTemplate: {
+          firstname: '',
+          lastname: '',
+          email: '',
+          organisation: '',
+          properties: {}
+        }
       }
     },
     computed: {
       roles () {
         return this.$store.getters.roles
       },
-      invitationRoles () {
-        return this.roles.filter((role) => {
-          return role.name !== 'Super Admin'
-        })
+      formTemplates () {
+        return this.$store.getters.loadedFormTemplates(this.slug)
+      },
+      applicationRoles () {
+        return this.roles.filter((role) => { return role.name !== 'Super Admin' })
       },
       show: {
         get () {
@@ -92,40 +222,36 @@
     },
     methods: {
       close () {
-        this.invitations = [{ email: '', application_role_id: '' }]
         this.show = false
+        this.setForm()
       },
       addUser () {
-        this.invitations.push({ email: '', application_role_id: '' })
+        this.invitations.push(this.invitationTemplate)
       },
       removeUser (index) {
         this.invitations.splice(index, 1)
+        if (!this.invitations.length) {
+          this.invitations.push(this.invitationTemplate)
+        }
       },
       invite () {
-        const invitations = this.invitations.filter(function (item) {
-          return item.email.trim() !== ''
-        })
-        if (!invitations.length) {
-          return
-        }
         this.show = false
-        this.$store.dispatch('inviteApplication', {invitations: invitations, slug: this.slug})
-        this.invitations = [{ email: '', application_role_id: '' }]
+        this.$store.dispatch('inviteApplication', { invitations: this.invitations, slug: this.slug })
+        this.setForm()
       },
-      multiEmail (insertIndex, value) {
-        if (!value.includes(',')) {
-          return
-        }
-        const values = value.split(',').map((value) => value.trim())
-        this.invitations[insertIndex].email = values[0]
-        let _this = this
-        _.forEach(values, function (value, index) {
-          if (index === 0) {
-            return
-          }
-          _this.invitations.splice(insertIndex + index, 0, { email: value, application_role_id: _this.invitations[insertIndex].application_role_id })
-        })
+      setForm () {
+        this.invitations = [this.invitationTemplate]
+        this.role = null
+        this.formTempaltes = []
+        this.subject = ''
+        this.body = ''
+        this.cc = ''
+        this.bcc = ''
       }
+    },
+    created: function () {
+      this.setForm()
+      this.$store.dispatch('loadFormTemplates', this.slug)
     }
   }
 </script>
