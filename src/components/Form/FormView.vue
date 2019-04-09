@@ -46,7 +46,6 @@
   import FormTree from './FormTree'
   import SectionOperation from './SectionOperation.js'
   import SectionReportMixin from './SectionReportMixin.js'
-  import JSPDF from 'jspdf'
 
   export default {
     props: ['slug', 'formTemplateId', 'formId', 'showTable'],
@@ -158,51 +157,6 @@
       },
       sectionClicked: function (item) {
         this.$store.dispatch('selectSection', item)
-      },
-      downloadPDF () {
-        const doc = new JSPDF('p', 'pt', 'a4')
-        const headers = [
-          'Section',
-          'Question',
-          'Answer'
-        ]
-        let source = '<table><thead><tr>'
-        _.forEach(headers, header => {
-          source += '<th>' + header + '</th>'
-        })
-        source += '</tr></thead><tbody>'
-        _.forEach(this.data, data => {
-          source += '<tr>'
-          _.forEach(headers, header => {
-            source += '<td>' + data[header] + '</td>'
-          })
-          source += '</tr>'
-        })
-        source += '</tbody></table>'
-
-        const margins = {
-          top: 10,
-          bottom: 10,
-          left: 10,
-          width: 595
-        }
-
-        doc.fromHTML(
-          source, // HTML string or DOM elem ref.
-          margins.left,
-          margins.top, {
-            'width': margins.width,
-            'elementHandlers': {
-              '.no-export': () => {
-                return true
-              }
-            }
-          },
-          () => {
-            doc.save(this.fileName + '.pdf')
-          },
-          margins
-        )
       }
     }
   }
