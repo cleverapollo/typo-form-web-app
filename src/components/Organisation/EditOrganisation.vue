@@ -18,12 +18,6 @@
               id="name"
               v-model="editedName"
               required></v-text-field>
-            <v-text-field
-              name="description"
-              label="Description"
-              id="description"
-              v-model="editedDescription">
-            </v-text-field>
           </v-flex>
         </v-layout>
       </v-card-text>
@@ -50,8 +44,7 @@
       return {
         id: this.organisation.id,
         editOrganisation: false,
-        editedName: this.organisation.name,
-        editedDescription: this.organisation.description
+        editedName: this.organisation.name
       }
     },
     methods: {
@@ -64,13 +57,11 @@
           {
             slug: this.slug,
             id: this.id,
-            name: this.editedName,
-            description: this.editedDescription
+            name: this.editedName
           })
       },
       onCancel () {
         this.editedName = this.organisation.name
-        this.editedDescription = this.organisation.description
         this.editOrganisation = false
       }
     }

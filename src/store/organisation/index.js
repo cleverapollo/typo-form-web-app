@@ -139,9 +139,6 @@ export default {
       if (payload.name) {
         updateObj.name = payload.name
       }
-      if (payload.description) {
-        updateObj.description = payload.description
-      }
       window.axios.put(APPLICATION_URL + payload.slug + ORGANISATION_URL + '/' + payload.id, updateObj)
         .then(
           response => {

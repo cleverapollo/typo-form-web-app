@@ -32,10 +32,6 @@
             </v-menu>
           </div>
         </v-flex>
-        <v-flex xs12>
-          <div class="subheading py-2 px-3 break-all">{{ organisation.description }}</div>
-          <div class="subheading py-2 px-3 break-all" v-if="isOrganisationAdmin">{{ joinURL }}</div>
-        </v-flex>
         <v-flex d-flex xs12>
           <v-card>
             <v-tabs dark slider-color="white" color="info">
@@ -277,9 +273,6 @@
           result.push(invitedUser)
         })
         return result
-      },
-      joinURL () {
-        return window.location.origin + '/join/organisation/' + this.organisation.share_token
       },
       userHeaders () {
         let defaultUserHeaders = [
