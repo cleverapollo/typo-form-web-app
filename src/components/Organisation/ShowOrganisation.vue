@@ -34,7 +34,7 @@
         </v-flex>
         <v-flex d-flex xs12>
           <v-card>
-            <v-tabs dark slider-color="white" color="info">
+            <v-tabs dark grow slider-color="white" color="info">
               <v-tab href="#users_tab">Users</v-tab>
               <v-tab href="#forms_tab">Forms</v-tab>
               <v-tab-item value="users_tab">
@@ -163,12 +163,14 @@
       </v-layout>
     </v-flex>
 
+    <!-- // Temporary Removed Invite Organisation
     <v-tooltip top v-if="isOrganisationAdmin">
       <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="inviteUsers = true">
         <v-icon>add</v-icon>
       </v-btn>
       <span>Invite Users</span>
     </v-tooltip>
+    -->
 
     <!-- //Invite Organisation -->
     <InviteOrganisation :slug="slug" :organisationId="id" :visible="inviteUsers" @close="inviteUsers = false"></InviteOrganisation>
