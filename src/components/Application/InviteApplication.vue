@@ -73,6 +73,7 @@
                 type="file"
                 style="display: none"
                 ref="image"
+                accept=".csv"
                 @change="onFilePicked"
             >
 
