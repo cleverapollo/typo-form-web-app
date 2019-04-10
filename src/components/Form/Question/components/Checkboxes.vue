@@ -14,7 +14,7 @@
         ></v-text-field>
       </v-flex>
       <v-flex class="xs1 text-xs-center" v-show='computedLength > 1'>
-        <v-btn flat icon @click='deleteAnswer(index)' class='mt-3'>
+        <v-btn flat icon @click='deleteAnswer(answer.id)' class='mt-3'>
           <v-icon>close</v-icon>
         </v-btn>
       </v-flex>
@@ -130,7 +130,7 @@
         this.$emit('create-answer', [str, true])
       },
       deleteAnswer (index) {
-        this.$emit('delete-answer', this.answers[index].id)
+        this.$emit('delete-answer', index)
       },
       showModal (index, value) {
         this.multiAnswer = value
