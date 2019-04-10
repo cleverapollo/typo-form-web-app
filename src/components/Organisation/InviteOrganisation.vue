@@ -110,6 +110,7 @@
         }
         this.show = false
         this.$store.dispatch('inviteOrganisation', {invitations: invitations, id: this.organisationId, slug: this.slug})
+        this.invitations = [{ email: '', organisation_role_id: '' }]
       },
       multiEmail (insertIndex, value) {
         if (!value.includes(',')) {
