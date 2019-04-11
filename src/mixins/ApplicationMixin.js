@@ -1,5 +1,7 @@
 // Appication Mixin
 import CoreMixin from './CoreMixin.js'
+import sortBy from 'lodash/sortBy'
+
 export default {
   mixins: [CoreMixin],
   computed: {
@@ -9,13 +11,22 @@ export default {
     $_application: function () {
       return this.$store.getters.loadedApplication(this.$_slug)
     },
-    $_users: function () {
+    $_applicationUrl: function () {
+      return 'http' + (process.env.SSL_ENABLED === 'true' ? 's' : '') + '://' + this.$_application.slug + '.' + process.env.APP_DOMAIN
+    },
+    $_applicationUsers: function () {
       return this.$store.getters.loadedUsers(this.$_slug)
+    },
+    $_applicationFormTemplates: function () {
+      return this.$store.getters.loadedFormTemplates(this.$_slug)
+    },
+    $_applicationRoles () {
+      return this.$_roles.filter((role) => { return role.name !== 'Super Admin' })
     }
   },
   methods: {
     $_findApplicationUser: function (userId) {
-      return this.$_users.find(user => {
+      return this.$_applicationUsers.find(user => {
         return user.id === userId
       })
     },
@@ -35,6 +46,9 @@ export default {
     $_getApplicationUserFullName: function (userId) {
       const user = this.$_findApplicationUser(userId)
       return user ? user.first_name + ' ' + user.last_name : null
+    },
+    $_getApplicationFormTemplates: function () {
+      return sortBy(this.$_applicationFormTemplates, element => { return element.name.toLowerCase() })
     }
   },
   created () {

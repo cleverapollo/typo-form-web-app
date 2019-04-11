@@ -68,11 +68,11 @@
         <v-layout row>
           <v-flex xs12 class="text-xs-center">
             <v-btn flat @click.stop="addUser">Add User</v-btn>
-            <v-btn flat @click.stop="bulkUpload">Bulk Upload</v-btn>
+            <v-btn flat @click.stop="bulkUpload">Upload Multiple Users</v-btn>
             <input
                 type="file"
                 style="display: none"
-                ref="image"
+                ref="fileUpload"
                 accept=".csv"
                 @change="onFilePicked"
             >
@@ -93,7 +93,7 @@
           <!-- // Application Role -->
           <v-flex sm12 md6 pr-4>
             <v-autocomplete
-              :items="applicationRoles"
+              :items="this.$_applicationRoles"
               item-text="name"
               item-value="id"
               v-model="role"
@@ -105,10 +105,10 @@
           <!-- // Form Templates -->
           <v-flex sm12 md6>
             <v-autocomplete
-              :items="formTemplates"
+              :items="this.$_getApplicationFormTemplates()"
               item-text="name"
               item-value="id"
-              v-model="form_templates"
+              v-model="formTemplates"
               label="Form Templates"
               required
               multiple
@@ -158,11 +158,10 @@
 
             <!-- // Message -->
             <v-flex xs12>
-              <v-textarea
-                label="Message"
+              <quill-editor 
                 v-model="message"
-                required
-              ></v-textarea>
+              >
+              </quill-editor>
             </v-flex>
 
           </v-flex>
@@ -188,13 +187,15 @@
 </template>
 
 <script>
-  import * as _ from 'lodash'
+  import papa from 'papaparse'
+  import ApplicationMixin from '../../mixins/ApplicationMixin.js'
   export default {
+    mixins: [ApplicationMixin],
     props: ['visible', 'slug'],
     data () {
       return {
         role: null,
-        form_templates: [],
+        formTemplates: [],
         subject: '',
         message: '',
         cc: '',
@@ -205,23 +206,11 @@
           lastname: '',
           email: '',
           organisation: '',
-          properties: {}
+          meta: {}
         }
       }
     },
     computed: {
-      roles () {
-        return this.$store.getters.roles
-      },
-      formTemplates () {
-        let formTemplates = _.sortBy(this.$store.getters.loadedFormTemplates(this.slug), element => {
-          return element.name.toLowerCase()
-        })
-        return formTemplates
-      },
-      applicationRoles () {
-        return this.roles.filter((role) => { return role.name !== 'Super Admin' })
-      },
       show: {
         get () {
           return this.visible
@@ -243,40 +232,33 @@
         this.invitations.push(newTemplate)
       },
       bulkUpload () {
-        this.$refs.image.click()
+        this.$refs.fileUpload.click()
+      },
+      resetFile () {
+        this.$refs.fileUpload.type = 'text'
+        this.$refs.fileUpload.type = 'file'
       },
       onFilePicked (e) {
-        const files = e.target.files
-        if (files[0] !== undefined) {
-          const file = files[0]
-          const reader = new FileReader()
-          reader.readAsText(file)
-          reader.onload = (event) => {
-            const data = event.target.result
-            const lines = data.split('\n')
-            if (data && lines.length) {
-              const keys = {}
-              const headerKeys = lines[0].split(',')
-              headerKeys.forEach((key, index) => {
-                keys[index] = key
-              })
-              lines.splice(0, 1)
-              lines.forEach((line) => {
-                if (!line.length) {
-                  return
+        const file = e.target.files[0] || null
+        const _this = this
+        papa.parse(file, {
+          header: true,
+          skipEmptyLines: true,
+          complete (results) {
+            results.data.forEach((result) => {
+              const invitation = Object.assign({}, _this.invitationTemplate)
+              for (const [key, val] of Object.entries(result)) {
+                if (invitation.hasOwnProperty(key)) {
+                  invitation[key] = val
+                } else if (key) {
+                  invitation.meta[key] = val
                 }
-                const result = Object.assign({}, this.invitationTemplate)
-                const values = line.split(',')
-                values.forEach((value, index) => {
-                  if (value) {
-                    result[keys[index]] = value
-                  }
-                })
-                this.invitations.push(result)
-              })
-            }
+              }
+              _this.invitations.push(invitation)
+            })
           }
-        }
+        })
+        this.resetFile()
       },
       removeUser (index) {
         this.invitations.splice(index, 1)
@@ -287,7 +269,7 @@
       },
       invite () {
         this.show = false
-        this.$store.dispatch('inviteApplication', { invitations: this.invitations, slug: this.slug, role: this.role })
+        this.$store.dispatch('inviteApplication', { invitations: this.invitations, slug: this.slug, role: this.role, form_templates: this.formTemplates, cc: this.cc, bcc: this.bcc, subject: this.subject, message: this.message })
         this.setForm()
       },
       setForm () {
@@ -295,9 +277,10 @@
         this.invitations = []
         this.invitations.push(newTemplate)
         this.role = null
-        this.form_templates = []
-        this.subject = ''
-        this.body = ''
+        this.formTemplates = []
+        this.subject = 'You have been invited to join the ' + this.$_application.name + ' application on Informed 365'
+        this.message = '<p>You have been invited to join the ' + this.$_application.name + ' application on Informed 365.<p>' +
+        '<p>To get started simply navigate <a href="' + this.$_applicationUrl + '" target="_blank">' + this.$_applicationUrl + '</a> and login or create an account using the email address that this invitation was sent to.</p>'
         this.cc = ''
         this.bcc = ''
       }

@@ -117,7 +117,12 @@ export default {
       commit('setLoading', true)
       const application = {
         invitations: payload.invitations,
-        role: payload.role
+        role: payload.role,
+        form_templates: payload.form_templates,
+        subject: payload.subject,
+        cc: payload.cc,
+        bcc: payload.bcc,
+        message: payload.message
       }
       window.axios.post(APPLICATION_URL + '/' + payload.slug + '/invite', application)
         .then(
