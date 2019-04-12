@@ -9,178 +9,190 @@
         <v-toolbar-title>Invite Users</v-toolbar-title>
       </v-toolbar>
 
-      <!-- // Users -->
-      <v-container fluid>
-        <div class="subheading my-2">Users</div>
-        <template v-for="(item, index) in invitations">
-          <v-layout row wrap v-bind:key="index">
+      <v-form
+        ref="form"
+        v-model="valid"
+        lazy-validation
+      >
 
-            <v-flex xs12 md11>
-              <v-layout>
+        <!-- // Users -->
+        <v-container fluid>
+          <div class="subheading my-2">Users</div>
+          <template v-for="(item, index) in invitations">
+            <v-layout row wrap v-bind:key="index">
 
-                <!-- // Firstname -->
-                <v-flex xs12 md4 pr-4>
-                  <v-text-field
-                    label="First Name"
-                    v-model="item.firstname"
-                    required
-                  ></v-text-field>
-                </v-flex>
+              <v-flex xs12 md11>
+                <v-layout>
 
-                <!-- // Lastname -->
-                <v-flex xs12 md4 pr-4>
-                  <v-text-field
-                    label="Last Name"
-                    v-model="item.lastname"
-                    required
-                  ></v-text-field>
-                </v-flex>
+                  <!-- // Firstname -->
+                  <v-flex xs12 md4 pr-4>
+                    <v-text-field
+                      label="First Name"
+                      v-model="item.firstname"
+                      :rules="rules.firstname"
+                      required
+                    ></v-text-field>
+                  </v-flex>
 
-                <!-- // Email -->
-                <v-flex xs12 md4 pr-4>
-                  <v-text-field
-                    label="Email"
-                    v-model="item.email"
-                    required
-                  ></v-text-field>
-                </v-flex>
+                  <!-- // Lastname -->
+                  <v-flex xs12 md4 pr-4>
+                    <v-text-field
+                      label="Last Name"
+                      v-model="item.lastname"
+                      :rules="rules.lastname"
+                      required
+                    ></v-text-field>
+                  </v-flex>
 
-                <!-- // Organisation -->
-                <v-flex xs12 md4>
-                  <v-text-field
-                    label="Organisation"
-                    v-model="item.organisation"
-                    required
-                  ></v-text-field>
-                </v-flex>
+                  <!-- // Email -->
+                  <v-flex xs12 md4 pr-4>
+                    <v-text-field
+                      label="Email"
+                      v-model="item.email"
+                      :rules="rules.email"
+                      required
+                    ></v-text-field>
+                  </v-flex>
 
-              </v-layout>
-            </v-flex>
-            <v-flex xs12 md1 text-xs-center text-sm-right>
-              <v-btn flat icon @click="removeUser" class="mt-3">
-                <v-icon>close</v-icon>
-              </v-btn>
-            </v-flex>
-          </v-layout>
-        </template>
+                  <!-- // Organisation -->
+                  <v-flex xs12 md4>
+                    <v-text-field
+                      label="Organisation"
+                      v-model="item.organisation"
+                      required
+                    ></v-text-field>
+                  </v-flex>
 
-        <!-- // Add User -->
-        <v-layout row>
-          <v-flex xs12 class="text-xs-center">
-            <v-btn flat @click.stop="addUser">Add User</v-btn>
-            <v-btn flat @click.stop="bulkUpload">Upload Multiple Users</v-btn>
-            <input
+                </v-layout>
+              </v-flex>
+              <v-flex xs12 md1 text-xs-center text-sm-right>
+                <v-btn flat icon @click="removeUser" class="mt-3">
+                  <v-icon>close</v-icon>
+                </v-btn>
+              </v-flex>
+            </v-layout>
+          </template>
+
+          <!-- // Add User -->
+          <v-layout row>
+            <v-flex xs12 class="text-xs-center">
+              <v-btn flat @click.stop="addUser">Add User</v-btn>
+              <v-btn flat @click.stop="bulkUpload">Upload Multiple Users</v-btn>
+              <input
                 type="file"
                 style="display: none"
                 ref="fileUpload"
                 accept=".csv"
                 @change="onFilePicked"
-            >
-
-          </v-flex>
-        </v-layout>
-
-      </v-container>
-
-      <v-divider class="py-2"></v-divider>
-
-      <v-container fluid>
-
-        <!-- // Permissions -->
-        <div class="subheading my-2">User Permissions</div>
-        <v-layout row wrap class="mb-4">
-
-          <!-- // Application Role -->
-          <v-flex sm12 md6 pr-4>
-            <v-autocomplete
-              :items="this.$_applicationRoles"
-              item-text="name"
-              item-value="id"
-              v-model="role"
-              label="Application Role"
-              required
-            ></v-autocomplete>
-          </v-flex>
-
-          <!-- // Form Templates -->
-          <v-flex sm12 md6>
-            <v-autocomplete
-              :items="this.$_getApplicationFormTemplates()"
-              item-text="name"
-              item-value="id"
-              v-model="formTemplates"
-              label="Form Templates"
-              required
-              multiple
-            ></v-autocomplete>
-          </v-flex>
-
-        </v-layout>
-
-      </v-container>
-
-      <v-divider class="py-2"></v-divider>
-
-      <v-container fluid>
-
-        <!-- // Invitation -->
-        <div class="subheading my-2">Invitation Email</div>
-        <v-layout row wrap class="mb-4">
-
-          <v-flex xs12>
-
-            <!-- // Subject -->
-            <v-flex xs12>
-              <v-text-field
-                label="Subject"
-                v-model="subject"
-                required
-              ></v-text-field>
-            </v-flex>
-
-            <!-- // CC -->
-            <v-flex xs12>
-              <v-text-field
-                label="CC"
-                v-model="cc"
-                required
-              ></v-text-field>
-            </v-flex>
-
-            <!-- // BCC -->
-            <v-flex xs12>
-              <v-text-field
-                label="BCC"
-                v-model="bcc"
-                required
-              ></v-text-field>
-            </v-flex>
-
-            <!-- // Message -->
-            <v-flex xs12>
-              <quill-editor 
-                v-model="message"
               >
-              </quill-editor>
+            </v-flex>
+          </v-layout>
+
+        </v-container>
+
+        <v-divider class="py-2"></v-divider>
+
+        <v-container fluid>
+
+          <!-- // Permissions -->
+          <div class="subheading my-2">User Permissions</div>
+          <v-layout row wrap class="mb-4">
+
+            <!-- // Application Role -->
+            <v-flex sm12 md6 pr-4>
+              <v-autocomplete
+                :items="this.$_applicationRoles"
+                item-text="name"
+                item-value="id"
+                v-model="role_id"
+                :rules="rules.role_id"
+                label="Application Role"
+                required
+              ></v-autocomplete>
             </v-flex>
 
-          </v-flex>
+            <!-- // Form Templates -->
+            <v-flex sm12 md6>
+              <v-autocomplete
+                :items="this.$_getApplicationFormTemplates()"
+                item-text="name"
+                item-value="id"
+                v-model="formTemplates"
+                label="Form Templates"
+                required
+                multiple
+              ></v-autocomplete>
+            </v-flex>
 
-        </v-layout>
+          </v-layout>
 
-      </v-container>
+        </v-container>
+
+        <v-divider class="py-2"></v-divider>
+
+        <v-container fluid>
+
+          <!-- // Invitation -->
+          <div class="subheading my-2">Invitation Email</div>
+          <v-layout row wrap class="mb-4">
+
+            <v-flex xs12>
+
+              <!-- // Subject -->
+              <v-flex xs12>
+                <v-text-field
+                  label="Subject"
+                  v-model="subject"
+                  :rules="rules.subject"
+                  required
+                ></v-text-field>
+              </v-flex>
+
+              <!-- // CC -->
+              <v-flex xs12>
+                <v-text-field
+                  label="CC"
+                  v-model="cc"
+                  required
+                ></v-text-field>
+              </v-flex>
+
+              <!-- // BCC -->
+              <v-flex xs12>
+                <v-text-field
+                  label="BCC"
+                  v-model="bcc"
+                  required
+                ></v-text-field>
+              </v-flex>
+
+              <!-- // Message -->
+              <v-flex xs12>
+                <quill-editor 
+                  v-model="message"
+                >
+                </quill-editor>
+              </v-flex>
+
+            </v-flex>
+
+          </v-layout>
+
+        </v-container>
 
 
-      <!-- //Actions -->
-      <v-divider></v-divider>
-      <v-container fluid>
-        <v-layout row py-2>
-          <v-flex xs12 class="text-xs-right">
-            <v-btn flat @click.stop="close">Cancel</v-btn>
-            <v-btn color="primary" @click.stop="invite">Invite Users</v-btn>
-          </v-flex>
-        </v-layout>
-      </v-container>
+        <!-- //Actions -->
+        <v-divider></v-divider>
+        <v-container fluid>
+          <v-layout row py-2>
+            <v-flex xs12 class="text-xs-right">
+              <v-btn flat @click.stop="close">Cancel</v-btn>
+              <v-btn color="primary" @click.stop="validate">Invite Users</v-btn>
+            </v-flex>
+          </v-layout>
+        </v-container>
+
+      </v-form>
 
     </v-card>
   </v-dialog>
@@ -188,13 +200,15 @@
 
 <script>
   import papa from 'papaparse'
+  import validator from 'validator'
   import ApplicationMixin from '../../mixins/ApplicationMixin.js'
   export default {
     mixins: [ApplicationMixin],
     props: ['visible', 'slug'],
     data () {
       return {
-        role: null,
+        valid: true,
+        role_id: null,
         formTemplates: [],
         subject: '',
         message: '',
@@ -207,6 +221,24 @@
           email: '',
           organisation: '',
           meta: {}
+        },
+        rules: {
+          firstname: [
+            v => !!v || 'First name is required'
+          ],
+          lastname: [
+            v => !!v || 'Last name is required'
+          ],
+          email: [
+            v => !!v || 'Email is required',
+            v => validator.isEmail(v) || 'Email must be valid'
+          ],
+          role_id: [
+            v => !!v || 'Application role is required'
+          ],
+          subject: [
+            v => !!v || 'Subject is required'
+          ]
         }
       }
     },
@@ -267,16 +299,21 @@
           this.invitations.push(newTemplate)
         }
       },
+      validate () {
+        if (this.$refs.form.validate()) {
+          this.invite()
+        }
+      },
       invite () {
         this.show = false
-        this.$store.dispatch('inviteApplication', { invitations: this.invitations, slug: this.slug, role: this.role, form_templates: this.formTemplates, cc: this.cc, bcc: this.bcc, subject: this.subject, message: this.message })
+        this.$store.dispatch('inviteApplication', { invitations: this.invitations, slug: this.slug, role_id: this.role_id, form_templates: this.formTemplates, cc: this.cc, bcc: this.bcc, subject: this.subject, message: this.message })
         this.setForm()
       },
       setForm () {
         const newTemplate = Object.assign({}, this.invitationTemplate)
         this.invitations = []
         this.invitations.push(newTemplate)
-        this.role = null
+        this.role_id = null
         this.formTemplates = []
         this.subject = 'You have been invited to join the ' + this.$_application.name + ' application on Informed 365'
         this.message = '<p>You have been invited to join the ' + this.$_application.name + ' application on Informed 365.<p>' +

@@ -117,7 +117,7 @@ export default {
       commit('setLoading', true)
       const application = {
         invitations: payload.invitations,
-        role: payload.role,
+        role_id: payload.role_id,
         form_templates: payload.form_templates,
         subject: payload.subject,
         cc: payload.cc,
