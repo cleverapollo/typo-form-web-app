@@ -133,7 +133,7 @@
 
                 >
                   <template slot="items" slot-scope="props">
-                    <td>{{ props.item.invitee }}</td>
+                    <td>{{ props.item.email }}</td>
                     <td>{{ props.item.role }}</td>
                     <td>{{ props.item.created_at.date | moment }}</td>
                     <td v-if='userIsApplicationAdmin' class="justify-center layout px-0">
@@ -207,7 +207,7 @@
           }
         },
         invitedFields: {
-          'Email': 'invitee',
+          'Email': 'email',
           'Role': 'role',
           'Invited': {
             field: 'created_at.date',
@@ -264,7 +264,7 @@
       },
       invitedHeaders () {
         let defaultInvitedHeaders = [
-          { text: 'Email', value: 'invitee', sortable: true, align: 'left' },
+          { text: 'Email', value: 'email', sortable: true, align: 'left' },
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
           { text: 'Invited', value: 'created_at.date', sortable: true, align: 'left' }
         ]
