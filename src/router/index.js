@@ -8,6 +8,7 @@ import Login from '@/components/Auth/Login'
 import NewPassword from '@/components/Auth/NewPassword'
 import ResetPassword from '@/components/Auth/ResetPassword'
 import AcceptJoin from '@/components/Shared/AcceptJoin'
+import MaintenanceMode from '@/components/Auth/MaintenanceMode'
 
 // Applications
 import Applications from '@/components/Application/Applications'
@@ -38,6 +39,12 @@ Vue.use(Router)
 
 const router = new Router({
   routes: [
+    {
+      path: '/maintenance',
+      name: 'Maintenance',
+      component: MaintenanceMode,
+      props: true
+    },
     {
       path: '/register',
       name: 'Register',
@@ -195,46 +202,54 @@ const router = new Router({
       component: {
         template: '<div class="auth-component"></div>'
       }
+    },
+    {
+      path: '*',
+      name: '404',
+      component: Login
     }
   ],
   mode: 'history'
 })
 
 router.beforeEach((to, from, next) => {
-  // Set Application Branding and Content
   const slug = window.location.hostname.split('.')[0]
-  const favicon = document.getElementById('dyc-favicon')
-  const style = document.getElementById('dyc-css')
-  let application = {}
   store.dispatch('loadApplication', slug)
   .then(response => {
-    application = response.data.application
+    return response
   })
-  .catch(() => { })
-  .finally(() => {
+  .catch(error => {
+    return error.response
+  })
+  .then(response => {
+    const application = response.data.application || {}
+    if (to.fullPath === '/' || (to.name === 'Maintenance' && response.status !== 503)) {
+      // Default Application Route || No Mainteiance
+      router.push({ path: (application.default_route ? application.default_route : '/forms') })
+    } else if (!store.getters.user && to.meta.requiresAuth) {
+      // 401 Requires Auth
+      router.push({ name: 'Login', query: { redirect: to.fullPath } })
+    } else if (response.status === 503 && to.name !== 'Maintenance') {
+      // 503 Maintenance
+      router.push({ name: 'Maintenance', params: { data: response.data } })
+    } else if (response.status === 404 && to.name !== 'Applications' && store.getters.user) {
+      // 404 No Application with Auth
+      router.push({ name: 'Applications', query: { application: false } })
+    }
+
+    return application
+  })
+  .then(application => {
+    // Branding
+    const favicon = document.getElementById('dyc-favicon')
+    const style = document.getElementById('dyc-css')
     document.title = application.name || process.env.APP_NAME
     favicon.href = application.icon && JSON.parse(application.icon) ? JSON.parse(application.icon).url : '/static/icon.png'
     style.innerHTML = application.css || ''
     let backgroundImage = application.background_image && JSON.parse(application.background_image) ? JSON.parse(application.background_image).url : '/static/background.jpg'
     document.body.style.backgroundImage = !to.meta.requiresAuth ? 'url(' + backgroundImage + ')' : ''
-     // Redirect Unauthenticated Users to login
-    if (!store.getters.user && to.meta.requiresAuth) {
-      router.push({
-        path: '/login',
-        query: {redirect: to.fullPath}
-      })
-    }
-    // Redirect Authenticated Users where no application found
-    if (store.getters.user && !application.slug && to.meta.application) {
-      window.location.href = '/applications?application=false'
-    }
-
-    const defaultRoute = (application.default_route ? application.default_route : '/forms')
-    if (to.fullPath === '/') {
-      router.push({
-        path: defaultRoute
-      })
-    }
+  })
+  .finally(() => {
     next()
   })
 })
