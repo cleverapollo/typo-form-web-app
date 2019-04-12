@@ -219,9 +219,9 @@ router.beforeEach((to, from, next) => {
     return response
   })
   .catch(error => {
-    console.log(error)
-    console.log(error.response)
-    return error.response
+    // Get the error response || Set default error response
+    const response = error && error.response ? error.response : { status: 503 }
+    return response
   })
   .then(response => {
     const application = response && response.data && response.data.application ? response.data.application : {}
