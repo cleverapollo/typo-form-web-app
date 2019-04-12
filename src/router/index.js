@@ -219,6 +219,8 @@ router.beforeEach((to, from, next) => {
     return response
   })
   .catch(error => {
+    console.log(error)
+    console.log(error.response)
     return error.response
   })
   .then(response => {
@@ -229,7 +231,7 @@ router.beforeEach((to, from, next) => {
     } else if (!store.getters.user && to.meta.requiresAuth) {
       // 401 Requires Auth
       router.push({ name: 'Login', query: { redirect: to.fullPath } })
-    } else if (response.status === 503 && to.name !== 'Maintenance') {
+    } else if (response && response.status === 503 && to.name !== 'Maintenance') {
       // 503 Maintenance
       const data = response && response.data ? response.data : {}
       router.push({ name: 'Maintenance', params: { data: data } })
