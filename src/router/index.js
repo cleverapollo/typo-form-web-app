@@ -222,7 +222,7 @@ router.beforeEach((to, from, next) => {
     return error.response
   })
   .then(response => {
-    const application = response.data.application || {}
+    const application = response && response.data && response.data.application ? response.data.application : {}
     if (to.fullPath === '/' || (to.name === 'Maintenance' && response.status !== 503)) {
       // Default Application Route || No Mainteiance
       router.push({ path: (application.default_route ? application.default_route : '/forms') })
@@ -231,7 +231,8 @@ router.beforeEach((to, from, next) => {
       router.push({ name: 'Login', query: { redirect: to.fullPath } })
     } else if (response.status === 503 && to.name !== 'Maintenance') {
       // 503 Maintenance
-      router.push({ name: 'Maintenance', params: { data: response.data } })
+      const data = response && response.data ? response.data : {}
+      router.push({ name: 'Maintenance', params: { data: data } })
     } else if (response.status === 404 && to.name !== 'Applications' && store.getters.user) {
       // 404 No Application with Auth
       router.push({ name: 'Applications', query: { application: false } })
