@@ -1,4 +1,5 @@
 // Core Mixin
+import moment from 'moment'
 export default {
   computed: {
     $_user: function () {
@@ -20,9 +21,20 @@ export default {
       return this.$_roles.find((role) => {
         return role.id === roleId
       })
+    },
+    $_getDate: function () {
+      return moment().format('YYYY-MM-DD h:mm A')
+    },
+    $_getDateTime: function () {
+      return moment().format('YYYY-MM-DD [at] LTS')
     }
   },
   created () {
     this.$store.dispatch('loadRoles')
+  },
+  filters: {
+    $_formatDate: function (date) {
+      return moment(date).format('YYYY-MM-DD h:mm A')
+    }
   }
 }

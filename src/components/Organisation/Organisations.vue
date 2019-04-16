@@ -66,7 +66,7 @@
                 <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.active_users_length }}</td>
                 <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.invited_users_length }}</td>
                 <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.forms_length }}</td>
-                <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.created_at.date | moment }}</td>
+                <td @click='onLoadOrganisation(props.item.id)' >{{ props.item.created_at | moment }}</td>
                 <td>
                   <v-tooltip bottom>
                     <v-btn icon class='mx-0' @click='showDeleteOrganisation(props.item.id)' slot="activator">
@@ -122,9 +122,9 @@
           'Invited Users': 'invited_users_length',
           'Forms': 'forms_length',
           'Created': {
-            field: 'created_at.date',
+            field: 'created_at',
             callback: (value) => {
-              return moment(value).format('YYYY-MM-DD h:MM A')
+              return moment(value).format('YYYY-MM-DD h:mm A')
             }
           }
         },
@@ -137,7 +137,7 @@
           {text: 'Active Users', value: 'active_users_length'},
           {text: 'Invited Users', value: 'invited_users_length'},
           {text: 'Forms', value: 'forms_length'},
-          {text: 'Created', value: 'created_at.date'},
+          {text: 'Created', value: 'created_at'},
           {text: 'Actions', value: 'Actions'}
         ],
         deleteOrganisation: false,
@@ -179,7 +179,7 @@
     },
     filters: {
       moment: function (date) {
-        return moment(date).format('YYYY-MM-DD h:MM A')
+        return moment(date).format('YYYY-MM-DD h:mm A')
       }
     }
   }

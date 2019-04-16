@@ -43,6 +43,9 @@ export default {
       const roleName = this.$_getApplicationUserRoleName(userId)
       return roleName === 'Super Admin' || roleName === 'Admin'
     },
+    $_userIsApplicationAdmin: function () {
+      return this.$_isApplicationAdminUser(this.$_user)
+    },
     $_getApplicationUserFullName: function (userId) {
       const user = this.$_findApplicationUser(userId)
       return user ? user.first_name + ' ' + user.last_name : null

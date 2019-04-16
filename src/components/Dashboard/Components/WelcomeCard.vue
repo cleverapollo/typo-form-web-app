@@ -42,7 +42,7 @@ export default {
       return 'Good evening, ' + firstName
     },
     getJoinedDate () {
-      return this.$_user ? moment(this.$_user.created_at.date).fromNow() : null
+      return this.$_user ? moment(this.$_user.created_at).fromNow() : null
     },
     getRole () {
       return this.$_user ? this.$_getApplicationUserRoleName(this.$_user.id) : null

@@ -305,10 +305,10 @@
                   response = this.getStatus(form.status_id)
                   break
                 case 'Created':
-                  response = this.date(form.created_at.date)
+                  response = this.date(form.created_at)
                   break
                 case 'Modified':
-                  response = this.date(form.updated_at.date)
+                  response = this.date(form.updated_at)
                   break
               }
               // Question, Responses, ComparatorID, QuestionTrigger.answer, QuestionTrigger.value
@@ -429,10 +429,7 @@
         return JSON.parse(JSON.stringify(src))
       },
       date (value) {
-        if (!value) {
-          return value
-        }
-        return moment(value).format('YYYY-MM-DD h:MM A')
+        return value ? moment(value).format('YYYY-MM-DD h:mm A') : value
       },
       status (id) {
         return this.statuses.find(e => { return e.id === id }).status

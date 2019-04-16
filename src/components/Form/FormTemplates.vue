@@ -54,7 +54,7 @@
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.name }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.forms_length }}</td>
                 <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.status }}</td>
-                <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.created_at }}</td>
+                <td @click='onLoadFormTemplate(props.item.id)' >{{ props.item.created_at | moment }}</td>
                 <td>
                   <v-tooltip bottom>
                     <v-btn icon class='mx-0' @click='showDuplicateFormTemplate(props.item)' slot="activator">
@@ -115,7 +115,7 @@
           {text: 'Form Template', value: 'name'},
           {text: 'Forms', value: 'forms_length'},
           {text: 'Status', value: 'status'},
-          {text: 'Created', value: 'created_at.date'},
+          {text: 'Created', value: 'created_at'},
           {text: 'Actions', value: 'Actions'}
         ],
         defaultName: '',
@@ -145,7 +145,6 @@
             return status.id === formTemplate.status_id
           })
           formTemplate.status = ((status && status.status === 'Open') ? 'Draft' : 'Published')
-          formTemplate.created_at = moment(formTemplate.created_at.date).format('YYYY-MM-DD h:MM A')
         })
         return formTemplates
       },
@@ -192,6 +191,11 @@
       .then(() => {
         this.loadingFormTemplates = false
       })
+    },
+    filters: {
+      moment (date) {
+        return moment(date).format('YYYY-MM-DD h:mm A')
+      }
     }
   }
 </script>

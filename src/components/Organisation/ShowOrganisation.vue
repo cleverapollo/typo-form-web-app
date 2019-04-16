@@ -82,7 +82,7 @@
                     <td>{{ props.item.last_name }}</td>
                     <td>{{ props.item.email }}</td>
                     <td>{{ props.item.role }}</td>
-                    <td>{{ props.item.created_at.date | moment }}</td>
+                    <td>{{ props.item.created_at | moment }}</td>
                     <td v-if='isOrganisationAdmin' class="justify-center layout px-0">
                       <v-tooltip bottom>
                         <EditOrganisationUser :user="props.item" :slug="slug" :organisationId="id" slot="activator" v-if="props.item.status === 'Joined'"></EditOrganisationUser>
@@ -198,9 +198,9 @@
           'Email': 'email',
           'Role': 'role',
           'Joined / Invited': {
-            field: 'created_at.date',
+            field: 'created_at',
             callback: (value) => {
-              return moment(value).format('YYYY-MM-DD h:MM A')
+              return moment(value).format('YYYY-MM-DD h:mm A')
             }
           },
           'Status': 'status'
@@ -282,7 +282,7 @@
           { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
           { text: 'Email', value: 'email', sortable: true, align: 'left' },
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Joined/Invited', value: 'created_at.date', sortable: true, align: 'left' }
+          { text: 'Joined/Invited', value: 'created_at', sortable: true, align: 'left' }
         ]
         if (this.isOrganisationAdmin) {
           defaultUserHeaders.push({ text: 'Action', sortable: false, align: 'center' })
@@ -313,8 +313,8 @@
           form['Progress'] = form.progress
           form['Period Start'] = this.date(form.period_start)
           form['Period End'] = this.date(form.period_end)
-          form['Created'] = this.date(form.created_at.date)
-          form['Modified'] = this.date(form.updated_at.date)
+          form['Created'] = this.date(form.created_at)
+          form['Modified'] = this.date(form.updated_at)
         })
         return forms
       },
@@ -363,7 +363,7 @@
         if (!value) {
           return value
         }
-        return moment(value).format('YYYY-MM-DD h:MM A')
+        return moment(value).format('YYYY-MM-DD h:mm A')
       },
       status (id) {
         return this.statuses.find(e => { return e.id === id }).status
@@ -387,7 +387,7 @@
     },
     filters: {
       moment: function (date) {
-        return moment(date).format('YYYY-MM-DD h:MM A')
+        return moment(date).format('YYYY-MM-DD h:mm A')
       }
     }
   }
