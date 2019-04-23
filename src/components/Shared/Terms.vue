@@ -28,7 +28,7 @@
       <h3>2.2. Limited License to Your Content.</h3>
       <p>You grant Informed 365 a worldwide, royalty free license to use, reproduce, distribute, modify, adapt, create derivative works, make available to Informed 365’s licensor(s) for whom you provided information, and otherwise exploit your Content, but only for the limited purposes of providing the Services to you and as otherwise permitted by the Informed 365 privacy policies. This license for such limited purposes continues even after you stop using our Services, with respect to aggregate and de-identified data derived from your Content and any residual backup copies of your Content made in the ordinary course of Informed 365’s business. This license also extends to any trusted third parties we work with to the extent necessary to provide the Services to you. If you provide Informed 365 with feedback about the Services, we may use your feedback without any obligation to you.</p>
       <h3>2.3. Other IP Claims.</h3>
-      <p>Informed 365 respects the intellectual property rights of others, and we expect our users to do the same. If you believe an Informed 365 user is infringing upon your intellectual property rights, please contact us at info@informed365.com. </p>
+      <p>Informed 365 respects the intellectual property rights of others, and we expect our users to do the same. If you believe an Informed 365 user is infringing upon your intellectual property rights, please contact us at support@informed365.com. </p>
 
       <h2>3. Informed 365 IP</h2>
       <h3>3.1. Informed 365 IP.</h3>

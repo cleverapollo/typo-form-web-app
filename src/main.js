@@ -1,12 +1,10 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import 'babel-polyfill'
 import Vue from 'vue'
-import VueAuthenticate from 'vue-authenticate'
-import VueAxios from 'vue-axios'
 import JsonExcel from 'vue-json-excel'
 import VueQuillEditor from 'vue-quill-editor'
 import axios from 'axios'
-import 'babel-polyfill'
 
 import App from './App'
 import router from './router'
@@ -60,32 +58,6 @@ axios.interceptors.response.use(
   }
 )
 Vue.use(Vuetify)
-Vue.use(VueAxios, axios)
-Vue.use(VueAuthenticate, {
-  tokenName: 'access_token',
-  baseUrl: process.env.API_ORIGIN_URL,
-  storageType: 'cookieStorage',
-  providers: {
-    // Define OAuth providers config
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID,
-      redirectUri: process.env.REDIRECT_URL // Your client app URL
-    },
-    facebook: {
-      clientId: process.env.FACEBOOK_CLIENT_ID,
-      redirectUri: process.env.REDIRECT_URL // Your client app URL
-    },
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      redirectUri: process.env.REDIRECT_URL // Your client app URL
-    },
-    live: {
-      clientId: process.env.LIVE_CLIENT_ID,
-      redirectUri: process.env.REDIRECT_URL, // Your client app URL
-      scope: ['wl.basic', 'wl.emails']
-    }
-  }
-})
 Vue.use(VueQuillEditor)
 Vue.config.productionTip = false
 Vue.prototype.$sanitize = sanitizeHtml

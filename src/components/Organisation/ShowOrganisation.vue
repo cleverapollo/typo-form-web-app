@@ -32,16 +32,12 @@
             </v-menu>
           </div>
         </v-flex>
-        <v-flex xs12>
-          <div class="subheading py-2 px-3 break-all">{{ organisation.description }}</div>
-          <div class="subheading py-2 px-3 break-all" v-if="isOrganisationAdmin">{{ joinURL }}</div>
-        </v-flex>
         <v-flex d-flex xs12>
           <v-card>
-            <v-tabs dark slider-color="white" color="info">
-              <v-tab href="#active">Active Users</v-tab>
-              <v-tab href="#invited">Invited Users</v-tab>
-              <v-tab-item value="active">
+            <v-tabs dark grow slider-color="white" color="info">
+              <v-tab href="#users_tab">Users</v-tab>
+              <v-tab href="#forms_tab">Forms</v-tab>
+              <v-tab-item value="users_tab">
 
                 <!-- //User Search -->
                 <v-card-title>
@@ -78,6 +74,7 @@
                   :headers="userHeaders"
                   :items="users"
                   :search="userSearch"
+                  key="users_table"
                   :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
                 >
                   <template slot="items" slot-scope="props">
@@ -85,14 +82,15 @@
                     <td>{{ props.item.last_name }}</td>
                     <td>{{ props.item.email }}</td>
                     <td>{{ props.item.role }}</td>
-                    <td>{{ props.item.created_at.date | moment }}</td>
+                    <td>{{ props.item.created_at | moment }}</td>
                     <td v-if='isOrganisationAdmin' class="justify-center layout px-0">
                       <v-tooltip bottom>
-                        <EditOrganisationUser :user="props.item" :slug="slug" :organisationId="id" slot="activator"></EditOrganisationUser>
+                        <EditOrganisationUser :user="props.item" :slug="slug" :organisationId="id" slot="activator" v-if="props.item.status === 'Joined'"></EditOrganisationUser>
+                        <EditInvitedOrganisationUser :user="props.item" :slug="slug" :organisationId="id" slot="activator" v-if="props.item.status === 'Invited'"></EditInvitedOrganisationUser>
                         <span>Edit</span>
                       </v-tooltip>
                       <v-tooltip bottom>
-                        <v-btn icon class="mx-0" @click="onDeleteOrganisationUser(props.item.id)" slot="activator">
+                        <v-btn icon class="mx-0" @click="onDeleteOrganisationUser(props.item.id, props.item.status)" slot="activator">
                           <v-icon color="pink">delete</v-icon>
                         </v-btn>
                         <span>Delete</span>
@@ -104,9 +102,7 @@
                   </v-alert>
                 </v-data-table>
               </v-tab-item>
-              <v-tab-item value="invited">
-
-                <!-- //Invited User Search -->
+              <v-tab-item value="forms_tab">
                 <v-card-title>
                   <v-layout row wrap>
                     <v-flex xs12 md6>
@@ -114,10 +110,9 @@
                         outline
                       >
                         <download-excel
-                          :data="invitedUsers"
-                          :name="invitedFileName + '.csv'"
+                          :data="forms"
+                          :name="fileName + '.csv'"
                           type="csv"
-                          :fields="invitedFields"
                         >
                           Export
                         </download-excel>
@@ -126,42 +121,38 @@
                     </v-flex>
                     <v-flex xs12 md6>
                       <v-text-field
-                        v-model="invitedUserSearch"
-                        append-icon="search"
-                        label="Search"
-                        single-line
-                        hide-details
+                          v-model="search"
+                          append-icon="search"
+                          label="Search"
+                          single-line
+                          hide-details
                       ></v-text-field>
                     </v-flex>
                   </v-layout>
                 </v-card-title>
 
-                <!-- //Invited Users -->
+                <!-- //Forms -->
                 <v-data-table
-                  :headers="invitedHeaders"
-                  :items="invitedUsers"
-                  :search="invitedUserSearch"
-                  :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+                    :headers='headers'
+                    :items='forms'
+                    :search='search'
+                    :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
+                    :loading="loadingForms"
+                    key="form_table"
                 >
-                  <template slot="items" slot-scope="props">
-                    <td>{{ props.item.invitee }}</td>
-                    <td>{{ props.item.role }}</td>
-                    <td>{{ props.item.created_at.date | moment }}</td>
-                    <td v-if='isOrganisationAdmin' class="justify-center layout px-0">
-                      <v-tooltip bottom>
-                        <EditInvitedOrganisationUser :user="props.item" :slug="slug" :organisationId="id" slot="activator"></EditInvitedOrganisationUser>
-                        <span>Edit</span>
-                      </v-tooltip>
-                      <v-tooltip bottom>
-                        <v-btn icon class="mx-0" @click="onDeleteInvitedOrganisationUser(props.item.id)" slot="activator">
-                          <v-icon color="pink">delete</v-icon>
-                        </v-btn>
-                        <span>Delete</span>
-                      </v-tooltip>
-                    </td>
+                  <template slot='items' slot-scope='props'>
+                    <tr>
+                      <td @click='onForm(props.item.id)'>{{ props.item.form_template_name }}</td>
+                      <td @click='onForm(props.item.id)'>{{ props.item['Owner'] }}</td>
+                      <td @click='onForm(props.item.id)'>{{ props.item['Owner Email'] }}</td>
+                      <td @click='onForm(props.item.id)'>{{ props.item['Created'] }}</td>
+                      <td @click='onForm(props.item.id)'>{{ props.item['Modified'] }}</td>
+                      <td @click='onForm(props.item.id)'>{{ props.item['Progress'] }}</td>
+                      <td @click='onForm(props.item.id)'>{{ props.item['status'] }}</td>
+                    </tr>
                   </template>
-                  <v-alert slot="no-results" :value="true" color="error" icon="warning">
-                    Your search for "{{ invitedUserSearch }}" found no results.
+                  <v-alert slot='no-results' :value='true' color='error' icon='warning'>
+                    Your search for '{{ search }}' found no results.
                   </v-alert>
                 </v-data-table>
               </v-tab-item>
@@ -172,12 +163,14 @@
       </v-layout>
     </v-flex>
 
+    <!-- // Temporary Removed Invite Organisation
     <v-tooltip top v-if="isOrganisationAdmin">
       <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="inviteUsers = true">
         <v-icon>add</v-icon>
       </v-btn>
       <span>Invite Users</span>
     </v-tooltip>
+    -->
 
     <!-- //Invite Organisation -->
     <InviteOrganisation :slug="slug" :organisationId="id" :visible="inviteUsers" @close="inviteUsers = false"></InviteOrganisation>
@@ -193,6 +186,8 @@
   import EditOrganisationUser from './EditOrganisationUser'
   import EditInvitedOrganisationUser from './EditInvitedOrganisationUser'
   import moment from 'moment'
+  import LayoutMixin from '../Layout/LayoutMixin'
+  import UserMixin from '../Layout/UserMixin'
   export default {
     props: ['id'],
     data () {
@@ -202,28 +197,51 @@
           'Last Name': 'last_name',
           'Email': 'email',
           'Role': 'role',
-          'Joined': {
-            field: 'created_at.date',
+          'Joined / Invited': {
+            field: 'created_at',
             callback: (value) => {
-              return moment(value).format('YYYY-MM-DD h:MM A')
+              return moment(value).format('YYYY-MM-DD h:mm A')
             }
-          }
-        },
-        invitedFields: {
-          'Email': 'invitee',
-          'Role': 'role',
-          'Invited': {
-            field: 'created_at.date',
-            callback: (value) => {
-              return moment(value).format('YYYY-MM-DD h:MM A')
-            }
-          }
+          },
+          'Status': 'status'
         },
         userSearch: '',
-        invitedUserSearch: '',
         inviteUsers: false,
         deleteOrganisation: false,
-        slug: window.location.hostname.split('.')[0]
+        search: '',
+        loadingForms: false,
+        headers: [
+          {
+            text: 'Form Template',
+            value: 'form_template_name',
+            sortable: true,
+            align: 'left'
+          },
+          {
+            text: 'Owner',
+            value: 'Owner'
+          },
+          {
+            text: 'Owner Email',
+            value: 'Owner Email'
+          },
+          {
+            text: 'Created',
+            value: 'Created'
+          },
+          {
+            text: 'Modified',
+            value: 'Modified'
+          },
+          {
+            text: 'Progress',
+            value: 'Progress'
+          },
+          {
+            text: 'Status',
+            value: 'status'
+          }
+        ]
       }
     },
     components: {
@@ -232,47 +250,31 @@
       EditOrganisationUser,
       EditInvitedOrganisationUser
     },
+    mixins: [LayoutMixin, UserMixin],
     computed: {
-      roles () {
-        return this.$store.getters.roles
-      },
       organisation () {
         return this.$store.getters.loadedOrganisation(this.slug, parseInt(this.id))
       },
       isOrganisationAdmin () {
         return this.userIsAdmin || this.isSuperUser
       },
-      userIsAuthenticated () {
-        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      },
-      userIsAdmin () {
-        if (!this.userIsAuthenticated || !this.organisation) {
-          return false
-        }
-        return this.getRole(this.organisation.organisation_role_id) === 'Admin'
-      },
-      isSuperUser () {
-        if (!this.userIsAuthenticated) {
-          return false
-        }
-        return this.getRole(this.$store.getters.user.role_id) === 'Super Admin'
-      },
       users () {
         let users = this.$store.getters.loadedOrganisationUsers(parseInt(this.id))
+        let invitedUsers = this.$store.getters.invitedOrganisationUsers(parseInt(this.id))
         users.forEach((user) => {
           user.role = this.getRole(user.organisation_role_id)
+          user.status = 'Joined'
         })
-        return users
-      },
-      invitedUsers () {
-        let invitedUsers = this.$store.getters.invitedOrganisationUsers(parseInt(this.id))
+        let result = users.slice(0)
         invitedUsers.forEach((invitedUser) => {
           invitedUser.role = this.getRole(invitedUser.organisation_role_id)
+          invitedUser.first_name = ''
+          invitedUser.last_name = ''
+          invitedUser.email = invitedUser.invitee
+          invitedUser.status = 'Invited'
+          result.push(invitedUser)
         })
-        return invitedUsers
-      },
-      joinURL () {
-        return window.location.origin + '/join/organisation/' + this.organisation.share_token
+        return result
       },
       userHeaders () {
         let defaultUserHeaders = [
@@ -280,23 +282,12 @@
           { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
           { text: 'Email', value: 'email', sortable: true, align: 'left' },
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Joined', value: 'created_at.date', sortable: true, align: 'left' }
+          { text: 'Joined/Invited', value: 'created_at', sortable: true, align: 'left' }
         ]
         if (this.isOrganisationAdmin) {
           defaultUserHeaders.push({ text: 'Action', sortable: false, align: 'center' })
         }
         return defaultUserHeaders
-      },
-      invitedHeaders () {
-        let defaultInvitedHeaders = [
-          { text: 'Email', value: 'invitee', sortable: true, align: 'left' },
-          { text: 'Role', value: 'role', sortable: true, align: 'left' },
-          { text: 'Invited', value: 'created_at.date', sortable: true, align: 'left' }
-        ]
-        if (this.isOrganisationAdmin) {
-          defaultInvitedHeaders.push({ text: 'Action', sortable: false, align: 'center' })
-        }
-        return defaultInvitedHeaders
       },
       user () {
         return this.$store.getters.user
@@ -304,8 +295,34 @@
       userFileName () {
         return 'Users ' + moment().format('YYYY-MM-DD [at] LTS')
       },
-      invitedFileName () {
-        return 'Invited Users ' + moment().format('YYYY-MM-DD [at] LTS')
+      questions () {
+        return this.$store.getters.loadedApplicationQuestions(this.slug)
+      },
+      forms () {
+        let forms = this.$store.getters.loadedAllForms(this.slug)
+        forms = forms.filter(form => {
+          return form.organisation && form.organisation.id === this.organisation.id
+        })
+        forms.forEach((form) => {
+          form.owner = form.organisation ? form.organisation.name : form.user.first_name + ' ' + form.user.last_name
+          form.status = this.status(form.status_id)
+          form.form_template_name = form.form_template.name
+          form['Owner'] = form.user ? (form.user.first_name + ' ' + form.user.last_name) : ''
+          form['Owner Email'] = form.user ? form.user.email : ''
+          form['Organisation'] = form.organisation ? form.organisation.name : ''
+          form['Progress'] = form.progress
+          form['Period Start'] = this.date(form.period_start)
+          form['Period End'] = this.date(form.period_end)
+          form['Created'] = this.date(form.created_at)
+          form['Modified'] = this.date(form.updated_at)
+        })
+        return forms
+      },
+      statuses () {
+        return this.$store.getters.statuses
+      },
+      fileName () {
+        return 'Forms ' + moment().format('YYYY-MM-DD [at] LTS')
       }
     },
     methods: {
@@ -316,42 +333,61 @@
         })
         this.$router.push('/organisations')
       },
-      onDeleteOrganisationUser (organisationUserId) {
-        this.$store.dispatch('deleteOrganisationUser', {
-          slug: this.slug,
-          organisationId: this.organisation.id,
-          id: organisationUserId
-        })
-          .then(() => {
-            if (this.user.id === organisationUserId) {
-              this.$store.dispatch('loadOrganisations', this.slug)
-                .then(() => {
-                  this.$router.push('/organisations')
-                })
-            }
+      onDeleteOrganisationUser (organisationUserId, status) {
+        if (status === 'Joined') {
+          this.$store.dispatch('deleteOrganisationUser', {
+            slug: this.slug,
+            organisationId: this.organisation.id,
+            id: organisationUserId
           })
+            .then(() => {
+              if (this.user.id === organisationUserId) {
+                this.$store.dispatch('loadOrganisations', this.slug)
+                  .then(() => {
+                    this.$router.push('/organisations')
+                  })
+              }
+            })
+        } else {
+          this.$store.dispatch('deleteInvitedOrganisationUser', {
+            slug: this.slug,
+            organisationId: this.organisation.id,
+            id: organisationUserId
+          })
+        }
       },
-      onDeleteInvitedOrganisationUser (organisationUserId) {
-        this.$store.dispatch('deleteInvitedOrganisationUser', {
-          slug: this.slug,
-          organisationId: this.organisation.id,
-          id: organisationUserId
-        })
+      onForm (id) {
+        this.$router.push('/forms/' + id)
       },
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
+      date (value) {
+        if (!value) {
+          return value
+        }
+        return moment(value).format('YYYY-MM-DD h:mm A')
+      },
+      status (id) {
+        return this.statuses.find(e => { return e.id === id }).status
       }
     },
     created: function () {
-      this.$store.dispatch('loadOrganisations', this.slug)
-      this.$store.dispatch('loadOrganisationUsers', {slug: this.slug, organisationId: this.id})
+      if (this.user) {
+        this.loadingForms = true
+        Promise.all([
+          this.$store.dispatch('loadUsers', this.slug),
+          this.$store.dispatch('loadOrganisations', this.slug),
+          this.$store.dispatch('loadOrganisationUsers', {slug: this.slug, organisationId: this.id}),
+          this.$store.dispatch('loadFormTemplates', this.slug),
+          this.$store.dispatch('loadAllSections', this.slug),
+          this.$store.dispatch('loadAllForms', this.slug),
+          this.$store.dispatch('loadAllOrganisationUsers', this.slug)]
+        ).then(() => {
+          this.loadingForms = false
+        })
+      }
     },
     filters: {
       moment: function (date) {
-        return moment(date).format('YYYY-MM-DD h:MM A')
+        return moment(date).format('YYYY-MM-DD h:mm A')
       }
     }
   }

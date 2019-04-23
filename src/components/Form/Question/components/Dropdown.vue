@@ -8,10 +8,11 @@
         <v-text-field
           v-model='answer.answer'
           @change='showModal(answer.id, $event)'
+          placeholder="Enter answer text"
         ></v-text-field>
       </v-flex>
       <v-flex style='width: 30px'  v-show='answers.length > 1'>
-        <v-btn flat icon @click='deleteAnswer(index)' class='mt-4'>
+        <v-btn flat icon @click='deleteAnswer(answer.id)' class='mt-4'>
           <v-icon>close</v-icon>
         </v-btn>
       </v-flex>
@@ -22,7 +23,7 @@
       </v-flex>
       <v-flex xs10 style='max-width: 80px'>
         <v-text-field
-          value='Add option'
+          value='Add answer'
           @click='createAnswer'
         ></v-text-field>
       </v-flex>
@@ -98,14 +99,10 @@
     },
     methods: {
       createAnswer () {
-        let str = `Option ${this.answers.length + 1}`
-        if (this.computedHasOther) {
-          str = `Option ${this.answers.length}`
-        }
-        this.$emit('create-answer', [str, true])
+        this.$emit('create-answer', [null, true])
       },
       deleteAnswer (index) {
-        this.$emit('delete-answer', this.answers[index].id)
+        this.$emit('delete-answer', index)
       },
       setHasOther () {
         this.$emit('create-answer', ['Other...', false])
@@ -160,9 +157,9 @@
     },
     mounted () {
       if (this.answers.length === 0) {
-        this.$emit('create-answer', ['Option 1', true])
+        this.$emit('create-answer', [null, true])
       } else {
-        if (this.answers.length === 2 && this.answers[0].answer.substr(0, 11) === 'LinearScale' && this.answers[1].answer.substr(0, 11) === 'LinearScale') {
+        if (this.answers.length === 2 && this.answers[0].answer && this.answers[0].answer.substr(0, 11) === 'LinearScale' && this.answers[1].answer.substr(0, 11) === 'LinearScale') {
           this.$emit('delete-answers')
         }
       }

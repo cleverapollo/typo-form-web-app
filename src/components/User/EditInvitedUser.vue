@@ -52,7 +52,7 @@
       return {
         id: this.user.id,
         editInvitedUser: false,
-        editedEmail: this.user.invitee,
+        editedEmail: this.user.email,
         editedRole: this.user.application_role_id
       }
     },
@@ -70,7 +70,7 @@
         this.editInvitedUser = false
       },
       onCancel () {
-        this.editedEmail = this.user.invitee
+        this.editedEmail = this.user.email
         this.editedRole = this.user.application_role_id
         this.editInvitedUser = false
       }

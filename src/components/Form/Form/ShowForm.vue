@@ -290,7 +290,7 @@
         }
       },
       lastSaved () {
-        return moment(this.form.updated_at.date).format('MMM Do YYYY h:mm A')
+        return moment(this.form.updated_at).format('MMM Do YYYY h:mm A')
       },
       meta () {
         if (!this.formTemplate || !this.formTemplate.metas.length) {

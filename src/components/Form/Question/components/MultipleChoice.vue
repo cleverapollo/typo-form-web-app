@@ -11,10 +11,11 @@
           prepend-icon='radio_button_unchecked'
           v-model='answer.answer'
           @change='showModal(answer.id, $event)'
+          placeholder="Enter answer text"
         ></v-text-field>
       </v-flex>
       <v-flex class="xs1 text-xs-center" v-show='computedLength > 1'>
-        <v-btn flat icon @click='deleteAnswer(index)' class='mt-3'>
+        <v-btn flat icon @click='deleteAnswer(answer.id)' class='mt-3'>
           <v-icon>close</v-icon>
         </v-btn>
       </v-flex>
@@ -26,7 +27,7 @@
       <v-flex class="xs2">
         <v-text-field
           prepend-icon='radio_button_unchecked'
-          value='Add option'
+          value='Add answer'
           @click='createAnswer'
         ></v-text-field>
       </v-flex>
@@ -101,11 +102,10 @@
     },
     methods: {
       createAnswer () {
-        let str = `Option ${this.answers.length + 1}`
-        this.$emit('create-answer', [str, true])
+        this.$emit('create-answer', [null, true])
       },
       deleteAnswer (index) {
-        this.$emit('delete-answer', this.answers[index].id)
+        this.$emit('delete-answer', index)
       },
       showModal (index, value) {
         this.multiAnswer = value
@@ -132,7 +132,7 @@
             if (index === 0) {
               return
             }
-            _this.$emit('create-answer', [value, false])
+            _this.$emit('create-answer', [value, true])
           })
         } else {
           this.$emit('update-answer', [this.multiAnswerId, this.multiAnswer])
@@ -162,7 +162,7 @@
     },
     mounted () {
       if (this.answers.length === 0) {
-        this.$emit('create-answer', ['Option 1', false])
+        this.$emit('create-answer', [null, true])
       } else if (this.answers.length === 2 && this.answers[0].answer.substr(0, 11) === 'LinearScale' && this.answers[1].answer.substr(0, 11) === 'LinearScale') {
         this.$emit('delete-answers')
       }

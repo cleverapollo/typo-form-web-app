@@ -160,7 +160,6 @@ import moment from 'moment'
 import ReportComponent from './ReportComponent'
 import QuestionCompareMixin from './QuestionCompareMixin.js'
 import UrlMixin from './UrlMixin.js'
-import JSPDF from 'jspdf'
 import CustomSlot from '../../Layout/CustomSlot'
 import UserMixin from '../../Layout/UserMixin'
 
@@ -221,10 +220,7 @@ export default {
       return JSON.parse(JSON.stringify(src))
     },
     date (value) {
-      if (!value) {
-        return value
-      }
-      return moment(value).format('YYYY-MM-DD h:MM A')
+      return value ? moment(value).format('YYYY-MM-DD h:mm A') : value
     },
     deleteFilter (index) {
       this.filters.splice(index, 1)
@@ -285,10 +281,10 @@ export default {
                 response = this.getStatus(form.status_id)
                 break
               case 'Created':
-                response = this.date(form.created_at.date)
+                response = this.date(form.created_at)
                 break
               case 'Modified':
-                response = this.date(form.updated_at.date)
+                response = this.date(form.updated_at)
                 break
             }
             // Question, Responses, ComparatorID, QuestionTrigger.answer, QuestionTrigger.value
@@ -379,46 +375,6 @@ export default {
       }
       const sum = _.sumBy(this.data, value => parseFloat(value[item.value]))
       return 'sum = ' + sum + ', avg = ' + Math.floor(sum / this.data.length)
-    },
-    downloadPDF () {
-      const doc = new JSPDF('p', 'pt', 'a4')
-      let source = '<table><thead><tr>'
-      _.forEach(this.headers, header => {
-        source += '<th>' + header.text + '</th>'
-      })
-      source += '</tr></thead><tbody>'
-      _.forEach(this.data, data => {
-        source += '<tr>'
-        _.forEach(this.headers, header => {
-          source += '<td>' + data[header.text] + '</td>'
-        })
-        source += '</tr>'
-      })
-      source += '</tbody></table>'
-
-      const margins = {
-        top: 10,
-        bottom: 10,
-        left: 10,
-        width: 595
-      }
-
-      doc.fromHTML(
-        source, // HTML string or DOM elem ref.
-        margins.left,
-        margins.top, {
-          'width': margins.width,
-          'elementHandlers': {
-            '.no-export': () => {
-              return true
-            }
-          }
-        },
-        () => {
-          doc.save(this.fileName + '.pdf')
-        },
-        margins
-      )
     }
   },
   created: function () {

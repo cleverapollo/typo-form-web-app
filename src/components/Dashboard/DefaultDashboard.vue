@@ -58,7 +58,7 @@
                 </v-list-tile-content>
                 <v-list-tile-action>
                   <div class="body-1 pt-3">Joined</div>
-                  <v-list-tile-action-text>{{ getTimeSince(item.created_at.date) }}</v-list-tile-action-text>
+                  <v-list-tile-action-text>{{ getTimeSince(item.created_at) }}</v-list-tile-action-text>
                 </v-list-tile-action>
               </v-list-tile>
               <v-divider 
@@ -99,7 +99,7 @@
                 </v-list-tile-content>
                 <v-list-tile-action>
                   <div class="body-1 pt-3">Invited</div>
-                  <v-list-tile-action-text>{{ getTimeSince(item.created_at.date) }}</v-list-tile-action-text>
+                  <v-list-tile-action-text>{{ getTimeSince(item.created_at) }}</v-list-tile-action-text>
                 </v-list-tile-action>
               </v-list-tile>
               <v-divider 
@@ -140,7 +140,7 @@
                 </v-list-tile-content>
                 <v-list-tile-action>
                   <div class="body-1 pt-3">Last Active</div>
-                  <v-list-tile-action-text>{{ getTimeSince(item.updated_at.date) }}</v-list-tile-action-text>
+                  <v-list-tile-action-text>{{ getTimeSince(item.updated_at) }}</v-list-tile-action-text>
                 </v-list-tile-action>
               </v-list-tile>
               <v-divider 
@@ -315,18 +315,18 @@
         }
 
         const newUsers = this.$store.getters.loadedUsers(this.slug).filter((user) => {
-          return moment(user.created_at.date).isSameOrAfter(moment(this.userRange[0]), 'days')
+          return moment(user.created_at).isSameOrAfter(moment(this.userRange[0]), 'days')
         })
         _.forEach(newUsers, user => {
-          const diff = moment(user.created_at.date).diff(moment(this.userRange[0]), 'days')
+          const diff = moment(user.created_at).diff(moment(this.userRange[0]), 'days')
           userCreated[diff] ++
         })
 
         const invitedUsers = this.$store.getters.invitedUsers(this.slug).filter((user) => {
-          return moment(user.created_at.date).isSameOrAfter(moment(this.userRange[0]), 'days')
+          return moment(user.created_at).isSameOrAfter(moment(this.userRange[0]), 'days')
         })
         _.forEach(invitedUsers, user => {
-          const diff = moment(user.created_at.date).diff(moment(this.userRange[0]), 'days')
+          const diff = moment(user.created_at).diff(moment(this.userRange[0]), 'days')
           userInvited[diff] ++
         })
 
@@ -368,18 +368,18 @@
         }
 
         let forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
-          return moment(form.created_at.date).isSameOrAfter(moment(this.formRange[0]), 'days')
+          return moment(form.created_at).isSameOrAfter(moment(this.formRange[0]), 'days')
         })
         _.forEach(forms, form => {
-          const diff = moment(form.created_at.date).diff(moment(this.formRange[0]), 'days')
+          const diff = moment(form.created_at).diff(moment(this.formRange[0]), 'days')
           formCreated[diff] ++
         })
 
         forms = this.$store.getters.loadedAllForms(this.slug).filter((form) => {
-          return moment(form.updated_at.date).isSameOrAfter(moment(this.formRange[0]), 'days')
+          return moment(form.updated_at).isSameOrAfter(moment(this.formRange[0]), 'days')
         })
         _.forEach(forms, form => {
-          const diff = moment(form.updated_at.date).diff(moment(this.formRange[0]), 'days')
+          const diff = moment(form.updated_at).diff(moment(this.formRange[0]), 'days')
           formModified[diff] ++
         })
 
@@ -449,25 +449,25 @@
         // Last 90 Days
         let numberOfDays = 90
         let newUsers = this.$store.getters.loadedUsers(this.slug).filter((user) => {
-          return moment(user.created_at.date).isSameOrAfter(moment().subtract(numberOfDays, 'd'), 'days')
+          return moment(user.created_at).isSameOrAfter(moment().subtract(numberOfDays, 'd'), 'days')
         })
         // Sort by date DESC
         return _.sortBy(newUsers, (user) => {
-          return user.created_at.date
+          return user.created_at
         }).reverse()
       },
       getInvitedUsers () {
         // Sort by date ASC
         let invitedUsers = this.$store.getters.invitedUsers(this.slug)
         return _.sortBy(invitedUsers, user => {
-          return user.created_at.date
+          return user.created_at
         })
       },
       getActiveUsers () {
         let newUsers = this.$store.getters.loadedUsers(this.slug)
         // Sort by date DESC
         return _.sortBy(newUsers, (user) => {
-          return user.updated_at.date
+          return user.updated_at
         }).reverse()
       },
       user () {
@@ -520,7 +520,7 @@
           if (response.data.file.url) {
             let a = document.createElement('a')
             a.download = response.data.file.name
-            a.href = response.data.file.url
+            a.href = process.env.API_ORIGIN_URL + response.data.file.url
             a.click()
           }
         }).catch(error => {
@@ -534,9 +534,9 @@
           let user = _.find(this.$store.getters.loadedUsers(this.slug), user => {
             return user.id === userId
           })
-          return user ? this.getTimeSince(user.created_at.date) : 'N/A'
+          return user ? this.getTimeSince(user.created_at) : 'N/A'
         } else {
-          return this.user && this.user.created_at ? this.getTimeSince(this.user.created_at.date) : 'N/A'
+          return this.user && this.user.created_at ? this.getTimeSince(this.user.created_at) : 'N/A'
         }
       },
       getUserApplicationRole () {

@@ -31,7 +31,7 @@
           </v-flex>
 
           <!-- //Organisations -->
-          <v-flex xs12 v-if="organisations.length && audience === 'organisation'">
+          <v-flex xs12 v-if="audience === 'organisation'">
             <v-autocomplete
               :items="organisations"
               item-value="id"

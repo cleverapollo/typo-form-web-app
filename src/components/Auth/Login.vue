@@ -128,7 +128,6 @@
       loading () {
         return this.$store.getters.loading
       },
-
       supportText () {
         if (this.application && this.application.support_text) {
           return this.application.support_text

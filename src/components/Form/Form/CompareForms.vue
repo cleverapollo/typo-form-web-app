@@ -40,8 +40,8 @@
                   >
                     <download-excel
                       :data="data"
+                      :fields="fields"
                       :name="getFileName() + '.csv'"
-                      :fields="tableFields"
                       type="csv"
                     >
                       Export
@@ -70,11 +70,7 @@
               :loading="loading"
             >
               <template slot='items' slot-scope='props'>
-                <tr>
-                  <template v-for='(item, key) in props.item'>
-                    <td @click="openForm(props.item.form_id)" v-bind:key="'filter'+key">{{item}}</td>
-                  </template>
-                </tr>
+                <td @click="openForm(props.item.form_id)" v-for="header in headers" v-bind:key="header.value">{{ props.item[header.value] }}</td>
               </template>
               <v-alert slot='no-results' :value='true' color='error' icon='warning'>
                 Your search for '{{ search }}' found no results.
@@ -116,22 +112,20 @@ export default {
     data () {
       return this.responses
     },
-    tableFields () {
+    fields () {
       const fields = {}
-      _.forEach(this.questions, question => {
-        fields[question.text] = question.value
-      })
+      _.forEach(this.headers, header => { fields[header.text.split(',').join('')] = header.value })
       return fields
     },
     questions () {
       const data = [
-        { text: 'Form', value: 'form_id' },
-        { text: 'Organisation', value: 'organisation' },
-        { text: 'Contact', value: 'contact' }
+        { text: 'Form', value: 'field_form_id' },
+        { text: 'Organisation', value: 'field_organisation' },
+        { text: 'Contact', value: 'field_contact' }
       ]
       const questions = this.getFormTemplateQuestions(this.formTemplateId)
       _.forEach(questions, question => {
-        data.push({ text: question.question, value: 'key-' + question.id })
+        data.push({ text: question.section_name + ' > ' + question.question, value: 'field_' + question.id })
       })
       return data
     },
@@ -149,7 +143,7 @@ export default {
       const sections = _.orderBy(this.$store.getters.loadedSections(this.formTemplateId), 'order')
       _.forEach(forms, form => {
         const user = form.user.first_name + ' ' + form.user.last_name
-        const row = { 'form_id': form.id, 'organisation': form.organisation, 'contact': user }
+        const row = { 'field_form_id': form.id, 'field_organisation': form.organisation, 'field_contact': user }
         _.forEach(sections, section => {
           const questions = _.orderBy(section.questions, 'order')
           _.forEach(questions, question => {
@@ -161,7 +155,7 @@ export default {
               values.push(value)
             })
             const cell = values.join()
-            row['key-' + question.id] = cell
+            row['field_' + question.id] = cell
           })
         })
         data.push(row)
@@ -180,14 +174,30 @@ export default {
         options.push({ text: formTemplate.name, value: formTemplate.id })
       })
       return options
+    },
+    orderedSections () {
+      const numberOfSections = this.sections.length
+      const orderedSections = _.filter(this.sections, section => { return !section.parent_section_id }) || []
+      while (orderedSections.length < numberOfSections) {
+        _.forEach(orderedSections, orderedSection => {
+          const childSections = _.filter(this.sections, childSection => { return childSection.parent_section_id === orderedSection.id })
+          let parentSectionIndex = _.findIndex(orderedSections, parentSection => { return parentSection.id === orderedSection.id })
+          _.forEach(childSections, childSection => {
+            parentSectionIndex++
+            orderedSections.splice(parentSectionIndex, 0, childSection)
+          })
+        })
+      }
+      return orderedSections
     }
   },
   methods: {
     getFormTemplateQuestions (formTemplateId) {
       const data = []
-      _.forEach(this.sections, section => {
+      _.forEach(this.orderedSections, section => {
         const questions = _.orderBy(section.questions, 'order')
         _.forEach(questions, question => {
+          question.section_name = section.name
           data.push(question)
         })
       })

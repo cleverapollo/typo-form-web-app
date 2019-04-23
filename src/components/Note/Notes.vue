@@ -26,6 +26,7 @@
           :items="notes"
           :search="search"
           :loading="loadingNotes"
+          :pagination.sync="pagination"
           :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
         >
           <template v-slot:items="props">
@@ -33,7 +34,7 @@
             <td>{{ props.item.description }}</td>
             <td>{{ props.item.recordable_type }}</td>
             <td>{{ props.item.recordable }}</td>
-            <td>{{ props.item.updated_at }}</td>
+            <td>{{ props.item.updated_at | $_formatDate }}</td>
             <td class="justify-center layout px-0">
               <v-tooltip bottom>
                 <v-btn icon class='mx-0' @click='editItem(props.item)' slot="activator">
@@ -143,11 +144,16 @@
 </template>
 <script>
   import sortBy from 'lodash/sortBy'
+  import ApplicationMixin from '../../mixins/ApplicationMixin'
   export default {
+    mixins: [ApplicationMixin],
     data: () => ({
-      slug: window.location.hostname.split('.')[0],
       dialog: false,
       search: '',
+      pagination: {
+        sortBy: 'updated_at',
+        descending: true
+      },
       headers: [
         { text: 'Type', value: 'type' },
         { text: 'Description', value: 'description' },
@@ -185,7 +191,7 @@
     }),
     computed: {
       notes () {
-        let notes = this.$store.getters.loadedNotes(this.slug)
+        let notes = this.$store.getters.loadedNotes(this.$_slug)
         notes.forEach((record) => {
           const list = this.records(record.recordable_type)
           const element = list.find(value => value.id === record.recordable_id)
@@ -213,7 +219,7 @@
       deleteItem (item) {
         this.$store.dispatch('deleteNote', {
           id: item.id,
-          slug: this.slug
+          slug: this.$_slug
         })
       },
       close () {
@@ -228,7 +234,7 @@
         if (this.editedIndex > -1) {
           const updateObj = {
             id: this.note.id,
-            slug: this.slug,
+            slug: this.$_slug,
             note_type_id: this.note.event,
             description: this.note.description,
             note: this.note.note,
@@ -238,7 +244,7 @@
           this.$store.dispatch('updateNote', updateObj)
         } else {
           this.$store.dispatch('createNote', {
-            slug: this.slug,
+            slug: this.$_slug,
             note_type_id: this.note.note_type_id,
             description: this.note.description,
             note: this.note.note,
@@ -251,13 +257,13 @@
       records (type) {
         let records = []
         if (type === 'User') {
-          records = this.$store.getters.loadedUsers(this.slug)
+          records = this.$store.getters.loadedUsers(this.$_slug)
           records.forEach((record) => {
             record.name = record.first_name + ' ' + record.last_name + ' (' + record.email + ')'
           })
         }
         if (type === 'Organisation') {
-          records = sortBy(this.$store.getters.loadedOrganisations(this.slug), organisation => { return organisation.name })
+          records = sortBy(this.$store.getters.loadedOrganisations(this.$_slug), organisation => { return organisation.name })
         }
         return sortBy(records, record => { return record.name })
       }
@@ -265,11 +271,11 @@
     created () {
       this.loadingNotes = true
       Promise.all([
-        this.$store.dispatch('loadUsers', this.slug),
-        this.$store.dispatch('loadOrganisations', this.slug)
+        this.$store.dispatch('loadUsers', this.$_slug),
+        this.$store.dispatch('loadOrganisations', this.$_slug)
       ])
         .then(() => {
-          this.$store.dispatch('loadNotes', this.slug)
+          this.$store.dispatch('loadNotes', this.$_slug)
           this.loadingNotes = false
         })
     }

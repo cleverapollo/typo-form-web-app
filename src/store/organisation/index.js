@@ -69,7 +69,8 @@ export default {
     createOrganisation ({commit, getters}, payload) {
       commit('setLoading', true)
       const organisation = {
-        name: payload.name
+        name: payload.name,
+        role: payload.role
       }
       return new Promise((resolve, reject) => {
         window.axios.post(APPLICATION_URL + payload.slug + ORGANISATION_URL, organisation)
@@ -138,9 +139,6 @@ export default {
       const updateObj = {}
       if (payload.name) {
         updateObj.name = payload.name
-      }
-      if (payload.description) {
-        updateObj.description = payload.description
       }
       window.axios.put(APPLICATION_URL + payload.slug + ORGANISATION_URL + '/' + payload.id, updateObj)
         .then(

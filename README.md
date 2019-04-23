@@ -23,3 +23,4 @@ Informed 365 Web Application
 * Repo owner or admin:
 * td@greenbizcheck.com
 * Skype tim.dorey
+* Heroku Change API URL to AWS

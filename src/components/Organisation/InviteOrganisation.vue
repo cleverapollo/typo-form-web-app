@@ -67,7 +67,8 @@
     props: ['slug', 'organisationId', 'visible'],
     data () {
       return {
-        invitations: [{ email: '', organisation_role_id: '' }]
+        invitations: [{ email: '', organisation_role_id: '' }],
+        role: 2
       }
     },
     computed: {
@@ -109,7 +110,7 @@
           return
         }
         this.show = false
-        this.$store.dispatch('inviteOrganisation', {invitations: invitations, id: this.organisationId, slug: this.slug})
+        this.$store.dispatch('inviteOrganisation', {invitations: invitations, id: this.organisationId, slug: this.slug, role: this.role})
       },
       multiEmail (insertIndex, value) {
         if (!value.includes(',')) {
