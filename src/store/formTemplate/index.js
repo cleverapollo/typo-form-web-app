@@ -289,9 +289,7 @@ export default {
         if (!state.loadedFormTemplates[slug]) {
           return []
         }
-        return state.loadedFormTemplates[slug].sort((formTemplateA, formTemplateB) => {
-          return formTemplateA.id > formTemplateB.id
-        })
+        return state.loadedFormTemplates[slug]
       }
     },
     loadedFormTemplate (state) {
