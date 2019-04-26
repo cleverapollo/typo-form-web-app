@@ -30,18 +30,15 @@
           :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
         >
           <template v-slot:items="props">
-            <td>{{ props.item.type }}</td>
-            <td>{{ props.item.description }}</td>
-            <td>{{ props.item.recordable_type }}</td>
-            <td>{{ props.item.recordable }}</td>
-            <td>{{ props.item.updated_at | $_formatDate }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.type }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.description }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.recordable_type }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.recordable }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.task }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.task_due_at | $_formatDate }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.created_at | $_formatDateTime }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.updated_at | $_formatDateTime }}</td>
             <td class="justify-center layout px-0">
-              <v-tooltip bottom>
-                <v-btn icon class='mx-0' @click='editItem(props.item)' slot="activator">
-                  <v-icon color='teal'>edit</v-icon>
-                </v-btn>
-                <span>Edit</span>
-              </v-tooltip>
               <v-tooltip bottom>
                 <v-btn icon class='mx-0' @click='deleteItem(props.item)' slot="activator">
                   <v-icon color='pink'>delete</v-icon>
@@ -57,80 +54,143 @@
       </v-card>
     </v-flex>
 
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-model="dialog" fullscreen hide-overlay lazy>
       <v-card>
-        <v-card-title>
-          <div class="title mb-2 mt-2">{{ dialogTitle }}</div>
-        </v-card-title>
-        <v-card-text>
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click.stop="dialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>
+        </v-toolbar>
 
-          <v-layout row wrap>
+        <v-form
+          ref="form"
+          v-model="valid"
+          lazy-validation
+        >
+          <v-container fluid>
+            <div class="subheading my-2">Note Details</div>
+            <p>Set the details of the note.</p>
+            <v-layout row wrap class="mb-4">
 
-            <v-flex xs12>
-              <v-autocomplete
-                :items="noteTypes"
-                item-value="id"
-                item-text="type"
-                v-model="note.note_type_id"
-                label="Note type"
-              ></v-autocomplete>
-            </v-flex>
+              <v-flex xs12>
+                <v-layout>
+                  <v-flex xs12 md6 pr-4>
+                    <v-autocomplete
+                      :items="recordableTypes"
+                      v-model="note.recordable_type"
+                      label="Record type"
+                      :rules="rules.record_type"
+                    ></v-autocomplete>
+                  </v-flex>
 
-            <v-flex xs12>
-              <v-autocomplete
-                :items="recordableTypes"
-                v-model="note.recordable_type"
-                label="Record type"
-              ></v-autocomplete>
-            </v-flex>
+                  <v-flex xs12 md6>
+                    <v-autocomplete
+                      v-model="note.recordable_id"
+                      :items="records(note.recordable_type)"
+                      label="Record"
+                      item-text="name"
+                      item-value="id"
+                      :rules="rules.record"
+                    ></v-autocomplete>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
 
-            <v-flex xs12>
-              <v-autocomplete
-                v-model="note.recordable_id"
-                :items="records(note.recordable_type)"
-                label="Record"
-                item-text="name"
-                item-value="id"
-              ></v-autocomplete>
-            </v-flex>
+              <v-flex xs12>
+                <v-layout>
+                  <v-flex xs12 md6 pr-4>
+                    <v-autocomplete
+                      :items="noteTypes"
+                      item-value="id"
+                      item-text="type"
+                      v-model="note.note_type_id"
+                      label="Note type"
+                      :rules="rules.note_type"
+                    ></v-autocomplete>
+                  </v-flex>
 
-            <v-flex xs12>
-              <v-text-field
-                v-model="note.description"
-                label="Description"
-              ></v-text-field>
-            </v-flex>
+                  <v-flex xs12 md6>
+                    <v-text-field
+                      v-model="note.description"
+                      label="Description"
+                      :rules="rules.description"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
 
-            <v-flex xs12>
-              <v-textarea
-                v-model="note.note"
-                label="Note"
-                auto-grow
-              ></v-textarea>
-            </v-flex>
+              <v-flex xs12>
+                <v-textarea
+                  v-model="note.note"
+                  label="Note"
+                  rows=2
+                  auto-grow
+                ></v-textarea>
+              </v-flex>
 
-          </v-layout>
+            </v-layout>
+          </v-container>
 
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-layout row py-2>
-            <v-flex xs12 class="text-xs-right">
-              <v-btn 
-                flat 
-                @click.stop="close"
-              >Cancel
-              </v-btn>
-              <v-btn
-                flat
-                class="primary"
-                @click.stop="save"
-              >Save
-              </v-btn>
-            </v-flex>
-          </v-layout>
-        </v-card-actions>
+          <v-divider class="py-2"></v-divider>
+
+          <v-container fluid>
+            <div class="subheading my-2">Followup Task</div>
+            <p>Set the details of any followup tasks for the note.</p>
+
+            <v-layout row wrap class="mb-4">
+              <v-flex xs12>
+                <v-textarea
+                  v-model="note.task"
+                  label="Task"
+                  rows=2
+                  auto-grow
+                ></v-textarea>
+              </v-flex>
+
+              <v-flex xs12>
+                <v-dialog
+                  ref="dateDialog"
+                  v-model="dateDialog"
+                  :return-value.sync="note.task_due_at"
+                  persistent
+                  lazy
+                  full-width
+                  width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="note.task_due_at"
+                      label="Task Due"
+                      prepend-icon="event"
+                      readonly
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="note.task_due_at" scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn flat color="primary" @click="dateDialog = false">Cancel</v-btn>
+                    <v-btn flat color="primary" @click="$refs.dateDialog.save(note.task_due_at)">OK</v-btn>
+                  </v-date-picker>
+                </v-dialog>
+              </v-flex>
+            </v-layout>
+
+          </v-container>
+
+          <!-- // Actions -->
+          <v-divider></v-divider>
+          <v-container fluid>
+            <v-layout row py-2>
+              <v-flex xs12 class="text-xs-right">
+                <v-btn flat @click.stop="close">Cancel</v-btn>
+                <v-btn flat class="primary" @click.stop="validate">Save</v-btn>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-form>
       </v-card>
+
     </v-dialog>
 
     <v-tooltip top>
@@ -148,7 +208,9 @@
   export default {
     mixins: [ApplicationMixin],
     data: () => ({
+      valid: true,
       dialog: false,
+      dateDialog: false,
       search: '',
       pagination: {
         sortBy: 'updated_at',
@@ -159,6 +221,9 @@
         { text: 'Description', value: 'description' },
         { text: 'Record Type', value: 'recordable_type' },
         { text: 'Record', value: 'recordable' },
+        { text: 'Task', value: 'task' },
+        { text: 'Due', value: 'task_due_at' },
+        { text: 'Created', value: 'created_at' },
         { text: 'Updated', value: 'updated_at' },
         { text: 'Actions', value: 'name', sortable: false }
       ],
@@ -169,6 +234,7 @@
       noteTypes: [
         { id: 1, type: 'Phone' },
         { id: 2, type: 'Email' },
+        { id: 4, type: 'Meeting' },
         { id: 3, type: 'Other' }
       ],
       editedIndex: -1,
@@ -177,17 +243,35 @@
         description: '',
         note: '',
         recordable_type: '',
-        recordable_id: ''
+        recordable_id: '',
+        task: null,
+        task_due_at: null
       },
       noteTemplate: {
         note_type_id: '',
         description: '',
         note: '',
         recordable_type: '',
-        recordable_id: ''
+        recordable_id: '',
+        task: null,
+        task_due_at: null
       },
       errorMessage: '',
-      loadingNotes: false
+      loadingNotes: false,
+      rules: {
+        record_type: [
+          v => !!v || 'Record type is required'
+        ],
+        record: [
+          v => !!v || 'Record is required'
+        ],
+        note_type: [
+          v => !!v || 'Note type is required'
+        ],
+        description: [
+          v => !!v || 'Description is required'
+        ]
+      }
     }),
     computed: {
       notes () {
@@ -239,7 +323,9 @@
             description: this.note.description,
             note: this.note.note,
             recordable_type: this.note.recordable_type,
-            recordable_id: this.note.recordable_id
+            recordable_id: this.note.recordable_id,
+            task: this.note.task,
+            task_due_at: this.note.task_due_at
           }
           this.$store.dispatch('updateNote', updateObj)
         } else {
@@ -249,23 +335,36 @@
             description: this.note.description,
             note: this.note.note,
             recordable_type: this.note.recordable_type,
-            recordable_id: this.note.recordable_id
+            recordable_id: this.note.recordable_id,
+            task: this.note.task,
+            task_due_at: this.note.task_due_at
           })
         }
         this.close()
       },
       records (type) {
         let records = []
+        let users = this.$store.getters.loadedUsers(this.$_slug)
+        let organisations = this.$store.getters.loadedOrganisations(this.$_slug)
+
         if (type === 'User') {
-          records = this.$store.getters.loadedUsers(this.$_slug)
-          records.forEach((record) => {
+          users.forEach((record) => {
             record.name = record.first_name + ' ' + record.last_name + ' (' + record.email + ')'
+            records.push(record)
           })
         }
         if (type === 'Organisation') {
-          records = sortBy(this.$store.getters.loadedOrganisations(this.$_slug), organisation => { return organisation.name })
+          organisations.forEach((record) => {
+            records.push(record)
+          })
         }
+
         return sortBy(records, record => { return record.name })
+      },
+      validate () {
+        if (this.$refs.form.validate()) {
+          this.save()
+        }
       }
     },
     created () {

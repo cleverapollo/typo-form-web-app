@@ -34,7 +34,10 @@ export default {
   },
   filters: {
     $_formatDate: function (date) {
-      return moment(date).format('YYYY-MM-DD h:mm A')
+      return date ? moment(date).format('YYYY-MM-DD') : null
+    },
+    $_formatDateTime: function (date) {
+      return date ? moment(date).format('YYYY-MM-DD h:mm A') : null
     }
   }
 }

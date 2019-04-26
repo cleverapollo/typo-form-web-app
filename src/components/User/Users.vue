@@ -66,7 +66,7 @@
                 <td>{{ props.item.email }}</td>
                 <td>{{ props.item.role }}</td>
                 <td>{{ props.item.status }}</td>
-                <td>{{ props.item.created_at | $_formatDate }}</td>
+                <td>{{ props.item.created_at | $_formatDateTime }}</td>
                 <td v-if='$_userIsApplicationAdmin' class="justify-center layout px-0">
                   <v-tooltip bottom>
                     <EditUser :user="props.item" :slug="$_slug" slot="activator"></EditUser>
