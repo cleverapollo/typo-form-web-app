@@ -1,113 +1,71 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12>
+    <v-flex xs6 pr-4>
       <v-autocomplete
-        v-bind:items="formTemplates"
-        v-model="editFormTemplateId"
+        v-model="lookupFormTemplateId"
+        :items="getFormTemplates()"
         item-text="name"
         item-value="id"
-        @change="updateFormTemplate($event)"
+        label="Form Template"
+        @change="setQuestions()"
       ></v-autocomplete>
     </v-flex>
-    <v-flex xs12>
+    <v-flex xs6>
       <v-autocomplete
-        v-bind:items="questions"
-        v-model="editQuestionId"
+        v-model="lookupQuestionId"
+        :items="questions"
         item-text="question"
         item-value="id"
-        @change="updateQuestion($event)"
+        label="Question"
+        @change="setLookup()"
       ></v-autocomplete>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-  import validationMixin from '../QuestionValiationMixin'
+  import ApplicationMixin from '../../../../mixins/ApplicationMixin'
   export default {
     name: 'Lookup',
     props: ['questionId', 'sectionId', 'formTemplateId', 'answers'],
-    mixins: [
-      validationMixin
-    ],
+    mixins: [ApplicationMixin],
     data () {
       return {
-        validationTypes: [
-          'Dropdown'
-        ],
-        editFormTemplateId: null,
-        editQuestionId: null,
-        slug: window.location.hostname.split('.')[0]
+        lookupFormTemplateId: null,
+        lookupQuestionId: null,
+        questions: []
       }
     },
     computed: {
-      statuses () {
-        return this.$store.getters.statuses
-      },
-      formTemplates () {
-        let formTemplates = this.$store.getters.loadedFormTemplates(this.slug).filter(formTemplate => formTemplate.id !== parseInt(this.formTemplateId))
-        if (!this.userIsApplicationAdmin) {
-          formTemplates = formTemplates.filter(formTemplate => {
-            const status = this.statuses.find((status) => {
-              return status.id === formTemplate.status_id
-            })
-            return status.status === 'Closed'
-          })
-        }
-        return formTemplates
-      },
-      questions () {
-        if (!this.editFormTemplateId) {
-          return []
-        }
-        return this.$store.getters.loadedAllQuestions(this.editFormTemplateId)
+      answer () {
+        return this.answers[0] ? this.answers[0] : null
       }
     },
     methods: {
-      updateFormTemplate (value) {
-        if (typeof (value) === 'object') {
-          return
-        }
-        this.editQuestionId = null
-        this.$store.dispatch('loadSections', this.editFormTemplateId)
-        this.updateAnswer()
+      getFormTemplates () {
+        return this.$_applicationFormTemplates.filter(formTemplate => formTemplate.id !== parseInt(this.formTemplateId))
       },
-      updateQuestion (value) {
-        if (typeof (value) === 'object') {
-          return
-        }
-        this.updateAnswer()
-      },
-      updateAnswer () {
-        const answer = JSON.stringify({
-          formTemplateId: this.editFormTemplateId,
-          questionId: this.editQuestionId
+      setQuestions () {
+        this.$store.dispatch('loadSections', this.lookupFormTemplateId)
+        .then(() => {
+          this.questions = this.$_getFormTemplateQuestions(this.lookupFormTemplateId)
         })
-        const index = this.answers[0].id
-        this.$emit('update-answer', [index, answer])
+      },
+      setLookup () {
+        const answer = JSON.stringify({
+          formTemplateId: this.lookupFormTemplateId,
+          questionId: this.lookupQuestionId
+        })
+        this.answer ? this.$emit('update-answer', [this.answer.id, answer]) : this.$emit('create-answer', [answer, true])
       }
     },
-    mounted () {
-      if (!this.answers.length) {
-        const answer = JSON.stringify({
-          formTemplateId: null,
-          questionId: null
-        })
-        this.$emit('create-answer', [answer, true])
-      } else {
-        const value = JSON.parse(this.answers[0].answer)
-        this.editFormTemplateId = value.formTemplateId
-        this.editQuestionId = value.questionId
+    created: function () {
+      if (this.answer) {
+        const value = JSON.parse(this.answer.answer)
+        this.lookupFormTemplateId = value.formTemplateId
+        this.setQuestions()
+        this.lookupQuestionId = value.questionId
       }
-      this.$store.dispatch('loadFormTemplates', this.slug)
-      if (this.editFormTemplateId) {
-        this.$store.dispatch('loadSections', this.editFormTemplateId)
-      }
-      this.$root.$on('validation-create', this.eventsAdapter['validation-create'])
-      this.$root.$on('validation-remove', this.eventsAdapter['validation-remove'])
-    },
-    beforeDestroy () {
-      this.$root.$off('validation-create', this.eventsAdapter['validation-create'])
-      this.$root.$off('validation-remove', this.eventsAdapter['validation-remove'])
     }
   }
 </script>

@@ -52,6 +52,10 @@ export default {
     },
     $_getApplicationFormTemplates: function () {
       return sortBy(this.$_applicationFormTemplates, element => { return element.name.toLowerCase() })
+    },
+    // Form Template
+    $_getFormTemplateQuestions: function (formTemplateId) {
+      return this.$store.getters.loadedAllQuestions(formTemplateId)
     }
   },
   created () {

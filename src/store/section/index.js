@@ -232,23 +232,19 @@ export default {
   actions: {
     loadSections ({commit}, formTemplateId) {
       commit('setLoading', true)
-      window.axios.get(FORM_TEMPLATE_URL + formTemplateId + SECTION_URL)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              formTemplateId: formTemplateId,
-              sections: response['data']['sections']
-            }
-            commit('setLoadedSections', updateObj)
+      return window.axios.get(FORM_TEMPLATE_URL + formTemplateId + SECTION_URL)
+        .then(response => {
+          commit('setLoading', false)
+          const updateObj = {
+            formTemplateId: formTemplateId,
+            sections: response['data']['sections']
           }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
+          commit('setLoadedSections', updateObj)
+        })
+        .catch(error => {
+          commit('setLoading', false)
+          console.log(error)
+        })
     },
     loadAllSections ({commit}, slug) {
       commit('setLoading', true)
