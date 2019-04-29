@@ -30,6 +30,9 @@
     <v-flex>
       <CustomSlot type="dashboardFooter" :mode="editMode" />
     </v-flex>
+
+    <!-- //Show snackbar -->
+    <Snackbar color="warning" :content="snackbar" :snackbar="snackbar" @dismissed="snackbar = false"></Snackbar>
   </v-layout>
 </template>
 
@@ -49,7 +52,15 @@ export default {
   },
   data () {
     return {
-      editMode: false
+      editMode: false,
+      snackbar: null
+    }
+  },
+  created () {
+    // TODO: Error handling to be matured across frontend as discussed in '4wmEwudz'
+    if (document.location.search.indexOf('?error=403') !== -1) {
+      this.snackbar = 'You are not permitted to perform that action'
+      this.$router.replace({ error: null })
     }
   },
   methods: {

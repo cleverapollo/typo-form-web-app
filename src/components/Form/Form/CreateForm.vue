@@ -67,6 +67,9 @@
 
 <script>
   import * as _ from 'lodash'
+
+  import { isPermissible } from './../../../util/acl'
+
   export default {
     props: ['visible', 'slug'],
     data () {
@@ -100,7 +103,8 @@
             const status = this.statuses.find((status) => {
               return status.id === formTemplate.status_id
             })
-            return status.status === 'Closed'
+
+            return isPermissible(this.$store.getters.userAcl().show, 'form_templates', formTemplate) && status.status === 'Closed'
           })
         }
         return _.sortBy(formTemplates, element => {

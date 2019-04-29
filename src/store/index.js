@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import acl from './acl'
+import accessSettings from './accessSettings'
 import application from './application'
 import organisation from './organisation'
 import formTemplate from './formTemplate'
@@ -22,6 +24,8 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   modules: {
+    acl: acl,
+    accessSettings: accessSettings,
     auth: auth,
     application: application,
     organisation: organisation,

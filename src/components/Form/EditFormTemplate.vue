@@ -78,6 +78,63 @@
               <v-checkbox label="Show Progress" v-model="showProgress" light></v-checkbox>
             </v-flex>
           </v-layout>
+        </v-card-text>
+
+        <v-divider></v-divider>
+        <v-list subheader three-line>
+          <v-subheader>Access</v-subheader>
+
+          <v-radio-group class="radio-group-full-width" v-model="draftResourceAccessLevel">
+            <!-- <v-list-tile @click="draftResourceAccessLevel = 'public'">
+              <v-list-tile-action>
+                <v-radio value="public"></v-radio>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>Public</v-list-tile-title>
+                <v-list-tile-sub-title>Open access to the public, including anonymous submissions</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile> -->
+
+            <v-list-tile @click="draftResourceAccessLevel = 'internal'">
+              <v-list-tile-action>
+                <v-radio value="internal"></v-radio>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>Application users</v-list-tile-title>
+                <v-list-tile-sub-title>Open access to all users within your application</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            
+            <v-list-tile @click="draftResourceAccessLevel = 'private'">
+              <v-list-tile-action>
+                <v-radio value="private"></v-radio>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>Select users</v-list-tile-title>
+                <v-list-tile-sub-title>Limit access to select users within your application</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
+            <v-list-tile v-if="draftResourceAccessLevel === 'private'">
+              <v-list-tile-action>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-autocomplete
+                  :items="users"
+                  v-model="draftResourceAcl"
+                  class="select-full-width"
+                  item-text="name"
+                  item-value="id"
+                  label="Users"
+                  required
+                  multiple
+                ></v-autocomplete>
+              </v-list-tile-content>
+            </v-list-tile>
+
+          </v-radio-group>
+
+        </v-list>
 
           <!-- 
           <v-layout>
@@ -88,8 +145,6 @@
             </v-flex>
           </v-layout>
           -->
-        
-        </v-card-text>
 
         <v-divider></v-divider>
 
@@ -116,6 +171,7 @@
 </template>
 
 <script>
+  import { ABILITIES } from './../../util/acl'
   export default {
     props: ['formTemplate', 'slug'],
     data () {
@@ -128,7 +184,9 @@
         csvFileName: 'Please Upload CSV.',
         content: this.formTemplate.metas.length ? JSON.parse(this.formTemplate.metas[0].metadata).content : '',
         help: this.formTemplate.metas.length ? JSON.parse(this.formTemplate.metas[0].metadata).help : '',
-        typeId: this.formTemplate.type_id
+        typeId: this.formTemplate.type_id,
+        draftResourceAccessLevel: null,
+        draftResourceAcl: null
       }
     },
     methods: {
@@ -154,6 +212,8 @@
               this.createMeta()
             }
           })
+        this.updateResourceAcl()
+        this.updateResourceAccessSettings()
       },
       onCancel () {
         this.editedName = this.formTemplate.name
@@ -182,6 +242,20 @@
           metableId: this.formTemplate.id,
           metableType: 'form_templates'
         })
+      },
+      updateResourceAcl () {
+        this.$store.dispatch('updateResourceAcl', {
+          resourceAcl: this.draftResourceAcl,
+          id: this.formTemplate.id,
+          resource: 'form_templates'
+        })
+      },
+      updateResourceAccessSettings () {
+        this.$store.dispatch('updateResourceAccessSettings', {
+          accessLevel: this.draftResourceAccessLevel,
+          id: this.formTemplate.id,
+          resource: 'form_templates'
+        })
       }
     },
     computed: {
@@ -194,6 +268,39 @@
           type.type = type.name === 'application' ? 'User' : 'Organisation'
         })
         return types
+      },
+      users () {
+        if (this.organisationId) {
+          return this.$store.getters.loadedFormOrganisationUsers(this.organisationId)
+        }
+        return this.$store.getters.loadedFormUsers(this.slug)
+      },
+      loadedResourceAccessLevel () {
+        return this.$store.getters.loadedResourceAccessSettings('form_templates', this.formTemplate.id)
+      },
+      resourceAcl () {
+        return this.$store.getters.resourceAcl('form_templates', this.formTemplate.id, ABILITIES.SHOW)
+      }
+    },
+    created: function () {
+      this.$store.dispatch('loadUsers', this.slug)
+      this.$store.dispatch('loadResourceAcl', { resource: 'form_templates', id: this.id })
+      if (this.loadedResourceAccessLevel) {
+        this.draftResourceAccessLevel = this.loadedResourceAccessLevel
+      } else {
+        this.$store.dispatch('loadResourceAccessSettings', { resource: 'form_templates', id: this.id })
+      }
+    },
+    watch: {
+      loadedResourceAccessLevel (accessLevel) {
+        if (!this.draftResourceAccessLevel) {
+          this.draftResourceAccessLevel = accessLevel
+        }
+      },
+      resourceAcl (resourceAcl) {
+        if (!this.draftResourceAcl) {
+          this.draftResourceAcl = resourceAcl
+        }
       }
     }
   }
@@ -222,5 +329,10 @@
 
   label[for="upload"]:hover {
     box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.25), 0 5px 18px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .select-full-width,
+  .radio-group-full-width >>>.v-input__control {
+    width: 100%
   }
 </style>

@@ -449,6 +449,7 @@
         }
         this.loadingForms = true
         Promise.all([
+          this.$store.dispatch('loadUserAcl'),
           this.$store.dispatch('loadOrganisations', this.slug),
           this.$store.dispatch('loadFormTemplates', this.slug),
           this.$store.dispatch('loadAllSections', this.slug),
