@@ -2,7 +2,7 @@
   <v-snackbar
     v-model="show"
     :timeout="3000"
-    color="success"
+    :color="color || 'success'"
     bottom
     left
   >
@@ -19,7 +19,7 @@
 
 <script>
   export default {
-    props: ['snackbar', 'content'],
+    props: ['snackbar', 'content', 'color'],
     methods: {
       onClose () {
         this.$emit('dismissed')

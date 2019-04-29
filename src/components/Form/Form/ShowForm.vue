@@ -393,6 +393,9 @@
           this.$store.dispatch('loadValidations', this.formTemplateId)
           this.$store.dispatch('loadTriggers', this.formTemplateId)
         })
+        .catch((e) => {
+          this.$router.push('/dashboard?error=403')
+        })
       this.$store.dispatch('selectSection', null)
       this.$store.dispatch('loadAllOrganisationUsers', this.slug)
     }

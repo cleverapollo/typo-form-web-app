@@ -130,6 +130,8 @@ export default {
         .then(response => {
           sessionStorage.removeItem('token')
           commit('clearUsers')
+          commit('clearLoadedResourcceAccessSettings')
+          commit('clearLoadedResourceAcl')
           commit('clearLoadedSections')
           commit('clearLoadedTriggers')
           commit('clearLoadedForms')
