@@ -122,7 +122,7 @@
         switch (questionType.type) {
           case 'File upload':
             let file = response && response.response ? this.getFile(response.response) : {}
-            value = file.url ? '<a href="' + file.url + '" target="_blank" download>' + (file.name ? file.name : file.url) + (file.size ? ' (' + this.getFileSize(file.size) + ')' : '') + '</a>' : ''
+            value = file && file.url ? '<a href="' + file.url + '" target="_blank" download>' + (file.name ? file.name : file.url) + (file.size ? ' (' + this.getFileSize(file.size) + ')' : '') + '</a>' : ''
             break
           default:
             value += answer && answer.answer ? answer.answer : ''
