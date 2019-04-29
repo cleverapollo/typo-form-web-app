@@ -97,7 +97,12 @@ export default {
     inviteOrganisation ({commit, getters}, payload) {
       commit('setLoading', true)
       const organisation = {
-        invitations: payload.invitations
+        invitations: payload.invitations,
+        role_id: payload.role_id,
+        subject: payload.subject,
+        cc: payload.cc,
+        bcc: payload.bcc,
+        message: payload.message
       }
       window.axios.post(APPLICATION_URL + payload.slug + ORGANISATION_URL + '/' + payload.id + '/invite', organisation)
         .then(

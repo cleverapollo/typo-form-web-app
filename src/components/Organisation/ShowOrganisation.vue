@@ -163,14 +163,12 @@
       </v-layout>
     </v-flex>
 
-    <!-- // Temporary Removed Invite Organisation
     <v-tooltip top v-if="isOrganisationAdmin">
       <v-btn slot="activator" fixed dark bottom right fab router class="error" @click.stop="inviteUsers = true">
         <v-icon>add</v-icon>
       </v-btn>
       <span>Invite Users</span>
     </v-tooltip>
-    -->
 
     <!-- //Invite Organisation -->
     <InviteOrganisation :slug="slug" :organisationId="id" :visible="inviteUsers" @close="inviteUsers = false"></InviteOrganisation>
