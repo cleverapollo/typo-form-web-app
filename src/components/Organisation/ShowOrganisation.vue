@@ -82,6 +82,7 @@
                     <td>{{ props.item.last_name }}</td>
                     <td>{{ props.item.email }}</td>
                     <td>{{ props.item.role }}</td>
+                    <td>{{ props.item.status }}</td>
                     <td>{{ props.item.created_at | moment }}</td>
                     <td v-if='isOrganisationAdmin' class="justify-center layout px-0">
                       <v-tooltip bottom>
@@ -256,23 +257,27 @@
       isOrganisationAdmin () {
         return this.userIsAdmin || this.isSuperUser
       },
-      users () {
+      activeUsers () {
         let users = this.$store.getters.loadedOrganisationUsers(parseInt(this.id))
-        let invitedUsers = this.$store.getters.invitedOrganisationUsers(parseInt(this.id))
         users.forEach((user) => {
           user.role = this.getRole(user.organisation_role_id)
           user.status = 'Joined'
         })
-        let result = users.slice(0)
+        return users
+      },
+      invitedUsers () {
+        let invitedUsers = this.$store.getters.invitedOrganisationUsers(parseInt(this.id))
         invitedUsers.forEach((invitedUser) => {
           invitedUser.role = this.getRole(invitedUser.organisation_role_id)
-          invitedUser.first_name = ''
-          invitedUser.last_name = ''
-          invitedUser.email = invitedUser.invitee
           invitedUser.status = 'Invited'
-          result.push(invitedUser)
         })
-        return result
+        return invitedUsers
+      },
+      users () {
+        let users = []
+        this.activeUsers.forEach(user => { users.push(user) })
+        this.invitedUsers.forEach(user => { users.push(user) })
+        return users
       },
       userHeaders () {
         let defaultUserHeaders = [
@@ -280,6 +285,7 @@
           { text: 'Last Name', value: 'last_name', sortable: true, align: 'left' },
           { text: 'Email', value: 'email', sortable: true, align: 'left' },
           { text: 'Role', value: 'role', sortable: true, align: 'left' },
+          { text: 'Status', value: 'status', sortable: true, align: 'left' },
           { text: 'Joined/Invited', value: 'created_at', sortable: true, align: 'left' }
         ]
         if (this.isOrganisationAdmin) {
@@ -385,7 +391,7 @@
     },
     filters: {
       moment: function (date) {
-        return moment(date).format('YYYY-MM-DD h:mm A')
+        return date ? moment(date).format('YYYY-MM-DD h:mm A') : null
       }
     }
   }
