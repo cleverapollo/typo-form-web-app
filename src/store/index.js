@@ -17,6 +17,7 @@ import validation from './validation'
 import trigger from './trigger'
 import meta from './meta'
 import note from './note'
+import workflow from './workflow'
 import auth from './auth'
 import shared from './shared'
 
@@ -41,6 +42,7 @@ export const store = new Vuex.Store({
     trigger: trigger,
     meta: meta,
     note: note,
+    workflow: workflow,
     shared: shared
   }
 })

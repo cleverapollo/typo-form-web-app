@@ -69,7 +69,7 @@
           lazy-validation
         >
           <v-container fluid>
-            <div class="subheading my-2">Note Details</div>
+            <div class="title my-2">Note Details</div>
             <p>Set the details of the note.</p>
             <v-layout row wrap class="mb-4">
 
@@ -135,7 +135,7 @@
           <v-divider class="py-2"></v-divider>
 
           <v-container fluid>
-            <div class="subheading my-2">Followup Task</div>
+            <div class="title my-2">Followup Task</div>
             <p>Set the details of any followup tasks for the note.</p>
 
             <v-layout row wrap class="mb-4">

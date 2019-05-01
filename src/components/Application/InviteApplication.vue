@@ -17,7 +17,7 @@
 
         <!-- // Users -->
         <v-container fluid>
-          <div class="subheading my-2">Users</div>
+          <div class="title my-2">Users</div>
           <template v-for="(item, index) in invitations">
             <v-layout row wrap v-bind:key="index">
 
@@ -95,7 +95,7 @@
         <v-container fluid>
 
           <!-- // Permissions -->
-          <div class="subheading my-2">User Permissions</div>
+          <div class="title my-2">User Permissions</div>
           <v-layout row wrap class="mb-4">
 
             <!-- // Application Role -->
@@ -133,7 +133,7 @@
         <v-container fluid>
 
           <!-- // Invitation -->
-          <div class="subheading my-2">Invitation Email</div>
+          <div class="title my-2">Invitation Email</div>
           <v-layout row wrap class="mb-4">
 
             <v-flex xs12>

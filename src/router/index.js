@@ -36,6 +36,9 @@ import ChartBuilder from '@/components/Form/Form/ChartBuilder'
 // Notes
 import Notes from '@/components/Note/Notes'
 
+// Workflows
+import WorkflowList from '@/components/Workflow/WorkflowList'
+
 import {store} from '@/store'
 
 Vue.use(Router)
@@ -158,6 +161,15 @@ const router = new Router({
       path: '/notes',
       name: 'Notes',
       component: Notes,
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/workflows',
+      name: 'WorkflowList',
+      component: WorkflowList,
       meta: {
         application: true,
         requiresAuth: true
