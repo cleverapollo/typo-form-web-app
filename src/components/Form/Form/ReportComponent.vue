@@ -67,6 +67,7 @@
             :disabled="!selectedTriggerType"
           ></v-autocomplete>
         </v-flex>
+        <!-- Trigger Value
         <v-flex xs12 v-else>
           <v-text-field
             label="Value"
@@ -75,6 +76,17 @@
             :disabled="!selectedTriggerType"
           ></v-text-field>
         </v-flex>
+        -->
+      </v-flex>
+
+      <!-- //Selected Value -->
+      <v-flex xs3 px-3 v-if='selectedTriggerType && selectedTriggerType.value'>
+        <v-text-field
+          label="Value"
+          type="text"
+          v-model="filter.value"
+          :disabled="!selectedTriggerType"
+        ></v-text-field>
       </v-flex>
 
       <!-- // Actions -->
