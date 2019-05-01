@@ -32,9 +32,9 @@
         >
           <template v-slot:items="props">
             <td @click='editItem(props.item)'>{{ props.item.name }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.action }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.delay_time }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.trigger }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.action_label }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.delay_label }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.trigger_label }}</td>
             <td @click='editItem(props.item)'>{{ props.item.active_from | $_formatDateTime }}</td>
             <td @click='editItem(props.item)'>{{ props.item.active_to | $_formatDateTime }}</td>
             <td @click='editItem(props.item)'>{{ props.item.created_at | $_formatDateTime }}</td>
@@ -97,7 +97,7 @@
                       :items="actions"
                       item-value="id"
                       item-text="label"
-                      v-model="workflow.action_id"
+                      v-model="workflow.config.action_id"
                       label="Action"
                       :rules="rules.action"
                     ></v-autocomplete>
@@ -107,7 +107,7 @@
                     <v-layout>
                       <v-flex xs12 md6 pr-4>
                         <v-text-field
-                          v-model="workflow.multiplier"
+                          v-model="workflow.config.multiplier"
                           label="Delay"
                           :rules="rules.multiplier"
                         ></v-text-field>
@@ -115,10 +115,10 @@
                       <v-flex xs12 md6>
                         <v-autocomplete
                           :items="periods"
-                          item-value="milliseconds"
+                          item-value="id"
                           item-text="label"
                           label="Period"
-                          v-model="workflow.milliseconds"
+                          v-model="workflow.config.period_id"
                           :rules="rules.milliseconds"
                         ></v-autocomplete>
                       </v-flex>
@@ -130,7 +130,7 @@
                       :items="triggers"
                       item-value="id"
                       item-text="label"
-                      v-model="workflow.trigger_id"
+                      v-model="workflow.config.trigger_id"
                       label="Event"
                       :rules="rules.trigger"
                     ></v-autocomplete>
@@ -299,9 +299,9 @@ export default {
       },
       headers: [
         { text: 'Name', value: 'name' },
-        { text: 'Action', value: 'action' },
-        { text: 'Delay', value: 'delay_time' },
-        { text: 'Trigger', value: 'trigger' },
+        { text: 'Action', value: 'action_label' },
+        { text: 'Delay', value: 'delay_label' },
+        { text: 'Trigger', value: 'trigger_label' },
         { text: 'Start', value: 'active_from' },
         { text: 'Finish', value: 'active_to' },
         { text: 'Created', value: 'created_at' },
@@ -311,17 +311,19 @@ export default {
       workflow: {},
       workflowTemplate: {
         name: '',
-        trigger_id: null,
         trigger: '',
         trigger_config: {},
-        action_id: null,
         action: '',
         action_config: {},
         delay: 0,
-        multiplier: 0,
-        milliseconds: 0,
         active_from: null,
-        active_to: null
+        active_to: null,
+        config: {
+          multiplier: 0,
+          period_id: null,
+          action_id: null,
+          trigger_id: null
+        }
       },
       rules: {
         name: [
@@ -361,10 +363,10 @@ export default {
         { id: 1, action: 'SendEmail', label: 'Send email' }
       ],
       periods: [
-        { milliseconds: 60000, label: 'minutes' },
-        { milliseconds: 3600000, label: 'hours' },
-        { milliseconds: 86400000, label: 'days' },
-        { milliseconds: 604800000, label: 'weeks' }
+        { id: 1, milliseconds: 60000, label: 'minutes' },
+        { id: 2, milliseconds: 3600000, label: 'hours' },
+        { id: 3, milliseconds: 86400000, label: 'days' },
+        { id: 4, milliseconds: 604800000, label: 'weeks' }
       ]
     }
   },
@@ -372,14 +374,15 @@ export default {
     workflows () {
       let workflows = this.$store.getters.workflows(this.$_slug)
       workflows.forEach(workflow => {
-        const actionItem = find(this.actions, action => { return action.action === workflow.action })
-        const triggerItem = find(this.triggers, trigger => { return trigger.trigger === workflow.trigger })
-        workflow.action_id = actionItem.id
-        workflow.action = actionItem.label
-        workflow.trigger_id = triggerItem.id
-        workflow.trigger = triggerItem.label
+        const actionItem = find(this.actions, action => { return action.id === workflow.config.action_id })
+        const triggerItem = find(this.triggers, trigger => { return trigger.id === workflow.config.trigger_id })
+        const periodItem = find(this.periods, period => { return period.id === workflow.config.period_id })
+        workflow.config = JSON.parse(workflow.config)
         workflow.action_config = JSON.parse(workflow.action_config)
         workflow.trigger_config = JSON.parse(workflow.trigger_config)
+        workflow.delay_label = (workflow.config.multiplier) || '' + ' ' + (periodItem ? periodItem.label : '')
+        workflow.trigger_label = triggerItem ? triggerItem.label : ''
+        workflow.action_label = actionItem ? actionItem.label : ''
       })
       return workflows
     },
@@ -387,12 +390,16 @@ export default {
       return this.workflowId === -1 ? 'Create Workflow' : 'Edit Workflow'
     },
     trigger () {
-      const trigger = find(this.triggers, trigger => { return trigger.id === this.workflow.trigger_id })
+      const trigger = find(this.triggers, trigger => { return trigger.id === this.workflow.config.trigger_id })
       return trigger || {}
     },
     action () {
-      const action = find(this.actions, action => { return action.id === this.workflow.action_id })
+      const action = find(this.actions, action => { return action.id === this.workflow.config.action_id })
       return action || {}
+    },
+    period () {
+      const period = find(this.periods, period => { return period.id === this.workflow.config.period_id })
+      return period || {}
     }
   },
   methods: {
@@ -415,7 +422,8 @@ export default {
       workflow.trigger_config = JSON.stringify(this.trigger ? this.trigger.config : {})
       workflow.action = this.action ? this.action.action : ''
       workflow.action_config = JSON.stringify(workflow.action_config)
-      workflow.delay = workflow.multiplier * workflow.milliseconds
+      workflow.delay = workflow.config.multiplier * this.period.milliseconds
+      workflow.config = JSON.stringify(workflow.config)
       const dispatchMethod = this.workflowId === -1 ? 'createWorkflow' : 'updateWorkflow'
       Promise.all([
         this.$store.dispatch(dispatchMethod, workflow)
