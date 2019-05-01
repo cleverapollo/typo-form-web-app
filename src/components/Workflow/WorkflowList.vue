@@ -56,7 +56,7 @@
     </v-flex>
 
     <!-- // Edit Dialog -->
-  <v-dialog v-model="dialog" fullscreen hide-overlay lazy>
+    <v-dialog v-model="dialog" fullscreen hide-overlay lazy>
       <v-card>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click.stop="close()">
@@ -252,7 +252,6 @@
             </v-container>
           </template>
       
-
           <!-- // Actions -->
           <v-divider></v-divider>
           <v-container fluid>
@@ -374,15 +373,15 @@ export default {
     workflows () {
       let workflows = this.$store.getters.workflows(this.$_slug)
       workflows.forEach(workflow => {
-        const actionItem = find(this.actions, action => { return action.id === workflow.config.action_id })
-        const triggerItem = find(this.triggers, trigger => { return trigger.id === workflow.config.trigger_id })
-        const periodItem = find(this.periods, period => { return period.id === workflow.config.period_id })
-        workflow.config = JSON.parse(workflow.config)
-        workflow.action_config = JSON.parse(workflow.action_config)
-        workflow.trigger_config = JSON.parse(workflow.trigger_config)
-        workflow.delay_label = (workflow.config.multiplier) || '' + ' ' + (periodItem ? periodItem.label : '')
-        workflow.trigger_label = triggerItem ? triggerItem.label : ''
-        workflow.action_label = actionItem ? actionItem.label : ''
+        workflow.config = this.getJSONObject(workflow.config)
+        workflow.action_config = this.getJSONObject(workflow.action_config)
+        workflow.trigger_config = this.getJSONObject(workflow.trigger_config)
+        const actionItem = this.findAction(workflow.config.action_id) || {}
+        const triggerItem = this.findTrigger(workflow.config.trigger_id) || {}
+        const periodItem = this.findPeriod(workflow.config.period_id) || {}
+        workflow.delay_label = (workflow.config.multiplier || '') + ' ' + (periodItem.label || '')
+        workflow.trigger_label = triggerItem.label || ''
+        workflow.action_label = actionItem.label || ''
       })
       return workflows
     },
@@ -390,19 +389,32 @@ export default {
       return this.workflowId === -1 ? 'Create Workflow' : 'Edit Workflow'
     },
     trigger () {
-      const trigger = find(this.triggers, trigger => { return trigger.id === this.workflow.config.trigger_id })
-      return trigger || {}
+      return this.findTrigger(this.workflow.config.trigger_id) || {}
     },
     action () {
-      const action = find(this.actions, action => { return action.id === this.workflow.config.action_id })
-      return action || {}
+      return this.findAction(this.workflow.config.action_id) || {}
     },
     period () {
-      const period = find(this.periods, period => { return period.id === this.workflow.config.period_id })
-      return period || {}
+      return this.findPeriod(this.workflow.config.period_id) || {}
     }
   },
   methods: {
+    getJSONObject (string) {
+      let object = {}
+      try {
+        object = JSON.parse(string)
+      } catch (error) {}
+      return object
+    },
+    findTrigger (id) {
+      return find(this.triggers, trigger => { return trigger.id === id })
+    },
+    findAction (id) {
+      return find(this.actions, action => { return action.id === id })
+    },
+    findPeriod (id) {
+      return find(this.periods, period => { return period.id === id })
+    },
     close () {
       this.dialog = false
       setTimeout(() => {
