@@ -40,12 +40,14 @@
             <td @click='editItem(props.item)'>{{ props.item.created_at | $_formatDateTime }}</td>
             <td @click='editItem(props.item)'>{{ props.item.updated_at | $_formatDateTime }}</td>
             <td class="justify-center layout px-0">
+              <!--
               <v-tooltip bottom>
                 <v-btn icon class='mx-0' @click='deleteItem(props.item)' slot="activator">
                   <v-icon color='pink'>delete</v-icon>
                 </v-btn>
                 <span>Delete</span>
               </v-tooltip>
+              -->
             </td>
           </template>
           <v-alert v-slot:no-results :value="true" color="error" icon="warning">
@@ -258,7 +260,7 @@
             <v-layout row py-2>
               <v-flex xs12 class="text-xs-right">
                 <v-btn flat @click.stop="close">Cancel</v-btn>
-                <v-btn flat class="primary" @click.stop="validate">Save</v-btn>
+                <v-btn flat class="primary" @click.stop="validate" :disabled="!createMode">Save</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
@@ -396,6 +398,9 @@ export default {
     },
     period () {
       return this.findPeriod(this.workflow.config.period_id) || {}
+    },
+    createMode () {
+      return this.workflowId === -1
     }
   },
   methods: {
