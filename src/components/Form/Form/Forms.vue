@@ -16,6 +16,11 @@
         </v-flex>
 
         <v-flex d-flex xs12>
+          <!-- // Data Table -->
+          <DataTable></DataTable>
+        </v-flex>
+
+        <v-flex d-flex xs12>
           <p>Select an existing form below or <a href='#' @click.stop='createForm = true'>create a new form</a>.</p>
         </v-flex>
 
@@ -180,13 +185,15 @@
   import CustomSlot from '../../Layout/CustomSlot'
   import LayoutMixin from '../../Layout/LayoutMixin'
   import UserMixin from '../../Layout/UserMixin'
+  import DataTable from '../../DataTable/DataTable'
 
   export default {
     name: 'Forms',
     components: {
       CreateForm,
       DuplicateForm,
-      CustomSlot
+      CustomSlot,
+      DataTable
     },
     data () {
       return {
