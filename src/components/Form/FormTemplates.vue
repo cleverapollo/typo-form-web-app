@@ -145,6 +145,7 @@
             return status.id === formTemplate.status_id
           })
           formTemplate.status = ((status && status.status === 'Open') ? 'Draft' : 'Published')
+          delete formTemplate.sections
         })
         return formTemplates
       },

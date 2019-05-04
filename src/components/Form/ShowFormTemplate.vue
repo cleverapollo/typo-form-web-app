@@ -109,6 +109,21 @@
                           </v-list-tile-content>
                         </v-list-tile>
 
+                        <v-list-tile @click="">
+                          <v-list-tile-avatar>
+                            <v-icon>cloud_download</v-icon>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
+                            <download-excel
+                              :data="sections"
+                              :name="fileName + '.csv'"
+                              type="csv"
+                            >
+                              Export
+                            </download-excel>
+                          </v-list-tile-content>
+                        </v-list-tile>
+
                       </v-list>
                     </v-menu>
                   </div>
@@ -159,6 +174,8 @@
 </template>
 
 <script>
+  import * as _ from 'lodash'
+  import moment from 'moment'
   import FormView from './FormView'
   import EditFormTemplate from './EditFormTemplate'
   import UploadFormTemplate from './UploadFormTemplate'
@@ -208,6 +225,44 @@
       },
       formTemplate () {
         return this.$store.getters.loadedFormTemplate(this.slug, parseInt(this.id))
+      },
+      sections () {
+        // section_id, section_name, section_order, question_id, question, answer_id, answer
+        const data = []
+        const sections = _.sortBy(this.formTemplate.sections, element => {
+          return element.id
+        })
+        sections.forEach((section) => {
+          const sectionTemplate = {
+            section_id: section.id,
+            section_name: section.name,
+            section_order: section.order
+          }
+          const questions = _.sortBy(section.questions, element => {
+            return element.id
+          })
+          questions.forEach((question) => {
+            const questionTemplate = Object.assign(sectionTemplate, {
+              question_id: question.id,
+              question: question.question,
+              section_order: section.order
+            })
+            const answers = _.sortBy(question.answers, element => {
+              return element.id
+            })
+            answers.forEach((answer) => {
+              const answerTemplate = Object.assign(questionTemplate, {
+                answer_id: answer.id,
+                answer: answer.answer
+              })
+              data.push(Object.assign({}, answerTemplate))
+            })
+          })
+        })
+        return data
+      },
+      fileName () {
+        return 'Form Template ' + this.formTemplate.name + ' ' + moment().format('YYYY-MM-DD [at] LTS')
       }
     },
     methods: {
