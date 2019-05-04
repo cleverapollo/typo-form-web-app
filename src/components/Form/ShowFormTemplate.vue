@@ -211,6 +211,9 @@
         }
         return this.status === 'Open' ? 'Draft' : 'Published'
       },
+      questionTypes () {
+        return this.$store.getters.questionTypes
+      },
       status () {
         if (!this.formTemplate) {
           return 'undefined'
@@ -245,7 +248,7 @@
             const questionTemplate = Object.assign(sectionTemplate, {
               question_id: question.id,
               question: question.question,
-              section_order: section.order
+              question_type: this.getQuestionType(question.question_type_id)
             })
             const answers = _.sortBy(question.answers, element => {
               return element.id
@@ -266,6 +269,12 @@
       }
     },
     methods: {
+      getQuestionType (questionTypeId) {
+        const questionType = this.questionTypes.find((questionType) => {
+          return questionType.id === questionTypeId
+        })
+        return questionType ? questionType.type : 'undefined'
+      },
       onDeleteFormTemplate () {
         this.$store.dispatch('deleteFormTemplate', {
           slug: this.slug,
