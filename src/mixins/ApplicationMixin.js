@@ -17,6 +17,9 @@ export default {
     $_applicationUsers: function () {
       return this.$store.getters.loadedUsers(this.$_slug)
     },
+    $_applicationOrganisations: function () {
+      return this.$store.getters.loadedOrganisations(this.$_slug)
+    },
     $_applicationFormTemplates: function () {
       return this.$store.getters.loadedFormTemplates(this.$_slug)
     },
@@ -60,5 +63,6 @@ export default {
   },
   created () {
     this.$store.dispatch('loadUsers', this.$_slug)
+    this.$store.dispatch('loadOrganisations', this.$_slug)
   }
 }

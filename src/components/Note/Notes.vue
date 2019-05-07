@@ -33,10 +33,10 @@
             <td @click='editItem(props.item)'>{{ props.item.type }}</td>
             <td @click='editItem(props.item)'>{{ props.item.description }}</td>
             <td @click='editItem(props.item)'>{{ props.item.recordable_type }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.recordable }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.name }}</td>
+            <td @click='editItem(props.item)'>{{ props.item.owner }}</td>
             <td @click='editItem(props.item)'>{{ props.item.task }}</td>
             <td @click='editItem(props.item)'>{{ props.item.task_due_at | $_formatDate }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.created_at | $_formatDateTime }}</td>
             <td @click='editItem(props.item)'>{{ props.item.updated_at | $_formatDateTime }}</td>
             <td class="justify-center layout px-0">
               <v-tooltip bottom>
@@ -87,7 +87,7 @@
                   <v-flex xs12 md6>
                     <v-autocomplete
                       v-model="note.recordable_id"
-                      :items="records(note.recordable_type)"
+                      :items="getRecords(note.recordable_type)"
                       label="Record"
                       item-text="name"
                       item-value="id"
@@ -203,7 +203,7 @@
   </v-layout>
 </template>
 <script>
-  import sortBy from 'lodash/sortBy'
+  import { sortBy, find } from 'lodash'
   import ApplicationMixin from '../../mixins/ApplicationMixin'
   export default {
     mixins: [ApplicationMixin],
@@ -220,10 +220,10 @@
         { text: 'Type', value: 'type' },
         { text: 'Description', value: 'description' },
         { text: 'Record Type', value: 'recordable_type' },
-        { text: 'Record', value: 'recordable' },
+        { text: 'Record', value: 'name' },
+        { text: 'Owner', value: 'owner' },
         { text: 'Task', value: 'task' },
         { text: 'Due', value: 'task_due_at' },
-        { text: 'Created', value: 'created_at' },
         { text: 'Updated', value: 'updated_at' },
         { text: 'Actions', value: 'name', sortable: false }
       ],
@@ -275,18 +275,27 @@
     }),
     computed: {
       notes () {
-        let notes = this.$store.getters.loadedNotes(this.$_slug)
-        notes.forEach((record) => {
-          const list = this.records(record.recordable_type)
-          const element = list.find(value => value.id === record.recordable_id)
-          const recordType = record.note_type_id ? this.noteTypes.find(noteType => { return noteType.id === record.note_type_id }) : null
-          record.type = recordType ? recordType.type : ''
-          record.recordable = element ? element.name : ''
+        let notes = []
+        this.$store.getters.loadedNotes(this.$_slug).forEach((record) => {
+          record.type = this.getNoteType(record.note_type_id)
+          record.name = record.recordable_type === 'Organisation' ? this.getOrganisationName(record.recordable_id) : this.getUserName(record.recordable_id)
+          record.owner = this.getNoteOwner(record)
+          if (record.name) {
+            notes.push(record)
+          }
         })
         return notes
       },
       dialogTitle () {
         return this.editedIndex === -1 ? 'Create Note' : 'Edit Note'
+      },
+      users () {
+        let users = []
+        this.$_applicationUsers.forEach((user) => {
+          user.name = this.$_getUserFullNameWithEmail(user)
+          users.push(user)
+        })
+        return users
       }
     },
     watch: {
@@ -295,6 +304,22 @@
       }
     },
     methods: {
+      getNoteOwner (record) {
+        const user = record && record.user ? this.$_getUserFullName(record.user) : null
+        return user || 'System'
+      },
+      getNoteType (noteTypeId) {
+        const noteType = find(this.noteTypes, noteType => { return noteType.id === noteTypeId })
+        return noteType ? noteType.type : null
+      },
+      getUserName (userId) {
+        const user = find(this.users, user => { return user.id === userId })
+        return user ? user.name : null
+      },
+      getOrganisationName (organisationId) {
+        const organisation = find(this.$_applicationOrganisations, organisation => { return organisation.id === organisationId })
+        return organisation ? organisation.name : null
+      },
       editItem (item) {
         this.editedIndex = this.notes.indexOf(item)
         this.note = Object.assign({}, item)
@@ -342,29 +367,14 @@
         }
         this.close()
       },
-      records (type) {
-        let records = []
-        let users = this.$store.getters.loadedUsers(this.$_slug)
-        let organisations = this.$store.getters.loadedOrganisations(this.$_slug)
-
-        if (type === 'User') {
-          users.forEach((record) => {
-            record.name = record.first_name + ' ' + record.last_name + ' (' + record.email + ')'
-            records.push(record)
-          })
-        }
-        if (type === 'Organisation') {
-          organisations.forEach((record) => {
-            records.push(record)
-          })
-        }
-
-        return sortBy(records, record => { return record.name })
-      },
       validate () {
         if (this.$refs.form.validate()) {
           this.save()
         }
+      },
+      getRecords (type) {
+        const records = type === 'Organisation' ? this.$_applicationOrganisations : this.users
+        return sortBy(records, record => { return record.name })
       }
     },
     created () {

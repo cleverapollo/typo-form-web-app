@@ -10,12 +10,15 @@ export default {
     }
   },
   methods: {
-    $_isSuperUser: function () {
-      const role = this.$_user ? this.$_findRole(this.$_user.role_id) : null
+    $_isSuperUser: function (user) {
+      const role = user ? this.$_findRole(user.role_id) : null
       return role && role.name === 'Super Admin'
     },
-    $_getUserFullName: function () {
-      return this.$_user ? this.$_user.first_name + ' ' + this.$_user.last_name : null
+    $_getUserFullName: function (user) {
+      return user && user.first_name ? user.first_name + ' ' + user.last_name : null
+    },
+    $_getUserFullNameWithEmail: function (user) {
+      return user && user.first_name ? user.first_name + ' ' + user.last_name + ' (' + user.email + ')' : null
     },
     $_findRole: function (roleId) {
       return this.$_roles.find((role) => {
