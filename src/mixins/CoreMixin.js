@@ -30,6 +30,12 @@ export default {
     },
     $_getDateTime: function () {
       return moment().format('YYYY-MM-DD [at] LTS')
+    },
+    $_formatDate: function (date) {
+      return date ? moment(date).format('YYYY-MM-DD') : null
+    },
+    $_formatDateTime: function (date) {
+      return date ? moment(date).format('YYYY-MM-DD h:mm A') : null
     }
   },
   created () {

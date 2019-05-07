@@ -70,7 +70,7 @@
               :loading="loading"
             >
               <template slot='items' slot-scope='props'>
-                <td @click="openForm(props.item.form_id)" v-for="header in headers" v-bind:key="header.value">{{ props.item[header.value] }}</td>
+                <td @click="openForm(props.item.field_form_id)" v-for="header in headers" v-bind:key="header.value">{{ props.item[header.value] }}</td>
               </template>
               <v-alert slot='no-results' :value='true' color='error' icon='warning'>
                 Your search for '{{ search }}' found no results.
@@ -90,8 +90,9 @@
 <script>
 import * as _ from 'lodash'
 import moment from 'moment'
+import CoreMixin from '../../../mixins/CoreMixin'
 export default {
-
+  mixins: [CoreMixin],
   data () {
     return {
       search: '',
@@ -121,7 +122,11 @@ export default {
       const data = [
         { text: 'Form', value: 'field_form_id' },
         { text: 'Organisation', value: 'field_organisation' },
-        { text: 'Contact', value: 'field_contact' }
+        { text: 'Contact', value: 'field_contact' },
+        { text: 'Created', value: 'field_created_at' },
+        { text: 'Updated', value: 'field_updated_at' },
+        { text: 'Completed', value: 'field_completed_at' },
+        { text: 'Progress', value: 'field_progress' }
       ]
       const questions = this.getFormTemplateQuestions(this.formTemplateId)
       _.forEach(questions, question => {
@@ -143,7 +148,15 @@ export default {
       const sections = _.orderBy(this.$store.getters.loadedSections(this.formTemplateId), 'order')
       _.forEach(forms, form => {
         const user = form.user.first_name + ' ' + form.user.last_name
-        const row = { 'field_form_id': form.id, 'field_organisation': form.organisation, 'field_contact': user }
+        const row = {
+          'field_form_id': form.id,
+          'field_organisation': form.organisation ? form.organisation.name : '',
+          'field_contact': user,
+          'field_created_at': this.$_formatDateTime(form.created_at),
+          'field_updated_at': this.$_formatDateTime(form.updated_at),
+          'field_completed_at': this.$_formatDateTime(form.submitted_at),
+          'field_progress': form.progress
+        }
         _.forEach(sections, section => {
           const questions = _.orderBy(section.questions, 'order')
           _.forEach(questions, question => {
