@@ -114,7 +114,7 @@
             <!-- // Form Templates -->
             <v-flex sm12 md6>
               <v-autocomplete
-                :items="this.$_getApplicationFormTemplates()"
+                :items="this.$_getApplicationPrivateFormTemplates()"
                 item-text="name"
                 item-value="id"
                 v-model="formTemplates"
