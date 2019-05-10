@@ -23,24 +23,25 @@
         </v-card-title>
         <v-data-table
           :headers="headers"
-          :items="notes"
+          :items="getNotes()"
           :search="search"
           :loading="loadingNotes"
           :pagination.sync="pagination"
           :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
         >
           <template v-slot:items="props">
-            <td @click='editItem(props.item)'>{{ props.item.type }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.description }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.recordable_type }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.name }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.owner }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.task }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.task_due_at | $_formatDate }}</td>
-            <td @click='editItem(props.item)'>{{ props.item.updated_at | $_formatDateTime }}</td>
+            <td @click='editNote(props.item)'>{{ props.item.type }}</td>
+            <td @click='editNote(props.item)'>{{ props.item.description }}</td>
+            <td @click='editNote(props.item)'>{{ props.item.recordable_type }}</td>
+            <td @click='editNote(props.item)'>{{ props.item.name }}</td>
+            <td @click='editNote(props.item)'>{{ props.item.owner }}</td>
+            <td @click='editNote(props.item)'>{{ props.item.task }}</td>
+            <td @click='editNote(props.item)'>{{ props.item.completed_text }}</td>
+            <td @click='editNote(props.item)'>{{ props.item.task_due_at | $_formatDate }}</td>
+            <td @click='editNote(props.item)'>{{ props.item.updated_at | $_formatDateTime }}</td>
             <td class="justify-center layout px-0">
               <v-tooltip bottom>
-                <v-btn icon class='mx-0' @click='deleteItem(props.item)' slot="activator">
+                <v-btn icon class='mx-0' @click='deleteNote(props.item)' slot="activator">
                   <v-icon color='pink'>delete</v-icon>
                 </v-btn>
                 <span>Delete</span>
@@ -174,6 +175,14 @@
                   </v-date-picker>
                 </v-dialog>
               </v-flex>
+
+              <v-flex xs12>
+                <v-checkbox
+                  v-model="note.completed"
+                  label="Task Completed"
+                ></v-checkbox>
+              </v-flex>
+
             </v-layout>
 
           </v-container>
@@ -204,106 +213,107 @@
 </template>
 <script>
   import { sortBy, find } from 'lodash'
+  import { mapGetters } from 'vuex'
   import ApplicationMixin from '../../mixins/ApplicationMixin'
   export default {
     mixins: [ApplicationMixin],
-    data: () => ({
-      valid: true,
-      dialog: false,
-      dateDialog: false,
-      search: '',
-      pagination: {
-        sortBy: 'updated_at',
-        descending: true
-      },
-      headers: [
-        { text: 'Type', value: 'type' },
-        { text: 'Description', value: 'description' },
-        { text: 'Record Type', value: 'recordable_type' },
-        { text: 'Record', value: 'name' },
-        { text: 'Owner', value: 'owner' },
-        { text: 'Task', value: 'task' },
-        { text: 'Due', value: 'task_due_at' },
-        { text: 'Updated', value: 'updated_at' },
-        { text: 'Actions', value: 'name', sortable: false }
-      ],
-      recordableTypes: [
-        'User',
-        'Organisation'
-      ],
-      noteTypes: [
-        { id: 1, type: 'Phone' },
-        { id: 2, type: 'Email' },
-        { id: 4, type: 'Meeting' },
-        { id: 3, type: 'Other' }
-      ],
-      editedIndex: -1,
-      note: {
-        note_type_id: '',
-        description: '',
-        note: '',
-        recordable_type: '',
-        recordable_id: '',
-        task: null,
-        task_due_at: null
-      },
-      noteTemplate: {
-        note_type_id: '',
-        description: '',
-        note: '',
-        recordable_type: '',
-        recordable_id: '',
-        task: null,
-        task_due_at: null
-      },
-      errorMessage: '',
-      loadingNotes: false,
-      rules: {
-        record_type: [
-          v => !!v || 'Record type is required'
+    data () {
+      return {
+        valid: true,
+        dialog: false,
+        dateDialog: false,
+        search: '',
+        pagination: {
+          sortBy: 'updated_at',
+          descending: true
+        },
+        headers: [
+          { text: 'Type', value: 'type' },
+          { text: 'Description', value: 'description' },
+          { text: 'Record Type', value: 'recordable_type' },
+          { text: 'Record', value: 'name' },
+          { text: 'Owner', value: 'owner' },
+          { text: 'Task', value: 'task' },
+          { text: 'Completed', value: 'completed_text' },
+          { text: 'Due', value: 'task_due_at' },
+          { text: 'Updated', value: 'updated_at' },
+          { text: 'Actions', value: 'name', sortable: false }
         ],
-        record: [
-          v => !!v || 'Record is required'
+        recordableTypes: [
+          'User',
+          'Organisation'
         ],
-        note_type: [
-          v => !!v || 'Note type is required'
+        noteTypes: [
+          { id: 1, type: 'Phone' },
+          { id: 2, type: 'Email' },
+          { id: 4, type: 'Meeting' },
+          { id: 3, type: 'Other' }
         ],
-        description: [
-          v => !!v || 'Description is required'
-        ]
+        note: {
+          note_type_id: '',
+          description: '',
+          note: '',
+          recordable_type: '',
+          recordable_id: '',
+          task: null,
+          task_due_at: null,
+          completed: false
+        },
+        noteTemplate: {
+          note_type_id: '',
+          description: '',
+          note: '',
+          recordable_type: '',
+          recordable_id: '',
+          task: null,
+          task_due_at: null,
+          completed: false
+        },
+        loadingNotes: false,
+        rules: {
+          record_type: [
+            v => !!v || 'Record type is required'
+          ],
+          record: [
+            v => !!v || 'Record is required'
+          ],
+          note_type: [
+            v => !!v || 'Note type is required'
+          ],
+          description: [
+            v => !!v || 'Description is required'
+          ]
+        }
       }
-    }),
+    },
     computed: {
-      notes () {
-        let notes = []
-        this.$store.getters.loadedNotes(this.$_slug).forEach((record) => {
-          record.type = this.getNoteType(record.note_type_id)
-          record.name = record.recordable_type === 'Organisation' ? this.getOrganisationName(record.recordable_id) : this.getUserName(record.recordable_id)
-          record.owner = this.getNoteOwner(record)
-          if (record.name) {
-            notes.push(record)
-          }
-        })
-        return notes
-      },
+      ...mapGetters(['notes']),
       dialogTitle () {
-        return this.editedIndex === -1 ? 'Create Note' : 'Edit Note'
+        return this.item && this.item.id ? 'Create Note' : 'Edit Note'
       },
       users () {
         let users = []
-        this.$_applicationUsers.forEach((user) => {
-          user.name = this.$_getUserFullNameWithEmail(user)
-          users.push(user)
+        this.$_applicationUsers.forEach(user => {
+          let record = Object.assign({}, user)
+          record.name = this.$_getUserFullNameWithEmail(record)
+          users.push(record)
         })
         return users
       }
     },
-    watch: {
-      dialog (val) {
-        val || this.close()
-      }
-    },
     methods: {
+      getNotes () {
+        let notes = []
+        this.notes(this.$_slug).forEach(note => {
+          let item = Object.assign({}, note)
+          item.type = this.getNoteType(item.note_type_id)
+          item.name = item.recordable_type === 'Organisation' ? this.getOrganisationName(item.recordable_id) : this.getUserName(item.recordable_id)
+          item.owner = this.getNoteOwner(item)
+          item.completed_text = item.completed ? 'Yes' : 'No'
+          notes.push(item)
+        })
+        return notes
+      },
       getNoteOwner (record) {
         const user = record && record.user ? this.$_getUserFullName(record.user) : null
         return user || 'System'
@@ -320,56 +330,29 @@
         const organisation = find(this.$_applicationOrganisations, organisation => { return organisation.id === organisationId })
         return organisation ? organisation.name : null
       },
-      editItem (item) {
-        this.editedIndex = this.notes.indexOf(item)
+      editNote (item) {
         this.note = Object.assign({}, item)
         this.dialog = true
       },
-      deleteItem (item) {
+      deleteNote (item) {
         this.$store.dispatch('deleteNote', {
           id: item.id,
           slug: this.$_slug
         })
       },
+      saveNote () {
+        this.note.slug = this.$_slug
+        const method = this.note.id ? 'updateNote' : 'createNote'
+        this.$store.dispatch(method, this.note)
+        this.close()
+      },
       close () {
         this.dialog = false
-        this.errorMessage = ''
-        setTimeout(() => {
-          this.note = Object.assign({}, this.noteTemplate)
-          this.editedIndex = -1
-        }, 300)
-      },
-      save () {
-        if (this.editedIndex > -1) {
-          const updateObj = {
-            id: this.note.id,
-            slug: this.$_slug,
-            note_type_id: this.note.event,
-            description: this.note.description,
-            note: this.note.note,
-            recordable_type: this.note.recordable_type,
-            recordable_id: this.note.recordable_id,
-            task: this.note.task,
-            task_due_at: this.note.task_due_at
-          }
-          this.$store.dispatch('updateNote', updateObj)
-        } else {
-          this.$store.dispatch('createNote', {
-            slug: this.$_slug,
-            note_type_id: this.note.note_type_id,
-            description: this.note.description,
-            note: this.note.note,
-            recordable_type: this.note.recordable_type,
-            recordable_id: this.note.recordable_id,
-            task: this.note.task,
-            task_due_at: this.note.task_due_at
-          })
-        }
-        this.close()
+        this.note = Object.assign({}, this.noteTemplate)
       },
       validate () {
         if (this.$refs.form.validate()) {
-          this.save()
+          this.saveNote()
         }
       },
       getRecords (type) {
@@ -381,12 +364,12 @@
       this.loadingNotes = true
       Promise.all([
         this.$store.dispatch('loadUsers', this.$_slug),
-        this.$store.dispatch('loadOrganisations', this.$_slug)
+        this.$store.dispatch('loadOrganisations', this.$_slug),
+        this.$store.dispatch('getNotes', this.$_slug)
       ])
-        .then(() => {
-          this.$store.dispatch('loadNotes', this.$_slug)
-          this.loadingNotes = false
-        })
+      .then(() => {
+        this.loadingNotes = false
+      })
     }
   }
 </script>

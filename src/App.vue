@@ -109,7 +109,7 @@
               <v-icon>apps</v-icon>
             </v-avatar>
           </v-btn>
-          <v-list>
+          <v-list class="application-list scroll-y">
             <template v-for="(application, index) in sortedApplications" :v-bind="application.id">
               <v-list-tile
                 avatar
@@ -131,6 +131,8 @@
             </template>
           </v-list>
         </v-menu>
+
+        <NotificationsList></NotificationsList>
 
         <v-menu offset-y left>
           <v-btn
@@ -177,7 +179,14 @@
 </template>
 
 <script>
+  import ApplicationMixin from './mixins/ApplicationMixin'
+  import NotificationsList from './components/Shared/NotificationsList.vue'
+  import { mapGetters } from 'vuex'
   export default {
+    mixins: [ApplicationMixin],
+    components: {
+      NotificationsList
+    },
     name: 'App',
     data () {
       return {
@@ -188,12 +197,10 @@
       }
     },
     computed: {
-      roles () {
-        return this.$store.getters.roles
-      },
-      user () {
-        return this.$store.getters.user
-      },
+      ...mapGetters([
+        'roles',
+        'user'
+      ]),
       slug () {
         return window.location.hostname.split('.')[0]
       },
@@ -361,5 +368,9 @@
     100% {
       box-shadow: inset 0 0 0 30px #7ac142;
     }
+  }
+
+  .v-list.application-list {
+    max-height:500px;
   }
 </style>
