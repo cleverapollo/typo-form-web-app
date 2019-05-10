@@ -53,6 +53,10 @@ export default {
     $_getApplicationFormTemplates: function () {
       return sortBy(this.$_applicationFormTemplates, element => { return element.name.toLowerCase() })
     },
+    $_getApplicationPrivateFormTemplates: function () {
+      return this.$_getApplicationFormTemplates().filter(formTemplate => formTemplate.access_level === 'private')
+    },
+    // Form Template
     $_getFormTemplateQuestions: function (formTemplateId) {
       return this.$store.getters.loadedAllQuestions(formTemplateId)
     }
