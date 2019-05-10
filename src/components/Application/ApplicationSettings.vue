@@ -112,8 +112,7 @@
                 item-text="text"
                 item-value="value"
                 v-model="defaultRoute"
-                label="Default Route"
-                single-line
+                label="Default landing page"
               >
               </v-autocomplete>
             </v-flex>
@@ -124,7 +123,7 @@
             <v-flex xs12>
               <v-switch
                 name="join"
-                label="Allow to join to the application"
+                label="Anyone can register and join the application"
                 v-model="join_flag"
               >
               </v-switch>

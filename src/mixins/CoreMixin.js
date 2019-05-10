@@ -7,6 +7,9 @@ export default {
     },
     $_roles: function () {
       return this.$store.getters.roles
+    },
+    $_slug: function () {
+      return window.location.hostname.split('.')[0]
     }
   },
   methods: {

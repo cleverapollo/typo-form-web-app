@@ -5,9 +5,6 @@ import sortBy from 'lodash/sortBy'
 export default {
   mixins: [CoreMixin],
   computed: {
-    $_slug: function () {
-      return window.location.hostname.split('.')[0]
-    },
     $_application: function () {
       return this.$store.getters.loadedApplication(this.$_slug)
     },
@@ -56,7 +53,6 @@ export default {
     $_getApplicationFormTemplates: function () {
       return sortBy(this.$_applicationFormTemplates, element => { return element.name.toLowerCase() })
     },
-    // Form Template
     $_getFormTemplateQuestions: function (formTemplateId) {
       return this.$store.getters.loadedAllQuestions(formTemplateId)
     }
