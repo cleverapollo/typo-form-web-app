@@ -32,17 +32,37 @@
 
           <!-- //Organisations -->
           <v-flex xs12 v-if="audience === 'organisation'">
-            <v-autocomplete
+            <v-combobox
               :items="organisations"
-              item-value="id"
-              item-text="name"
-              v-model="organisationId"
+              item-value="name"
+              v-model="organisation"
               label="Organisation"
-            ></v-autocomplete>
+              :return-object="false"
+            >
+              <template v-slot:item="{index, item}">
+                <v-list-tile-content>
+                  {{ item.name }}
+                </v-list-tile-content>
+              </template>
+            </v-combobox>
           </v-flex>
 
         </v-layout>
 
+      </v-card-text>
+      <v-divider v-if="audience === 'organisation'"></v-divider>
+      <v-card-text v-if="audience === 'organisation'">
+        <v-layout row wrap>
+          <v-flex xs12>
+            <v-text-field
+                    label="New Organisation"
+                    v-model="newOrganisation"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12 class="text-xs-right">
+            <v-btn color="info" @click.stop="setOrganisation">Create Organisation</v-btn>
+          </v-flex>
+        </v-layout>
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
@@ -75,8 +95,9 @@
     data () {
       return {
         formTemplateId: null,
-        organisationId: null,
-        userId: null
+        organisation: null,
+        userId: null,
+        newOrganisation: null
       }
     },
     computed: {
@@ -131,9 +152,6 @@
         return this.$store.getters.roles
       },
       users () {
-        if (this.organisationId) {
-          return this.$store.getters.loadedFormOrganisationUsers(this.organisationId)
-        }
         return this.$store.getters.loadedFormUsers(this.slug)
       },
       loading () {
@@ -171,7 +189,7 @@
       save () {
         let data = {
           formTemplateId: this.formTemplateId,
-          organisationId: this.organisationId,
+          organisation: this.organisation,
           userId: this.userId
         }
         this.$store.dispatch('createForm', data)
@@ -187,9 +205,12 @@
       close () {
         this.reset()
       },
+      setOrganisation () {
+        this.organisation = this.newOrganisation
+      },
       reset () {
         this.formTemplateId = null
-        this.organisationId = null
+        this.organisation = null
         this.userId = null
         this.show = false
       }

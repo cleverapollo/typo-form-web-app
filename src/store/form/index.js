@@ -169,8 +169,8 @@ export default {
         form.user_id = payload.userId
       }
 
-      if (payload.organisationId) {
-        form.organisation_id = payload.organisationId
+      if (payload.organisation) {
+        form.organisation = payload.organisation
       }
 
       return new Promise((resolve, reject) => {
