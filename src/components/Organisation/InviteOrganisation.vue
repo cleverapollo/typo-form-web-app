@@ -44,7 +44,7 @@
                   </v-flex>
 
                   <!-- // Email -->
-                  <v-flex xs12 md4 pr-4>
+                  <v-flex xs12 md4>
                     <v-text-field
                             label="Email"
                             v-model="item.email"
@@ -89,7 +89,7 @@
           <v-layout row wrap class="mb-4">
 
             <!-- // Organisation Role -->
-            <v-flex sm12 md6 pr-4>
+            <v-flex sm12>
               <v-autocomplete
                       :items="this.$_applicationRoles"
                       item-text="name"
@@ -301,8 +301,8 @@
         this.invitations = []
         this.invitations.push(newTemplate)
         this.role_id = null
-        this.subject = 'You have been invited to join the ' + this.organisation.name + ' organisation on Informed 365'
-        this.message = '<p>You have been invited to join the ' + this.organisation.name + ' organisation on Informed 365.<p>' +
+        this.subject = 'You have been invited to join ' + this.organisation.name + ' on Informed 365'
+        this.message = '<p>You have been invited to join ' + this.organisation.name + ' on Informed 365.<p>' +
           '<p>To get started simply navigate <a href="' + this.$_applicationUrl + '/organisations/' + this.organisationId + '" target="_blank">' + this.$_applicationUrl + '/organisations/' + this.organisationId + '</a> and login or create an account using the email address that this invitation was sent to.</p>'
         this.cc = ''
         this.bcc = ''
