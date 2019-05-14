@@ -31,6 +31,36 @@
         </v-layout>
       </v-card-text>
 
+      <div v-if="this.user.status === 'Invited'">
+        <v-divider></v-divider>
+        <v-subheader>Workflow Snooze</v-subheader>
+        <v-card-text>
+          <p class="body-1">
+            Occasionally you may need to delay workflow emails for a user, for example, when you know 
+            they will be on leave.
+          </p>
+          <v-layout>
+            <v-flex xs12 md6 pr-4>
+              <v-text-field
+                v-model="editedMultiplier"
+                label="Delay"
+                type="number"
+                :rules="rules.delay"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 md6>
+              <v-autocomplete
+                :items="periods"
+                item-value="milliseconds"
+                item-text="label"
+                label="Period"
+                v-model="editedPeriod"
+              ></v-autocomplete>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+      </div>
+
       <!-- //Actions -->
       <v-divider></v-divider>
       <v-card-actions>
@@ -46,6 +76,7 @@
 </template>
 
 <script>
+  import * as _ from 'lodash'
   export default {
     props: ['user', 'slug'],
     data () {
@@ -53,21 +84,46 @@
         id: this.user.id,
         editUser: false,
         editedEmail: this.user.email,
-        editedRole: this.user.application_role_id
+        editedRole: this.user.application_role_id,
+        editedPeriod: _.get(this.user, 'meta.period', 60000),
+        editedMultiplier: _.get(this.user, 'meta.multiplier', 0),
+        periods: [
+          { milliseconds: 60000, label: 'minutes' },
+          { milliseconds: 3600000, label: 'hours' },
+          { milliseconds: 86400000, label: 'days' },
+          { milliseconds: 604800000, label: 'weeks' }
+        ],
+        rules: {
+          delay: [
+            v => !!v || 'Delay is required'
+          ]
+        }
       }
     },
     methods: {
       onSaveChanges () {
-        if (this.editedRole !== this.user.application_role_id) {
-          this.$store.dispatch('updateUser',
-            {
+        if (
+          this.editedRole !== this.user.application_role_id ||
+          this.editedPeriod !== _.get(this.user, 'meta.period', 60000) ||
+          this.editedMultiplier !== _.get(this.user, 'meta.multiplier', 0)
+        ) {
+          if (this.user.status === 'Invited') {
+            this.$store.dispatch('updateInvitedUser', {
               slug: this.slug,
               id: this.id,
-              email: this.editedEmail,
+              applicationRoleId: this.editedRole,
+              multiplier: this.editedMultiplier,
+              period: this.editedPeriod
+            })
+          } else {
+            this.$store.dispatch('updateUser', {
+              slug: this.slug,
+              id: this.id,
               applicationRoleId: this.editedRole
             })
+          }
+          this.editUser = false
         }
-        this.editUser = false
       },
       onCancel () {
         this.editedEmail = this.user.email

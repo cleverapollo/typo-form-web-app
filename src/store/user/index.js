@@ -123,8 +123,14 @@ export default {
     updateInvitedUser ({commit}, payload) {
       commit('setLoading', true)
       const updateObj = {}
-      if (payload.roleId) {
-        updateObj.application_role_id = payload.roleId
+      if (payload.applicationRoleId) {
+        updateObj.application_role_id = payload.applicationRoleId
+      }
+      if (payload.multiplier) {
+        updateObj.multiplier = payload.multiplier
+      }
+      if (payload.period) {
+        updateObj.period = payload.period
       }
       window.axios.put(APPLICATION_URL + payload.slug + INVITED_USER_URL + payload.id, updateObj)
         .then(
