@@ -63,12 +63,12 @@
       :loading="loading"
       :rows-per-page-items="[25, 50, 100, { text: 'All', value: -1 }]"
       :search="search"
-      select-all
+      :select-all="hasSelectableItems"
       item-key="id"
       class="elevation-1"
     >
       <template v-slot:items="props">
-        <td>
+        <td v-if="hasSelectableItems">
           <v-checkbox
             v-model="props.selected"
             primary
@@ -92,10 +92,11 @@
  *        - Delete
  *    - Add filter bar
  *    - Add refresh data command
- *    - Add data export command
  *    - Change 'showing' title to show 3 of 9 when search or filter
  */
 import papa from 'papaparse'
+import { saveAs } from 'file-saver'
+import CoreMixin from '../../mixins/CoreMixin'
 export default {
   props: {
     title: {
@@ -119,6 +120,7 @@ export default {
       ]
     }
   },
+  mixins: [CoreMixin],
   data () {
     return {
       loading: false,
@@ -145,9 +147,15 @@ export default {
     },
     visibleHeaders () {
       return this.headers.filter(header => header.visible !== false)
+    },
+    hasSelectableItems () {
+      return false
     }
   },
   methods: {
+    getFileName () {
+      return this.title + ' ' + this.$_getDateTime() + '.csv'
+    },
     getData () {
       let data = []
       this.items.forEach(item => {
@@ -162,7 +170,8 @@ export default {
     download () {
       const data = this.getData()
       const csv = papa.unparse(data)
-      console.log(data, csv)
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+      saveAs(blob, this.getFileName())
     }
   }
 }
