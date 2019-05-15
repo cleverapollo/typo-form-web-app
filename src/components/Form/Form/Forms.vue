@@ -17,7 +17,15 @@
 
         <v-flex d-flex xs12>
           <!-- // Data Table -->
-          <DataTable></DataTable>
+          <DataTable
+            title="Forms"
+            item-key="id"
+            v-bind:headers="headers"
+            v-bind:items="data"
+            @refresh="refreshItems"
+            @delete="deleteItems"
+            @click="selectItem"
+          ></DataTable>
         </v-flex>
 
         <v-flex d-flex xs12>
@@ -255,7 +263,9 @@
       statuses () {
         return this.$store.getters.statuses
       },
-
+      formHeaders () {
+        return [ ...this.headers ]
+      },
       headers () {
         const headers = []
         // Replace existing headers with new headers
@@ -272,6 +282,9 @@
         })
         headers.push({ text: 'Actions', value: 'Actions' })
         return headers
+      },
+      formData () {
+        return [ ...this.data ]
       },
       data () {
         const data = []
@@ -390,6 +403,9 @@
       }
     },
     methods: {
+      refreshItems () {},
+      deleteItems (items) {},
+      selectItem (item) {},
       updateText () {
         if (!this.meta) {
           const newMeta = {}
