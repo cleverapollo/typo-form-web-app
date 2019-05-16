@@ -22,11 +22,11 @@ export default {
         return role.id === roleId
       })
     },
-    $_getDate: function () {
-      return moment().format('YYYY-MM-DD h:mm A')
+    $_getDate: function (date) {
+      return moment(date).format('YYYY-MM-DD h:mm A')
     },
-    $_getDateTime: function () {
-      return moment().format('YYYY-MM-DD [at] LTS')
+    $_getDateTime: function (date) {
+      return moment(date).format('YYYY-MM-DD [at] LTS')
     }
   },
   created () {

@@ -75,6 +75,7 @@
       :rows-per-page-items="[25, 50, 100, { text: 'All', value: -1 }]"
       :search="search"
       :select-all="canDelete"
+      :pagination.sync="paginationOptions"
       item-key="id"
       class="elevation-1"
     >
@@ -181,7 +182,7 @@
 
 <script>
 /**
- *    Props: title, headers, items, loading, itemKey
+ *    Props: title, headers, items, loading, itemKey, pagination
  *    Events: @delete, @refresh, @click, @create.
  *    TODO:
  *    - Add filter bar
@@ -214,6 +215,11 @@ export default {
     // The property in the items array which should be passed back to the parent on events such as delete or click
     itemKey: {
       type: String
+    },
+    // The pagination settings for the data table such as sort column and order
+    pagination: {
+      type: Object,
+      default: {}
     }
   },
   mixins: [CoreMixin],
@@ -224,6 +230,7 @@ export default {
       searching: false,
       manageColumns: false,
       confirmDelete: false,
+      paginationOptions: { ...this.pagination },
       tableHeaders: []
     }
   },
