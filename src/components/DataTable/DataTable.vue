@@ -6,12 +6,6 @@
         <span class="grey--text">{{ subtitle }}</span>
       </div>
       <v-spacer></v-spacer>
-      <v-tooltip bottom v-if="canCreate">
-        <v-btn class="my-0" flat icon @click.stop="createItem()" slot="activator">
-          <v-icon>add</v-icon>
-        </v-btn>
-        <span>Create {{ lowerCaseTitle }} </span>
-      </v-tooltip>
       <v-tooltip bottom>
         <v-btn class="my-0" flat icon @click.stop="manageColumns = true" slot="activator">
           <v-icon>settings</v-icon>
@@ -35,6 +29,12 @@
           <v-icon>refresh</v-icon>
         </v-btn>
         <span>Refresh {{ lowerCaseTitle }}</span>
+      </v-tooltip>
+      <v-tooltip bottom v-if="canCreate">
+        <v-btn class="my-0" fab small depressed color="success" @click.stop="createItem()" slot="activator">
+          <v-icon>add</v-icon>
+        </v-btn>
+        <span>Create {{ lowerCaseTitle }} </span>
       </v-tooltip>
     </v-card-title>
     <v-card-title v-else class="header-control selected">
@@ -288,8 +288,9 @@ export default {
       return data
     },
     download () {
+      const BOM = '\uFEFF'
       const data = this.getData()
-      const csv = papa.unparse(data)
+      const csv = BOM + papa.unparse(data)
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
       saveAs(blob, this.getFileName())
     },

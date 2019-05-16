@@ -25,8 +25,8 @@
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-csp-header": "^2.2.0",
-    "file-saver": "^2.0.1",
-    "helmet": "^3.16.0",
+    "file-saver": "^2.0.2",
+    "helmet": "^3.18.0",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "papaparse": "^4.6.3",
@@ -41,7 +41,7 @@
     "vue2-dropzone": "3.5.1",
     "vuedraggable": "^2.19.2",
     "vuetify": "^1.5.14",
-    "vuex": "^3.1.0"
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

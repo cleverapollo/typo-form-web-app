@@ -44,13 +44,6 @@
       </v-layout>
     </v-flex>
 
-    <v-tooltip top>
-      <v-btn slot='activator' fixed dark bottom right fab router class='red' @click.stop='createForm = true'>
-        <v-icon>add</v-icon>
-      </v-btn>
-      <span>Create Form</span>
-    </v-tooltip>
-
     <CreateForm :visible='createForm' :slug='this.$_slug' @close='createForm = false' key='CreateForm'></CreateForm>
 
   </v-layout>
