@@ -11,6 +11,68 @@ export default {
     loadedSections: {},
     selectedSection: null
   },
+  getters: {
+    sections: (state) => {
+      return state.loadedSections
+    },
+    sectionsByFormTemplateId: (state, getters) => (id) => {
+      return getters.sections[id] || []
+    },
+    // Legacy
+    loadedSections (state) {
+      return (formTemplateId) => {
+        if (!state.loadedSections[formTemplateId]) {
+          return []
+        }
+        return state.loadedSections[formTemplateId]
+      }
+    },
+    loadedSection (state) {
+      return (formTemplateId, sectionId) => {
+        if (!state.loadedSections[formTemplateId]) {
+          return null
+        }
+        return state.loadedSections[formTemplateId].find((section) => {
+          return section.id === sectionId
+        })
+      }
+    },
+    loadedChildrenSection (state) {
+      return (formTemplateId, parentSectionId) => {
+        if (!state.loadedSections[formTemplateId]) {
+          return []
+        }
+        return state.loadedSections[formTemplateId].filter((section) => {
+          return section.parent_section_id === parentSectionId
+        })
+      }
+    },
+    loadedChildren (state) {
+      return (formTemplateId, parentSectionId) => {
+        if (!state.loadedSections[formTemplateId]) {
+          return []
+        }
+        const childSections = state.loadedSections[formTemplateId].filter((section) => {
+          return section.parent_section_id === parentSectionId
+        })
+        const section = state.loadedSections[formTemplateId].find((section) => {
+          return section.id === parentSectionId
+        })
+        let childQuestions = []
+        if (section) {
+          childQuestions = section.questions
+        }
+        return [...childSections, ...childQuestions].sort((childA, childB) => {
+          return childA.order > childB.order
+        })
+      }
+    },
+    loadSelectedSection (state) {
+      return () => {
+        return state.selectedSection
+      }
+    }
+  },
   mutations: {
     clearLoadedSections (state) {
       state.loadedSections = {}
@@ -374,61 +436,6 @@ export default {
     },
     selectSection ({commit}, payload) {
       commit('selectSection', payload)
-    }
-  },
-  getters: {
-    loadedSections (state) {
-      return (formTemplateId) => {
-        if (!state.loadedSections[formTemplateId]) {
-          return []
-        }
-        return state.loadedSections[formTemplateId]
-      }
-    },
-    loadedSection (state) {
-      return (formTemplateId, sectionId) => {
-        if (!state.loadedSections[formTemplateId]) {
-          return null
-        }
-        return state.loadedSections[formTemplateId].find((section) => {
-          return section.id === sectionId
-        })
-      }
-    },
-    loadedChildrenSection (state) {
-      return (formTemplateId, parentSectionId) => {
-        if (!state.loadedSections[formTemplateId]) {
-          return []
-        }
-        return state.loadedSections[formTemplateId].filter((section) => {
-          return section.parent_section_id === parentSectionId
-        })
-      }
-    },
-    loadedChildren (state) {
-      return (formTemplateId, parentSectionId) => {
-        if (!state.loadedSections[formTemplateId]) {
-          return []
-        }
-        const childSections = state.loadedSections[formTemplateId].filter((section) => {
-          return section.parent_section_id === parentSectionId
-        })
-        const section = state.loadedSections[formTemplateId].find((section) => {
-          return section.id === parentSectionId
-        })
-        let childQuestions = []
-        if (section) {
-          childQuestions = section.questions
-        }
-        return [...childSections, ...childQuestions].sort((childA, childB) => {
-          return childA.order > childB.order
-        })
-      }
-    },
-    loadSelectedSection (state) {
-      return () => {
-        return state.selectedSection
-      }
     }
   }
 }

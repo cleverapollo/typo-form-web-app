@@ -191,6 +191,7 @@ import papa from 'papaparse'
 import { saveAs } from 'file-saver'
 import CoreMixin from '../../mixins/CoreMixin'
 export default {
+  name: 'DataTable',
   props: {
     // The type of item the table is displaying
     title: {
@@ -200,12 +201,12 @@ export default {
     // The header row for the table including settings. See vuetify datatables
     headers: {
       type: Array,
-      default: []
+      default: () => []
     },
     // The items to be displayed in the data table. Should match the headers
     items: {
       type: Array,
-      default: []
+      default: () => []
     },
     // Set the datatable to loading or loaded
     loading: {
@@ -219,7 +220,7 @@ export default {
     // The pagination settings for the data table such as sort column and order
     pagination: {
       type: Object,
-      default: {}
+      default: () => {}
     }
   },
   mixins: [CoreMixin],
@@ -294,12 +295,12 @@ export default {
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
       saveAs(blob, this.getFileName())
     },
-    getHeaders () {
+    setHeaders () {
       let headers = this.headers.slice()
       this.headers.forEach(header => {
         header.visible = header.hasOwnProperty('visible') ? header.visible : true
       })
-      return headers
+      this.tableHeaders = headers
     },
     itemClicked (item) {
       this.$emit('click', item[this.itemKey])
@@ -317,8 +318,13 @@ export default {
       this.$emit('create')
     }
   },
-  created () {
-    this.tableHeaders = this.getHeaders()
+  watch: {
+    headers: {
+      immediate: true,
+      handler: function () {
+        this.setHeaders()
+      }
+    }
   }
 }
 </script>
@@ -334,5 +340,8 @@ export default {
   }
   .manage-columns .item-list {
     max-height:400px;
+  }
+  .data-table {
+    width:100%;
   }
 </style>

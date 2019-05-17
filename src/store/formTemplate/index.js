@@ -7,6 +7,33 @@ export default {
   state: {
     loadedFormTemplates: {}
   },
+  getters: {
+    formTemplates: (state) => (slug) => {
+      return state.loadedFormTemplates[slug] ? state.loadedFormTemplates[slug] : []
+    },
+    formTemplateById: (state, getters) => (slug, id) => {
+      return getters.formTemplates(slug).filter(formTemplate => formTemplate.id === id)
+    },
+    // Legacy
+    loadedFormTemplates (state) {
+      return (slug) => {
+        if (!state.loadedFormTemplates[slug]) {
+          return []
+        }
+        return state.loadedFormTemplates[slug]
+      }
+    },
+    loadedFormTemplate (state) {
+      return (slug, formTemplateId) => {
+        if (!state.loadedFormTemplates[slug]) {
+          return null
+        }
+        return state.loadedFormTemplates[slug].find((formTemplate) => {
+          return formTemplate.id === formTemplateId
+        })
+      }
+    }
+  },
   mutations: {
     clearLoadedFormTemplates (state) {
       state.loadedFormTemplates = {}
@@ -281,26 +308,6 @@ export default {
             commit('setLoading', false)
           }
         )
-    }
-  },
-  getters: {
-    loadedFormTemplates (state) {
-      return (slug) => {
-        if (!state.loadedFormTemplates[slug]) {
-          return []
-        }
-        return state.loadedFormTemplates[slug]
-      }
-    },
-    loadedFormTemplate (state) {
-      return (slug, formTemplateId) => {
-        if (!state.loadedFormTemplates[slug]) {
-          return null
-        }
-        return state.loadedFormTemplates[slug].find((formTemplate) => {
-          return formTemplate.id === formTemplateId
-        })
-      }
     }
   }
 }

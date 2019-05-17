@@ -28,56 +28,14 @@
         </v-layout>
 
         <v-flex d-flex xs12>
-          <v-card class="full-width">
-
-            <!-- //Search -->
-            <v-card-title>
-              <v-layout row wrap>
-                <v-flex xs12 md6>
-
-                  <v-btn
-                    outline
-                  >
-                    <download-excel
-                      :data="data"
-                      :fields="fields"
-                      :name="getFileName() + '.csv'"
-                      type="csv"
-                    >
-                      Export
-                    </download-excel>
-                  </v-btn>
-
-                </v-flex>
-                <v-flex xs12 md6>
-                  <v-text-field
-                    v-model="search"
-                    append-icon="search"
-                    label="Search"
-                    single-line
-                    hide-details
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
-            </v-card-title>
-
-            <!-- //Forms -->
-            <v-data-table
-              :headers='headers'
-              :items='data'
-              :search='search'
-              :rows-per-page-items="[25, 50, 100, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }]"
-              :loading="loading"
-            >
-              <template slot='items' slot-scope='props'>
-                <td @click="openForm(props.item.field_form_id)" v-for="header in headers" v-bind:key="header.value">{{ props.item[header.value] }}</td>
-              </template>
-              <v-alert slot='no-results' :value='true' color='error' icon='warning'>
-                Your search for '{{ search }}' found no results.
-              </v-alert>
-            </v-data-table>
-
-          </v-card>
+          <DataTable
+            title="Forms"
+            item-key="field_form_id"
+            v-bind:headers="headers"
+            v-bind:items="items"
+            v-bind:loading="loading"
+            @refresh="refreshData"
+          ></DataTable>
         </v-flex>
 
       </v-layout>
@@ -89,37 +47,43 @@
 
 <script>
 import * as _ from 'lodash'
-import moment from 'moment'
 import CoreMixin from '../../../mixins/CoreMixin'
+import DataTable from '../../DataTable/DataTable.vue'
 export default {
-  mixins: [CoreMixin],
+  mixins: [ CoreMixin ],
+  components: { DataTable },
   data () {
     return {
-      search: '',
       loading: false,
       formTemplateId: null
     }
   },
   computed: {
-    slug () {
-      return window.location.hostname.split('.')[0]
+    formTemplates () {
+      return _.orderBy(this.$store.getters.formTemplates(this.$_slug), 'name')
+    },
+    forms () {
+      return this.$store.getters.formsByFormTemplateId(this.formTemplateId)
+    },
+    formTemplateOptions () {
+      const options = []
+      _.forEach(this.formTemplates, formTemplate => {
+        options.push({ text: formTemplate.name, value: formTemplate.id })
+      })
+      return options
     },
     sections () {
-      return _.orderBy(this.$store.getters.loadedSections(this.formTemplateId), 'order')
+      return _.orderBy(this.$store.getters.sectionsByFormTemplateId(this.formTemplateId), 'order')
+    },
+    answers () {
+      let answers = []
+      this.questions.answers.forEach(answer => {
+        answers.push(answer)
+      })
+      return answers
     },
     headers () {
-      return this.questions
-    },
-    data () {
-      return this.responses
-    },
-    fields () {
-      const fields = {}
-      _.forEach(this.headers, header => { fields[header.text.split(',').join('')] = header.value })
-      return fields
-    },
-    questions () {
-      const data = [
+      let data = [
         { text: 'Form', value: 'field_form_id' },
         { text: 'Organisation', value: 'field_organisation' },
         { text: 'Contact', value: 'field_contact' },
@@ -128,36 +92,26 @@ export default {
         { text: 'Completed', value: 'field_completed_at' },
         { text: 'Progress', value: 'field_progress' }
       ]
-      const questions = this.getFormTemplateQuestions(this.formTemplateId)
-      _.forEach(questions, question => {
-        data.push({ text: question.section_name + ' > ' + question.question, value: 'field_' + question.id })
+      this.sections.forEach(section => {
+        section.questions.forEach(question => {
+          data.push({ text: section.name + ' > ' + question.question, value: 'field_' + question.id })
+        })
       })
       return data
     },
-    answers () {
-      const answers = []
-      const questions = this.getFormTemplateQuestions(this.formTemplateId)
-      _.forEach(questions.answers, answer => {
-        answers.push(answer)
-      })
-      return answers
-    },
-    responses () {
-      const data = []
-      const forms = this.getFormTemplateForms(this.formTemplateId)
-      const sections = _.orderBy(this.$store.getters.loadedSections(this.formTemplateId), 'order')
-      _.forEach(forms, form => {
-        const user = form.user.first_name + ' ' + form.user.last_name
-        const row = {
+    items () {
+      let data = []
+      _.forEach(this.forms, form => {
+        let row = {
           'field_form_id': form.id,
           'field_organisation': form.organisation ? form.organisation.name : '',
-          'field_contact': user,
+          'field_contact': form.user.first_name + ' ' + form.user.last_name,
           'field_created_at': this.$_formatDateTime(form.created_at),
           'field_updated_at': this.$_formatDateTime(form.updated_at),
           'field_completed_at': this.$_formatDateTime(form.submitted_at),
           'field_progress': form.progress
         }
-        _.forEach(sections, section => {
+        _.forEach(this.sections, section => {
           const questions = _.orderBy(section.questions, 'order')
           _.forEach(questions, question => {
             const values = []
@@ -174,70 +128,31 @@ export default {
         data.push(row)
       })
       return data
-    },
-    formTemplates () {
-      return _.orderBy(this.$store.getters.loadedFormTemplates(this.slug), 'name')
-    },
-    forms () {
-      return _.orderBy(this.$store.getters.loadedAllForms(this.slug), 'id')
-    },
-    formTemplateOptions () {
-      const options = []
-      _.forEach(this.formTemplates, formTemplate => {
-        options.push({ text: formTemplate.name, value: formTemplate.id })
-      })
-      return options
-    },
-    orderedSections () {
-      const numberOfSections = this.sections.length
-      const orderedSections = _.filter(this.sections, section => { return !section.parent_section_id }) || []
-      while (orderedSections.length < numberOfSections) {
-        _.forEach(orderedSections, orderedSection => {
-          const childSections = _.filter(this.sections, childSection => { return childSection.parent_section_id === orderedSection.id })
-          let parentSectionIndex = _.findIndex(orderedSections, parentSection => { return parentSection.id === orderedSection.id })
-          _.forEach(childSections, childSection => {
-            parentSectionIndex++
-            orderedSections.splice(parentSectionIndex, 0, childSection)
-          })
-        })
-      }
-      return orderedSections
     }
   },
   methods: {
-    getFormTemplateQuestions (formTemplateId) {
-      const data = []
-      _.forEach(this.orderedSections, section => {
-        const questions = _.orderBy(section.questions, 'order')
-        _.forEach(questions, question => {
-          question.section_name = section.name
-          data.push(question)
-        })
+    refreshData () {
+      this.loading = true
+      Promise.all([
+        this.$store.dispatch('loadAllForms', this.$_slug),
+        this.$store.dispatch('loadAllSections', this.$_slug)
+      ]).then(() => {
+        this.loading = false
       })
-      return data
     },
-    getFormTemplateForms (formTemplateId) {
-      return _.filter(this.forms, form => { return form.form_template.id === formTemplateId })
-    },
-    openForm (id) {
-      this.$router.push('/forms/' + id)
-    },
-    getFileName () {
-      const formTemplate = _.find(this.formTemplates, formTemplate => { return formTemplate.id === this.formTemplateId })
-      const fileName = (formTemplate ? formTemplate.name : '') + ' Compare ' + moment().format('YYYY-MM-DD [at] LTS')
-      return fileName
+    loadData () {
+      this.loading = true
+      Promise.all([
+        this.$store.dispatch('loadAllForms', this.$_slug),
+        this.$store.dispatch('loadFormTemplates', this.$_slug),
+        this.$store.dispatch('loadAllSections', this.$_slug)
+      ]).then(() => {
+        this.loading = false
+      })
     }
   },
   created: function () {
-    this.$store.dispatch('loadAllForms', this.slug)
-    this.$store.dispatch('loadFormTemplates', this.slug)
-    this.$store.dispatch('loadAllSections', this.slug)
+    this.loadData()
   }
 }
 </script>
-
-<style scoped>
-.full-width {
-  width:100%;
-}
-</style>

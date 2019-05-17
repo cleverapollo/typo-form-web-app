@@ -7,6 +7,92 @@ export default {
   state: {
     loadedForms: {}
   },
+  getters: {
+    forms: (state) => {
+      return state.loadedForms
+    },
+    formsByFormTemplateId: (state, getters) => (id) => {
+      return getters.forms[id] || []
+    },
+    // Legacy
+    loadedForms (state) {
+      return (formTemplateId) => {
+        if (!state.loadedForms[formTemplateId]) {
+          return []
+        }
+
+        return state.loadedForms[formTemplateId]
+      }
+    },
+    loadedAllForms (state, getters, rootState) {
+      return (slug) => {
+        let forms = []
+        const formTemplates = rootState.formTemplate.loadedFormTemplates[slug]
+        if (!formTemplates) {
+          return []
+        }
+        for (var i = 0; i < formTemplates.length; i++) {
+          if (state.loadedForms[formTemplates[i].id]) {
+            forms = forms.concat(state.loadedForms[formTemplates[i].id])
+          }
+        }
+        return forms
+      }
+    },
+    loadedApplicationForm (state, getters, rootState) {
+      return (slug, formId) => {
+        const formTemplates = rootState.formTemplate.loadedFormTemplates[slug]
+        if (!formTemplates) {
+          return null
+        }
+        for (var i = 0; i < formTemplates.length; i++) {
+          if (state.loadedForms[formTemplates[i].id]) {
+            const form = state.loadedForms[formTemplates[i].id].find((form) => {
+              return form.id === formId
+            })
+            if (form) {
+              return form
+            }
+          }
+        }
+        return null
+      }
+    },
+    loadedForm (state) {
+      return (formTemplateId, formId) => {
+        if (!state.loadedForms[formTemplateId]) {
+          return null
+        }
+
+        return state.loadedForms[formTemplateId].find((form) => {
+          return form.id === formId
+        })
+      }
+    },
+    loadedFormOrganisations (state, getters, rootState) {
+      return (slug, formTemplateId) => {
+        if (!rootState.organisation.loadedOrganisations[slug]) {
+          return []
+        }
+
+        let organisations = rootState.organisation.loadedOrganisations[slug].slice(0)
+        organisations.push({id: 0, name: 'No Organisation'})
+        const forms = state.loadedForms[formTemplateId]
+        if (forms) {
+          for (var i = 0; i < forms.length; i++) {
+            organisations = organisations.filter((organisation) => {
+              if (!forms[i].organisation) {
+                return organisation.id !== 0
+              } else {
+                return forms[i].organisation.name !== organisation.name
+              }
+            })
+          }
+        }
+        return organisations
+      }
+    }
+  },
   mutations: {
     clearLoadedForms (state) {
       state.loadedForms = {}
@@ -275,85 +361,6 @@ export default {
             reject(error)
           })
       })
-    }
-  },
-  getters: {
-    loadedForms (state) {
-      return (formTemplateId) => {
-        if (!state.loadedForms[formTemplateId]) {
-          return []
-        }
-
-        return state.loadedForms[formTemplateId]
-      }
-    },
-    loadedAllForms (state, getters, rootState) {
-      return (slug) => {
-        let forms = []
-        const formTemplates = rootState.formTemplate.loadedFormTemplates[slug]
-        if (!formTemplates) {
-          return []
-        }
-        for (var i = 0; i < formTemplates.length; i++) {
-          if (state.loadedForms[formTemplates[i].id]) {
-            forms = forms.concat(state.loadedForms[formTemplates[i].id])
-          }
-        }
-        return forms
-      }
-    },
-    loadedApplicationForm (state, getters, rootState) {
-      return (slug, formId) => {
-        const formTemplates = rootState.formTemplate.loadedFormTemplates[slug]
-        if (!formTemplates) {
-          return null
-        }
-        for (var i = 0; i < formTemplates.length; i++) {
-          if (state.loadedForms[formTemplates[i].id]) {
-            const form = state.loadedForms[formTemplates[i].id].find((form) => {
-              return form.id === formId
-            })
-            if (form) {
-              return form
-            }
-          }
-        }
-        return null
-      }
-    },
-    loadedForm (state) {
-      return (formTemplateId, formId) => {
-        if (!state.loadedForms[formTemplateId]) {
-          return null
-        }
-
-        return state.loadedForms[formTemplateId].find((form) => {
-          return form.id === formId
-        })
-      }
-    },
-    loadedFormOrganisations (state, getters, rootState) {
-      return (slug, formTemplateId) => {
-        if (!rootState.organisation.loadedOrganisations[slug]) {
-          return []
-        }
-
-        let organisations = rootState.organisation.loadedOrganisations[slug].slice(0)
-        organisations.push({id: 0, name: 'No Organisation'})
-        const forms = state.loadedForms[formTemplateId]
-        if (forms) {
-          for (var i = 0; i < forms.length; i++) {
-            organisations = organisations.filter((organisation) => {
-              if (!forms[i].organisation) {
-                return organisation.id !== 0
-              } else {
-                return forms[i].organisation.name !== organisation.name
-              }
-            })
-          }
-        }
-        return organisations
-      }
     }
   }
 }
