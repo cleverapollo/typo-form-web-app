@@ -31,35 +31,33 @@
         </v-layout>
       </v-card-text>
 
-      <div v-if="this.user.status === 'Invited'">
-        <v-divider></v-divider>
-        <v-subheader>Workflow Snooze</v-subheader>
-        <v-card-text>
-          <p class="body-1">
-            Occasionally you may need to delay workflow emails for a user, for example, when you know 
-            they will be on leave.
-          </p>
-          <v-layout>
-            <v-flex xs12 md6 pr-4>
-              <v-text-field
-                v-model="editedMultiplier"
-                label="Delay"
-                type="number"
-                :rules="rules.delay"
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs12 md6>
-              <v-autocomplete
-                :items="periods"
-                item-value="milliseconds"
-                item-text="label"
-                label="Period"
-                v-model="editedPeriod"
-              ></v-autocomplete>
-            </v-flex>
-          </v-layout>
-        </v-card-text>
-      </div>
+      <v-divider></v-divider>
+      <v-subheader>Workflow Snooze</v-subheader>
+      <v-card-text>
+        <p class="body-1">
+          Occasionally you may need to delay workflow emails for a user, for example, when you know 
+          they will be on leave.
+        </p>
+        <v-layout>
+          <v-flex xs12 md6 pr-4>
+            <v-text-field
+              v-model="editedMultiplier"
+              label="Delay"
+              type="number"
+              :rules="rules.delay"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12 md6>
+            <v-autocomplete
+              :items="periods"
+              item-value="milliseconds"
+              item-text="label"
+              label="Period"
+              v-model="editedPeriod"
+            ></v-autocomplete>
+          </v-flex>
+        </v-layout>
+      </v-card-text>
 
       <!-- //Actions -->
       <v-divider></v-divider>
@@ -107,21 +105,13 @@
           this.editedPeriod !== _.get(this.user, 'meta.period', 60000) ||
           this.editedMultiplier !== _.get(this.user, 'meta.multiplier', 0)
         ) {
-          if (this.user.status === 'Invited') {
-            this.$store.dispatch('updateInvitedUser', {
-              slug: this.slug,
-              id: this.id,
-              applicationRoleId: this.editedRole,
-              multiplier: this.editedMultiplier,
-              period: this.editedPeriod
-            })
-          } else {
-            this.$store.dispatch('updateUser', {
-              slug: this.slug,
-              id: this.id,
-              applicationRoleId: this.editedRole
-            })
-          }
+          this.$store.dispatch('updateUser', {
+            slug: this.slug,
+            id: this.id,
+            applicationRoleId: this.editedRole,
+            multiplier: this.editedMultiplier,
+            period: this.editedPeriod
+          })
           this.editUser = false
         }
       },
