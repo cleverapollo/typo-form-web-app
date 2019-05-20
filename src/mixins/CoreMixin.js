@@ -29,7 +29,7 @@ export default {
       })
     },
     $_getDate: function (date) {
-      return moment(date).format('YYYY-MM-DD h:mm A')
+      return moment(date).format('YYYY-MM-DD')
     },
     $_getDateTime: function (date) {
       return moment(date).format('YYYY-MM-DD h:mm A')
@@ -46,10 +46,10 @@ export default {
   },
   filters: {
     $_formatDate: function (date) {
-      return date ? this.$_getDate(date) : null
+      return date ? moment(date).format('YYYY-MM-DD') : null
     },
     $_formatDateTime: function (date) {
-      return date ? this.$_getDateTime(date) : null
+      return date ? moment(date).format('YYYY-MM-DD h:mm A') : null
     }
   }
 }
