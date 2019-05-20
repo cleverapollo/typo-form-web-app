@@ -65,7 +65,7 @@
                 <td>{{ props.item.last_name }}</td>
                 <td>{{ props.item.email }}</td>
                 <td>{{ props.item.role }}</td>
-                <td>{{ props.item.status }}</td>
+                <td>{{ props.item.status.label }}</td>
                 <td>{{ props.item.created_at | $_formatDateTime }}</td>
                 <td v-if='$_userIsApplicationAdmin' class="justify-center layout px-0">
                   <v-tooltip bottom>
@@ -142,26 +142,11 @@
         return headers
       },
       users () {
-        let users = []
-        this.activeUsers.forEach(user => { users.push(user) })
-        this.invitedUsers.forEach(user => { users.push(user) })
-        return users
-      },
-      activeUsers () {
-        let users = this.$store.getters.loadedUsers(this.$_slug)
+        const users = this.$store.getters.loadedUsers(this.$_slug)
         users.forEach((user) => {
           user.role = this.$_findRole(user.application_role_id).name
-          user.status = 'Active'
         })
-        return users
-      },
-      invitedUsers () {
-        let users = this.$store.getters.invitedUsers(this.$_slug)
-        users.forEach((user) => {
-          user.role = this.$_findRole(user.application_role_id).name
-          user.status = 'Invited'
-        })
-        return users
+        return this.$store.getters.loadedUsers(this.$_slug)
       },
       filename () {
         return 'Users ' + this.$_getDateTime()

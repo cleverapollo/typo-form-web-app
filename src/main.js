@@ -44,6 +44,13 @@ axios.interceptors.request.use(
   }
 )
 
+// Currently it seems core plugin requests role and a few other inaccessible resources making the
+// password reset broken. This is a temporary fix, a whilelist of routes that don't trigger a
+// redirect during a 401
+const whitelist401 = [
+  'NewPassword'
+]
+
 // Add a response interceptor
 axios.interceptors.response.use(
   (response) => {
@@ -51,8 +58,10 @@ axios.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      store.dispatch('logout')
-      router.push('/login')
+      if (whitelist401.indexOf(router.currentRoute.name) === -1) {
+        store.dispatch('logout')
+        router.push('/login')
+      }
     }
     return Promise.reject(error)
   }
