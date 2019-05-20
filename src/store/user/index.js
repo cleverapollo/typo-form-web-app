@@ -98,6 +98,16 @@ export default {
     }
   },
   getters: {
+    users: (state) => (slug) => {
+      return state.loadedUsers[slug] ? state.loadedUsers[slug] : []
+    },
+    userByUserId: (state, getters) => (slug) => (userId) => {
+      return getters.users(slug).filter(user => user.id === userId)
+    },
+    invitedUsers: (state, getters) => (slug) => {
+      return getters.users(slug).filter(user => user.status.label === 'Invited')
+    },
+    // Legacy
     loadedUsers (state) {
       return (slug) => {
         if (!state.loadedUsers[slug]) {
