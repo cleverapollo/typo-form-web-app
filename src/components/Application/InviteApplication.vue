@@ -172,6 +172,15 @@
                   v-model="message"
                 >
                 </quill-editor>
+                <p class="mt-2 grey--text text--darken-1 caption">
+                  <strong>Available mail tags:</strong>
+                  <ul>
+                    <li v-pre>{{first_name}}: Display the users first name</li>
+                    <li v-pre>{{last_name}}: Display the users last name</li>
+                    <li v-pre>{{email}}: Display the users email</li>
+                    <li v-pre>{{invite_link}}: Display the invitation link</li>
+                  </ul>
+                </p>
               </v-flex>
 
             </v-flex>
@@ -317,7 +326,7 @@
         this.formTemplates = []
         this.subject = 'You have been invited to join the ' + this.$_application.name + ' application on Informed 365'
         this.message = '<p>You have been invited to join the ' + this.$_application.name + ' application on Informed 365.<p>' +
-        '<p>To get started simply navigate <a href="' + this.$_applicationUrl + '" target="_blank">' + this.$_applicationUrl + '</a> and login or create an account using the email address that this invitation was sent to.</p>'
+        '<p>To get started simply navigate to {{invite_link}} and login or create an account using the email address that this invitation was sent to.</p>'
         this.cc = ''
         this.bcc = ''
       }

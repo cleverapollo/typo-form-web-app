@@ -23,7 +23,7 @@
           <CustomSlot type='formsHeader' :mode="editMode" />
         </v-flex>
         
-        <v-flex d-flex xs12 v-if="items.length > 0">
+        <v-flex d-flex xs12 v-if="!loading && items.length > 0">
           <DataTable
             title="Forms"
             item-key="id"
@@ -38,7 +38,7 @@
           ></DataTable>
         </v-flex>
 
-        <v-flex d-flex xs12 v-else>
+        <v-flex d-flex xs12 v-if="!loading && items.length === 0">
             <Well
               title="You haven't created any forms yet!" 
               message="Let's get started, click here to create your first form"
