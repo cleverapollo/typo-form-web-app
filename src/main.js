@@ -10,6 +10,7 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 import { store } from './store'
+import HelperMixin from './mixins/HelperMixin'
 
 import AlertCmp from './components/Shared/Alert'
 import Snackbar from './components/Shared/Snackbar'
@@ -67,6 +68,7 @@ axios.interceptors.response.use(
   }
 )
 Vue.use(Vuetify)
+Vue.mixin(HelperMixin)
 Vue.use(VueQuillEditor)
 Vue.config.productionTip = false
 Vue.prototype.$sanitize = sanitizeHtml

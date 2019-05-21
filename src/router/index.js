@@ -17,6 +17,7 @@ import ApplicationSettings from '@/components/Application/ApplicationSettings'
 
 // Users
 import Users from '@/components/User/Users'
+import UserProfile from '@/components/User/UserProfile'
 
 // Organisations
 import Organisations from '@/components/Organisation/Organisations'
@@ -124,6 +125,16 @@ const router = new Router({
       path: '/users',
       name: 'Users',
       component: Users,
+      meta: {
+        application: true,
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/users/:id',
+      name: 'UserProfile',
+      component: UserProfile,
+      props: true,
       meta: {
         application: true,
         requiresAuth: true

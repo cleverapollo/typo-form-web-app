@@ -86,15 +86,19 @@ export default {
     },
     deleteUser ({commit}, payload) {
       commit('setLoading', true)
-      window.axios.delete(APPLICATION_URL + payload.slug + USER_URL + '/' + payload.id)
-        .then(() => {
-          commit('setLoading', false)
+      return new Promise((resolve, reject) => {
+        window.axios.delete(APPLICATION_URL + payload.slug + USER_URL + '/' + payload.id)
+        .then(response => {
           commit('deleteUser', payload)
+          resolve(response)
         })
         .catch(error => {
-          console.log(error)
+          reject(error)
+        })
+        .finally(() => {
           commit('setLoading', false)
         })
+      })
     }
   },
   getters: {
@@ -106,6 +110,10 @@ export default {
     },
     invitedUsers: (state, getters) => (slug) => {
       return getters.users(slug).filter(user => user.status.label === 'Invited')
+    },
+    userIsAdmin: (state, getters) => (slug) => (userId) => {
+      const user = getters.userByUserId(slug, userId)
+      return user && user.application_role.label === 'Admin'
     },
     // Legacy
     loadedUsers (state) {

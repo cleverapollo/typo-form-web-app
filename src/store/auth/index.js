@@ -233,8 +233,11 @@ export default {
     }
   },
   getters: {
-    user (state) {
+    user: (state) => {
       return state.user
+    },
+    userIsSuperAdmin: (state, getters) => {
+      return getters.user.role.label === 'Super Admin'
     }
   }
 }
