@@ -199,6 +199,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   import papa from 'papaparse'
   import validator from 'validator'
   import ApplicationMixin from '../../mixins/ApplicationMixin.js'
@@ -260,7 +261,7 @@
         this.setForm()
       },
       addUser () {
-        const newTemplate = Object.assign({}, this.invitationTemplate)
+        const newTemplate = _.merge({}, this.invitationTemplate)
         this.invitations.push(newTemplate)
       },
       bulkUpload () {
@@ -278,7 +279,7 @@
           skipEmptyLines: true,
           complete (results) {
             results.data.forEach((result) => {
-              const invitation = Object.assign({}, _this.invitationTemplate)
+              const invitation = _.merge({}, _this.invitationTemplate)
               for (const [key, val] of Object.entries(result)) {
                 if (invitation.hasOwnProperty(key)) {
                   invitation[key] = val
@@ -295,7 +296,7 @@
       removeUser (index) {
         this.invitations.splice(index, 1)
         if (!this.invitations.length) {
-          const newTemplate = Object.assign({}, this.invitationTemplate)
+          const newTemplate = _.merge({}, this.invitationTemplate)
           this.invitations.push(newTemplate)
         }
       },
@@ -310,7 +311,7 @@
         this.setForm()
       },
       setForm () {
-        const newTemplate = Object.assign({}, this.invitationTemplate)
+        const newTemplate = _.merge({}, this.invitationTemplate)
         this.invitations = []
         this.invitations.push(newTemplate)
         this.role_id = null
