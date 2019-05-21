@@ -14,7 +14,7 @@ export default {
       return getters.notes(slug).filter(note => note.user.id === userId)
     },
     noteById: (state, getters) => (slug, id) => {
-      return getters.notes(slug).filter(note => note.id === id)
+      return getters.notes(slug).find(note => note.id === id)
     }
   },
   mutations: {
