@@ -49,7 +49,9 @@ axios.interceptors.request.use(
 // password reset broken. This is a temporary fix, a whilelist of routes that don't trigger a
 // redirect during a 401
 const whitelist401 = [
-  'NewPassword'
+  'NewPassword',
+  'Register',
+  'Login'
 ]
 
 // Add a response interceptor

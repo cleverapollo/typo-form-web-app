@@ -104,11 +104,13 @@
 
 <script>
   import PasswordComplexity from './PasswordComplexity'
+  import * as encodedSearch from '../../util/encodedSearch'
   export default {
     data () {
+      const details = encodedSearch.extractLoginDetails()
       return {
         submitted: false,
-        email: '',
+        email: details.email,
         password: ''
       }
     },
