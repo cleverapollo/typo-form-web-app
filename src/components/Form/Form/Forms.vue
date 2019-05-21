@@ -23,7 +23,7 @@
           <CustomSlot type='formsHeader' :mode="editMode" />
         </v-flex>
         
-        <v-flex d-flex xs12>
+        <v-flex d-flex xs12 v-if="items.length > 0">
           <DataTable
             title="Forms"
             item-key="id"
@@ -36,6 +36,15 @@
             @click="selectItem"
             @create="createItem"
           ></DataTable>
+        </v-flex>
+
+        <v-flex d-flex xs12 v-else>
+            <Well
+              title="You haven't created any forms yet!" 
+              message="Let's get started, click here to create your first form"
+              icon="assignment"
+              @click='createForm = true'
+            ></Well>
         </v-flex>
 
         <v-flex>
@@ -53,6 +62,7 @@
   import CreateForm from './CreateForm'
   import CustomSlot from '../../Layout/CustomSlot'
   import DataTable from '../../DataTable/DataTable'
+  import Well from '../../Shared/Well'
   import ApplicationMixin from '../../../mixins/ApplicationMixin'
   export default {
     name: 'Forms',
@@ -60,7 +70,8 @@
     components: {
       CreateForm,
       CustomSlot,
-      DataTable
+      DataTable,
+      Well
     },
     data () {
       return {

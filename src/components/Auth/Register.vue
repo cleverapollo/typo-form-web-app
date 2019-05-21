@@ -142,14 +142,16 @@
 <script>
   import PasswordComplexity from './PasswordComplexity'
   import PasswordMixin from './PasswordMixin.js'
+  import * as encodedSearch from '../../util/encodedSearch'
   export default {
     mixins: [PasswordMixin],
     data () {
+      const details = encodedSearch.extractRegistrationDetails()
       return {
         submitted: false,
-        firstname: '',
-        lastname: '',
-        email: '',
+        firstname: details.firstname,
+        lastname: details.lastname,
+        email: details.email,
         password: '',
         terms: false,
         otherName: '', // Honey Pot
