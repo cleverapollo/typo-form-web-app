@@ -12,6 +12,9 @@ export default {
     },
     $_getDateTime: function (date) {
       return moment(date).format('YYYY-MM-DD h:mm A')
+    },
+    $_getTimeSince: function (date) {
+      return moment(date).fromNow()
     }
   }
 }
