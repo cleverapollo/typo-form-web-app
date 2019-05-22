@@ -237,7 +237,7 @@ export default {
       return state.user
     },
     userIsSuperAdmin: (state, getters) => {
-      return getters.user.role.label === 'Super Admin'
+      return getters.user && getters.user.role && getters.user.role.label === 'Super Admin'
     }
   }
 }
