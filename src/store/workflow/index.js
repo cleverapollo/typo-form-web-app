@@ -91,7 +91,7 @@ export default {
     updateWorkflow ({commit}, payload) {
       commit('setLoading', true)
       return new Promise((resolve, reject) => {
-        window.axios.post(APPLICATION_URL + payload.slug + WORKFLOW_URL + '/' + payload.id, payload)
+        window.axios.put(APPLICATION_URL + payload.slug + WORKFLOW_URL + '/' + payload.id, payload)
           .then(
             response => {
               commit('setLoading', false)

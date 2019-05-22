@@ -258,7 +258,7 @@
             <v-layout row py-2>
               <v-flex xs12 class="text-xs-right">
                 <v-btn flat @click.stop="close">Cancel</v-btn>
-                <v-btn flat class="primary" @click.stop="validate" v-if="createMode">Save</v-btn>
+                <v-btn flat class="primary" @click.stop="validate">Save</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
