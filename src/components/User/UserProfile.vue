@@ -8,76 +8,75 @@
 
     <v-container fluid grid-list-lg pa-0>
       <v-layout row wrap justify-space-between>
-        <v-flex xs12 sm3>
+        <v-flex xs12>
           <v-card>
             <v-card-text>
-              <v-layout row wrap>
-                <v-flex d-flex xs12 pb-0>
-                  <div class="title">
-                    {{ fullName }}
+              <v-layout row wrap pa-2>
+                <v-flex shrink>
+                  <v-avatar color="primary" size="90">
+                    <span class="white--text display-2">{{ avatar }}</span>
+                  </v-avatar>
+                </v-flex>
+                <v-flex grow>
+                  <v-flex d-flex xs12 py-0>
+                    <div class="headline">
+                      {{ fullName }}
+                    </div>
+                  </v-flex>
+                  <v-flex d-flex xs12 pt-1>
+                    <div class="body-2">{{ email }}</div>
+                  </v-flex>
+                  <v-flex xs12 pa-0>
                     <v-chip :color='statusColor' text-color="white" small>
                       {{ status }}
                     </v-chip>
-                  </div>
+                  </v-flex>
                 </v-flex>
-                <v-flex d-flex xs12 pt-1>
-                  <div class="body-2">{{ email }}</div>
-                </v-flex>
-                <v-flex d-flex xs12 py-1>
-                  <div class="">Role: {{ roleName }}</div>
-                </v-flex>
-                <v-flex d-flex xs12 py-1>
-                  <div class="grey--text text--darken-1">Last signed-in: {{ signInTime }}</div>
-                </v-flex>
-                <v-flex d-flex xs12 py-1>
-                  <div class="grey--text text--darken-1">Created: {{ createdDate }}</div>
+                <v-spacer></v-spacer>
+                <v-divider vertical></v-divider>
+                <v-flex shrink>
+                  <v-flex xs12 py-0>
+                    <div class="grey--text text--darken-1">Role: {{ roleName }}</div>
+                  </v-flex>
+                  <v-flex xs12 py-0>
+                    <div class="grey--text text--darken-1">Last signed-in: {{ signInTime }}</div>
+                  </v-flex>
+                  <v-flex xs12 py-0>
+                    <div class="grey--text text--darken-1">Created: {{ createdDate }}</div>
+                  </v-flex>
+                  <v-flex xs12 py-0>
+                    <!--
+                    <v-tooltip bottom>
+                      <v-btn class="ma-0" flat icon @click.stop="confirmDelete()" slot="activator">
+                        <v-icon>edit</v-icon>
+                      </v-btn>
+                      <span>Edit user</span>
+                    </v-tooltip>
+                    -->
+                    <v-tooltip bottom>
+                      <v-btn class="ma-0" flat icon @click.stop="confirmDelete = true" slot="activator">
+                        <v-icon>delete</v-icon>
+                      </v-btn>
+                      <span>Delete user</span>
+                    </v-tooltip>
+                  </v-flex>
                 </v-flex>
               </v-layout>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-text>
-              <v-list>
-                <!--
-                <v-list-tile @click=''>
-                  <v-list-tile-action>
-                    <v-icon>edit</v-icon>
-                  </v-list-tile-action>
-                  <v-list-tile-content>
-                    Edit User
-                  </v-list-tile-content>
-                </v-list-tile>
-                -->
-                <v-list-tile @click='confirmDelete = true'>
-                  <v-list-tile-action>
-                    <v-icon>delete</v-icon>
-                  </v-list-tile-action>
-                  <v-list-tile-content>
-                    Delete User
-                  </v-list-tile-content>
-                </v-list-tile>
-              </v-list>
             </v-card-text>
           </v-card>
         </v-flex>
 
-        <v-flex xs12 sm9>
+        <v-flex xs12>
           <v-tabs
             slider-color="primary"
+            color="transparent"
+            class="user-profile-tabs"
           >
             <v-tab href="#forms">Forms</v-tab>
-            <!--
-            <v-tab href="#organisations">Organisations</v-tab>
-            -->
             <v-tab href="#notes">Notes</v-tab>
-
             <v-tab-item value="forms">
               <UserForms :user-id="userId"></UserForms>
             </v-tab-item>
-            <!--
-            <v-tab-item value="organisations">
-              <UserOrganisations :user-id="userId"></UserOrganisations>
-            </v-tab-item>
-            -->
             <v-tab-item value="notes">
               <NotesTable :filters='filters'></NotesTable>
             </v-tab-item>
@@ -120,7 +119,6 @@
 
 <script>
 import UserForms from './UserForms'
-import UserOrganisations from './UserOrganisations'
 import NotesTable from '../Note/NotesTable'
 export default {
   name: 'UserProfile',
@@ -132,7 +130,6 @@ export default {
   },
   components: {
     UserForms,
-    UserOrganisations,
     NotesTable
   },
   data () {
@@ -169,6 +166,9 @@ export default {
     },
     roleName () {
       return this.user ? this.user.role.label : ''
+    },
+    avatar () {
+      return this.user && this.user.first_name ? this.user.first_name.charAt(0).toUpperCase() : null
     }
   },
   methods: {
@@ -197,3 +197,8 @@ export default {
   }
 }
 </script>
+<style>
+.user-profile-tabs .v-tabs__bar {
+  margin-bottom:15px
+}
+</style>
