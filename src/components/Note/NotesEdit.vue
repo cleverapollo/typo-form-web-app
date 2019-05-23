@@ -1,8 +1,8 @@
 <template>
-  <v-dialog v-model="show" fullscreen hide-overlay lazy>
+  <v-dialog v-model="showDialog" fullscreen hide-overlay lazy>
     <v-card>
       <v-toolbar dark color="primary">
-        <v-btn icon dark @click.stop="show = false">
+        <v-btn icon dark @click.stop="close()">
           <v-icon>close</v-icon>
         </v-btn>
         <v-toolbar-title>{{ title }}</v-toolbar-title>
@@ -146,18 +146,25 @@
 </template>
 
 <script>
+import { sortBy } from 'lodash'
+import { mapGetters } from 'vuex'
 export default {
   name: 'NotesEdit',
   props: {
     id: {
       type: Number
+    },
+    show: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
-      show: false,
       valid: true,
+      showDialog: this.show,
       dateDialog: false,
+      title: 'Edit Note',
       recordableTypes: [
         'User',
         'Organisation'
@@ -199,33 +206,30 @@ export default {
     }
   },
   computed: {
-    title () {
-      return this.item && this.item.id ? 'Create Note' : 'Edit Note'
-    },
-    users () {
+    ...mapGetters([
+      'users',
+      'organisations',
+      'noteTypes'
+    ]),
+    userList () {
       let users = []
-      this.$store.getters.users(this.$_slug).forEach(item => {
+      this.users(this.$_slug).forEach(item => {
         let user = { ...item }
         user.name = user.first_name + ' ' + user.last_name + ' (' + user.email + ')'
         users.push(user)
       })
       return users
-    },
-    organisations () {
-      return this.getters.organisations(this.$_slug)
-    },
-    noteTypes () {
-      return this.$store.getters.noteTypes
     }
   },
   methods: {
     saveNote () {
       this.note.slug = this.$_slug
       this.$store.dispatch(this.note.id ? 'updateNote' : 'createNote', this.note)
+      .then(() => this.loadData())
       this.close()
     },
     close () {
-      this.dialog = false
+      this.$emit('close')
       this.note = { ...this.noteTemplate }
     },
     validate () {
@@ -234,8 +238,8 @@ export default {
       }
     },
     getRecordables (type) {
-      const records = type === 'Organisation' ? this.organisations : this.users
-      return records.sort((a, b) => a.name - b.name)
+      const records = type === 'Organisation' ? this.organisations(this.$_slug) : this.userList
+      return sortBy(records, record => record.name)
     },
     loadData () {
       this.loading = true
@@ -249,8 +253,19 @@ export default {
       })
     }
   },
-  created: function () {
-    this.loadData()
+  watch: {
+    show: {
+      immediate: true,
+      handler () {
+        this.showDialog = this.show
+      }
+    },
+    id: {
+      immediate: true,
+      handler () {
+        this.note = { ...this.$store.getters.noteById(this.$_slug, this.id) }
+      }
+    }
   }
 }
 </script>

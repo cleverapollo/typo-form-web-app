@@ -25,7 +25,7 @@ export default {
     noteTypes: (state) => {
       return state.noteTypes
     },
-    noteTypeByNoteTypeId: (state, getters) => (noteTypeId) => {
+    noteTypeById: (state, getters) => (noteTypeId) => {
       return getters.noteTypes.find(noteType => noteType.id === noteTypeId)
     }
   },

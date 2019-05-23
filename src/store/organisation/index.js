@@ -178,7 +178,7 @@ export default {
     organisations: (state) => (slug) => {
       return state.loadedOrganisations[slug] || []
     },
-    organisatinByOrganisationId: (state, getters) => (slug, organisationId) => {
+    organisationById: (state, getters) => (slug, organisationId) => {
       return getters.organisations(slug).find(organisation => organisation.id === organisationId)
     },
     // Legacy

@@ -8,7 +8,7 @@
 
     <v-container fluid grid-list-lg pa-0>
       <v-layout row wrap justify-space-between>
-        <v-flex d-flex xs12 sm3>
+        <v-flex xs12 sm3>
           <v-card>
             <v-card-text>
               <v-layout row wrap>
@@ -60,7 +60,7 @@
           </v-card>
         </v-flex>
 
-        <v-flex d-flex xs12 sm9>
+        <v-flex xs12 sm9>
           <v-tabs
             slider-color="primary"
           >
@@ -79,7 +79,7 @@
             </v-tab-item>
             -->
             <v-tab-item value="notes">
-              <UserNotes :user-id="userId"></UserNotes>
+              <NotesTable :filters='filters'></NotesTable>
             </v-tab-item>
           </v-tabs>
         </v-flex>
@@ -121,7 +121,7 @@
 <script>
 import UserForms from './UserForms'
 import UserOrganisations from './UserOrganisations'
-import UserNotes from './UserNotes'
+import NotesTable from '../Note/NotesTable'
 export default {
   name: 'UserProfile',
   props: {
@@ -133,18 +133,21 @@ export default {
   components: {
     UserForms,
     UserOrganisations,
-    UserNotes
+    NotesTable
   },
   data () {
     return {
       userId: parseInt(this.id),
       loading: false,
-      confirmDelete: false
+      confirmDelete: false,
+      filters: [
+        { key: 'User', values: [parseInt(this.id)] }
+      ]
     }
   },
   computed: {
     user () {
-      return this.$store.getters.userByUserId(this.$_slug, this.userId)
+      return this.$store.getters.userById(this.$_slug, this.userId)
     },
     fullName () {
       return this.user ? this.user.first_name + ' ' + this.user.last_name : ''

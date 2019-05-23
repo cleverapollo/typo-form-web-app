@@ -35,7 +35,7 @@ import CompareForms from '@/components/Form/Form/CompareForms'
 import ChartBuilder from '@/components/Form/Form/ChartBuilder'
 
 // Notes
-import NotesList from '@/components/Note/NotesList'
+import NotesPage from '@/components/Note/NotesPage'
 
 // Workflows
 import WorkflowList from '@/components/Workflow/WorkflowList'
@@ -171,7 +171,7 @@ const router = new Router({
     {
       path: '/notes',
       name: 'Notes',
-      component: NotesList,
+      component: NotesPage,
       meta: {
         application: true,
         requiresAuth: true
