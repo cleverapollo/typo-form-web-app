@@ -91,6 +91,7 @@
           v-for="header in visibleHeaders" 
           v-bind:key="header.value"
           @click.stop="itemClicked(props.item)"
+          :class="getClickableClass"
         >
           {{ props.item[header.value] }}
         </td>
@@ -271,6 +272,9 @@ export default {
     },
     canCreate () {
       return this.$listeners && this.$listeners.hasOwnProperty('create')
+    },
+    getClickableClass () {
+      return this.canClick ? 'clickable' : ''
     }
   },
   methods: {
@@ -343,5 +347,8 @@ export default {
   }
   .data-table {
     width:100%;
+  }
+  .data-table .clickable {
+    cursor:pointer;
   }
 </style>

@@ -105,14 +105,14 @@ export default {
     users: (state) => (slug) => {
       return state.loadedUsers[slug] ? state.loadedUsers[slug] : []
     },
-    userByUserId: (state, getters) => (slug) => (userId) => {
-      return getters.users(slug).filter(user => user.id === userId)
+    userById: (state, getters) => (slug, userId) => {
+      return getters.users(slug).find(user => user.id === userId)
     },
     invitedUsers: (state, getters) => (slug) => {
       return getters.users(slug).filter(user => user.status.label === 'Invited')
     },
-    userIsAdmin: (state, getters) => (slug) => (userId) => {
-      const user = getters.userByUserId(slug, userId)
+    userIsAdmin: (state, getters) => (slug, userId) => {
+      const user = getters.userById(slug, userId)
       return user && user.application_role.label === 'Admin'
     },
     // Legacy

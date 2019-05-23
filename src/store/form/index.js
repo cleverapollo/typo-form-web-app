@@ -14,6 +14,13 @@ export default {
     formsByFormTemplateId: (state, getters) => (id) => {
       return getters.forms[id] || []
     },
+    formsByUserId: (state, getters) => (userId) => {
+      let forms = []
+      Object.keys(getters.forms).forEach(key => {
+        forms = [ ...forms, ...getters.formsByFormTemplateId(key).filter(form => form.user.id === userId) ]
+      })
+      return forms
+    },
     // Legacy
     loadedForms (state) {
       return (formTemplateId) => {

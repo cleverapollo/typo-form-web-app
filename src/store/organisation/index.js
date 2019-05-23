@@ -175,6 +175,13 @@ export default {
     }
   },
   getters: {
+    organisations: (state) => (slug) => {
+      return state.loadedOrganisations[slug] || []
+    },
+    organisationById: (state, getters) => (slug, organisationId) => {
+      return getters.organisations(slug).find(organisation => organisation.id === organisationId)
+    },
+    // Legacy
     loadedOrganisations (state) {
       return (slug) => {
         if (!state.loadedOrganisations[slug]) {

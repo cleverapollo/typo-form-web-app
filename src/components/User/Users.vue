@@ -72,7 +72,7 @@
       },
       headers () {
         let headers = [
-          { text: 'User ID', value: 'id' },
+          { text: 'User ID', value: 'id', visible: false },
           { text: 'First Name', value: 'first_name' },
           { text: 'Last Name', value: 'last_name' },
           { text: 'Email', value: 'email' },
@@ -107,7 +107,7 @@
         this.loadData()
       },
       selectItem (item) {
-        // this.$router.push('/users/' + item)
+        this.$router.push('/users/' + item)
       },
       createItem () {
         this.invite = true

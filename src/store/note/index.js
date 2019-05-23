@@ -4,7 +4,13 @@ const NOTE_URL = `/notes`
 
 export default {
   state: {
-    notes: {}
+    notes: {},
+    noteTypes: [
+      { id: 1, type: 'Phone' },
+      { id: 2, type: 'Email' },
+      { id: 4, type: 'Meeting' },
+      { id: 3, type: 'Other' }
+    ]
   },
   getters: {
     notes: (state) => (slug) => {
@@ -14,7 +20,13 @@ export default {
       return getters.notes(slug).filter(note => note.user.id === userId)
     },
     noteById: (state, getters) => (slug, id) => {
-      return getters.notes(slug).filter(note => note.id === id)
+      return getters.notes(slug).find(note => note.id === id)
+    },
+    noteTypes: (state) => {
+      return state.noteTypes
+    },
+    noteTypeById: (state, getters) => (noteTypeId) => {
+      return getters.noteTypes.find(noteType => noteType.id === noteTypeId)
     }
   },
   mutations: {
