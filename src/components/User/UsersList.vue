@@ -51,6 +51,7 @@
   import DataTable from '../DataTable/DataTable'
   import CustomSlot from '../Layout/CustomSlot'
   export default {
+    name: 'UsersList',
     components: {
       InviteApplication,
       CustomSlot,

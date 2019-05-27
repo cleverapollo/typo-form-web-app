@@ -16,7 +16,7 @@ import Dashboard from '@/components/Dashboard/Dashboard'
 import ApplicationSettings from '@/components/Application/ApplicationSettings'
 
 // Users
-import Users from '@/components/User/Users'
+import UsersList from '@/components/User/UsersList'
 import UserProfile from '@/components/User/UserProfile'
 
 // Organisations
@@ -123,8 +123,8 @@ const router = new Router({
     },
     {
       path: '/users',
-      name: 'Users',
-      component: Users,
+      name: 'UsersList',
+      component: UsersList,
       meta: {
         application: true,
         requiresAuth: true

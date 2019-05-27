@@ -45,14 +45,12 @@
                     <div class="grey--text text--darken-1">Created: {{ createdDate }}</div>
                   </v-flex>
                   <v-flex xs12 py-0>
-                    <!--
                     <v-tooltip bottom>
-                      <v-btn class="ma-0" flat icon @click.stop="confirmDelete()" slot="activator">
+                      <v-btn class="ma-0" flat icon @click.stop="editUser = true" slot="activator">
                         <v-icon>edit</v-icon>
                       </v-btn>
                       <span>Edit user</span>
                     </v-tooltip>
-                    -->
                     <v-tooltip bottom>
                       <v-btn class="ma-0" flat icon @click.stop="confirmDelete = true" slot="activator">
                         <v-icon>delete</v-icon>
@@ -113,13 +111,14 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
+    <UserEdit :show='editUser' :id='userId' :slug='$_slug' @close='editUser = false'></UserEdit>
   </div>
 </template>
 
 <script>
 import UserForms from './UserForms'
 import NotesTable from '../Note/NotesTable'
+import UserEdit from './UserEdit'
 export default {
   name: 'UserProfile',
   props: {
@@ -130,13 +129,15 @@ export default {
   },
   components: {
     UserForms,
-    NotesTable
+    NotesTable,
+    UserEdit
   },
   data () {
     return {
       userId: parseInt(this.id),
       loading: false,
       confirmDelete: false,
+      editUser: false,
       filters: [
         { key: 'User', values: [parseInt(this.id)] }
       ]

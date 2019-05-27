@@ -4,7 +4,6 @@ const QUESTION_TYPE_URL = `${API_URL}question-type`
 const ROLE_URL = `${API_URL}role`
 const TYPE_URL = `${API_URL}type`
 const COUNTRY_URL = `${API_URL}country`
-const PERIOD_URL = `${API_URL}period`
 const STATUS_URL = `${API_URL}status`
 const VALIDATION_TYPE_URL = `${API_URL}validation-type`
 const COMPARATOR_URL = `${API_URL}comparator`
@@ -18,7 +17,6 @@ export default {
     error: null,
     questionTypes: [],
     validationTypes: [],
-    periods: [],
     roles: [],
     types: [],
     statuses: [],
@@ -26,7 +24,13 @@ export default {
     triggerTypes: [],
     countries: [],
     answerSorts: [],
-    reportURL: null
+    reportURL: null,
+    periods: [
+      { milliseconds: 60000, label: 'minutes' },
+      { milliseconds: 3600000, label: 'hours' },
+      { milliseconds: 86400000, label: 'days' },
+      { milliseconds: 604800000, label: 'weeks' }
+    ]
   },
   mutations: {
     setLoading (state, payload) {
@@ -52,9 +56,6 @@ export default {
     },
     setCountries (state, payload) {
       state.countries = payload
-    },
-    setPeriods (state, payload) {
-      state.periods = payload
     },
     setStatuses (state, payload) {
       state.statuses = payload
@@ -175,22 +176,6 @@ export default {
           }
         )
     },
-    loadPeriods ({commit}) {
-      commit('setLoading', true)
-      window.axios.get(PERIOD_URL)
-        .then(
-          response => {
-            commit('setLoading', false)
-            commit('setPeriods', response['data']['periods'])
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
-    },
     loadStatuses ({commit}) {
       commit('setLoading', true)
       window.axios.get(STATUS_URL)
@@ -293,9 +278,19 @@ export default {
     }
   },
   getters: {
-    loading (state) {
-      return state.loading
-    },
+    loading: state => state.loading,
+    questionTypes: state => state.questionTypes,
+    validationTypes: state => state.validationTypes,
+    periods: state => state.periods,
+    roles: state => state.roles,
+    types: state => state.types,
+    countries: state => state.countries,
+    statuses: state => state.statuses,
+    comparitors: (state) => state.comparitors,
+    triggerTypes: state => state.triggerTypes,
+    answerSorts: state => state.answerSorts,
+    reportUrl: state => state.reportURL,
+    applicationRoles: (state, getters) => getters.roles.filter(role => role.name !== 'Super Admin'),
     error (state) {
       let errorMessage = state.error
       if (errorMessage && !errorMessage.message) {
@@ -306,39 +301,6 @@ export default {
         errorMessage.message = errorString.join('<br>')
       }
       return errorMessage
-    },
-    questionTypes (state) {
-      return state.questionTypes
-    },
-    validationTypes (state) {
-      return state.validationTypes
-    },
-    periods (state) {
-      return state.periods
-    },
-    roles (state) {
-      return state.roles
-    },
-    types (state) {
-      return state.types
-    },
-    countries (state) {
-      return state.countries
-    },
-    statuses (state) {
-      return state.statuses
-    },
-    comparators (state) {
-      return state.comparators
-    },
-    triggerTypes (state) {
-      return state.triggerTypes
-    },
-    answerSorts (state) {
-      return state.answerSorts
-    },
-    reportURL (state) {
-      return state.reportURL
     }
   }
 }

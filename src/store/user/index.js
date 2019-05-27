@@ -18,9 +18,9 @@ export default {
     updateUser (state, payload) {
       let users = Object.assign({}, state.loadedUsers)
       const index = users[payload.slug].findIndex(user => {
-        return user.id === payload.user.user_id
+        return user.id === payload.user.id
       })
-      users[payload.slug][index].application_role_id = payload.user.application_role_id
+      users[payload.slug][index] = payload.user
       state.loadedUsers = users
     },
     deleteUser (state, payload) {
@@ -102,19 +102,10 @@ export default {
     }
   },
   getters: {
-    users: (state) => (slug) => {
-      return state.loadedUsers[slug] ? state.loadedUsers[slug] : []
-    },
-    userById: (state, getters) => (slug, userId) => {
-      return getters.users(slug).find(user => user.id === userId)
-    },
-    invitedUsers: (state, getters) => (slug) => {
-      return getters.users(slug).filter(user => user.status.label === 'Invited')
-    },
-    userIsAdmin: (state, getters) => (slug, userId) => {
-      const user = getters.userById(slug, userId)
-      return user && user.application_role.label === 'Admin'
-    },
+    users: state => slug => state.loadedUsers[slug] ? state.loadedUsers[slug] : [],
+    userById: (state, getters) => (slug, userId) => getters.users(slug).find(user => user.id === userId),
+    invitedUsers: (state, getters) => slug => getters.users(slug).filter(user => user.status.label === 'Invited'),
+    userIsAdmin: (state, getters) => (slug, userId) => getters.userById(slug, userId) && getters.userById(slug, userId).label === 'Admin',
     // Legacy
     loadedUsers (state) {
       return (slug) => {
