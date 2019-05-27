@@ -1,17 +1,11 @@
 <template>
   <v-app>
-
-    <!-- //Application Loading -->
-    <!-- // TODO: Set loader for pages, not updates -->
-    <!-- <ApplicationLoading /> -->
-
-    <!-- //Navigation Drawer -->
     <v-navigation-drawer
       v-model="drawer"
       fixed
       app
       temporary
-      v-if="!backgroundRequired"
+      v-if="requiresAuth && user"
     >
 
       <v-toolbar flat class="transparent">
@@ -21,44 +15,38 @@
               <img src="/static/icon.png" >
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title>{{ app_name }}</v-list-tile-title>
+              <v-list-tile-title>{{ $_appName }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
       </v-toolbar>
 
-      <!-- //Authenticated User -->
-      <template v-if="user">
-
-        <!-- //Application Items -->
-        <template v-if="application">
-          <v-divider></v-divider>
-          <v-list dense>
-            <template
-              v-for="item in applicationItems"
+      <template v-if="application">
+        <v-divider></v-divider>
+        <v-list dense>
+          <template
+            v-for="item in applicationMenuItems"
+            >
+            <v-list-tile
+              :to="'/' + item.path"
+              :key="item.title"
               v-if="!item.admin || isAdmin"
-              >
-              <v-list-tile
-                :to="'/' + item.path"
-                :key="item.title"
-              >
-                <v-list-tile-action>
-                  <v-icon size="30">{{ item.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>
-                    {{ item.title }}
-                  </v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </template>
-          </v-list>
-        </template>
+            >
+              <v-list-tile-action>
+                <v-icon size="30">{{ item.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  {{ item.title }}
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </template>
+        </v-list>
 
-        <!-- //Account Items -->
         <v-list dense>
           <v-divider></v-divider>
-          <template v-for="item in accountItems">
+          <template v-for="item in userMenuItems">
             <v-list-tile
               :to="'/' + item.path"
               :key="item.title"
@@ -86,16 +74,16 @@
       class="elevation-0 app-toolbar"
       app
       fixed
-      v-if="!backgroundRequired"
+      v-if="requiresAuth && user"
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title class="ml-0 pl-3">
-        <router-link :to="applicationRoute(application)" tag="span" style="cursor: pointer">
+        <router-link :to="applicationDefaultRoute" tag="span" style="cursor: pointer">
           <div class="d-flex flex-row">
-            <v-avatar tile v-if="applicationIcon(application)">
-              <img :src="applicationIcon(application)"/>
-            </v-avatar>
-            <div class="pl-3 application-name">{{ applicationName(application) }}</div>
+            <v-list-tile-avatar tile v-if="getApplicationIcon(application.icon)">
+              <img :src="getApplicationIcon(application.icon)">
+            </v-list-tile-avatar>
+            <div class="pl-3 application-name">{{ applicationName }}</div>
           </div>
         </router-link>
       </v-toolbar-title>
@@ -110,21 +98,21 @@
             </v-avatar>
           </v-btn>
           <v-list class="application-list scroll-y">
-            <template v-for="(application, index) in sortedApplications" :v-bind="application.id">
+            <template v-for="application in applicationList" :v-bind="application.id">
               <v-list-tile
                 avatar
                 ripple
                 :key="application.id"
-                :href="applicationUrl(application)">
-                <v-list-tile-avatar tile v-if="applicationIcon(application)">
-                  <img :src="applicationIcon(application)">
+                :href="$_getApplicationUrl(application.slug)">
+                <v-list-tile-avatar tile v-if="getApplicationIcon(application.icon)">
+                  <img :src="getApplicationIcon(application.icon)">
                 </v-list-tile-avatar>
                 <v-list-tile-avatar color="primary" v-else>
-                  <span class="white--text headline">{{ applicationFirstLetter(application) }}</span>
+                  <span class="white--text headline">{{ $_getFirstChar(application.name) }}</span>
                 </v-list-tile-avatar>
                 <v-list-tile-content>
                   <div class="d-flex flex-row">
-                    <div class="pl-3">{{ applicationName(application) }}</div>
+                    <div class="pl-3">{{ application.name }}</div>
                   </div>
                 </v-list-tile-content>
               </v-list-tile>
@@ -153,7 +141,7 @@
               </v-list-tile-content>
             </v-list-tile>
             <v-list-tile
-              @click="onLogout">
+              @click="logout">
               <v-list-tile-avatar>
                 <v-icon>lock</v-icon>
               </v-list-tile-avatar>
@@ -171,7 +159,7 @@
       </template>
     </v-toolbar>
     <v-content>
-      <v-container :fill-height="backgroundRequired" fluid :class="{'px-0': $vuetify.breakpoint.xsOnly }">
+      <v-container :fill-height="!requiresAuth" fluid :class="{'px-0': $vuetify.breakpoint.xsOnly }">
         <router-view></router-view>
       </v-container>
     </v-content>
@@ -179,11 +167,10 @@
 </template>
 
 <script>
-  import ApplicationMixin from './mixins/ApplicationMixin'
+  import { sortBy } from 'lodash'
   import NotificationsList from './components/Shared/NotificationsList.vue'
   import { mapGetters } from 'vuex'
   export default {
-    mixins: [ApplicationMixin],
     components: {
       NotificationsList
     },
@@ -191,104 +178,67 @@
     data () {
       return {
         drawer: null,
-        app_name: process.env.APP_NAME,
-        app_domain: process.env.APP_DOMAIN,
-        ssl_enabled: process.env.SSL_ENABLED
+        applicationMenuItems: [
+          { title: 'Dashboard', path: 'dashboard', icon: 'dashboard', admin: false, color: 'primary' },
+          { title: 'Forms', path: 'forms', icon: 'assignment', admin: false, color: 'blue' },
+          { title: 'Form Templates', path: 'form-templates', icon: 'content_paste', admin: true, color: 'red' },
+          { title: 'Users', path: 'users', icon: 'person', admin: true, color: 'green' },
+          { title: 'Organisations', path: 'organisations', icon: 'people', admin: false, color: 'orange' },
+          { title: 'Report Builder', path: 'report', icon: 'table_chart', admin: true, color: 'orange' },
+          { title: 'Compare Forms', path: 'compare', icon: 'compare', admin: true, color: 'orange' },
+          { title: 'Notes', path: 'notes', icon: 'note', admin: true, color: 'primary' },
+          { title: 'Workflows', path: 'workflows', icon: 'merge_type', admin: true, color: 'primary' },
+          { title: 'Settings', path: 'settings', icon: 'settings', admin: true }
+        ],
+        userMenuItems: [
+          { title: 'Applications', path: 'applications', icon: 'apps', application: false },
+          { title: 'My Profile', path: 'profile', icon: 'account_circle', application: true }
+        ]
       }
     },
     computed: {
       ...mapGetters([
+        'applications',
+        'applicationBySlug',
         'roles',
-        'user'
+        'user',
+        'userIsSuperAdmin',
+        'userIsAdmin'
       ]),
-      slug () {
-        return window.location.hostname.split('.')[0]
-      },
-      applications () {
-        return this.$store.getters.loadedApplications
-      },
       application () {
-        return this.$store.getters.loadedApplication(this.slug)
+        return this.applicationBySlug(this.$_slug)
       },
-      backgroundRequired () {
-        return !this.$route.meta.requiresAuth
-      },
-      applicationItems () {
-        return [
-            { title: 'Dashboard', path: 'dashboard', icon: 'dashboard', admin: false, color: 'primary' },
-            { title: 'Forms', path: 'forms', icon: 'assignment', admin: false, color: 'blue' },
-            { title: 'Form Templates', path: 'form-templates', icon: 'content_paste', admin: true, color: 'red' },
-            { title: 'Users', path: 'users', icon: 'person', admin: true, color: 'green' },
-            { title: 'Organisations', path: 'organisations', icon: 'people', admin: false, color: 'orange' },
-            { title: 'Report Builder', path: 'report', icon: 'table_chart', admin: true, color: 'orange' },
-            { title: 'Compare Forms', path: 'compare', icon: 'compare', admin: true, color: 'orange' },
-            { title: 'Notes', path: 'notes', icon: 'note', admin: true, color: 'primary' },
-            { title: 'Workflows', path: 'workflows', icon: 'merge_type', admin: true, color: 'primary' },
-            { title: 'Settings', path: 'settings', icon: 'settings', admin: true }
-        ]
-      },
-      accountItems () {
-        return [
-            { title: 'Applications', path: 'applications', icon: 'apps', application: false },
-            { title: 'My Profile', path: 'profile', icon: 'account_circle', application: true }
-        ]
+      requiresAuth () {
+        return this.$route.meta.requiresAuth
       },
       isAdmin () {
-        return this.isSuperUser || (this.user && this.application && this.getRole(this.application.application_role_id) === 'Admin')
+        return this.userIsSuperAdmin || this.userIsAdmin(this.$_slug, this.user.id)
       },
-      isSuperUser () {
-        return this.user && this.getRole(this.user.role_id) === 'Super Admin'
+      applicationDefaultRoute () {
+        return this.application.default_route || '/forms'
       },
-      appProtocol () {
-        return this.ssl_enabled === 'true' ? 'https://' : 'http://'
+      applicationName () {
+        return this.application.name || this.app_name
       },
-      sortedApplications () {
-        return this.applications.slice().sort(function (a, b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0) })
+      applicationList () {
+        return sortBy(this.applications, 'name')
       }
     },
     methods: {
-      applicationName (application = []) {
-        return application && application.name ? application.name : this.app_name
-      },
-      applicationUrl (application = []) {
-        return this.appProtocol + application.slug + '.' + this.app_domain
-      },
-      applicationRoute (application = []) {
-        return application.default_route ? application.default_route : '/forms'
-      },
-      applicationIcon (application = []) {
+      getApplicationIcon (icon) {
         try {
-          return JSON.parse(application.icon).url
+          return JSON.parse(icon).url
         } catch (error) {
           return false
         }
       },
-      applicationFirstLetter (application = []) {
-        return application.name && application.name.length > 0 ? application.name.trim().substring(0, 1).toUpperCase() : 'A'
-      },
-      getRole (roleId) {
-        const role = this.roles.find((role) => {
-          return role.id === roleId
-        })
-        return role ? role.name : 'undefined'
-      },
-      onLogout () {
+      logout () {
         this.$store.dispatch('logout')
         this.$router.push('/login')
       }
     },
     created () {
       if (this.user) {
-        this.$store.dispatch('loadQuestionTypes')
-        this.$store.dispatch('loadValidationTypes')
-        this.$store.dispatch('loadPeriods')
-        this.$store.dispatch('loadStatuses')
-        this.$store.dispatch('loadRoles')
-        this.$store.dispatch('loadTypes')
-        this.$store.dispatch('loadCountries')
-        this.$store.dispatch('loadComparators')
-        this.$store.dispatch('loadTriggerTypes')
-        this.$store.dispatch('loadAnswerSorts')
         this.$store.dispatch('loadApplications')
       }
     }

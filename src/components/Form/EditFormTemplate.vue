@@ -256,6 +256,18 @@
           id: this.formTemplate.id,
           resource: 'form_templates'
         })
+      },
+      loadData () {
+        this.$store.dispatch('loadQuestionTypes')
+        this.$store.dispatch('loadValidationTypes')
+        this.$store.dispatch('loadPeriods')
+        this.$store.dispatch('loadStatuses')
+        this.$store.dispatch('loadRoles')
+        this.$store.dispatch('loadTypes')
+        this.$store.dispatch('loadCountries')
+        this.$store.dispatch('loadComparators')
+        this.$store.dispatch('loadTriggerTypes')
+        this.$store.dispatch('loadAnswerSorts')
       }
     },
     computed: {
@@ -290,6 +302,7 @@
       } else {
         this.$store.dispatch('loadResourceAccessSettings', { resource: 'form_templates', id: this.id })
       }
+      this.loadData()
     },
     watch: {
       loadedResourceAccessLevel (accessLevel) {

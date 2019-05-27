@@ -125,7 +125,7 @@
               return status.id === formTemplate.status_id
             })
 
-            return isPermissible(this.$store.getters.userAcl().show, 'form_templates', formTemplate) && status.status === 'Closed'
+            return isPermissible(this.$store.getters.userAcl().show, 'form_templates', formTemplate) && status && status.status === 'Closed'
           })
         }
         return _.sortBy(formTemplates, element => {
@@ -214,6 +214,9 @@
         this.userId = null
         this.show = false
       }
+    },
+    created () {
+      this.$store.dispatch('loadStatuses')
     }
   }
 </script>

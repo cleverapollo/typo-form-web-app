@@ -1,7 +1,6 @@
 const API_URL = process.env.API_URL
 const APPLICATION_URL = `${API_URL}application`
 const USER_URL = `/user`
-const EMAIL_URL = `/application-email`
 
 export default {
   state: {
@@ -21,14 +20,6 @@ export default {
     setLoadedApplications (state, payload) {
       state.loadedApplications = payload
     },
-    setLoadedApplicationEmail (state, payload) {
-      const index = state.loadedApplications.findIndex(application => {
-        return application.slug === payload.slug
-      })
-      const application = Object.assign({}, state.loadedApplications[index])
-      application.application_emails = payload.application_emails
-      state.loadedApplications.splice(index, 1, application)
-    },
     createApplication (state, payload) {
       state.loadedApplications.push(payload)
     },
@@ -42,17 +33,6 @@ export default {
       state.loadedApplications = state.loadedApplications.filter(e => {
         return e.slug !== payload.slug
       })
-    },
-    updateApplicationEmail (state, payload) {
-      const index = state.loadedApplications.findIndex(application => {
-        return application.slug === payload.slug
-      })
-      const application = Object.assign({}, state.loadedApplications[index])
-      const applicationEmailIndex = application.application_emails.findIndex(applicationEmail => {
-        return applicationEmail.id === payload.application_email.id
-      })
-      application.application_emails.splice(applicationEmailIndex, 1, payload.application_email)
-      state.loadedApplications.splice(index, 1, application)
     }
   },
   actions: {
@@ -200,55 +180,17 @@ export default {
           console.log(error)
           commit('setLoading', false)
         })
-    },
-    loadApplicationEmail ({commit}, slug) {
-      commit('setLoading', true)
-      window.axios.get(APPLICATION_URL + '/' + slug + EMAIL_URL)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const emailObj = {
-              application_emails: response['data']['application_emails'],
-              slug: slug
-            }
-            commit('setLoadedApplicationEmail', emailObj)
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            console.log(error)
-          }
-        )
-    },
-    updateApplicationEmail ({commit}, payload) {
-      commit('setLoading', true)
-      const updateObj = {}
-      if (payload.recipients) {
-        updateObj.recipients = payload.recipients
-      }
-      if (payload.subject) {
-        updateObj.subject = payload.subject
-      }
-      if (payload.body) {
-        updateObj.body = payload.body
-      }
-      window.axios.put(APPLICATION_URL + '/' + payload.slug + EMAIL_URL + '/' + payload.id, updateObj)
-        .then(response => {
-          commit('setLoading', false)
-          const updateObject = {
-            slug: payload.slug,
-            application_email: response['data']['application_email']
-          }
-          commit('updateApplicationEmail', updateObject)
-        })
-        .catch(error => {
-          console.log(error)
-          commit('setLoading', false)
-        })
     }
   },
   getters: {
+    applications: (state) => state.loadedApplications,
+    applicationBySlug: (state, getters) => (slug) => {
+      return getters.applications.find(application => application.slug === slug)
+    },
+    applicationById: (state, getters) => (applicationId) => {
+      return getters.applications.find(application => application.id === applicationId)
+    },
+    // Legacy
     loadedApplications (state) {
       return state.loadedApplications.sort((applicationA, applicationB) => {
         return applicationA.name > applicationB.name
@@ -266,17 +208,6 @@ export default {
         return state.loadedApplications.find((application) => {
           return application.id === applicationId
         })
-      }
-    },
-    loadedApplicationEmail (state) {
-      return (slug) => {
-        const application = state.loadedApplications.find((application) => {
-          return application.slug === slug
-        })
-        if (application.application_emails && application.application_emails.length) {
-          return application.application_emails[0]
-        }
-        return null
       }
     }
   }

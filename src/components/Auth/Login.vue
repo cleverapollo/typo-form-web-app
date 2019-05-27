@@ -4,7 +4,7 @@
     <!-- // Error Message -->
     <v-layout row align-center justify-center v-if="error">
       <v-flex sm12 lg6 xl4>
-        <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+        <app-alert @dismissed="clearError" :text="error.message"></app-alert>
       </v-flex>
     </v-layout>
 
@@ -26,7 +26,7 @@
 
           <v-card-text class="pt-1">
             <v-container pt-1>
-              <form @submit.prevent="onSignin">
+              <form @submit.prevent="logIn">
                 <v-layout row>
                   <v-flex xs12>
                     <div class="headline">Log in</div>
@@ -105,24 +105,27 @@
 <script>
   import PasswordComplexity from './PasswordComplexity'
   import * as encodedSearch from '../../util/encodedSearch'
+  import { mapGetters } from 'vuex'
   export default {
     data () {
       const details = encodedSearch.extractLoginDetails()
       return {
         submitted: false,
         email: details.email,
-        password: ''
+        password: '',
+        supportTextTemplate: 'For support, please contact <a href="mailto:support@informed365.com" target="_blank">Informed 365 Help Desk</a>.'
       }
     },
     components: {
       PasswordComplexity
     },
     computed: {
-      slug () {
-        return window.location.hostname.split('.')[0]
-      },
-      user () {
-        return this.$store.getters.user
+      ...mapGetters([
+        'applicationBySlug',
+        'user'
+      ]),
+      application () {
+        return this.applicationBySlug(this.$_slug)
       },
       error () {
         return this.$store.getters.error
@@ -131,13 +134,7 @@
         return this.$store.getters.loading
       },
       supportText () {
-        if (this.application && this.application.support_text) {
-          return this.application.support_text
-        }
-        return 'For support, please contact <a href="mailto:support@informed365.com" target="_blank">Informed 365 Help Desk</a>.'
-      },
-      application () {
-        return this.$store.getters.loadedApplication(this.slug)
+        return this.application && this.application.support_text ? this.application.support_text : this.supportTextTemplate
       },
       applicationImage () {
         try {
@@ -147,42 +144,35 @@
         }
       }
     },
-    watch: {
-      user (value) {
-        this.onValidate(value)
-      }
-    },
     methods: {
-      onValidate (value) {
-        if (value !== null && value !== undefined) {
-          this.$store.dispatch('loadQuestionTypes')
-          this.$store.dispatch('loadValidationTypes')
-          this.$store.dispatch('loadPeriods')
-          this.$store.dispatch('loadStatuses')
-          this.$store.dispatch('loadRoles')
-          this.$store.dispatch('loadTypes')
-          this.$store.dispatch('loadCountries')
-          this.$store.dispatch('loadComparators')
-          this.$store.dispatch('loadTriggerTypes')
-          this.$store.dispatch('loadAnswerSorts')
-          this.$store.dispatch('loadApplications')
-          this.$router.push(this.$route.query.redirect || '/')
-        }
-      },
-      onSignin () {
-        this.$store.dispatch('signUserIn', {email: this.email, password: this.password})
+      logIn () {
+        this.$store.dispatch('signUserIn', { email: this.email, password: this.password })
           .then(response => {})
           .catch(() => {
             this.submitted = false
           })
       },
-      onDismissed () {
+      clearError () {
         this.$store.dispatch('clearError')
+      },
+      authenticate () {
+        if (this.user) {
+          this.$store.dispatch('loadApplications')
+          this.$router.push(this.$route.query.redirect || '/')
+        }
       }
     },
     created: function () {
-      this.onDismissed()
-      this.onValidate(this.user)
+      this.clearError()
+      this.authenticate()
+    },
+    watch: {
+      user: {
+        immediate: true,
+        handler (value) {
+          this.authenticate()
+        }
+      }
     }
   }
 </script>

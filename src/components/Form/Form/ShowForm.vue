@@ -381,6 +381,18 @@
             this.submitted = true
             scroll(0, 0)
           })
+      },
+      loadData () {
+        this.$store.dispatch('loadQuestionTypes')
+        this.$store.dispatch('loadValidationTypes')
+        this.$store.dispatch('loadPeriods')
+        this.$store.dispatch('loadStatuses')
+        this.$store.dispatch('loadRoles')
+        this.$store.dispatch('loadTypes')
+        this.$store.dispatch('loadCountries')
+        this.$store.dispatch('loadComparators')
+        this.$store.dispatch('loadTriggerTypes')
+        this.$store.dispatch('loadAnswerSorts')
       }
     },
     created () {
@@ -398,6 +410,7 @@
         })
       this.$store.dispatch('selectSection', null)
       this.$store.dispatch('loadAllOrganisationUsers', this.slug)
+      this.loadData()
     }
   }
 </script>
