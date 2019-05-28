@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600px" persistent v-model="editFormTemplate">
+  <v-dialog width="600px" v-model="editFormTemplate">
     <div slot="activator">
       Edit Form Template
     </div>

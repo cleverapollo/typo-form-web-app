@@ -6,7 +6,6 @@
         ref="dialog"
         v-model="modal"
         :return-value.sync="time"
-        persistent
         lazy
         full-width
         width="290px"

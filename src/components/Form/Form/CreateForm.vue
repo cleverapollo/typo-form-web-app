@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" persistent max-width="600px">
+  <v-dialog v-model="show" max-width="600px">
     <v-card>
       <v-card-title>
         <div class="title mb-2 mt-2">Create Form</div>

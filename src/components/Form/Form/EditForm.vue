@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600px" persistent v-model="editForm">
+  <v-dialog width="600px" v-model="editForm">
     <v-btn
       icon
       slot="activator"
@@ -53,7 +53,6 @@
               ref="periodStartDialog"
               v-model="periodStartModal"
               :return-value.sync="periodStart"
-              persistent
               lazy
               full-width
               width="290px"
@@ -81,7 +80,6 @@
               ref="periodEndDialog"
               v-model="periodEndModal"
               :return-value.sync="periodEnd"
-              persistent
               lazy
               full-width
               width="290px"

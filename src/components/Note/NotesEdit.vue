@@ -98,7 +98,6 @@
                 ref="dateDialog"
                 v-model="dateDialog"
                 :return-value.sync="note.task_due_at"
-                persistent
                 lazy
                 full-width
                 width="290px"

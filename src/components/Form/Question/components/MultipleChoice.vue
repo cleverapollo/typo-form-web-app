@@ -35,7 +35,6 @@
     <v-dialog
       v-model="dialog"
       width="500"
-      persistent
       ref="dialog"
     >
       <v-card>

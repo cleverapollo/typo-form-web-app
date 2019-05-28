@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600px" persistent v-model="editEmail" full-width>
+  <v-dialog width="600px" v-model="editEmail" full-width>
     <v-btn large block slot="activator">Change Email</v-btn>
     <v-card>
       <v-container>

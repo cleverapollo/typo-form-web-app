@@ -1,5 +1,5 @@
 <template>
-  <v-dialog scrollable v-model="show" persistent max-width="600px">
+  <v-dialog scrollable v-model="show" max-width="600px">
   <v-card>
     <!-- //Title -->
     <v-card-title>

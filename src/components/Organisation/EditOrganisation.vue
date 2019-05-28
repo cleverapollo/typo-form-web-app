@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600px" persistent v-model="editOrganisation">
+  <v-dialog width="600px" v-model="editOrganisation">
     <div slot="activator">Edit Organisation</div>
     <v-card>
 

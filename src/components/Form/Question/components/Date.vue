@@ -26,7 +26,6 @@
           ref="dialog"
           v-model="minModal"
           :return-value.sync="minDate"
-          persistent
           lazy
           full-width
           width="290px"
@@ -54,7 +53,6 @@
           ref="dialog"
           v-model="maxModal"
           :return-value.sync="maxDate"
-          persistent
           lazy
           full-width
           width="290px"

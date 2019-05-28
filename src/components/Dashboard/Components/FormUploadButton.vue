@@ -14,7 +14,7 @@
     </v-btn>
 
     <!-- // Upload Dialog -->
-    <v-dialog v-model="uploadDialog" persistent max-width="600">
+    <v-dialog v-model="uploadDialog" max-width="600">
       <v-card>
         <v-card-title>
           <div class="title mb-2 mt-2">Upload Form Data</div>

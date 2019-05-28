@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" persistent max-width="600">
+  <v-dialog v-model="show" max-width="600">
 
     <v-alert :value="error" type="error">
       {{ errorString }}

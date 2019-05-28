@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600px" persistent v-model="createQuestion">
+  <v-dialog width="600px" v-model="createQuestion">
     <div slot="activator">
       Create Question
     </div>

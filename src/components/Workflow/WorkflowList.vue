@@ -156,7 +156,6 @@
                   ref="activeFromDialog"
                   v-model="activeFromDialog"
                   :return-value.sync="workflow.active_from"
-                  persistent
                   lazy
                   full-width
                   width="290px"
@@ -183,7 +182,6 @@
                   ref="activeToDialog"
                   v-model="activeToDialog"
                   :return-value.sync="workflow.active_to"
-                  persistent
                   lazy
                   full-width
                   width="290px"

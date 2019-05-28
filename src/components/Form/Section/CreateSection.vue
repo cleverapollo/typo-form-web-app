@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600px" persistent v-model="createSection">
+  <v-dialog width="600px" v-model="createSection">
     <div slot="activator">
       Create Section
     </div>

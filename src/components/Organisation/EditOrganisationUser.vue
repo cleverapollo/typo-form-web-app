@@ -1,5 +1,5 @@
 <template>
-  <v-dialog persistent v-model="editOrganisationUser" max-width="600px">
+  <v-dialog v-model="editOrganisationUser" max-width="600px">
     <v-btn icon slot="activator" class="mx-0"><v-icon color="teal">edit</v-icon></v-btn>
     <v-card>
 

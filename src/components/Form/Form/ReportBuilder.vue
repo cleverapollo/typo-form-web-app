@@ -24,7 +24,7 @@
             </v-tooltip>
 
             <!-- //Share Link -->
-            <v-dialog v-model="joinUrlDialog" persistent max-width="600">
+            <v-dialog v-model="joinUrlDialog" max-width="600">
               <v-card>
                 <!-- //Title -->
                 <v-card-title>

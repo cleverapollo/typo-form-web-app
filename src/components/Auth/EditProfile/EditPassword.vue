@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600px" persistent v-model="editPassword" full-width>
+  <v-dialog width="600px" v-model="editPassword" full-width>
     <v-btn large block slot="activator">Change Password</v-btn>
     <v-card>
       <v-container>

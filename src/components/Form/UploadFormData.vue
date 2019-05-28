@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600px" persistent v-model="uploadFormData">
+  <v-dialog width="600px" v-model="uploadFormData">
     <div slot="activator">
       Upload Form Data
     </div>
