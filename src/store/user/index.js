@@ -58,31 +58,23 @@ export default {
     },
     updateUser ({commit}, payload) {
       commit('setLoading', true)
-      const updateObj = {}
-      if (payload.applicationRoleId) {
-        updateObj.application_role_id = payload.applicationRoleId
-      }
-      if (payload.multiplier) {
-        updateObj.multiplier = payload.multiplier
-      }
-      if (payload.period) {
-        updateObj.period = payload.period
-      }
-      window.axios.put(APPLICATION_URL + payload.slug + USER_URL + '/' + payload.id, updateObj)
-        .then(
-          response => {
-            commit('setLoading', false)
-            const updateObj = {
-              slug: payload.slug,
-              user: response['data']['user']
-            }
-            commit('updateUser', updateObj)
+      return new Promise((resolve, reject) => {
+        window.axios.put(APPLICATION_URL + payload.slug + USER_URL + '/' + payload.id, payload)
+        .then(response => {
+          const updateObj = {
+            slug: payload.slug,
+            user: response['data']['data']
           }
-        )
+          commit('updateUser', updateObj)
+          resolve(response)
+        })
         .catch(error => {
-          console.log(error)
+          reject(error)
+        })
+        .finally(() => {
           commit('setLoading', false)
         })
+      })
     },
     deleteUser ({commit}, payload) {
       commit('setLoading', true)
@@ -104,8 +96,9 @@ export default {
   getters: {
     users: state => slug => state.loadedUsers[slug] ? state.loadedUsers[slug] : [],
     userById: (state, getters) => (slug, userId) => getters.users(slug).find(user => user.id === userId),
+    userApplicationRole: (state, getters) => (slug, userId) => getters.userById(slug, userId) ? getters.userById(slug, userId).application_role.label : null,
+    userIsAdmin: (state, getters) => (slug, userId) => getters.userApplicationRole(slug, userId) === 'Admin',
     invitedUsers: (state, getters) => slug => getters.users(slug).filter(user => user.status.label === 'Invited'),
-    userIsAdmin: (state, getters) => (slug, userId) => getters.userById(slug, userId) && getters.userById(slug, userId).label === 'Admin',
     // Legacy
     loadedUsers (state) {
       return (slug) => {

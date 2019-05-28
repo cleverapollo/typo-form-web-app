@@ -39,7 +39,7 @@
                     <div class="grey--text text--darken-1">Role: {{ roleName }}</div>
                   </v-flex>
                   <v-flex xs12 py-0>
-                    <div class="grey--text text--darken-1">Last signed-in: {{ signInTime }}</div>
+                    <div class="grey--text text--darken-1">Updated: {{ updatedTime }}</div>
                   </v-flex>
                   <v-flex xs12 py-0>
                     <div class="grey--text text--darken-1">Created: {{ createdDate }}</div>
@@ -159,14 +159,14 @@ export default {
     statusColor () {
       return this.status === 'Active' ? 'green' : 'orange'
     },
-    signInTime () {
+    updatedTime () {
       return this.user && this.status !== 'Invited' ? this.$_getTimeSince(this.user.updated_at) : 'Never'
     },
     createdDate () {
       return this.user ? this.$_getDateTime(this.user.created_at) : ''
     },
     roleName () {
-      return this.user ? this.user.role.label : ''
+      return this.$_getUserApplicationRole(this.user)
     },
     avatar () {
       return this.user && this.user.first_name ? this.user.first_name.charAt(0).toUpperCase() : null

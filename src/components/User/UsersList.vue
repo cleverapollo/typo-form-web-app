@@ -88,7 +88,7 @@
         let items = []
         this.users.forEach(user => {
           let item = { ...user }
-          item.role = user.role.label
+          item.role = this.$_getUserApplicationRole(user)
           item.created = this.$_getDateTime(user.created_at)
           item.updated = this.$_getDateTime(user.updated_at)
           item.status = user.status.label

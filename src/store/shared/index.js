@@ -286,7 +286,7 @@ export default {
     types: state => state.types,
     countries: state => state.countries,
     statuses: state => state.statuses,
-    comparitors: (state) => state.comparitors,
+    comparators: (state) => state.comparators,
     triggerTypes: state => state.triggerTypes,
     answerSorts: state => state.answerSorts,
     reportUrl: state => state.reportURL,

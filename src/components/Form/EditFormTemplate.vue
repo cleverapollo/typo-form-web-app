@@ -260,7 +260,6 @@
       loadData () {
         this.$store.dispatch('loadQuestionTypes')
         this.$store.dispatch('loadValidationTypes')
-        this.$store.dispatch('loadPeriods')
         this.$store.dispatch('loadStatuses')
         this.$store.dispatch('loadRoles')
         this.$store.dispatch('loadTypes')

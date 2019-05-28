@@ -1,5 +1,6 @@
 // Helper Mixin
 import moment from 'moment'
+import get from 'lodash/get'
 export default {
   computed: {
     $_slug: () => window.location.hostname.split('.')[0],
@@ -15,6 +16,7 @@ export default {
     $_getDateTime: date => moment(date).format('YYYY-MM-DD h:mm A'),
     $_getTimeSince: date => moment(date).fromNow(),
     $_getFirstChar: string => string.charAt(0).toUpperCase(),
+    $_getUserApplicationRole: user => get(user, 'role.label') === 'Super Admin' ? 'Super Admin' : get(user, 'application_role.label', 'User'),
     $_getApplicationUrl (slug) {
       return this.$_protocol + slug + '.' + this.$_appDomain
     }

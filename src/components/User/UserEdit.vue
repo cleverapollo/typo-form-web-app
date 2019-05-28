@@ -22,7 +22,7 @@
               :items="applicationRoles"
               item-text="name"
               item-value="id"
-              v-model="user.role_id"
+              v-model="user.application_role_id"
               label="Role"
               single-line
             ></v-select>
@@ -95,8 +95,8 @@
     data () {
       return {
         showDialog: false,
-        period: get(this.user, 'meta.period', 60000),
-        multiplier: get(this.user, 'meta.multiplier', 0),
+        period: 0,
+        multiplier: 0,
         rules: {
           delay: [
             v => !!v || 'Delay is required'
@@ -119,8 +119,8 @@
         this.$store.dispatch('updateUser', {
           slug: this.slug,
           id: this.user.id,
-          applicationRoleId: this.user.application_role_id,
-          multiplier: this.multiplier,
+          application_role_id: this.user.application_role_id,
+          multiplier: this.multiplier || 0,
           period: this.period
         })
         this.close()
@@ -136,6 +136,8 @@
       show: {
         immediate: true,
         handler () {
+          this.period = get(this.user, 'meta.period', 60000)
+          this.multiplier = get(this.user, 'meta.multiplier', 0)
           this.showDialog = this.show
         }
       }
